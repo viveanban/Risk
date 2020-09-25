@@ -42,7 +42,7 @@ public:
 class Node {
 private:
     Territory territory;
-    map<Edge, Node> adjMap;
+    map<Edge*, Node*> adjMap;
 public:
     Node();
     Node(Territory territory);
