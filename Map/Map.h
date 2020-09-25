@@ -46,12 +46,12 @@ private:
 public:
     Node();
     Node(Territory territory);
-    Node(Territory territory, map<Edge, Node> adjMap);
+    Node(Territory territory, map<Edge*, Node*> adjMap);
 
     void addLink(Node *n, Edge *e);
 
-    map<Edge, Node> getAdjMap();
-    void setAdjMap(map<Edge, Node> adjMap);
+    map<Edge*, Node*> getAdjMap();
+    void setAdjMap(map<Edge*, Node*> adjMap);
 
     Territory getTerritory();
     void setTerritory(Territory territory);
@@ -61,14 +61,14 @@ class Graph{
 private:
     vector<Node> nodeList;
 public:
+    Graph();
+    Graph(vector<Node> nodeList);
+
     vector<Node> getNodeList();
     void setNodeList(vector<Node> nodeList);
 };
 
 class Continent {
-public:
-    Continent(const string &continentName);
-
 private:
     string continentName;
     vector<Node> nodesInContinent;
