@@ -25,18 +25,27 @@ private:
     string territoryName;
     int unitNbr;
     string continentName;
+    string owner;
 public:
     Territory();
-    Territory(string territoryName, int unitNbr, string continentName);
 
-    string getTerritoryName();
-    void setTerritoryName(string territoryName);
+    Territory(string territoryName, int unitNbr, string continentName, string owner);
 
-    string getContinentName();
-    void setContinentName(string continentName);
+    string &getTerritoryName();
 
-    int getUnitNbr();
+    void setTerritoryName(const string &territoryName);
+
+    string &getContinentName();
+
+    void setContinentName(const string &continentName);
+
+    int &getUnitNbr();
+
     void setUnitNbr(int unitNbr);
+
+    string &getOwner();
+
+    void setOwner(const string &owner);
 };
 
 class Node {

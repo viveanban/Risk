@@ -9,34 +9,45 @@
 
 using namespace std;
 
-Territory::Territory() : territoryName(), unitNbr(0), continentName() {}
+Territory::Territory() : territoryName(), unitNbr(0), continentName(), owner() {}
 
-Territory::Territory(string territoryName, int unitNbr, string continentName) : territoryName(territoryName),
-                                                                                unitNbr(unitNbr),
-                                                                                continentName(continentName) {}
+Territory::Territory(string territoryName, int unitNbr, string continentName, string owner) : territoryName(
+        territoryName),
+                                                                                              unitNbr(unitNbr),
+                                                                                              continentName(
+                                                                                                      continentName),
+                                                                                              owner(owner) {}
 
-string Territory::getTerritoryName() {
+string &Territory::getTerritoryName() {
     return territoryName;
 }
 
-void Territory::setTerritoryName(string territoryName) {
+void Territory::setTerritoryName(const string &territoryName) {
     this->territoryName = territoryName;
 }
 
-string Territory::getContinentName() {
+string &Territory::getContinentName() {
     return continentName;
 }
 
-void Territory::setContinentName(string continentName) {
+void Territory::setContinentName(const string &continentName) {
     this->continentName = continentName;
 }
 
-int Territory::getUnitNbr() {
+int &Territory::getUnitNbr() {
     return unitNbr;
 }
 
 void Territory::setUnitNbr(int unitNbr) {
     this->unitNbr = unitNbr;
+}
+
+string &Territory::getOwner() {
+    return owner;
+}
+
+void Territory::setOwner(const string &owner) {
+    Territory::owner = owner;
 }
 
 Node::Node() : territory(), adjMap(map<Edge *, Node *>()) {}
