@@ -6,21 +6,43 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <string.h>
+#include <algorithm>
+
 using std::ios;
 using std::cout;
 using std::endl;
 using std::ifstream;
 
 namespace mapLoader {
+
+//    TODO: Regroup these enums under a class FileTemplate
+    enum Section {
+        other, continents, countries, borders
+    };
+    enum ContinentEntry {
+        continentName, bonus
+    };
+    enum CountryEntry {
+        id, countryName, continentId
+    };
+    enum BorderEntry {
+        countryId, adjacentCountries
+    };
+
+    Section currentSection;
+
+    // TODO: Temperoray vectors where the continents, countries and borders are created
+    vector<MapLoader::Continent> continentList;
+    vector<MapLoader::Country> countryList;
+    vector<MapLoader::Borders> bordersList;
+
     MapLoader::MapLoader() {
         cout << "MapLoader Ctor" << endl;
     }
 
-    bool parseFile(ifstream ifstream);
-
     void MapLoader::readMap(string file_path) {
-        ifstream mapFile(file_path);
+        ifstream mapFile;
+        mapFile.open(file_path);
 
         if (mapFile.is_open()) {  //checking whether the file is open
             parseFile(mapFile);
@@ -28,24 +50,125 @@ namespace mapLoader {
         }
     }
 
-    // think about each section 1 by 1
-    bool parseFile(ifstream mapFile) {
+    bool MapLoader::parseFile(ifstream &mapFile) {
         string line;
-        while(getline(mapFile, line)){ //read data from file object and put it into string.
-            const char* str = line.c_str();
-            // Returns first token
-            char *token = strtok((char*)str, " ");
+        skipIrrelevantLines(mapFile, line);
 
-            // Keep printing tokens while one of the
-            // delimiters present in str[].
-            while (token != NULL)
-            {
-                printf("%s\n", token);
-                token = strtok(NULL, " ");
+        while (getline(mapFile, line)) {
+            bool isUpdated = updateCategory(line);
+
+            // Line tokenizing will only happen in the content of relevant sections
+            if (!isUpdated) {
+                std::replace(line.begin(), line.end(), '\r', ' ');
+                if (currentSection == continents) {
+                    continentList.push_back(createContinentFromLine(line));
+                } else if (currentSection == countries) {
+                    countryList.push_back(createCountryFromLine(line));
+                } else if (currentSection == borders) {
+                    bordersList.push_back(createBordersFromLine(line));
+                }
             }
         }
         return false;
     }
+
+    void MapLoader::skipIrrelevantLines(ifstream &mapFile, string line) {
+        //read all lines until you get to the beginning of a section content (section title has been read)
+        while (getline(mapFile, line) && !isSectionRelevant(line));
+    }
+
+    bool MapLoader::isSectionRelevant(string line) {
+        updateCategory(line);
+        return currentSection != other;
+    }
+
+    bool MapLoader::updateCategory(string line) {
+        if (line.at(0) == '[') {
+            if (line.compare("[continents]") == 1) {
+                currentSection = continents;
+            } else if (line.compare("[countries]") == 1) {
+                currentSection = countries;
+            } else if (line.compare("[borders]") == 1) {
+                currentSection = borders;
+            } else {
+                currentSection = other;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    MapLoader::Continent MapLoader::createContinentFromLine(const string &line) {
+        const char *token = strtok((char *) line.c_str(), " ");
+        int counter = 0;
+        Continent continent;
+        while (token != NULL) {
+            if (counter == continentName) {
+                continent.name = token;
+            } else if (counter == bonus) {
+                long convertedToken;
+                continent.bonus = getInt(token, convertedToken);
+            }
+
+            token = strtok(NULL, " ");
+            counter++;
+        }
+        return continent;
+    }
+
+    MapLoader::Country MapLoader::createCountryFromLine(const string &line) {
+        const char *token = strtok((char *) line.c_str(), " ");
+        int counter = 0;
+        Country country;
+        while (token != NULL) {
+            long convertedToken;
+            if (counter == id) {
+                convertedToken = getInt(token, convertedToken);
+                country.id = convertedToken;
+            } else if (counter == countryName) {
+                country.name = token;
+            } else if (counter == continentId) {
+                country.continentId = getInt(token, convertedToken);
+            }
+
+            token = strtok(NULL, " ");
+            counter++;
+        }
+        return country;
+    }
+
+    MapLoader::Borders MapLoader::createBordersFromLine(const string &line) {
+        const char *token = strtok((char *) line.c_str(), " ");
+        int counter = 0;
+        Borders borders;
+        while (token != NULL) {
+            long int convertedToken;
+            if (counter == countryId) {
+                convertedToken = getInt(token, convertedToken);
+                borders.countryId = convertedToken;
+            } else if (counter >= adjacentCountries) {
+                convertedToken = getInt(token, convertedToken);
+                borders.adjacentCountries.push_back(convertedToken);
+            }
+            token = strtok(NULL, " ");
+            counter++;
+        }
+        return borders;
+    }
+
+    long MapLoader::getInt(const char *token, long &convertedToken) {
+        char *endPointer;
+//        std::replace(token.)
+        convertedToken = strtol(token, &endPointer, 10);
+        if (*endPointer) {
+            //conversion failed because the input was not a number
+            cout << "Conversion failed because the input was not a number" << endl;
+            return -1;
+        } else {
+            return convertedToken;
+        }
+    }
+
 }
 
 
