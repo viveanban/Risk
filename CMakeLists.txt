@@ -3,4 +3,4 @@ project(Risk)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Risk main.cpp Map/Map.h Map/Map.cpp)
+add_executable(Risk main.cpp Map/Map.h Map/Map.cpp Map/MapDriver.cpp)

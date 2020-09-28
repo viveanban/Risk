@@ -9,14 +9,10 @@
 
 using namespace std;
 
-Territory::Territory() : territoryName(), unitNbr(0), continentName(), owner() {}
+Territory::Territory() : territoryName(), unitNbr(0), continent(), owner() {}
 
-Territory::Territory(string territoryName, int unitNbr, string continentName, string owner) : territoryName(
-        territoryName),
-                                                                                              unitNbr(unitNbr),
-                                                                                              continentName(
-                                                                                                      continentName),
-                                                                                              owner(owner) {}
+Territory::Territory(string territoryName, int unitNbr, Continent *continent, string owner) : territoryName(
+        territoryName), unitNbr(unitNbr), continent(continent), owner(owner) {}
 
 string &Territory::getTerritoryName() {
     return territoryName;
@@ -26,12 +22,12 @@ void Territory::setTerritoryName(const string &territoryName) {
     this->territoryName = territoryName;
 }
 
-string &Territory::getContinentName() {
-    return continentName;
+Continent* Territory::getContinent() {
+    return continent;
 }
 
-void Territory::setContinentName(const string &continentName) {
-    this->continentName = continentName;
+void Territory::setContinent(Continent *continent) {
+    this->continent = continent;
 }
 
 int &Territory::getUnitNbr() {
@@ -49,6 +45,7 @@ string &Territory::getOwner() {
 void Territory::setOwner(const string &owner) {
     Territory::owner = owner;
 }
+
 
 Node::Node() : territory(), adjMap(map<Edge *, Node *>()) {}
 
@@ -76,17 +73,27 @@ void Node::setTerritory(Territory territory) {
     this->territory = territory;
 }
 
+
+
 Graph::Graph() : nodeList() {}
 
-Graph::Graph(vector<Node> nodeList) : nodeList(nodeList) {}
+Graph::Graph(vector<Node*> nodeList) : nodeList(nodeList) {}
 
-vector<Node> Graph::getNodeList() {
+vector<Node*> Graph::getNodeList() {
     return nodeList;
 }
 
-void Graph::setNodeList(vector<Node> nodeList) {
+void Graph::setNodeList(vector<Node*> nodeList) {
     this->nodeList = nodeList;
 }
+void Graph::addNode(Node* node){
+    nodeList.push_back(node);
+}
+
+bool Graph::isGraphValid(){
+    // verify that continent are connected, that countries are connected and belong to only one continent
+}
+
 
 Continent::Continent() : continentName(), nodesInContinent(), bonus(0) {}
 
@@ -110,14 +117,14 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-vector<Node> Continent::getNodesInContinent() {
+vector<Node*> Continent::getNodesInContinent() {
     return nodesInContinent;
 }
 
-void Continent::setNodesInContinent(vector<Node> nodesInContinent) {
+void Continent::setNodesInContinent(vector<Node*> nodesInContinent) {
     this->nodesInContinent = nodesInContinent;
 }
 
-void Continent::addNodeInContinent(Node n) {
+void Continent::addNodeInContinent(Node* n) {
     nodesInContinent.push_back(n);
 }

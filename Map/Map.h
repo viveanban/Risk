@@ -20,24 +20,31 @@ public:
 
 };
 
+class Continent;
+
+/**
+ * This class represents a territory in Risk
+ * A Territory represents any land that can be owned by a player.
+ * Any territory must belong to a continent and have a name
+ */
 class Territory {
 private:
     string territoryName;
+    Continent *continent;
+    string owner; // until we have a Player object we will use string
     int unitNbr;
-    string continentName;
-    string owner;
 public:
     Territory();
 
-    Territory(string territoryName, int unitNbr, string continentName, string owner);
+    Territory(string territoryName, int unitNbr, Continent *continent, string owner);
 
     string &getTerritoryName();
 
     void setTerritoryName(const string &territoryName);
 
-    string &getContinentName();
+    Continent* getContinent();
 
-    void setContinentName(const string &continentName);
+    void setContinent(Continent *continent);
 
     int &getUnitNbr();
 
@@ -68,19 +75,23 @@ public:
 
 class Graph{
 private:
-    vector<Node> nodeList;
+    vector<Node*> nodeList;
 public:
     Graph();
-    Graph(vector<Node> nodeList);
+    Graph(vector<Node*> nodeList);
 
-    vector<Node> getNodeList();
-    void setNodeList(vector<Node> nodeList);
+    vector<Node*> getNodeList();
+    void setNodeList(vector<Node*> nodeList);
+
+    void addNode(Node* node);
+
+    bool isGraphValid();
 };
 
 class Continent {
 private:
     string continentName;
-    vector<Node> nodesInContinent;
+    vector<Node*> nodesInContinent;
     int bonus;
 public:
     Continent();
@@ -92,9 +103,9 @@ public:
     int getBonus();
     void setBonus(int bonus);
 
-    vector<Node> getNodesInContinent();
-    void setNodesInContinent(vector<Node> nodesInContinent);
+    vector<Node*> getNodesInContinent();
+    void setNodesInContinent(vector<Node*> nodesInContinent);
 
-    void addNodeInContinent(Node n);
+    void addNodeInContinent(Node* n);
 
 };
