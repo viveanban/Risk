@@ -7,11 +7,18 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <string.h>
 
 using std::ios;
 using std::cout;
 using std::endl;
 using std::ifstream;
+
+//class MapLoader {
+//    static Map load(string mapFileName) {
+//
+//    }
+//};
 
 namespace mapLoader {
 
@@ -41,8 +48,8 @@ namespace mapLoader {
     }
 
     void MapLoader::readMap(string file_path) {
-        ifstream mapFile;
-        mapFile.open(file_path);
+        fstream mapFile;
+        mapFile.open(file_path, ios::in | ios::binary);
 
         if (mapFile.is_open()) {  //checking whether the file is open
             parseFile(mapFile);
@@ -50,16 +57,16 @@ namespace mapLoader {
         }
     }
 
-    bool MapLoader::parseFile(ifstream &mapFile) {
+    bool MapLoader::parseFile(fstream &mapFile) {
         string line;
         skipIrrelevantLines(mapFile, line);
 
         while (getline(mapFile, line)) {
+            std::replace(line.begin(), line.end(), '\r', ' ');
             bool isUpdated = updateCategory(line);
 
             // Line tokenizing will only happen in the content of relevant sections
             if (!isUpdated) {
-                std::replace(line.begin(), line.end(), '\r', ' ');
                 if (currentSection == continents) {
                     continentList.push_back(createContinentFromLine(line));
                 } else if (currentSection == countries) {
@@ -72,23 +79,23 @@ namespace mapLoader {
         return false;
     }
 
-    void MapLoader::skipIrrelevantLines(ifstream &mapFile, string line) {
+    void MapLoader::skipIrrelevantLines(fstream &mapFile, string &line) {
         //read all lines until you get to the beginning of a section content (section title has been read)
         while (getline(mapFile, line) && !isSectionRelevant(line));
     }
 
-    bool MapLoader::isSectionRelevant(string line) {
+    bool MapLoader::isSectionRelevant(string &line) {
         updateCategory(line);
         return currentSection != other;
     }
 
-    bool MapLoader::updateCategory(string line) {
-        if (line.at(0) == '[') {
-            if (line.compare("[continents]") == 1) {
+    bool MapLoader::updateCategory(string &line) {
+        if (!line.empty() && line.at(0) == '[') {
+            if (line.compare("[continents]\r") == 0) {
                 currentSection = continents;
-            } else if (line.compare("[countries]") == 1) {
+            } else if (line.compare("[countries]\r") == 0) {
                 currentSection = countries;
-            } else if (line.compare("[borders]") == 1) {
+            } else if (line.compare("[borders]\r") == 0) {
                 currentSection = borders;
             } else {
                 currentSection = other;

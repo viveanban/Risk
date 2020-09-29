@@ -9,8 +9,12 @@
 #include <vector>
 
 using std::string;
-using std::ifstream;
+using std::fstream;
 using std::vector;
+
+//class MapLoader {
+//    static Map load(string mapFileName);
+//};
 
 namespace mapLoader {
     class MapLoader {
@@ -35,13 +39,13 @@ namespace mapLoader {
             vector<int> adjacentCountries;
         };
     private:
-        bool parseFile(ifstream &mapFile);
+        bool parseFile(fstream &mapFile);
 
-        void skipIrrelevantLines(ifstream &mapFile, string line);
+        void skipIrrelevantLines(fstream &mapFile, string &line);
 
-        bool isSectionRelevant(string line);
+        bool isSectionRelevant(string &line);
 
-        bool updateCategory(string line);
+        bool updateCategory(string &line);
 
         Continent createContinentFromLine(const string& line);
         Country createCountryFromLine(const string& line);
