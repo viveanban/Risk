@@ -23,7 +23,7 @@ public:
 class Continent;
 
 /**
- * This class represents a territory in Risk
+ * This class represents a territory in the Risk game
  * A Territory represents any land that can be owned by a player.
  * Any territory must belong to a continent and have a name
  */
@@ -55,6 +55,10 @@ public:
     void setOwner(const string &owner);
 };
 
+/**
+ * This class represents a node in the graph
+ * A Node contains a territory as well as a map of other adjacent node with their respective edges
+ */
 class Node {
 private:
     Territory territory;
@@ -73,6 +77,11 @@ public:
     void setTerritory(Territory territory);
 };
 
+/**
+ * This class represents a graph in the Risk game
+ * A Graph is a list of connected Node. In other words, it represents a list of countries
+ * and continent that are interconnected with each other
+ */
 class Graph{
 private:
     vector<Node*> nodeList;
@@ -88,6 +97,11 @@ public:
     bool isGraphValid();
 };
 
+/**
+ * This class represents a Continent in the risk game
+ * A continent contains a list of nodes inside the continent as well as a bonus for players that own all
+ * territories inside this continent
+ */
 class Continent {
 private:
     string continentName;
