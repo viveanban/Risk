@@ -1,18 +1,14 @@
 #include <iostream>
 #include "MapLoader.h"
-using namespace mapLoader;
+
+using std::cout;
+using std::cin;
 
 int main() {
 
-    // Asks user for a .map name
-
-    // Check if file exists.
-    // If not, ask user for another .map name
-    // If exists, load map (check for invalid map, read map, construct and return Map object)
-
-    std::cout << "Hello, World!" << std::endl;
-    mapLoader::MapLoader loader = mapLoader::MapLoader();
-    loader.readMap("../maps/Solar.map");
+    // Load map
+    MapLoader mapLoader;
+    mapLoader.loadMap();
 
     return 0;
 }
