@@ -57,9 +57,12 @@ void MapLoader::loadMap() {
         parseFile(mapFile);
         mapFile.close();
     }
+
+    // 3. Construct Map object (using the vector lists)
+
 }
 
-bool MapLoader::parseFile(fstream &mapFile) {
+void MapLoader::parseFile(fstream &mapFile) {
     string line;
     skipIrrelevantLines(mapFile, line);
 
@@ -78,7 +81,6 @@ bool MapLoader::parseFile(fstream &mapFile) {
             }
         }
     }
-    return false;
 }
 
 void MapLoader::skipIrrelevantLines(fstream &mapFile, string &line) {

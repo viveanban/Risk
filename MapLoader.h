@@ -39,7 +39,7 @@ public:
 private:
     bool fileExists(string mapFileName);
 
-    bool parseFile(fstream &mapFile);
+    void parseFile(fstream &mapFile);
 
     void skipIrrelevantLines(fstream &mapFile, string &line);
 
