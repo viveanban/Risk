@@ -128,3 +128,16 @@ void Continent::setNodesInContinent(vector<Node*> nodesInContinent) {
 void Continent::addNodeInContinent(Node* n) {
     nodesInContinent.push_back(n);
 }
+
+bool Continent::isSameOwner(){
+    set<Node*> setOfNodesInContinent;
+    for(Node* node : this->getNodesInContinent()){
+        setOfNodesInContinent.insert(node);
+    }
+    return setOfNodesInContinent.size() == 1;
+}
+string Continent::getOwner(){
+    if(isSameOwner()){
+        return this->getNodesInContinent()[0]->getTerritory().getOwner();
+    }
+}

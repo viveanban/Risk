@@ -107,6 +107,7 @@ private:
     string continentName;
     vector<Node*> nodesInContinent;
     int bonus;
+    bool isSameOwner();
 public:
     Continent();
     Continent(string continentName, int bonus);
@@ -121,5 +122,7 @@ public:
     void setNodesInContinent(vector<Node*> nodesInContinent);
 
     void addNodeInContinent(Node* n);
+    string getOwner();
+
 
 };
