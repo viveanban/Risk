@@ -1,11 +1,5 @@
-//
-// Created by tarek ait hamouda on 2020-09-23.
-//
-
 #ifndef RISK_MAP_H
 #define RISK_MAP_H
-
-#endif //RISK_MAP_H
 
 #include <vector>
 #include <map>
@@ -13,14 +7,19 @@
 
 using namespace std;
 
+//for circular dependency
+class Continent;
+
+/**
+ * This class represents an edge in the graph in the Risk game
+ * An edge represents a link/border between two Nodes
+ */
 class Edge {
 private:
 
 public:
 
 };
-
-class Continent;
 
 /**
  * This class represents a territory in the Risk game
@@ -85,6 +84,9 @@ public:
 class Graph{
 private:
     vector<Node*> nodeList;
+    bool isGraphConnected();
+    bool isContinentSubgraphConnected();
+    bool isCountryContinentOneToOne();
 public:
     Graph();
     Graph(vector<Node*> nodeList);
@@ -94,7 +96,7 @@ public:
 
     void addNode(Node* node);
 
-    bool isGraphValid();
+    bool validate();
 };
 
 /**
@@ -126,3 +128,5 @@ public:
 
 
 };
+
+#endif

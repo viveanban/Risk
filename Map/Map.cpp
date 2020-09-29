@@ -9,6 +9,9 @@
 
 using namespace std;
 
+/**
+ * Territory Class implementation
+ */
 Territory::Territory() : territoryName(), unitNbr(0), continent(), owner() {}
 
 Territory::Territory(string territoryName, int unitNbr, Continent *continent, string owner) : territoryName(
@@ -22,7 +25,7 @@ void Territory::setTerritoryName(const string &territoryName) {
     this->territoryName = territoryName;
 }
 
-Continent* Territory::getContinent() {
+Continent *Territory::getContinent() {
     return continent;
 }
 
@@ -46,7 +49,9 @@ void Territory::setOwner(const string &owner) {
     Territory::owner = owner;
 }
 
-
+/**
+ * Node Class implementation
+ */
 Node::Node() : territory(), adjMap(map<Edge *, Node *>()) {}
 
 Node::Node(Territory territory) : territory(territory) {}
@@ -73,28 +78,70 @@ void Node::setTerritory(Territory territory) {
     this->territory = territory;
 }
 
-
-
+/**
+ * Graph Class implementation
+ */
 Graph::Graph() : nodeList() {}
 
-Graph::Graph(vector<Node*> nodeList) : nodeList(nodeList) {}
+Graph::Graph(vector<Node *> nodeList) : nodeList(nodeList) {}
 
-vector<Node*> Graph::getNodeList() {
+vector<Node *> Graph::getNodeList() {
     return nodeList;
 }
 
-void Graph::setNodeList(vector<Node*> nodeList) {
+void Graph::setNodeList(vector<Node *> nodeList) {
     this->nodeList = nodeList;
 }
-void Graph::addNode(Node* node){
+
+void Graph::addNode(Node *node) {
     nodeList.push_back(node);
 }
 
-bool Graph::isGraphValid(){
-    // verify that continent are connected, that countries are connected and belong to only one continent
+bool Graph::isGraphConnected() {
+
+    map<Node*, bool> territories;
+    vector<Node*> toVisit {getNodeList()[0]};
+
+    for(Node* node: this-> getNodeList()){
+        territories.insert(pair<Node*, bool>(node, false));
+    }
+
+    // now run dfs and visit only non visited nodes
+
+    while(!toVisit.empty()){
+
+        //pop first element
+        Node currentNode = *toVisit[0];
+        toVisit.erase(toVisit.begin());
+
+        //add adjacent node to toVisit list only if not visited in past
+
+        // for(Territory* territory: currentNode.getAdjMap())
+        // update the territories map when you visit a node
+        //check if there is any unvisited node`
+
+    }
+
 }
 
+bool Graph::isContinentSubgraphConnected() {
 
+}
+
+bool Graph::isCountryContinentOneToOne() {
+
+}
+
+bool Graph::validate() {
+    return
+    isGraphConnected() &&
+    isContinentSubgraphConnected() &&
+    isCountryContinentOneToOne();
+}
+
+/**
+ * Continent Class implementation
+ */
 Continent::Continent() : continentName(), nodesInContinent(), bonus(0) {}
 
 Continent::Continent(string continentName, int bonus) : continentName(continentName), nodesInContinent(),
@@ -117,27 +164,28 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-vector<Node*> Continent::getNodesInContinent() {
+vector<Node *> Continent::getNodesInContinent() {
     return nodesInContinent;
 }
 
-void Continent::setNodesInContinent(vector<Node*> nodesInContinent) {
+void Continent::setNodesInContinent(vector<Node *> nodesInContinent) {
     this->nodesInContinent = nodesInContinent;
 }
 
-void Continent::addNodeInContinent(Node* n) {
+void Continent::addNodeInContinent(Node *n) {
     nodesInContinent.push_back(n);
 }
 
-bool Continent::isSameOwner(){
-    set<Node*> setOfNodesInContinent;
-    for(Node* node : this->getNodesInContinent()){
+bool Continent::isSameOwner() {
+    set<Node *> setOfNodesInContinent;
+    for (Node *node : this->getNodesInContinent()) {
         setOfNodesInContinent.insert(node);
     }
     return setOfNodesInContinent.size() == 1;
 }
-string Continent::getOwner(){
-    if(isSameOwner()){
+
+string Continent::getOwner() {
+    if (isSameOwner()) {
         return this->getNodesInContinent()[0]->getTerritory().getOwner();
     }
 }
