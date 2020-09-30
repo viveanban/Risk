@@ -1,14 +1,11 @@
-#include <iostream>
 #include "MapLoader.h"
+#include "MapLoaderDriver.h"
 
 using std::cout;
 using std::cin;
 
-int main() {
-
+void MapLoaderDriver::run() {
     // Load map
     MapLoader mapLoader;
     mapLoader.loadMap();
-
-    return 0;
 }
