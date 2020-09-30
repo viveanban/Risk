@@ -1,10 +1,7 @@
-//
-// Created by tarek ait hamouda on 2020-09-23.
-//
-
 #include <iostream>
 #include <set>
 #include <vector>
+#include <stack>
 #include "Map.h"
 
 using namespace std;
@@ -14,14 +11,14 @@ using namespace std;
  */
 Territory::Territory() : territoryName(), unitNbr(0), continent(), owner() {}
 
-Territory::Territory(string territoryName, int unitNbr, Continent *continent, string owner, vector<Territory *> adjList) : territoryName(
+Territory::Territory(string* territoryName, int* unitNbr, Continent* continent, string* owner, vector<Territory *> adjList) : territoryName(
         territoryName), unitNbr(unitNbr), continent(continent), owner(owner), adjList(adjList) {}
 
-string &Territory::getTerritoryName() {
+string* Territory::getTerritoryName() {
     return territoryName;
 }
 
-void Territory::setTerritoryName(const string &territoryName) {
+void Territory::setTerritoryName(string* territoryName) {
     this->territoryName = territoryName;
 }
 
@@ -29,27 +26,27 @@ Continent *Territory::getContinent() {
     return continent;
 }
 
-void Territory::setContinent(Continent *continent) {
+void Territory::setContinent(Continent* continent) {
     this->continent = continent;
 }
 
-int &Territory::getUnitNbr() {
+int* Territory::getUnitNbr() {
     return unitNbr;
 }
 
-void Territory::setUnitNbr(int unitNbr) {
+void Territory::setUnitNbr(int* unitNbr) {
     this->unitNbr = unitNbr;
 }
 
-string &Territory::getOwner() {
+string* Territory::getOwner() {
     return owner;
 }
 
-void Territory::setOwner(const string &owner) {
+void Territory::setOwner(string* owner) {
     Territory::owner = owner;
 }
 
-void Territory::addLink(Territory *t) {
+void Territory::addLink(Territory* t) {
     adjList.push_back(t);
 }
 
@@ -83,26 +80,29 @@ void Graph::addTerritory(Territory *territory) {
 bool Graph::isGraphConnected() {
 
     map<Territory*, bool> territories;
-    vector<Territory*> toVisit {getTerritoryList()[0]};
+    stack<Territory*> toVisitStack;
+    toVisitStack.push(getTerritoryList()[0]);
 
     for(Territory* territory: this-> getTerritoryList()){
         territories.insert(pair<Territory*, bool>(territory, false));
     }
 
-    // now run dfs and visit only non visited territories
+    while(!toVisitStack.empty()){
 
-    while(!toVisit.empty()){
+        Territory* currentTerritory = toVisitStack.top();
+        toVisitStack.pop();
 
-        //pop first element
-        Territory currentTerritory = *toVisit[0];
-        toVisit.erase(toVisit.begin());
+        for(Territory* territory : currentTerritory->getAdjList()){
+            if(territories[territory] == false){
+                toVisitStack.push(territory);
+            }
+        }
 
-        //add adjacent territory to toVisit list only if not visited in past
-
-        // for(Territory* territory: currentTerritory.getAdjMap())
-        // update the territories map when you visit a territory
-        //check if there is any unvisited territory`
-
+        for(Territory* territory: getTerritoryList()){
+            if(territories[territory] == false)
+                return false;
+        }
+        return true;
     }
 
 }
@@ -127,23 +127,23 @@ bool Graph::validate() {
  */
 Continent::Continent() : continentName(), territoriesInContinent(), bonus(0) {}
 
-Continent::Continent(string continentName, int bonus) : continentName(continentName), territoriesInContinent(),
+Continent::Continent(string* continentName, int* bonus) : continentName(continentName), territoriesInContinent(),
                                                         bonus(bonus) {}
 
-string Continent::getContinentName() {
+string* Continent::getContinentName() {
     return continentName;
 }
 
-void Continent::setContinentName(string continentName) {
+void Continent::setContinentName(string* continentName) {
     this->continentName = continentName;
 }
 
 
-int Continent::getBonus() {
+int* Continent::getBonus() {
     return bonus;
 }
 
-void Continent::setBonus(int bonus) {
+void Continent::setBonus(int* bonus) {
     this->bonus = bonus;
 }
 
@@ -167,7 +167,8 @@ bool Continent::isSameOwner() {
     return setOfTerritoriesInContinent.size() == 1;
 }
 
-string Continent::getOwner() {
+string* Continent::getOwner() {
+
     if (isSameOwner()) {
         return this->getTerritoriesInContinent()[0]->getOwner();
     }
