@@ -14,8 +14,8 @@ using namespace std;
  */
 Territory::Territory() : territoryName(), unitNbr(0), continent(), owner() {}
 
-Territory::Territory(string territoryName, int unitNbr, Continent *continent, string owner) : territoryName(
-        territoryName), unitNbr(unitNbr), continent(continent), owner(owner) {}
+Territory::Territory(string territoryName, int unitNbr, Continent *continent, string owner, vector<Territory *> adjList) : territoryName(
+        territoryName), unitNbr(unitNbr), continent(continent), owner(owner), adjList(adjList) {}
 
 string &Territory::getTerritoryName() {
     return territoryName;
@@ -49,76 +49,59 @@ void Territory::setOwner(const string &owner) {
     Territory::owner = owner;
 }
 
-/**
- * Node Class implementation
- */
-Node::Node() : territory(), adjList(vector<Node *>()) {}
-
-Node::Node(Territory territory) : territory(territory) {}
-
-Node::Node(Territory territory, vector<Node*> adjList) : territory(territory), adjList(adjList) {}
-
-void Node::addLink(Node *n) {
-    adjList.push_back(n);
+void Territory::addLink(Territory *t) {
+    adjList.push_back(t);
 }
 
-vector<Node *> Node::getAdjList() {
+vector<Territory *> Territory::getAdjList() {
     return adjList;
 }
 
-void Node::setAdjList(vector<Node *> adjList) {
+void Territory::setAdjList(vector<Territory *> adjList) {
     this->adjList = adjList;
-}
-
-Territory Node::getTerritory() {
-    return territory;
-}
-
-void Node::setTerritory(Territory territory) {
-    this->territory = territory;
 }
 
 /**
  * Graph Class implementation
  */
-Graph::Graph() : nodeList() {}
+Graph::Graph() : territoryList() {}
 
-Graph::Graph(vector<Node *> nodeList) : nodeList(nodeList) {}
+Graph::Graph(vector<Territory *> territoryList) : territoryList(territoryList) {}
 
-vector<Node *> Graph::getNodeList() {
-    return nodeList;
+vector<Territory *> Graph::getTerritoryList() {
+    return territoryList;
 }
 
-void Graph::setNodeList(vector<Node *> nodeList) {
-    this->nodeList = nodeList;
+void Graph::setTerritoryList(vector<Territory *> territoryList) {
+    this->territoryList = territoryList;
 }
 
-void Graph::addNode(Node *node) {
-    nodeList.push_back(node);
+void Graph::addTerritory(Territory *territory) {
+    territoryList.push_back(territory);
 }
 
 bool Graph::isGraphConnected() {
 
-    map<Node*, bool> territories;
-    vector<Node*> toVisit {getNodeList()[0]};
+    map<Territory*, bool> territories;
+    vector<Territory*> toVisit {getTerritoryList()[0]};
 
-    for(Node* node: this-> getNodeList()){
-        territories.insert(pair<Node*, bool>(node, false));
+    for(Territory* territory: this-> getTerritoryList()){
+        territories.insert(pair<Territory*, bool>(territory, false));
     }
 
-    // now run dfs and visit only non visited nodes
+    // now run dfs and visit only non visited territories
 
     while(!toVisit.empty()){
 
         //pop first element
-        Node currentNode = *toVisit[0];
+        Territory currentTerritory = *toVisit[0];
         toVisit.erase(toVisit.begin());
 
-        //add adjacent node to toVisit list only if not visited in past
+        //add adjacent territory to toVisit list only if not visited in past
 
-        // for(Territory* territory: currentNode.getAdjMap())
-        // update the territories map when you visit a node
-        //check if there is any unvisited node`
+        // for(Territory* territory: currentTerritory.getAdjMap())
+        // update the territories map when you visit a territory
+        //check if there is any unvisited territory`
 
     }
 
@@ -142,9 +125,9 @@ bool Graph::validate() {
 /**
  * Continent Class implementation
  */
-Continent::Continent() : continentName(), nodesInContinent(), bonus(0) {}
+Continent::Continent() : continentName(), territoriesInContinent(), bonus(0) {}
 
-Continent::Continent(string continentName, int bonus) : continentName(continentName), nodesInContinent(),
+Continent::Continent(string continentName, int bonus) : continentName(continentName), territoriesInContinent(),
                                                         bonus(bonus) {}
 
 string Continent::getContinentName() {
@@ -164,28 +147,28 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-vector<Node *> Continent::getNodesInContinent() {
-    return nodesInContinent;
+vector<Territory *> Continent::getTerritoriesInContinent() {
+    return territoriesInContinent;
 }
 
-void Continent::setNodesInContinent(vector<Node *> nodesInContinent) {
-    this->nodesInContinent = nodesInContinent;
+void Continent::setTerritoriesInContinent(vector<Territory *> territoriesInContinent) {
+    this->territoriesInContinent = territoriesInContinent;
 }
 
-void Continent::addNodeInContinent(Node *n) {
-    nodesInContinent.push_back(n);
+void Continent::addTerritoryInContinent(Territory *n) {
+    territoriesInContinent.push_back(n);
 }
 
 bool Continent::isSameOwner() {
-    set<Node *> setOfNodesInContinent;
-    for (Node *node : this->getNodesInContinent()) {
-        setOfNodesInContinent.insert(node);
+    set<Territory *> setOfTerritoriesInContinent;
+    for (Territory *territory : this->getTerritoriesInContinent()) {
+        setOfTerritoriesInContinent.insert(territory);
     }
-    return setOfNodesInContinent.size() == 1;
+    return setOfTerritoriesInContinent.size() == 1;
 }
 
 string Continent::getOwner() {
     if (isSameOwner()) {
-        return this->getNodesInContinent()[0]->getTerritory().getOwner();
+        return this->getTerritoriesInContinent()[0]->getOwner();
     }
 }
