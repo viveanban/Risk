@@ -52,22 +52,22 @@ void Territory::setOwner(const string &owner) {
 /**
  * Node Class implementation
  */
-Node::Node() : territory(), adjMap(map<Edge *, Node *>()) {}
+Node::Node() : territory(), adjList(vector<Node *>()) {}
 
 Node::Node(Territory territory) : territory(territory) {}
 
-Node::Node(Territory territory, map<Edge *, Node *> adjMap) : territory(territory), adjMap(adjMap) {}
+Node::Node(Territory territory, vector<Node*> adjList) : territory(territory), adjList(adjList) {}
 
-void Node::addLink(Node *n, Edge *e) {
-    adjMap.insert(pair<Edge *, Node *>(e, n));
+void Node::addLink(Node *n) {
+    adjList.push_back(n);
 }
 
-map<Edge *, Node *> Node::getAdjMap() {
-    return adjMap;
+vector<Node *> Node::getAdjList() {
+    return adjList;
 }
 
-void Node::setAdjMap(map<Edge *, Node *> adjMap) {
-    this->adjMap = adjMap;
+void Node::setAdjList(vector<Node *> adjList) {
+    this->adjList = adjList;
 }
 
 Territory Node::getTerritory() {

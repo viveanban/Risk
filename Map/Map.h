@@ -11,17 +11,6 @@ using namespace std;
 class Continent;
 
 /**
- * This class represents an edge in the graph in the Risk game
- * An edge represents a link/border between two Nodes
- */
-class Edge {
-private:
-
-public:
-
-};
-
-/**
  * This class represents a territory in the Risk game
  * A Territory represents any land that can be owned by a player.
  * Any territory must belong to a continent and have a name
@@ -56,21 +45,21 @@ public:
 
 /**
  * This class represents a node in the graph
- * A Node contains a territory as well as a map of other adjacent node with their respective edges
+ * A Node contains a territory as well as a list of other adjacent node
  */
 class Node {
 private:
-    Territory territory;
-    map<Edge*, Node*> adjMap;
+    Territory territory; //make pointer
+    vector<Node*> adjList;
 public:
     Node();
     Node(Territory territory);
-    Node(Territory territory, map<Edge*, Node*> adjMap);
+    Node(Territory territory, vector<Node*> adjList);
 
-    void addLink(Node *n, Edge *e);
+    void addLink(Node *n);
 
-    map<Edge*, Node*> getAdjMap();
-    void setAdjMap(map<Edge*, Node*> adjMap);
+    vector<Node*> getAdjList();
+    void setAdjList(vector<Node*> adjList);
 
     Territory getTerritory();
     void setTerritory(Territory territory);
