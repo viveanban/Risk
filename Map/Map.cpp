@@ -12,10 +12,10 @@ using namespace std;
 /**
  * Territory Class implementation
  */
-Territory::Territory() : territoryName(), unitNbr(0), continent(), owner() {}
+Territory::Territory() : territoryName(), territoryId(new int(0)), unitNbr(0), continentId(new int(0)), owner() {}
 
-Territory::Territory(string territoryName, int unitNbr, Continent *continent, string owner, vector<Territory *> adjList) : territoryName(
-        territoryName), unitNbr(unitNbr), continent(continent), owner(owner), adjList(adjList) {}
+Territory::Territory(string territoryName, int territoryId, int unitNbr, int continentId, string owner, vector<Territory *> adjList) : territoryName(
+        territoryName), territoryId(new int(territoryId)), unitNbr(unitNbr), continentId(new int(continentId)), owner(owner), adjList(adjList) {}
 
 string &Territory::getTerritoryName() {
     return territoryName;
@@ -25,12 +25,12 @@ void Territory::setTerritoryName(const string &territoryName) {
     this->territoryName = territoryName;
 }
 
-Continent *Territory::getContinent() {
-    return continent;
+int Territory::getTerritoryId() {
+    return *this->territoryId;
 }
 
-void Territory::setContinent(Continent *continent) {
-    this->continent = continent;
+void Territory::setTerritoryId(int territoryId) {
+    *this->territoryId = territoryId;
 }
 
 int &Territory::getUnitNbr() {
@@ -39,6 +39,14 @@ int &Territory::getUnitNbr() {
 
 void Territory::setUnitNbr(int unitNbr) {
     this->unitNbr = unitNbr;
+}
+
+int Territory::getContinentId() {
+    return *this->continentId;
+}
+
+void Territory::setContinentId(int continentId) {
+    *this->continentId = continentId;
 }
 
 string &Territory::getOwner() {
@@ -105,13 +113,17 @@ bool Graph::isGraphConnected() {
 
     }
 
+    return true;
+
 }
 
 bool Graph::isContinentSubgraphConnected() {
+    return true;
 
 }
 
 bool Graph::isCountryContinentOneToOne() {
+    return true;
 
 }
 
@@ -125,10 +137,18 @@ bool Graph::validate() {
 /**
  * Continent Class implementation
  */
-Continent::Continent() : continentName(), territoriesInContinent(), bonus(0) {}
+Continent::Continent() : continentId(), continentName(), territoriesInContinent(), bonus(0) {}
 
-Continent::Continent(string continentName, int bonus) : continentName(continentName), territoriesInContinent(),
+Continent::Continent(int continentId, string continentName, int bonus) : continentId(continentId), continentName(continentName), territoriesInContinent(),
                                                         bonus(bonus) {}
+
+int Continent::getContinentId() {
+    return continentId;
+}
+
+void Continent::setContinentId(int continentId) {
+    this->continentId = continentId;
+}
 
 string Continent::getContinentName() {
     return continentName;
@@ -137,7 +157,6 @@ string Continent::getContinentName() {
 void Continent::setContinentName(string continentName) {
     this->continentName = continentName;
 }
-
 
 int Continent::getBonus() {
     return bonus;

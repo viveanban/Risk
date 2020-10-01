@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "../Map/Map.h"
 
 using std::string;
 using std::fstream;
@@ -18,23 +19,6 @@ using std::endl;
 class MapLoader {
 public:
     void loadMap(); // TODO: return Map object
-
-    // TODO: remove when merged with Map stuff
-    struct Continent {
-        string name;
-        int bonus;
-    };
-
-    struct Country {
-        int id;
-        string name;
-        int continentId;
-    };
-
-    struct Borders {
-        int countryId;
-        vector<int> adjacentCountries;
-    };
 
 private:
     bool fileExists(string mapFileName);
@@ -47,9 +31,9 @@ private:
 
     bool updateCategory(string &line);
 
-    Continent createContinentFromLine(const string& line); // TODO: return Continent
-    Country createCountryFromLine(const string& line); // TODO: return Territory
-    Borders createBordersFromLine(const string& line); // TODO: return Border
+    Continent * createContinents(const string& line, int *continentId);
+    Territory * createTerritories(const string& line);
+    void createAdjencyList(const string& line);
 
     long getInt(const char *token, long& convertedToken);
 };

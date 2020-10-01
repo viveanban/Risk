@@ -18,26 +18,31 @@ class Continent;
 class Territory {
 private:
     string territoryName;
-    Continent *continent;
+    int *continentId;
+    int *territoryId;
     string owner; // until we have a Player object we will use string
     int unitNbr;
     vector<Territory *> adjList;
 public:
     Territory();
 
-    Territory(string territoryName, int unitNbr, Continent *continent, string owner, vector<Territory *> adjList);
+    Territory(string territoryName, int territoryId, int unitNbr, int continentId, string owner, vector<Territory *> adjList);
 
     string &getTerritoryName();
 
     void setTerritoryName(const string &territoryName);
 
-    Continent *getContinent();
+    int getTerritoryId();
 
-    void setContinent(Continent *continent);
+    void setTerritoryId(int territoryId);
 
     int &getUnitNbr();
 
     void setUnitNbr(int unitNbr);
+
+    int getContinentId();
+
+    void setContinentId(int continentId);
 
     string &getOwner();
 
@@ -86,6 +91,7 @@ public:
  */
 class Continent {
 private:
+    int continentId;
     string continentName;
     vector<Territory *> territoriesInContinent;
     int bonus;
@@ -95,7 +101,11 @@ private:
 public:
     Continent();
 
-    Continent(string continentName, int bonus);
+    Continent(int continentId, string continentName, int bonus);
+
+    int getContinentId();
+
+    void setContinentId(int continentId);
 
     string getContinentName();
 
