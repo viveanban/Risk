@@ -25,6 +25,8 @@ public:
 
     Territory(const Territory &original);
 
+    Territory& operator=(const Territory& otherTerritory);
+
     string getTerritoryName();
 
     void setTerritoryName(string territoryName);
@@ -71,6 +73,8 @@ public:
 
     Continent(const Continent &original);
 
+    Continent& operator=(const Continent& otherContinent);
+
     int getContinentId();
 
     void setContinentId(int continentId);
@@ -112,6 +116,8 @@ public:
     Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 
     Graph(const Graph &original);
+
+    Graph& operator=(const Graph& otherGraph);
 
     vector<Territory *> &getTerritoryList();
 
