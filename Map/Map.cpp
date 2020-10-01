@@ -57,7 +57,7 @@ void Territory::addLink(Territory *t) {
     adjList.push_back(t);
 }
 
-vector<Territory *> & Territory::getAdjList() {
+vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }
 
@@ -66,9 +66,10 @@ vector<Territory *> & Territory::getAdjList() {
  */
 Graph::Graph() : territoryList() {}
 
-Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList), continentList(continentList) {}
+Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
+                                                                                       continentList(continentList) {}
 
-vector<Territory *> & Graph::getTerritoryList() {
+vector<Territory *> &Graph::getTerritoryList() {
     return this->territoryList;
 }
 
@@ -80,20 +81,20 @@ void Graph::addTerritory(Territory *territory) {
     territoryList.push_back(territory);
 }
 
-vector<Continent *> & Graph::getContinentList(){
+vector<Continent *> &Graph::getContinentList() {
     return this->continentList;
 }
 
-void Graph::setContinentList(vector<Continent *> &continentList){
+void Graph::setContinentList(vector<Continent *> &continentList) {
     this->continentList = continentList;
 }
 
-void Graph::addContinent(Continent *continent){
+void Graph::addContinent(Continent *continent) {
     continentList.push_back(continent);
 }
 
 bool Graph::isGraphConnected() {
-    set<Territory *> seenTerritories {};
+    set<Territory *> seenTerritories{};
     stack<Territory *> toVisitStack;
 
     toVisitStack.push(getTerritoryList().at(0));
@@ -115,15 +116,40 @@ bool Graph::isGraphConnected() {
 
     //once we don't have anymore territories to visit in the stack,
     // we need to verify if we visited all territories
-    for (Territory *territory: getTerritoryList()) {
-        if (seenTerritories.count(territory) == 0)
-            return false;
+    if (seenTerritories.size() == getTerritoryList().size()) {
+        return true;
+    } else {
+        return false;
     }
-    return true;
 }
 
 bool Graph::isContinentSubgraphConnected() {
-    return true;
+    set<int> visitedContinents{};
+    set<Territory *> seenTerritories;
+    stack<Territory *> territoriesToVisit;
+    int numberOfContinents = getContinentList().size();
+    // starting from the first territory
+    territoriesToVisit.push(getTerritoryList().at(0));
+    // loop until all continents visited or until no more connected territories to visit
+    while (!territoriesToVisit.empty() && visitedContinents.size() < numberOfContinents) {
+        Territory *currentTerritory = territoriesToVisit.top();
+        territoriesToVisit.pop();
+
+        for (Territory *territory: currentTerritory->getAdjList()) {
+            // if we see the territory for the first time, add it to the territories to visit
+            if (seenTerritories.count(territory) == 0) {
+                territoriesToVisit.push(territory);
+                seenTerritories.insert(territory);
+                // add continent to the set of visitedContinents
+                visitedContinents.insert(currentTerritory->getContinentId());
+            }
+        }
+    }
+    if (visitedContinents.size() == numberOfContinents) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool Graph::isTerritoryContinentOneToOne() {
@@ -131,10 +157,16 @@ bool Graph::isTerritoryContinentOneToOne() {
 }
 
 bool Graph::validate() {
+    bool connectedTerritories = isGraphConnected();
+    bool connectedContinents = isContinentSubgraphConnected();
+    bool oneToOneCorrespondence = isTerritoryContinentOneToOne();
+
+    cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
+         << ", One-to-One: " << oneToOneCorrespondence << endl;
     return
-            isGraphConnected() &&
-            isContinentSubgraphConnected() &&
-            isTerritoryContinentOneToOne();
+            connectedTerritories &&
+            connectedContinents &&
+            oneToOneCorrespondence;
 }
 
 /**
@@ -167,7 +199,7 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-vector<Territory *> & Continent::getTerritories() {
+vector<Territory *> &Continent::getTerritories() {
     return this->territories;
 }
 

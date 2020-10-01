@@ -7,6 +7,6 @@ void MapDriver::run(Graph *map){
 
     bool validateOutcome = (*map).validate();
 
-    cout << "validate outcome: " << std::boolalpha << validateOutcome << endl;
+    cout << "validate outcome: " << boolalpha << validateOutcome << endl;
 }
 
