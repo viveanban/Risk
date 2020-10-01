@@ -44,6 +44,8 @@ void MapLoader::loadMap() {
     }
 
     // 3. Construct Graph object
+    Graph graph;
+
 
 }
 

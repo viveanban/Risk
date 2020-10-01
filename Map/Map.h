@@ -7,9 +7,6 @@
 
 using namespace std;
 
-//for circular dependency
-class Continent;
-
 /**
  * This class represents a territory in the Risk game
  * A Territory represents any land that can be owned by a player.
@@ -122,8 +119,6 @@ public:
     void addTerritoryInContinent(Territory *n);
 
     string getOwner();
-
-
 };
 
 #endif
