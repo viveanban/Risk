@@ -84,6 +84,7 @@ public:
     void setBonus(int bonus);
 
     vector<Territory *> &getTerritories();
+    void setTerritories(vector<Territory *> territories);
 
     string getOwner();
 };

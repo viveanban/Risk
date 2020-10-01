@@ -162,7 +162,20 @@ bool Graph::isContinentSubgraphConnected() {
 }
 
 bool Graph::isTerritoryContinentOneToOne() {
-    return true;
+
+    set<Territory *> seenTerritories {};
+
+    for(Continent* continent : getContinentList()){
+        for(Territory* territory: (*continent).getTerritories()){
+            if(seenTerritories.count(territory) == 0)
+                seenTerritories.insert(territory);
+            else
+                return false;
+        }
+    }
+
+
+    return seenTerritories.size()==getTerritoryList().size();
 }
 
 bool Graph::validate() {
@@ -238,4 +251,7 @@ Continent::Continent(const Continent &original) {
     bonus = original.bonus;
     continentName = original.continentName;
     territories = original.territories;
+}
+void Continent::setTerritories(vector<Territory *> territories){
+    this->territories = territories;
 }
