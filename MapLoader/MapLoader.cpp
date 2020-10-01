@@ -14,7 +14,6 @@ using std::ifstream;
 
 const string MAP_DIRECTORY = "../maps/";
 
-// TODO: Regroup these enums under a class FileTemplate
 enum Section {
     other, continents, countries, borders
 };
@@ -51,51 +50,42 @@ void MapLoader::loadMap() {
 void MapLoader::parseFile(fstream &mapFile) {
     string line;
     int continentId = 1;
-    skipIrrelevantLines(mapFile, line);
 
     while (getline(mapFile, line)) {
-//        std::replace(line.begin(), line.end(), '\r', ' '); // TODO: substring?
+        line.erase(line.find_last_not_of(" \n\r\t") + 1);
+        if(line.empty())
+            continue;
+
         bool isUpdated = updateCategory(line);
 
-        // Line tokenizing will only happen in the content of relevant sections
         if (!isUpdated) {
             if (currentSection == continents) {
                 continentList.push_back(createContinents(line, &continentId));
-            } else if (currentSection == countries) {
+            }
+            else if (currentSection == countries) {
                 territoriesList.push_back(createTerritories(line));
-            } else if (currentSection == borders) {
+            }
+            else if (currentSection == borders) {
                 createAdjencyList(line);
             }
         }
     }
 }
 
-// TODO: clean up
-void MapLoader::skipIrrelevantLines(fstream &mapFile, string &line) {
-    //read all lines until you get to the beginning of a section content (section title has been read)
-    while (getline(mapFile, line) && !isSectionRelevant(line));
-}
-
-// TODO: clean up
-bool MapLoader::isSectionRelevant(string &line) {
-    updateCategory(line);
-    return currentSection != other;
-}
-
-// TODO: clean up
 bool MapLoader::updateCategory(string &line) {
-    if (!line.empty() && line.at(0) == '[') {
-        if (line.compare("[continents]\r") == 0) {
+    if (line.at(0) == '[') {
+        if (line.compare("[continents]") == 0) {
             currentSection = continents;
-        } else if (line.compare("[countries]\r") == 0) {
+        } else if (line.compare("[countries]") == 0) {
             currentSection = countries;
-        } else if (line.compare("[borders]\r") == 0) {
+        } else if (line.compare("[borders]") == 0) {
             currentSection = borders;
         } else {
             currentSection = other;
         }
         return true;
     }
+
     return false;
 }
 
@@ -134,7 +124,8 @@ Territory * MapLoader::createTerritories(const string &line) {
         counter++;
     }
 
-    continentList.at((territory->getContinentId())-1)->getTerritoriesInContinent().push_back(territory);
+    cout << territory->getContinentId() << endl;
+    continentList.at((territory->getContinentId())-1)->getTerritoriesInContinent().push_back(territory); // getTerritoriesInContinent returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
 
     return territory;
 }
@@ -143,13 +134,13 @@ Territory * MapLoader::createTerritories(const string &line) {
 void MapLoader::createAdjencyList(const string &line) {
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
-    int countryId;
+    int territoryId;
     while (token != NULL) {
         if (counter == 0) {
-            countryId = atoi(token);
+            territoryId = atoi(token);
         } else if (counter >= 1) {
             int borderId = atoi(token);
-            territoriesList.at(countryId-1)->getAdjList().push_back(territoriesList.at(borderId-1));
+            territoriesList.at(territoryId-1)->getAdjList().push_back(territoriesList.at(borderId-1));
         }
         token = strtok(NULL, " ");
         counter++;

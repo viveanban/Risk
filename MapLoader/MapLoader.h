@@ -34,8 +34,6 @@ private:
     Continent * createContinents(const string& line, int *continentId);
     Territory * createTerritories(const string& line);
     void createAdjencyList(const string& line);
-
-    long getInt(const char *token, long& convertedToken);
 };
 
 #endif //RISK_MAPLOADER_H

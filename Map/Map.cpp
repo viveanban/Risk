@@ -61,7 +61,7 @@ void Territory::addLink(Territory *t) {
     adjList.push_back(t);
 }
 
-vector<Territory *> Territory::getAdjList() {
+vector<Territory *> & Territory::getAdjList() {
     return adjList;
 }
 
@@ -166,7 +166,7 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-vector<Territory *> Continent::getTerritoriesInContinent() {
+vector<Territory *> & Continent::getTerritoriesInContinent() {
     return territoriesInContinent;
 }
 

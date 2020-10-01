@@ -50,7 +50,7 @@ public:
 
     void addLink(Territory *n);
 
-    vector<Territory *> getAdjList();
+    vector<Territory *> & getAdjList();
 
     void setAdjList(vector<Territory *> adjList);
 };
@@ -115,7 +115,7 @@ public:
 
     void setBonus(int bonus);
 
-    vector<Territory *> getTerritoriesInContinent();
+    vector<Territory *> & getTerritoriesInContinent();
 
     void setTerritoriesInContinent(vector<Territory *> territoriesInContinent);
 
