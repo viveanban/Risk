@@ -14,7 +14,7 @@ Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(
                          adjList() {}
 
 string Territory::getTerritoryName() {
-    return territoryName;
+    return this->territoryName;
 }
 
 void Territory::setTerritoryName(string territoryName) {
@@ -30,7 +30,7 @@ void Territory::setTerritoryId(int territoryId) {
 }
 
 int Territory::getUnitNbr() {
-    return unitNbr;
+    return this->unitNbr;
 }
 
 void Territory::setUnitNbr(int unitNbr) {
@@ -46,7 +46,7 @@ void Territory::setContinentId(int continentId) {
 }
 
 string Territory::getOwner() {
-    return owner;
+    return this->owner;
 }
 
 void Territory::setOwner(string owner) {
@@ -58,7 +58,7 @@ void Territory::addLink(Territory *t) {
 }
 
 vector<Territory *> & Territory::getAdjList() {
-    return adjList;
+    return this->adjList;
 }
 
 /**
@@ -69,7 +69,7 @@ Graph::Graph() : territoryList() {}
 Graph::Graph(vector<Territory *> territoryList, vector<Continent *> continentList) : territoryList(territoryList), continentList(continentList) {}
 
 vector<Territory *> & Graph::getTerritoryList() {
-    return territoryList;
+    return this->territoryList;
 }
 
 void Graph::setTerritoryList(vector<Territory *> territoryList) {
@@ -81,7 +81,7 @@ void Graph::addTerritory(Territory *territory) {
 }
 
 vector<Continent *> & Graph::getContinentList(){
-    return continentList;
+    return this->continentList;
 }
 
 void Graph::setContinentList(vector<Continent *> continentList){
@@ -149,7 +149,7 @@ Continent::Continent() : continentId(), continentName(),
                          territories(), bonus() {}
 
 int Continent::getContinentId() {
-    return continentId;
+    return this->continentId;
 }
 
 void Continent::setContinentId(int continentId) {
@@ -157,7 +157,7 @@ void Continent::setContinentId(int continentId) {
 }
 
 string Continent::getContinentName() {
-    return continentName;
+    return this->continentName;
 }
 
 void Continent::setContinentName(string continentName) {
@@ -165,7 +165,7 @@ void Continent::setContinentName(string continentName) {
 }
 
 int Continent::getBonus() {
-    return bonus;
+    return this->bonus;
 }
 
 void Continent::setBonus(int bonus) {
@@ -173,7 +173,7 @@ void Continent::setBonus(int bonus) {
 }
 
 vector<Territory *> & Continent::getTerritories() {
-    return territories;
+    return this->territories;
 }
 
 void Continent::setTerritoriesInContinent(vector<Territory *> territories) {
