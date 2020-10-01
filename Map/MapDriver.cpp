@@ -1,14 +1,12 @@
 #include "./Map.h"
 #include "./MapDriver.h"
-
+#include "./../MapLoader/MapLoader.h"
 using namespace std;
 
 void MapDriver::run(Graph *map){
 
-    //Verify that it is a connected graph
+    bool validateOutcome = (*map).validate();
 
-    // verify that continents are subgraphs
-
-    //each country belongs to one and only one continent
+    cout << "validate outcome: " << validateOutcome << endl;
 }
 

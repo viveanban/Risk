@@ -94,13 +94,9 @@ void Graph::addContinent(Continent *continent){
 
 bool Graph::isGraphConnected() {
 
-    map<Territory *, bool> territories;
-    stack<Territory *> toVisitStack;
 
-    //set all territories to unvisited
-    for (Territory *territory: getTerritoryList()) {
-        territories.insert(pair<Territory *, bool>(territory, false));
-    }
+    set<Territory *> visitedTerritories {};
+    stack<Territory *> toVisitStack;
 
     toVisitStack.push(getTerritoryList().at(0));
 
@@ -112,7 +108,7 @@ bool Graph::isGraphConnected() {
 
         //add all unvisited territories to the stack to visit them later
         for (Territory *territory : (*currentTerritory).getAdjList()) {
-            if (territories[territory] == false)
+            if (visitedTerritories.find(territory) == visitedTerritories.end())
                 toVisitStack.push(territory);
         }
     }
@@ -120,7 +116,7 @@ bool Graph::isGraphConnected() {
     //once we don't have anymore territories to visit in the stack,
     // we need to verify if we visited all territories
     for (Territory *territory: getTerritoryList()) {
-        if (territories[territory] == false)
+        if (visitedTerritories.find(territory) == visitedTerritories.end())
             return false;
     }
     return true;
@@ -189,4 +185,5 @@ string Continent::getOwner() {
     if (isSameOwner()) {
         return getTerritories().at(0)->getOwner();
     }
+    return "";
 }
