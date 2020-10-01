@@ -14,42 +14,40 @@ using namespace std;
  */
 class Territory {
 private:
-    string territoryName;
+    string *territoryName;
     int *continentId;
     int *territoryId;
-    string owner; // until we have a Player object we will use string
-    int unitNbr;
-    vector<Territory *> adjList;
+    string *owner; // until we have a Player object we will use string
+    int *unitNbr;
+    vector<Territory *> *adjList;
 public:
     Territory();
 
-    Territory(string territoryName, int territoryId, int unitNbr, int continentId, string owner, vector<Territory *> adjList);
+    string getTerritoryName();
 
-    string &getTerritoryName();
-
-    void setTerritoryName(const string &territoryName);
+    void setTerritoryName(string *territoryName);
 
     int getTerritoryId();
 
     void setTerritoryId(int territoryId);
 
-    int &getUnitNbr();
+    int getUnitNbr();
 
-    void setUnitNbr(int unitNbr);
+    void setUnitNbr(int *unitNbr);
 
     int getContinentId();
 
     void setContinentId(int continentId);
 
-    string &getOwner();
+    string getOwner();
 
-    void setOwner(const string &owner);
+    void setOwner(string *owner);
 
     void addLink(Territory *n);
 
     vector<Territory *> & getAdjList();
 
-    void setAdjList(vector<Territory *> adjList);
+    void setAdjList(vector<Territory *> *adjList);
 };
 
 /**
@@ -59,7 +57,7 @@ public:
  */
 class Graph {
 private:
-    vector<Territory *> territoryList;
+    vector<Territory *> *territoryList;
 
     bool isGraphConnected();
 
@@ -70,11 +68,11 @@ private:
 public:
     Graph();
 
-    Graph(vector<Territory *> territoryList);
+    Graph(vector<Territory *> *territoryList);
 
     vector<Territory *> getTerritoryList();
 
-    void setTerritoryList(vector<Territory *> territoryList);
+    void setTerritoryList(vector<Territory *> *territoryList);
 
     void addTerritory(Territory *territory);
 
@@ -88,17 +86,14 @@ public:
  */
 class Continent {
 private:
-    int continentId;
-    string continentName;
-    vector<Territory *> territoriesInContinent;
-    int bonus;
-
+    int *continentId;
+    string *continentName;
+    vector<Territory *> *territoriesInContinent;
+    int *bonus;
     bool isSameOwner();
 
 public:
     Continent();
-
-    Continent(int continentId, string continentName, int bonus);
 
     int getContinentId();
 
@@ -106,15 +101,15 @@ public:
 
     string getContinentName();
 
-    void setContinentName(string continentName);
+    void setContinentName(string *continentName);
 
     int getBonus();
 
-    void setBonus(int bonus);
+    void setBonus(int *bonus);
 
     vector<Territory *> & getTerritoriesInContinent();
 
-    void setTerritoriesInContinent(vector<Territory *> territoriesInContinent);
+    void setTerritoriesInContinent(vector<Territory *> *territoriesInContinent);
 
     void addTerritoryInContinent(Territory *n);
 
