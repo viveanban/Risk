@@ -24,7 +24,7 @@ private:
     void parseFile(fstream &mapFile);
     bool updateCategory(string &line);
 
-    Continent * createContinents(const string& line, int *continentId);
+    Continent * createContinents(const string& line, int &continentId);
     Territory * createTerritories(const string& line);
     void createAdjencyList(const string& line);
 
