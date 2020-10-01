@@ -4,7 +4,6 @@
 #include <string>
 #include <algorithm>
 #include <string.h>
-#include "../Map/Map.h"
 
 using std::ios;
 using std::cout;
@@ -23,7 +22,7 @@ Section currentSection;
 vector<Continent*> continentList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
 vector<Territory*> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
 
-void MapLoader::loadMap() {
+Graph * MapLoader::loadMap() {
     // 1. User chooses map
     string userInput = "";
     cout << "Enter your desired map:  " << std::endl;
@@ -33,7 +32,7 @@ void MapLoader::loadMap() {
         cin >> userInput;
     }
 
-    // 2. Read map (check for invalid map, read map, construct and return Map object)
+    // 2. Read map // TODO: check for invalid maps
     string mapName = userInput;
     fstream mapFile;
     mapFile.open(MAP_DIRECTORY + mapName, ios::in | ios::binary);
@@ -44,9 +43,9 @@ void MapLoader::loadMap() {
     }
 
     // 3. Construct Graph object
-    Graph graph;
+    Graph *graph = new Graph(territoriesList, continentList);
 
-
+    return graph;
 }
 
 void MapLoader::parseFile(fstream &mapFile) {
@@ -97,9 +96,7 @@ Continent * MapLoader::createContinents(const string &line, int *continentId) {
     Continent *continent = new Continent(); // must create with new operator or else will be deleted at end of the method
     while (token != NULL) {
         if (counter == 0) {
-            cout << "token: " << token << endl;
             continent->setContinentName(token);
-            cout << "continent name: " << continent->getContinentName() << endl;
         } else if (counter == 1) {
             continent->setBonus(atoi(token));
         }
@@ -128,7 +125,6 @@ Territory * MapLoader::createTerritories(const string &line) {
         counter++;
     }
 
-    cout << territory->getContinentId() << endl;
     continentList.at((territory->getContinentId()) - 1)->getTerritories().push_back(territory); // getTerritories returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
 
     return territory;

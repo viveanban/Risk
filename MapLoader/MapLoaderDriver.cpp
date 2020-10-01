@@ -4,8 +4,8 @@
 using std::cout;
 using std::cin;
 
-void MapLoaderDriver::run() {
+Graph * MapLoaderDriver::run() {
     // Load map
     MapLoader mapLoader;
-    mapLoader.loadMap();
+    return mapLoader.loadMap();
 }

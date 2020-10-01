@@ -66,13 +66,13 @@ vector<Territory *> & Territory::getAdjList() {
  */
 Graph::Graph() : territoryList() {}
 
-Graph::Graph(vector<Territory *> territoryList, vector<Continent *> continentList) : territoryList(territoryList), continentList(continentList) {}
+Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList), continentList(continentList) {}
 
 vector<Territory *> & Graph::getTerritoryList() {
     return this->territoryList;
 }
 
-void Graph::setTerritoryList(vector<Territory *> territoryList) {
+void Graph::setTerritoryList(vector<Territory *> &territoryList) {
     this->territoryList = territoryList;
 }
 
@@ -84,7 +84,7 @@ vector<Continent *> & Graph::getContinentList(){
     return this->continentList;
 }
 
-void Graph::setContinentList(vector<Continent *> continentList){
+void Graph::setContinentList(vector<Continent *> &continentList){
     this->continentList = continentList;
 }
 
@@ -174,14 +174,6 @@ void Continent::setBonus(int bonus) {
 
 vector<Territory *> & Continent::getTerritories() {
     return this->territories;
-}
-
-void Continent::setTerritoriesInContinent(vector<Territory *> territories) {
-    this->territories = territories;
-}
-
-void Continent::addTerritoryInContinent(Territory *n) {
-    territories.push_back(n);
 }
 
 bool Continent::isSameOwner() {

@@ -47,7 +47,7 @@ public:
 
     vector<Territory *> &getAdjList();
 
-    void setAdjList(vector<Territory *> adjList);
+    void setAdjList(vector<Territory *> &adjList);
 };
 
 /**
@@ -59,11 +59,9 @@ class Continent {
 private:
     int continentId;
     int bonus;
-
-    bool isSameOwner();
-
     string continentName;
     vector<Territory *> territories;
+    bool isSameOwner();
 
 public:
     Continent();
@@ -81,10 +79,6 @@ public:
     void setBonus(int bonus);
 
     vector<Territory *> &getTerritories();
-
-    void setTerritoriesInContinent(vector<Territory *> territories);
-
-    void addTerritoryInContinent(Territory *n);
 
     string getOwner();
 };
@@ -109,15 +103,15 @@ private:
 public:
     Graph();
 
-    Graph(vector<Territory *> territoryList, vector<Continent *> continentList);
+    Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 
     vector<Territory *> &getTerritoryList();
 
-    void setTerritoryList(vector<Territory *> territoryList);
+    void setTerritoryList(vector<Territory *> &territoryList);
 
     vector<Continent *> &getContinentList();
 
-    void setContinentList(vector<Continent *> continentList);
+    void setContinentList(vector<Continent *> &continentList);
 
     void addContinent(Continent *continent);
 

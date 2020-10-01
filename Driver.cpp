@@ -4,11 +4,11 @@
 
 int main() {
     MapLoaderDriver mapLoaderDriver;
-    mapLoaderDriver.run(); // TODO: will eventually return a Graph object
+    Graph *map;
+    map = mapLoaderDriver.run();
 
-//    Graph *map;
-//    MapDriver mapDriver;
-//    mapDriver.run(map);
+    MapDriver mapDriver;
+    mapDriver.run(map);
 
     return 0;
 }

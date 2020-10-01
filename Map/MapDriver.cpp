@@ -1,8 +1,9 @@
 #include "./Map.h"
+#include "./MapDriver.h"
 
 using namespace std;
 
-void run(Graph *map){
+void MapDriver::run(Graph *map){
 
     //Verify that it is a connected graph
 
