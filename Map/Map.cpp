@@ -61,6 +61,15 @@ vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }
 
+Territory::Territory(const Territory &original) {
+    territoryName = original.territoryName;
+    owner = original.owner;
+    continentId = original.continentId;
+    territoryId = original.territoryId;
+    unitNbr = original.unitNbr;
+    adjList = original.adjList;
+}
+
 /**
  * Graph Class implementation
  */
@@ -169,6 +178,11 @@ bool Graph::validate() {
             oneToOneCorrespondence;
 }
 
+Graph::Graph(const Graph &original) {
+    territoryList = original.territoryList;
+    continentList = original.continentList;
+}
+
 /**
  * Continent Class implementation
  */
@@ -217,4 +231,11 @@ string Continent::getOwner() {
         return getTerritories().at(0)->getOwner();
     }
     return "";
+}
+
+Continent::Continent(const Continent &original) {
+    continentId = original.continentId;
+    bonus = original.bonus;
+    continentName = original.continentName;
+    territories = original.territories;
 }

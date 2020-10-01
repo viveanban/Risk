@@ -23,6 +23,8 @@ private:
 public:
     Territory();
 
+    Territory(const Territory &original);
+
     string getTerritoryName();
 
     void setTerritoryName(string territoryName);
@@ -61,10 +63,13 @@ private:
     int bonus;
     string continentName;
     vector<Territory *> territories;
+
     bool isSameOwner();
 
 public:
     Continent();
+
+    Continent(const Continent &original);
 
     int getContinentId();
 
@@ -104,6 +109,8 @@ public:
     Graph();
 
     Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
+
+    Graph(const Graph &original);
 
     vector<Territory *> &getTerritoryList();
 
