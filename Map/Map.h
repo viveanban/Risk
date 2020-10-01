@@ -14,18 +14,22 @@ using namespace std;
  */
 class Territory {
 private:
-    string *territoryName;
-    int *continentId;
-    int *territoryId;
-    string *owner; // until we have a Player object we will use string
-    int *unitNbr;
-    vector<Territory *> *adjList;
+    string territoryName;
+    string owner; // until we have a Player object we will use string
+    int continentId;
+    int territoryId;
+    int unitNbr;
+    vector<Territory *> adjList;
 public:
     Territory();
 
     string getTerritoryName();
 
     void setTerritoryName(string territoryName);
+
+    string getOwner();
+
+    void setOwner(string owner);
 
     int getTerritoryId();
 
@@ -39,44 +43,11 @@ public:
 
     void setContinentId(int continentId);
 
-    string getOwner();
-
-    void setOwner(string owner);
-
     void addLink(Territory *n);
 
-    vector<Territory *> & getAdjList();
+    vector<Territory *> &getAdjList();
 
     void setAdjList(vector<Territory *> adjList);
-};
-
-/**
- * This class represents a graph in the Risk game
- * A Graph is a list of connected Territories. In other words, it represents a list of countries
- * and continent that are interconnected with each other
- */
-class Graph {
-private:
-    vector<Territory *> *territoryList;
-
-    bool isGraphConnected();
-
-    bool isContinentSubgraphConnected();
-
-    bool isCountryContinentOneToOne();
-
-public:
-    Graph();
-
-    Graph(vector<Territory *> *territoryList);
-
-    vector<Territory *> getTerritoryList();
-
-    void setTerritoryList(vector<Territory *> territoryList);
-
-    void addTerritory(Territory *territory);
-
-    bool validate();
 };
 
 /**
@@ -86,11 +57,13 @@ public:
  */
 class Continent {
 private:
-    int *continentId;
-    string *continentName;
-    vector<Territory *> *territoriesInContinent;
-    int *bonus;
+    int continentId;
+    int bonus;
+
     bool isSameOwner();
+
+    string continentName;
+    vector<Territory *> territories;
 
 public:
     Continent();
@@ -107,13 +80,50 @@ public:
 
     void setBonus(int bonus);
 
-    vector<Territory *> & getTerritoriesInContinent();
+    vector<Territory *> &getTerritories();
 
-    void setTerritoriesInContinent(vector<Territory *> territoriesInContinent);
+    void setTerritoriesInContinent(vector<Territory *> territories);
 
     void addTerritoryInContinent(Territory *n);
 
     string getOwner();
+};
+
+/**
+ * This class represents a graph in the Risk game
+ * A Graph is a list of connected Territories. In other words, it represents a list of countries
+ * and continent that are interconnected with each other
+ */
+class Graph {
+private:
+    vector<Territory *> territoryList;
+
+    vector<Continent *> continentList;
+
+    bool isGraphConnected();
+
+    bool isContinentSubgraphConnected();
+
+    bool isTerritoryContinentOneToOne();
+
+public:
+    Graph();
+
+    Graph(vector<Territory *> territoryList, vector<Continent *> continentList);
+
+    vector<Territory *> &getTerritoryList();
+
+    void setTerritoryList(vector<Territory *> territoryList);
+
+    vector<Continent *> &getContinentList();
+
+    void setContinentList(vector<Continent *> continentList);
+
+    void addContinent(Continent *continent);
+
+    void addTerritory(Territory *territory);
+
+    bool validate();
 };
 
 #endif

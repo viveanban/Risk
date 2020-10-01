@@ -10,104 +10,119 @@ using namespace std;
  * Territory Class implementation
  */
 
-Territory::Territory() : territoryName(new string("")), territoryId(new int()), unitNbr(new int()), continentId(new int()), owner(new string("")),
-                         adjList(new vector<Territory*>()) {}
+Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(),
+                         adjList() {}
 
 string Territory::getTerritoryName() {
-    return *territoryName;
+    return this->territoryName;
 }
 
 void Territory::setTerritoryName(string territoryName) {
-    *this->territoryName = territoryName;
+    this->territoryName = territoryName;
 }
 
 int Territory::getTerritoryId() {
-    return *this->territoryId;
+    return this->territoryId;
 }
 
 void Territory::setTerritoryId(int territoryId) {
-    *this->territoryId = territoryId;
+    this->territoryId = territoryId;
 }
 
 int Territory::getUnitNbr() {
-    return *unitNbr;
+    return this->unitNbr;
 }
 
 void Territory::setUnitNbr(int unitNbr) {
-    *this->unitNbr = unitNbr;
+    this->unitNbr = unitNbr;
 }
 
 int Territory::getContinentId() {
-    return *this->continentId;
+    return this->continentId;
 }
 
 void Territory::setContinentId(int continentId) {
-    *this->continentId = continentId;
+    this->continentId = continentId;
 }
 
 string Territory::getOwner() {
-    return *owner;
+    return this->owner;
 }
 
 void Territory::setOwner(string owner) {
-    *this->owner = owner;
+    this->owner = owner;
 }
 
 void Territory::addLink(Territory *t) {
-    (*adjList).push_back(t);
+    adjList.push_back(t);
 }
 
 vector<Territory *> & Territory::getAdjList() {
-    return *adjList;
+    return this->adjList;
 }
 
 /**
  * Graph Class implementation
  */
-Graph::Graph() : territoryList(nullptr) {}
+Graph::Graph() : territoryList() {}
 
-Graph::Graph(vector<Territory *> * territoryList) : territoryList(territoryList) {}
+Graph::Graph(vector<Territory *> territoryList, vector<Continent *> continentList) : territoryList(territoryList), continentList(continentList) {}
 
-vector<Territory *> Graph::getTerritoryList() {
-    return *territoryList;
+vector<Territory *> & Graph::getTerritoryList() {
+    return this->territoryList;
 }
 
 void Graph::setTerritoryList(vector<Territory *> territoryList) {
-    *this->territoryList = territoryList;
+    this->territoryList = territoryList;
 }
 
 void Graph::addTerritory(Territory *territory) {
-    territoryList->push_back(territory);
+    territoryList.push_back(territory);
+}
+
+vector<Continent *> & Graph::getContinentList(){
+    return this->continentList;
+}
+
+void Graph::setContinentList(vector<Continent *> continentList){
+    this->continentList = continentList;
+}
+
+void Graph::addContinent(Continent *continent){
+    continentList.push_back(continent);
 }
 
 bool Graph::isGraphConnected() {
 
     map<Territory *, bool> territories;
     stack<Territory *> toVisitStack;
-    toVisitStack.push(getTerritoryList().at(0));
 
+    //set all territories to unvisited
     for (Territory *territory: getTerritoryList()) {
         territories.insert(pair<Territory *, bool>(territory, false));
     }
 
+    toVisitStack.push(getTerritoryList().at(0));
+
     while (!toVisitStack.empty()) {
 
+        //pop the top territories to visit it
         Territory *currentTerritory = toVisitStack.top();
         toVisitStack.pop();
 
+        //add all unvisited territories to the stack to visit them later
         for (Territory *territory : (*currentTerritory).getAdjList()) {
-            if (territories[territory] == false) {
-                toVisitStack.push(territory);
-            }
-        }
-
-        for (Territory *territory: getTerritoryList()) {
             if (territories[territory] == false)
-                return false;
+                toVisitStack.push(territory);
         }
-        return true;
     }
 
+    //once we don't have anymore territories to visit in the stack,
+    // we need to verify if we visited all territories
+    for (Territory *territory: getTerritoryList()) {
+        if (territories[territory] == false)
+            return false;
+    }
     return true;
 }
 
@@ -116,7 +131,7 @@ bool Graph::isContinentSubgraphConnected() {
 
 }
 
-bool Graph::isCountryContinentOneToOne() {
+bool Graph::isTerritoryContinentOneToOne() {
     return true;
 }
 
@@ -124,53 +139,54 @@ bool Graph::validate() {
     return
             isGraphConnected() &&
             isContinentSubgraphConnected() &&
-            isCountryContinentOneToOne();
+            isTerritoryContinentOneToOne();
 }
 
 /**
  * Continent Class implementation
  */
-Continent::Continent() : continentId(new int()), continentName(new string("")), territoriesInContinent(new vector<Territory*>()), bonus(new int()) {}
+Continent::Continent() : continentId(), continentName(),
+                         territories(), bonus() {}
 
 int Continent::getContinentId() {
-    return *continentId;
+    return this->continentId;
 }
 
 void Continent::setContinentId(int continentId) {
-    *this->continentId = continentId;
+    this->continentId = continentId;
 }
 
 string Continent::getContinentName() {
-    return *continentName;
+    return this->continentName;
 }
 
 void Continent::setContinentName(string continentName) {
-    *this->continentName = continentName;
+    this->continentName = continentName;
 }
 
 int Continent::getBonus() {
-    return *bonus;
+    return this->bonus;
 }
 
 void Continent::setBonus(int bonus) {
-    *this->bonus = bonus;
+    this->bonus = bonus;
 }
 
-vector<Territory *> & Continent::getTerritoriesInContinent() {
-    return *territoriesInContinent;
+vector<Territory *> & Continent::getTerritories() {
+    return this->territories;
 }
 
-void Continent::setTerritoriesInContinent(vector<Territory *> territoriesInContinent) {
-    *this->territoriesInContinent = territoriesInContinent;
+void Continent::setTerritoriesInContinent(vector<Territory *> territories) {
+    this->territories = territories;
 }
 
 void Continent::addTerritoryInContinent(Territory *n) {
-    (*territoriesInContinent).push_back(n);
+    territories.push_back(n);
 }
 
 bool Continent::isSameOwner() {
     set<Territory *> setOfTerritoriesInContinent;
-    for (Territory *territory : getTerritoriesInContinent()) {
+    for (Territory *territory : getTerritories()) {
         setOfTerritoriesInContinent.insert(territory);
     }
     return setOfTerritoriesInContinent.size() == 1;
@@ -179,6 +195,6 @@ bool Continent::isSameOwner() {
 string Continent::getOwner() {
 
     if (isSameOwner()) {
-        return getTerritoriesInContinent().at(0)->getOwner();
+        return getTerritories().at(0)->getOwner();
     }
 }

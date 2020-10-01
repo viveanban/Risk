@@ -129,7 +129,7 @@ Territory * MapLoader::createTerritories(const string &line) {
     }
 
     cout << territory->getContinentId() << endl;
-    continentList.at((territory->getContinentId())-1)->getTerritoriesInContinent().push_back(territory); // getTerritoriesInContinent returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+    continentList.at((territory->getContinentId()) - 1)->getTerritories().push_back(territory); // getTerritories returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
 
     return territory;
 }
