@@ -93,9 +93,7 @@ void Graph::addContinent(Continent *continent){
 }
 
 bool Graph::isGraphConnected() {
-
-
-    set<Territory *> visitedTerritories {};
+    set<Territory *> seenTerritories {};
     stack<Territory *> toVisitStack;
 
     toVisitStack.push(getTerritoryList().at(0));
@@ -108,15 +106,17 @@ bool Graph::isGraphConnected() {
 
         //add all unvisited territories to the stack to visit them later
         for (Territory *territory : (*currentTerritory).getAdjList()) {
-            if (visitedTerritories.find(territory) == visitedTerritories.end())
+            if (seenTerritories.count(territory) == 0) {
                 toVisitStack.push(territory);
+                seenTerritories.insert(territory);
+            }
         }
     }
 
     //once we don't have anymore territories to visit in the stack,
     // we need to verify if we visited all territories
     for (Territory *territory: getTerritoryList()) {
-        if (visitedTerritories.find(territory) == visitedTerritories.end())
+        if (seenTerritories.count(territory) == 0)
             return false;
     }
     return true;
@@ -124,7 +124,6 @@ bool Graph::isGraphConnected() {
 
 bool Graph::isContinentSubgraphConnected() {
     return true;
-
 }
 
 bool Graph::isTerritoryContinentOneToOne() {
