@@ -97,7 +97,9 @@ Continent * MapLoader::createContinents(const string &line, int *continentId) {
     Continent *continent = new Continent(); // must create with new operator or else will be deleted at end of the method
     while (token != NULL) {
         if (counter == 0) {
+            cout << "token: " << token << endl;
             continent->setContinentName(token);
+            cout << "continent name: " << continent->getContinentName() << endl;
         } else if (counter == 1) {
             continent->setBonus(atoi(token));
         }

@@ -10,15 +10,15 @@ using namespace std;
  * Territory Class implementation
  */
 
-Territory::Territory() : territoryName(nullptr), territoryId(nullptr), unitNbr(nullptr), continentId(nullptr), owner(nullptr),
-                         adjList(nullptr) {}
+Territory::Territory() : territoryName(new string("")), territoryId(new int()), unitNbr(new int()), continentId(new int()), owner(new string("")),
+                         adjList(new vector<Territory*>()) {}
 
 string Territory::getTerritoryName() {
     return *territoryName;
 }
 
-void Territory::setTerritoryName(string *territoryName) {
-    this->territoryName = territoryName;
+void Territory::setTerritoryName(string territoryName) {
+    *this->territoryName = territoryName;
 }
 
 int Territory::getTerritoryId() {
@@ -33,8 +33,8 @@ int Territory::getUnitNbr() {
     return *unitNbr;
 }
 
-void Territory::setUnitNbr(int *unitNbr) {
-    this->unitNbr = unitNbr;
+void Territory::setUnitNbr(int unitNbr) {
+    *this->unitNbr = unitNbr;
 }
 
 int Territory::getContinentId() {
@@ -49,8 +49,8 @@ string Territory::getOwner() {
     return *owner;
 }
 
-void Territory::setOwner(string *owner) {
-    Territory::owner = owner;
+void Territory::setOwner(string owner) {
+    *this->owner = owner;
 }
 
 void Territory::addLink(Territory *t) {
@@ -66,14 +66,14 @@ vector<Territory *> & Territory::getAdjList() {
  */
 Graph::Graph() : territoryList(nullptr) {}
 
-Graph::Graph(vector<Territory *> *territoryList) : territoryList(territoryList) {}
+Graph::Graph(vector<Territory *> * territoryList) : territoryList(territoryList) {}
 
 vector<Territory *> Graph::getTerritoryList() {
     return *territoryList;
 }
 
-void Graph::setTerritoryList(vector<Territory *> *territoryList) {
-    this->territoryList = territoryList;
+void Graph::setTerritoryList(vector<Territory *> territoryList) {
+    *this->territoryList = territoryList;
 }
 
 void Graph::addTerritory(Territory *territory) {
@@ -130,7 +130,7 @@ bool Graph::validate() {
 /**
  * Continent Class implementation
  */
-Continent::Continent() : continentId(nullptr), continentName(nullptr), territoriesInContinent(nullptr), bonus(nullptr) {}
+Continent::Continent() : continentId(new int()), continentName(new string("")), territoriesInContinent(new vector<Territory*>()), bonus(new int()) {}
 
 int Continent::getContinentId() {
     return *continentId;
@@ -144,24 +144,24 @@ string Continent::getContinentName() {
     return *continentName;
 }
 
-void Continent::setContinentName(string *continentName) {
-    this->continentName = continentName;
+void Continent::setContinentName(string continentName) {
+    *this->continentName = continentName;
 }
 
 int Continent::getBonus() {
     return *bonus;
 }
 
-void Continent::setBonus(int *bonus) {
-    this->bonus = bonus;
+void Continent::setBonus(int bonus) {
+    *this->bonus = bonus;
 }
 
 vector<Territory *> & Continent::getTerritoriesInContinent() {
     return *territoriesInContinent;
 }
 
-void Continent::setTerritoriesInContinent(vector<Territory *> *territoriesInContinent) {
-    this->territoriesInContinent = territoriesInContinent;
+void Continent::setTerritoriesInContinent(vector<Territory *> territoriesInContinent) {
+    *this->territoriesInContinent = territoriesInContinent;
 }
 
 void Continent::addTerritoryInContinent(Territory *n) {

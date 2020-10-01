@@ -25,7 +25,7 @@ public:
 
     string getTerritoryName();
 
-    void setTerritoryName(string *territoryName);
+    void setTerritoryName(string territoryName);
 
     int getTerritoryId();
 
@@ -33,7 +33,7 @@ public:
 
     int getUnitNbr();
 
-    void setUnitNbr(int *unitNbr);
+    void setUnitNbr(int unitNbr);
 
     int getContinentId();
 
@@ -41,13 +41,13 @@ public:
 
     string getOwner();
 
-    void setOwner(string *owner);
+    void setOwner(string owner);
 
     void addLink(Territory *n);
 
     vector<Territory *> & getAdjList();
 
-    void setAdjList(vector<Territory *> *adjList);
+    void setAdjList(vector<Territory *> adjList);
 };
 
 /**
@@ -72,7 +72,7 @@ public:
 
     vector<Territory *> getTerritoryList();
 
-    void setTerritoryList(vector<Territory *> *territoryList);
+    void setTerritoryList(vector<Territory *> territoryList);
 
     void addTerritory(Territory *territory);
 
@@ -101,15 +101,15 @@ public:
 
     string getContinentName();
 
-    void setContinentName(string *continentName);
+    void setContinentName(string continentName);
 
     int getBonus();
 
-    void setBonus(int *bonus);
+    void setBonus(int bonus);
 
     vector<Territory *> & getTerritoriesInContinent();
 
-    void setTerritoriesInContinent(vector<Territory *> *territoriesInContinent);
+    void setTerritoriesInContinent(vector<Territory *> territoriesInContinent);
 
     void addTerritoryInContinent(Territory *n);
 
