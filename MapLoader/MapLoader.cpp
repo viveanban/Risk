@@ -19,7 +19,7 @@ enum Section {
 
 Section currentSection;
 
-vector<Continent*> continentList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
+vector<Continent*> continentsList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
 vector<Territory*> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
 
 Graph * MapLoader::loadMap() {
@@ -43,7 +43,7 @@ Graph * MapLoader::loadMap() {
     }
 
     // 3. Construct Graph object
-    Graph *graph = new Graph(territoriesList, continentList);
+    Graph *graph = new Graph(territoriesList, continentsList);
 
     return graph;
 }
@@ -54,14 +54,14 @@ void MapLoader::parseFile(fstream &mapFile) {
 
     while (getline(mapFile, line)) {
         line.erase(line.find_last_not_of(" \n\r\t") + 1);
-        if(line.empty())
+        if(line.empty() || line.at(0) == ';')
             continue;
 
         bool isUpdated = updateCategory(line);
 
         if (!isUpdated) {
             if (currentSection == continents) {
-                continentList.push_back(createContinents(line, &continentId));
+                continentsList.push_back(createContinents(line, continentId));
             }
             else if (currentSection == countries) {
                 territoriesList.push_back(createTerritories(line));
@@ -90,7 +90,7 @@ bool MapLoader::updateCategory(string &line) {
     return false;
 }
 
-Continent * MapLoader::createContinents(const string &line, int *continentId) {
+Continent * MapLoader::createContinents(const string &line, int &continentId) {
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
     Continent *continent = new Continent(); // must create with new operator or else will be deleted at end of the method
@@ -104,7 +104,7 @@ Continent * MapLoader::createContinents(const string &line, int *continentId) {
         counter++;
     }
 
-    continent->setContinentId((*continentId)++);
+    continent->setContinentId(continentId++);
 
     return continent;
 }
@@ -125,12 +125,14 @@ Territory * MapLoader::createTerritories(const string &line) {
         counter++;
     }
 
-    continentList.at((territory->getContinentId()) - 1)->getTerritories().push_back(territory); // getTerritories returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+    // TODO: break into two
+    // return the continent with the specified id
+    continentsList.at((territory->getContinentId()) - 1)->getTerritories().push_back(territory); // getTerritories returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
 
     return territory;
 }
 
-
+// TODO: change method name
 void MapLoader::createAdjencyList(const string &line) {
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
@@ -140,7 +142,7 @@ void MapLoader::createAdjencyList(const string &line) {
             territoryId = atoi(token);
         } else if (counter >= 1) {
             int borderId = atoi(token);
-            territoriesList.at(territoryId-1)->getAdjList().push_back(territoriesList.at(borderId-1));
+            territoriesList.at(territoryId - 1)->getAdjList().push_back(territoriesList.at(borderId - 1)); // TODO: break into two
         }
         token = strtok(NULL, " ");
         counter++;
