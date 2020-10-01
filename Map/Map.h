@@ -27,6 +27,8 @@ public:
 
     Territory& operator=(const Territory& otherTerritory);
 
+    friend std::ostream &operator<<(std::ostream &stream, Territory c);
+
     string getTerritoryName();
 
     void setTerritoryName(string territoryName);
@@ -75,6 +77,8 @@ public:
 
     Continent& operator=(const Continent& otherContinent);
 
+    friend std::ostream &operator<<(std::ostream &stream, Continent c);
+
     int getContinentId();
 
     void setContinentId(int continentId);
@@ -118,6 +122,8 @@ public:
     Graph(const Graph &original);
 
     Graph& operator=(const Graph& otherGraph);
+
+    friend std::ostream &operator<<(std::ostream &stream, Graph c);
 
     vector<Territory *> &getTerritoryList();
 

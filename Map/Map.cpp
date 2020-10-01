@@ -32,6 +32,17 @@ Territory &Territory::operator=(const Territory &otherTerritory) {
     return *this;
 }
 
+std::ostream& operator<< (std::ostream& stream, Territory t)
+{
+    return stream << "\tInformation on Territory object:" << endl <<
+                  "\tTerritory Name: " << t.getTerritoryName() << endl <<
+                  "\tTerritory ID: " << t.getTerritoryId() <<
+                  "\tContinent id it belongs to: " << t.getContinentId() << endl <<
+                  "\tNumber of adjacent Territories: " << t.getAdjList().size() << endl <<
+                  "\tNumber of unit deployed on territory: " << t.getUnitNbr() << endl <<
+                  "\tOwner of the Territory: " << t.getOwner() << endl;
+}
+
 string Territory::getTerritoryName() {
     return this->territoryName;
 }
@@ -97,13 +108,20 @@ Graph::Graph(const Graph &original) {
 Graph &Graph::operator=(const Graph &otherGraph) {
 
     territoryList = otherGraph.territoryList;
-    continentList = otherGraph.territoryList;
+    continentList = otherGraph.continentList;
 
     return *this;
 }
 
 vector<Territory *> &Graph::getTerritoryList() {
     return this->territoryList;
+}
+
+std::ostream& operator<< (std::ostream& stream, Graph g)
+{
+    return stream << "\tInformation on Graph object:" << endl <<
+                  "\tNumber of Territories: " << g.getTerritoryList().size() << endl <<
+                  "\tNumber of Continents: " << g.getContinentList().size() << endl;
 }
 
 void Graph::setTerritoryList(vector<Territory *> &territoryList) {
@@ -236,6 +254,15 @@ Continent &Continent::operator=(const Continent &otherContinent) {
     territories = otherContinent.territories;
 
     return *this;
+}
+
+std::ostream& operator<< (std::ostream& stream, Continent c)
+{
+    return stream << "\tInformation on Continent object:" << endl <<
+                  "\tName: " << c.getContinentName() << endl <<
+                  "\tId: " << c.getContinentId() << endl <<
+                  "\tNumber of countries in it: " << c.getTerritories().size() << endl <<
+                  "\tOwner owning continent (if any): " << c.getOwner() << endl;
 }
 
 int Continent::getContinentId() {
