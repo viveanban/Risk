@@ -1,4 +1,4 @@
-; This map is invalid because the pattern does not respect the template for countries
+; This map is invalid because the pattern does not respect the template for borders
 
 [files]
 pic sudoku_pic.jpg
@@ -17,7 +17,7 @@ H 5 yellow
 I 5 red
 
 [countries]
-abx A1 1 280 26
+1 A1 1 280 26
 2 A2 1 324 26
 3 A3 1 367 26
 4 A4 1 280 69
@@ -100,7 +100,7 @@ abx A1 1 280 26
 81 I9 9 634 380
 
 [borders]
-1 2 4
+8
 2 1 5 3
 3 2 6 10
 4 1 5 7
