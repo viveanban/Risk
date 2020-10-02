@@ -12,6 +12,7 @@ using namespace std;
 
 Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(),
                          adjList() {}
+
 // Copy Constructor
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
@@ -19,21 +20,24 @@ Territory::Territory(const Territory &original) {
     continentId = original.continentId;
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
-    adjList = vector<Territory *>(original.adjList);
+    adjList = vector<Territory *>(original.adjList.size());
+    for (int i = 0; i < adjList.size(); i++)
+        adjList[i] = new Territory(*original.adjList[i]);
 }
 
 Territory &Territory::operator=(const Territory &otherTerritory) {
-    territoryName = otherTerritory.territoryName;
     owner = otherTerritory.owner;
     continentId = otherTerritory.continentId;
     territoryId = otherTerritory.territoryId;
     unitNbr = otherTerritory.unitNbr;
-    adjList = otherTerritory.adjList;
+    adjList = vector<Territory *>(otherTerritory.adjList.size());
+    for (int i = 0; i < adjList.size(); i++)
+        adjList[i] = new Territory(*otherTerritory.adjList[i]);
+
     return *this;
 }
 
-std::ostream& operator<< (std::ostream& stream, Territory t)
-{
+std::ostream &operator<<(std::ostream &stream, Territory t) {
     return stream << "\tInformation on Territory object:" << endl <<
                   "\tTerritory Name: " << t.getTerritoryName() << endl <<
                   "\tTerritory ID: " << t.getTerritoryId() <<
@@ -102,15 +106,22 @@ Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentL
 
 // Copy Constructor
 Graph::Graph(const Graph &original) {
-    territoryList = vector<Territory *>(original.territoryList);
-    continentList = vector<Continent *>(original.continentList);
+    territoryList = vector<Territory *>(original.territoryList.size());
+    for (int i = 0; i < territoryList.size(); i++)
+        territoryList[i] = new Territory(*original.territoryList[i]);
+    continentList = vector<Continent *>(original.continentList.size());
+    for (int i = 0; i < continentList.size(); i++)
+        continentList[i] = new Continent(*original.continentList[i]);
 }
 
 Graph &Graph::operator=(const Graph &otherGraph) {
 
-    territoryList = otherGraph.territoryList;
-    continentList = otherGraph.continentList;
-
+    territoryList = vector<Territory *>(otherGraph.territoryList.size());
+    for (int i = 0; i < territoryList.size(); i++)
+        territoryList[i] = new Territory(*otherGraph.territoryList[i]);
+    continentList = vector<Continent *>(otherGraph.continentList.size());
+    for (int i = 0; i < continentList.size(); i++)
+        continentList[i] = new Continent(*otherGraph.continentList[i]);
     return *this;
 }
 
@@ -118,8 +129,7 @@ vector<Territory *> &Graph::getTerritoryList() {
     return this->territoryList;
 }
 
-std::ostream& operator<< (std::ostream& stream, Graph g)
-{
+std::ostream &operator<<(std::ostream &stream, Graph g) {
     return stream << "\tInformation on Graph object:" << endl <<
                   "\tNumber of Territories: " << g.getTerritoryList().size() << endl <<
                   "\tNumber of Continents: " << g.getContinentList().size() << endl;
@@ -245,7 +255,9 @@ Continent::Continent(const Continent &original) {
     continentId = original.continentId;
     bonus = original.bonus;
     continentName = original.continentName;
-    territories = vector<Territory *>(original.territories);
+    territories = vector<Territory *>(original.territories.size());
+    for (int i = 0; i < territories.size(); i++)
+        territories[i] = new Territory(*original.territories[i]);
 }
 
 Continent &Continent::operator=(const Continent &otherContinent) {
@@ -253,13 +265,14 @@ Continent &Continent::operator=(const Continent &otherContinent) {
     continentName = otherContinent.continentName;
     continentId = otherContinent.continentId;
     bonus = otherContinent.bonus;
-    territories = otherContinent.territories;
+    territories = vector<Territory *>(otherContinent.territories.size());
+    for (int i = 0; i < territories.size(); i++)
+        territories[i] = new Territory(*otherContinent.territories[i]);
 
     return *this;
 }
 
-std::ostream& operator<< (std::ostream& stream, Continent c)
-{
+std::ostream &operator<<(std::ostream &stream, Continent c) {
     return stream << "\tInformation on Continent object:" << endl <<
                   "\tName: " << c.getContinentName() << endl <<
                   "\tId: " << c.getContinentId() << endl <<
