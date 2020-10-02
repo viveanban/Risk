@@ -18,17 +18,24 @@ using std::endl;
 
 class MapLoader {
 public:
-    Graph * loadMap();
+    Graph *loadMap();
 
 private:
     void parseFile(fstream &mapFile);
+
     bool updateCategory(string &line);
 
-    Continent * createContinents(const string& line, int &continentId);
-    Territory * createTerritories(const string& line);
-    void createAdjencyList(const string& line);
+    Continent *createContinents(const string &line, int &continentId);
+
+    Territory *createTerritories(const string &line);
+
+    void createAdjencyList(const string &line);
+
+    void checkPattern(string line, string pattern);
 
     bool fileExists(string mapFileName);
-};
+
+    void exitWithError();
+    };
 
 #endif //RISK_MAPLOADER_H
