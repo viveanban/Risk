@@ -6,13 +6,11 @@
 #include <string.h>
 #include <regex>
 
-using std::ios;
-using std::cout;
-using std::cin;
-using std::endl;
-using std::ifstream;
-using std::regex_match;
-using std::regex;
+using namespace std;
+
+/**
+ * MapLoader Class implementation
+ */
 
 const string MAP_DIRECTORY = "../maps/";
 const string CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
@@ -24,7 +22,6 @@ enum Section {
 };
 
 Section currentSection;
-
 vector<Continent *> continentsList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
 vector<Territory *> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
 
@@ -63,7 +60,7 @@ void MapLoader::parseFile(fstream &mapFile) {
         if (line.empty() || line.at(0) == ';')
             continue;
 
-        bool isUpdated = updateCategory(line);
+        bool isUpdated = updateSection(line);
 
         if (!isUpdated) {
             if (currentSection == continents) {
@@ -80,7 +77,7 @@ void MapLoader::parseFile(fstream &mapFile) {
     }
 }
 
-bool MapLoader::updateCategory(string &line) {
+bool MapLoader::updateSection(string &line) {
     if (line.at(0) == '[') {
         if (line.compare("[continents]") == 0) {
             currentSection = continents;
