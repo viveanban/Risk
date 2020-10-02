@@ -24,7 +24,6 @@ enum Section {
 };
 
 Section currentSection;
-bool isBordersSectionPresent = false; //This is the only section that needs tracking
 
 vector<Continent *> continentsList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
 vector<Territory *> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
@@ -88,7 +87,6 @@ bool MapLoader::updateCategory(string &line) {
         } else if (line.compare("[countries]") == 0) {
             currentSection = countries;
         } else if (line.compare("[borders]") == 0) {
-            isBordersSectionPresent = true;
             currentSection = borders;
         } else {
             currentSection = other;
