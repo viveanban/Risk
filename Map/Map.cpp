@@ -13,6 +13,40 @@ using namespace std;
 Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(),
                          adjList() {}
 
+// Copy Constructor
+Territory::Territory(const Territory &original) {
+    territoryName = original.territoryName;
+    owner = original.owner;
+    continentId = original.continentId;
+    territoryId = original.territoryId;
+    unitNbr = original.unitNbr;
+    adjList = vector<Territory *>(original.adjList.size());
+    for (int i = 0; i < adjList.size(); i++)
+        adjList[i] = new Territory(*original.adjList[i]);
+}
+
+Territory &Territory::operator=(const Territory &otherTerritory) {
+    owner = otherTerritory.owner;
+    continentId = otherTerritory.continentId;
+    territoryId = otherTerritory.territoryId;
+    unitNbr = otherTerritory.unitNbr;
+    adjList = vector<Territory *>(otherTerritory.adjList.size());
+    for (int i = 0; i < adjList.size(); i++)
+        adjList[i] = new Territory(*otherTerritory.adjList[i]);
+
+    return *this;
+}
+
+std::ostream &operator<<(std::ostream &stream, Territory t) {
+    return stream << "\tInformation on Territory object:" << endl <<
+                  "\tTerritory Name: " << t.getTerritoryName() << endl <<
+                  "\tTerritory ID: " << t.getTerritoryId() <<
+                  "\tContinent id it belongs to: " << t.getContinentId() << endl <<
+                  "\tNumber of adjacent Territories: " << t.getAdjList().size() << endl <<
+                  "\tNumber of unit deployed on territory: " << t.getUnitNbr() << endl <<
+                  "\tOwner of the Territory: " << t.getOwner() << endl;
+}
+
 string Territory::getTerritoryName() {
     return this->territoryName;
 }
@@ -57,19 +91,48 @@ void Territory::addLink(Territory *t) {
     adjList.push_back(t);
 }
 
-vector<Territory *> & Territory::getAdjList() {
+vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }
+
 
 /**
  * Graph Class implementation
  */
 Graph::Graph() : territoryList() {}
 
-Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList), continentList(continentList) {}
+Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
+                                                                                       continentList(continentList) {}
 
-vector<Territory *> & Graph::getTerritoryList() {
+// Copy Constructor
+Graph::Graph(const Graph &original) {
+    territoryList = vector<Territory *>(original.territoryList.size());
+    for (int i = 0; i < territoryList.size(); i++)
+        territoryList[i] = new Territory(*original.territoryList[i]);
+    continentList = vector<Continent *>(original.continentList.size());
+    for (int i = 0; i < continentList.size(); i++)
+        continentList[i] = new Continent(*original.continentList[i]);
+}
+
+Graph &Graph::operator=(const Graph &otherGraph) {
+
+    territoryList = vector<Territory *>(otherGraph.territoryList.size());
+    for (int i = 0; i < territoryList.size(); i++)
+        territoryList[i] = new Territory(*otherGraph.territoryList[i]);
+    continentList = vector<Continent *>(otherGraph.continentList.size());
+    for (int i = 0; i < continentList.size(); i++)
+        continentList[i] = new Continent(*otherGraph.continentList[i]);
+    return *this;
+}
+
+vector<Territory *> &Graph::getTerritoryList() {
     return this->territoryList;
+}
+
+std::ostream &operator<<(std::ostream &stream, Graph g) {
+    return stream << "\tInformation on Graph object:" << endl <<
+                  "\tNumber of Territories: " << g.getTerritoryList().size() << endl <<
+                  "\tNumber of Continents: " << g.getContinentList().size() << endl;
 }
 
 void Graph::setTerritoryList(vector<Territory *> &territoryList) {
@@ -80,27 +143,21 @@ void Graph::addTerritory(Territory *territory) {
     territoryList.push_back(territory);
 }
 
-vector<Continent *> & Graph::getContinentList(){
+vector<Continent *> &Graph::getContinentList() {
     return this->continentList;
 }
 
-void Graph::setContinentList(vector<Continent *> &continentList){
+void Graph::setContinentList(vector<Continent *> &continentList) {
     this->continentList = continentList;
 }
 
-void Graph::addContinent(Continent *continent){
+void Graph::addContinent(Continent *continent) {
     continentList.push_back(continent);
 }
 
 bool Graph::isGraphConnected() {
-
-    map<Territory *, bool> territories;
+    set<Territory *> seenTerritories{};
     stack<Territory *> toVisitStack;
-
-    //set all territories to unvisited
-    for (Territory *territory: getTerritoryList()) {
-        territories.insert(pair<Territory *, bool>(territory, false));
-    }
 
     toVisitStack.push(getTerritoryList().at(0));
 
@@ -112,34 +169,79 @@ bool Graph::isGraphConnected() {
 
         //add all unvisited territories to the stack to visit them later
         for (Territory *territory : (*currentTerritory).getAdjList()) {
-            if (territories[territory] == false)
+            if (seenTerritories.count(territory) == 0) {
                 toVisitStack.push(territory);
+                seenTerritories.insert(territory);
+            }
         }
     }
 
     //once we don't have anymore territories to visit in the stack,
     // we need to verify if we visited all territories
-    for (Territory *territory: getTerritoryList()) {
-        if (territories[territory] == false)
-            return false;
+    if (seenTerritories.size() == getTerritoryList().size()) {
+        return true;
+    } else {
+        return false;
     }
-    return true;
 }
 
 bool Graph::isContinentSubgraphConnected() {
-    return true;
+    set<int> visitedContinents{};
+    set<Territory *> seenTerritories;
+    stack<Territory *> territoriesToVisit;
+    int numberOfContinents = getContinentList().size();
+    // starting from the first territory
+    territoriesToVisit.push(getTerritoryList().at(0));
+    // loop until all continents visited or until no more connected territories to visit
+    while (!territoriesToVisit.empty() && visitedContinents.size() < numberOfContinents) {
+        Territory *currentTerritory = territoriesToVisit.top();
+        territoriesToVisit.pop();
 
+        for (Territory *territory: currentTerritory->getAdjList()) {
+            // if we see the territory for the first time, add it to the territories to visit
+            if (seenTerritories.count(territory) == 0) {
+                territoriesToVisit.push(territory);
+                seenTerritories.insert(territory);
+                // add continent to the set of visitedContinents
+                visitedContinents.insert(currentTerritory->getContinentId());
+            }
+        }
+    }
+    if (visitedContinents.size() == numberOfContinents) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool Graph::isTerritoryContinentOneToOne() {
-    return true;
+
+    set<Territory *> seenTerritories{};
+
+    for (Continent *continent : getContinentList()) {
+        for (Territory *territory: (*continent).getTerritories()) {
+            if (seenTerritories.count(territory) == 0)
+                seenTerritories.insert(territory);
+            else
+                return false;
+        }
+    }
+
+
+    return seenTerritories.size() == getTerritoryList().size();
 }
 
 bool Graph::validate() {
+    bool connectedTerritories = isGraphConnected();
+    bool connectedContinents = isContinentSubgraphConnected();
+    bool oneToOneCorrespondence = isTerritoryContinentOneToOne();
+
+    cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
+         << ", One-to-One: " << oneToOneCorrespondence << endl;
     return
-            isGraphConnected() &&
-            isContinentSubgraphConnected() &&
-            isTerritoryContinentOneToOne();
+            connectedTerritories &&
+            connectedContinents &&
+            oneToOneCorrespondence;
 }
 
 /**
@@ -147,6 +249,36 @@ bool Graph::validate() {
  */
 Continent::Continent() : continentId(), continentName(),
                          territories(), bonus() {}
+
+// Copy Constructor
+Continent::Continent(const Continent &original) {
+    continentId = original.continentId;
+    bonus = original.bonus;
+    continentName = original.continentName;
+    territories = vector<Territory *>(original.territories.size());
+    for (int i = 0; i < territories.size(); i++)
+        territories[i] = new Territory(*original.territories[i]);
+}
+
+Continent &Continent::operator=(const Continent &otherContinent) {
+
+    continentName = otherContinent.continentName;
+    continentId = otherContinent.continentId;
+    bonus = otherContinent.bonus;
+    territories = vector<Territory *>(otherContinent.territories.size());
+    for (int i = 0; i < territories.size(); i++)
+        territories[i] = new Territory(*otherContinent.territories[i]);
+
+    return *this;
+}
+
+std::ostream &operator<<(std::ostream &stream, Continent c) {
+    return stream << "\tInformation on Continent object:" << endl <<
+                  "\tName: " << c.getContinentName() << endl <<
+                  "\tId: " << c.getContinentId() << endl <<
+                  "\tNumber of countries in it: " << c.getTerritories().size() << endl <<
+                  "\tOwner owning continent (if any): " << c.getOwner() << endl;
+}
 
 int Continent::getContinentId() {
     return this->continentId;
@@ -172,7 +304,7 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-vector<Territory *> & Continent::getTerritories() {
+vector<Territory *> &Continent::getTerritories() {
     return this->territories;
 }
 
@@ -189,4 +321,9 @@ string Continent::getOwner() {
     if (isSameOwner()) {
         return getTerritories().at(0)->getOwner();
     }
+    return "";
+}
+
+void Continent::setTerritories(vector<Territory *> territories) {
+    this->territories = territories;
 }

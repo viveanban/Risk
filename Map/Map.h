@@ -23,6 +23,12 @@ private:
 public:
     Territory();
 
+    Territory(const Territory &original);
+
+    Territory& operator=(const Territory& otherTerritory);
+
+    friend std::ostream &operator<<(std::ostream &stream, Territory c);
+
     string getTerritoryName();
 
     void setTerritoryName(string territoryName);
@@ -61,10 +67,17 @@ private:
     int bonus;
     string continentName;
     vector<Territory *> territories;
+
     bool isSameOwner();
 
 public:
     Continent();
+
+    Continent(const Continent &original);
+
+    Continent& operator=(const Continent& otherContinent);
+
+    friend std::ostream &operator<<(std::ostream &stream, Continent c);
 
     int getContinentId();
 
@@ -79,6 +92,7 @@ public:
     void setBonus(int bonus);
 
     vector<Territory *> &getTerritories();
+    void setTerritories(vector<Territory *> territories);
 
     string getOwner();
 };
@@ -104,6 +118,12 @@ public:
     Graph();
 
     Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
+
+    Graph(const Graph &original);
+
+    Graph& operator=(const Graph& otherGraph);
+
+    friend std::ostream &operator<<(std::ostream &stream, Graph c);
 
     vector<Territory *> &getTerritoryList();
 
