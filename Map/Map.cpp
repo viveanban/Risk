@@ -12,14 +12,14 @@ using namespace std;
 
 Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(),
                          adjList() {}
-
+// Copy Constructor
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
     owner = original.owner;
     continentId = original.continentId;
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
-    adjList = original.adjList;
+    adjList = vector<Territory *>(original.adjList);
 }
 
 Territory &Territory::operator=(const Territory &otherTerritory) {
@@ -100,9 +100,10 @@ Graph::Graph() : territoryList() {}
 Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
                                                                                        continentList(continentList) {}
 
+// Copy Constructor
 Graph::Graph(const Graph &original) {
-    territoryList = original.territoryList;
-    continentList = original.continentList;
+    territoryList = vector<Territory *>(original.territoryList);
+    continentList = vector<Continent *>(original.continentList);
 }
 
 Graph &Graph::operator=(const Graph &otherGraph) {
@@ -239,11 +240,12 @@ bool Graph::validate() {
 Continent::Continent() : continentId(), continentName(),
                          territories(), bonus() {}
 
+// Copy Constructor
 Continent::Continent(const Continent &original) {
     continentId = original.continentId;
     bonus = original.bonus;
     continentName = original.continentName;
-    territories = original.territories;
+    territories = vector<Territory *>(original.territories);
 }
 
 Continent &Continent::operator=(const Continent &otherContinent) {
