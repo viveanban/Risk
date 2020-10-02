@@ -132,9 +132,7 @@ Territory *MapLoader::createTerritories(const string &line) {
     }
 
     // TODO: break into two
-    // return the continent with the specified id
-    continentsList.at((territory->getContinentId()) - 1)->getTerritories().push_back(
-            territory); // getTerritories returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+    continentsList.at(territory->getContinentId() - 1)->getTerritories().push_back(territory);
 
     return territory;
 }
@@ -151,9 +149,15 @@ void MapLoader::createAdjencyList(const string &line) {
             territoryId = atoi(token);
         } else if (counter >= 1) {
             int borderId = atoi(token);
-            //TODO: Find the territories based on id rather than index
-            territoriesList.at(territoryId - 1)->getAdjList().push_back(
-                    territoriesList.at(borderId - 1)); // TODO: break into two
+            for (Territory *territory : territoriesList) {
+                if(territory->getTerritoryId() == territoryId) {
+                    for (Territory *border : territoriesList) {
+                        if(border->getTerritoryId() == borderId) {
+                            territory->getAdjList().push_back(border); // getTerritories returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+                        }
+                    }
+                }
+            }
         }
         token = strtok(NULL, " ");
         counter++;
