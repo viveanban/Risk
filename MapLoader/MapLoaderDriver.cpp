@@ -1,11 +1,9 @@
 #include <fstream>
 #include "MapLoader.h"
 
-
 const string MAP_DIRECTORY = "../maps/";
 
-int main() {
-    // User chooses map
+string getUserInput() {
     string userInput = "";
     ifstream infile;
 
@@ -19,15 +17,14 @@ int main() {
         infile.open(MAP_DIRECTORY + userInput);
     }
 
+    return userInput;
+}
+
+int main() {
     // Load map
     MapLoader mapLoader;
     Graph *map;
-    map = mapLoader.loadMap(userInput);
+    map = mapLoader.loadMap(getUserInput());
 
     return 0;
 }
-
-//bool fileExists(string mapFileName) {
-//    ifstream infile(MAP_DIRECTORY + mapFileName);
-//    return infile.good();
-//}

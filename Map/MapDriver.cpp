@@ -1,15 +1,14 @@
 //#include "./Map.h"
-//#include "./MapDriver.h"
 //#include "./../MapLoader/MapLoader.h"
 //using namespace std;
 //
-//int main(Graph *map){
-//    MapLoaderDriver mapLoaderDriver;
+//int main(){
+//    MapLoader mapLoader;
 //    Graph *map;
-//    map = mapLoaderDriver.run();
+//    map = mapLoader.loadMap();
 //
-//
-//    (*(*map).getContinentList().at(0)).setTerritories({});
+//    //in order to break the continent-territory mapping
+//    //(*(*map).getContinentList().at(0)).setTerritories({});
 //
 //    bool validateOutcome = (*map).validate();
 //
