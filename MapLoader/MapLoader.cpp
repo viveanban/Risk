@@ -11,7 +11,6 @@ using namespace std;
 /**
  * MapLoader Class implementation
  */
-
 const string MAP_DIRECTORY = "../maps/";
 const string CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
 const string COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
@@ -25,16 +24,7 @@ Section currentSection;
 vector<Continent *> continentsList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
 vector<Territory *> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
 
-Graph *MapLoader::loadMap() {
-    // 1. User chooses map
-    string userInput = "";
-    cout << "Enter your desired map:  " << std::endl;
-    cin >> userInput;
-    while (!fileExists(userInput)) {
-        cout << "This map does not exist. Please enter another map: \n";
-        cin >> userInput;
-    }
-
+Graph *MapLoader::loadMap(string userInput) {
     // 2. Read map
     string mapName = userInput;
     fstream mapFile;
@@ -170,11 +160,6 @@ void MapLoader::checkPattern(string line, string pattern) {
     if (!regex_match (line,regex(pattern))) {
         exitWithError();
     }
-}
-
-bool MapLoader::fileExists(string mapFileName) {
-    ifstream infile(MAP_DIRECTORY + mapFileName);
-    return infile.good();
 }
 
 void MapLoader::exitWithError() {

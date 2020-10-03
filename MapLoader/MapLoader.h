@@ -22,7 +22,7 @@ public:
      *
      * @return Graph pointer.
      */
-    Graph *loadMap();
+    Graph *loadMap(string userInput);
 
 private:
     /**
