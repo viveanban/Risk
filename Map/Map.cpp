@@ -37,7 +37,7 @@ Territory &Territory::operator=(const Territory &otherTerritory) {
     return *this;
 }
 
-std::ostream &operator<<(std::ostream &stream, Territory t) {
+std::ostream &operator<<(std::ostream &stream, Territory &t) {
     return stream << "\tInformation on Territory object:" << endl <<
                   "\tTerritory Name: " << t.getTerritoryName() << endl <<
                   "\tTerritory ID: " << t.getTerritoryId() <<
@@ -129,7 +129,7 @@ vector<Territory *> &Graph::getTerritoryList() {
     return this->territoryList;
 }
 
-std::ostream &operator<<(std::ostream &stream, Graph g) {
+std::ostream &operator<<(std::ostream &stream, Graph &g) {
     return stream << "\tInformation on Graph object:" << endl <<
                   "\tNumber of Territories: " << g.getTerritoryList().size() << endl <<
                   "\tNumber of Continents: " << g.getContinentList().size() << endl;
@@ -272,7 +272,7 @@ Continent &Continent::operator=(const Continent &otherContinent) {
     return *this;
 }
 
-std::ostream &operator<<(std::ostream &stream, Continent c) {
+std::ostream &operator<<(std::ostream &stream, Continent &c) {
     return stream << "\tInformation on Continent object:" << endl <<
                   "\tName: " << c.getContinentName() << endl <<
                   "\tId: " << c.getContinentId() << endl <<
