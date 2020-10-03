@@ -25,7 +25,7 @@ vector<Continent *> continentsList; // Composed of pointers b/c we want to point
 vector<Territory *> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
 
 Graph *MapLoader::loadMap(string userInput) {
-    // 2. Read map
+    // Read map
     string mapName = userInput;
     fstream mapFile;
     mapFile.open(MAP_DIRECTORY + mapName, ios::in | ios::binary);
@@ -35,7 +35,7 @@ Graph *MapLoader::loadMap(string userInput) {
         mapFile.close();
     }
 
-    // 3. Construct Graph object
+    // Construct Graph object
     Graph *graph = new Graph(territoriesList, continentsList);
 
     return graph;
