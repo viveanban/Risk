@@ -149,11 +149,13 @@ void MapLoader::createAdjencyList(const string &line) {
             territoryId = atoi(token);
         } else if (counter >= 1) {
             int borderId = atoi(token);
+            // TODO: change for something better?
             for (Territory *territory : territoriesList) {
                 if(territory->getTerritoryId() == territoryId) {
                     for (Territory *border : territoriesList) {
                         if(border->getTerritoryId() == borderId) {
                             territory->getAdjList().push_back(border); // getAdjList returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+                            break;
                         }
                     }
                 }
