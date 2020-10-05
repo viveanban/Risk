@@ -61,4 +61,19 @@ public:
     Card &draw();
 };
 
+class Hand {
+private:
+    vector<Card *> cards;
+    int cardNbr;
+public:
+    int getCardNbr() const;
+
+    void setCardNbr(int cardNbr);
+
+public:
+    const vector<Card *> &getCards() const;
+
+    void setCards(const vector<Card *> &cards);
+};
+
 #endif //RISK_CARDS_H

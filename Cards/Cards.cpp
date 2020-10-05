@@ -87,3 +87,22 @@ Card &Deck::draw() {
     return card;
 }
 
+/**
+ * Hand class
+ */
+
+const vector<Card *> &Hand::getCards() const {
+    return cards;
+}
+
+void Hand::setCards(const vector<Card *> &cards) {
+    Hand::cards = cards;
+}
+
+int Hand::getCardNbr() const {
+    return cardNbr;
+}
+
+void Hand::setCardNbr(int cardNbr) {
+    Hand::cardNbr = cardNbr;
+}
