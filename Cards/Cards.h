@@ -9,7 +9,7 @@
 
 using namespace std;
 
-enum cardType {
+enum CardType {
     bomb = 0,
     reinforcement = 1,
     blockade = 2,
@@ -19,20 +19,44 @@ enum cardType {
 
 class Card {
 private:
-    cardType type;
+    CardType type;
 public:
     Card();
-    Card(cardType type);
+
+    Card(CardType type);
+
+    Card(const Card &original);
+
+    Card &operator=(const Card &otherTerritory);
+
+    friend std::ostream &operator<<(std::ostream &stream, Card c);
+
+    void setType(CardType type);
+
+    CardType getType();
+
     void play();
 };
 
 class Deck {
 private:
-    vector<Card*> cards;
+    vector<Card *> cards;
 public:
     Deck();
-    Deck(vector<Card*> cards);
-    Card& draw();
+
+    Deck(vector<Card *> cards);
+
+    Deck(const Deck &original);
+
+    Deck &operator=(const Deck &otherTerritory);
+
+    friend std::ostream &operator<<(std::ostream &stream, Deck c);
+
+    vector<Card *> getCards();
+
+    void setCards(vector<Card *> cards);
+
+    Card &draw();
 };
 
 #endif //RISK_CARDS_H
