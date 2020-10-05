@@ -48,6 +48,8 @@ public:
 
     Deck(const Deck &original);
 
+    ~Deck();
+
     Deck &operator=(const Deck &otherTerritory);
 
     friend std::ostream &operator<<(std::ostream &stream, Deck c);

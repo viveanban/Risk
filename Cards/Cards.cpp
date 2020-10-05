@@ -55,6 +55,11 @@ Deck::Deck(const Deck &original) {
         cards[i] = new Card(*original.cards[i]);
 }
 
+Deck::~Deck() {
+    for (auto p : cards)
+        delete p;
+}
+
 Deck &Deck::operator=(const Deck &otherDeck) {
     cards = vector<Card *>(otherDeck.cards.size());
     for (int i = 0; i < cards.size(); i++)
