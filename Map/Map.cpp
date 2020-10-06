@@ -220,12 +220,12 @@ bool Graph::isContinentSubgraphConnected() {
 
 bool Graph::isTerritoryContinentUnique() {
 
-    set<Territory *> seenTerritories{};
+    set<string> seenTerritories{};
 
     for (Continent *continent : getContinentList()) {
         for (Territory *territory: (*continent).getTerritories()) {
-            if (seenTerritories.count(territory) == 0)
-                seenTerritories.insert(territory);
+            if (seenTerritories.count(territory->getTerritoryName()) == 0)
+                seenTerritories.insert(territory->getTerritoryName());
             else
                 return false;
         }

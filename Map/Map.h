@@ -23,7 +23,7 @@ private:
 public:
     Territory();
 
-    // No Deconstruct method because it would cause a loop
+    // No Destructor method because it would cause a loop
 
     Territory(const Territory &original);
 
@@ -78,7 +78,7 @@ private:
 public:
     Continent();
 
-    // No Deconstruct method because it would cause a loop
+    // No Destructor method because it would cause a loop
 
     // copy constructor
     Continent(const Continent &original);
