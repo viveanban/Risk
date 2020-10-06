@@ -22,7 +22,7 @@ public:
      *
      * @return Graph pointer.
      */
-    Graph *loadMap();
+    Graph *loadMap(string userInput);
 
 private:
     /**
@@ -71,14 +71,6 @@ private:
      * @param string: the line being read, string: the regex pattern.
      */
     void checkPattern(string line, string pattern);
-
-    /**
-     * This method verifies that the file exists in the program.
-     *
-     * @return boolean.
-     * @param string: the name of the file.
-     */
-    bool fileExists(string mapFileName);
 
     /**
      * This method exits the program with an error.
