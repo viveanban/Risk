@@ -95,6 +95,11 @@ vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }
 
+void Territory::setAdjList(vector<Territory *> &adjList) {
+    this->adjList = adjList;
+
+}
+
 
 /**
  * Graph Class implementation
@@ -214,7 +219,7 @@ bool Graph::isContinentSubgraphConnected() {
     }
 }
 
-bool Graph::isTerritoryContinentOneToOne() {
+bool Graph::isTerritoryContinentUnique() {
 
     set<Territory *> seenTerritories{};
 
@@ -234,7 +239,7 @@ bool Graph::isTerritoryContinentOneToOne() {
 bool Graph::validate() {
     bool connectedTerritories = isGraphConnected();
     bool connectedContinents = isContinentSubgraphConnected();
-    bool oneToOneCorrespondence = isTerritoryContinentOneToOne();
+    bool oneToOneCorrespondence = isTerritoryContinentUnique();
 
     cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
          << ", One-to-One: " << oneToOneCorrespondence << endl;
