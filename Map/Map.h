@@ -23,9 +23,11 @@ private:
 public:
     Territory();
 
+    // No Deconstruct method because it would cause a loop
+
     Territory(const Territory &original);
 
-    Territory& operator=(const Territory& otherTerritory);
+    Territory &operator=(const Territory &otherTerritory);
 
     friend std::ostream &operator<<(std::ostream &stream, Territory &c);
 
@@ -75,6 +77,8 @@ private:
 
 public:
     Continent();
+
+    // No Deconstruct method because it would cause a loop
 
     // copy constructor
     Continent(const Continent &original);
@@ -127,6 +131,8 @@ private:
 
 public:
     Graph();
+
+    ~Graph();
 
     Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 

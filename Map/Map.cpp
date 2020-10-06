@@ -99,6 +99,14 @@ void Territory::setAdjList(vector<Territory *> &adjList) {
     this->adjList = adjList;
 
 }
+//
+//Territory::~Territory() {
+//    cout << "DELETE CALLED ON TERRITORY" << endl;
+//    for (auto p: adjList){
+//        delete p;
+//    }
+//    adjList.clear();
+//}
 
 
 /**
@@ -239,14 +247,29 @@ bool Graph::isTerritoryContinentUnique() {
 bool Graph::validate() {
     bool connectedTerritories = isGraphConnected();
     bool connectedContinents = isContinentSubgraphConnected();
-    bool oneToOneCorrespondence = isTerritoryContinentUnique();
+    bool uniqueTerritories = isTerritoryContinentUnique();
 
     cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
-         << ", One-to-One: " << oneToOneCorrespondence << endl;
+         << ", Unique Territories: " << uniqueTerritories << endl;
     return
             connectedTerritories &&
             connectedContinents &&
-            oneToOneCorrespondence;
+            uniqueTerritories;
+}
+
+Graph::~Graph() {
+    cout << "Deleting Graph..." << endl;
+    for (auto cont: continentList) {
+        cout << "Deleting Continent" << endl;
+        delete cont;
+    }
+    continentList.clear();
+
+    for (auto ter: territoryList) {
+        cout << "Deleting Territory" << endl;
+        delete ter;
+    }
+    territoryList.clear();
 }
 
 /**
