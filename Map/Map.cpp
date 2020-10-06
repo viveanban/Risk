@@ -99,15 +99,6 @@ void Territory::setAdjList(vector<Territory *> &adjList) {
     this->adjList = adjList;
 
 }
-//
-//Territory::~Territory() {
-//    cout << "DELETE CALLED ON TERRITORY" << endl;
-//    for (auto p: adjList){
-//        delete p;
-//    }
-//    adjList.clear();
-//}
-
 
 /**
  * Graph Class implementation
