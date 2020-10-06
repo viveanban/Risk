@@ -6,8 +6,8 @@
 
 int main() {
     OrdersList list{};
-    Order * overToMove = new DeployOrder();
-    Order * orderToRemove = new BombOrder();
+    Order *overToMove = new DeployOrder();
+    Order *orderToRemove = new BombOrder();
     list.add(overToMove);
     list.add(new AdvanceOrder());
     list.add(orderToRemove);
@@ -15,14 +15,17 @@ int main() {
     list.add(new AirliftOrder());
     list.add(new NegotiateOrder());
 
+    // Tests
+    cout << "-----------Original OrderList-----------" << endl;
     list.print();
-
+    cout << "-----------Test Move Deploy to 3rd place-----------" << endl;
     list.move(overToMove, 3);
     list.print();
-
-    cout << "remove" << endl;
+    cout << "-----------Test Remove Bomb Order-----------" << endl;
     list.remove(orderToRemove);
     list.print();
+    cout << "-----------Test Execute-----------" << endl;
+    list.executeAll();
     return 0;
 }
 

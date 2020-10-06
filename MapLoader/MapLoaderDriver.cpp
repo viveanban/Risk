@@ -20,11 +20,11 @@ string getUserInput() {
     return userInput;
 }
 
-int main() {
-    // Load map
-    MapLoader mapLoader;
-    Graph *map;
-    map = mapLoader.loadMap(getUserInput());
-
-    return 0;
-}
+//int main() {
+//    // Load map
+//    MapLoader mapLoader;
+//    Graph *map;
+//    map = mapLoader.loadMap(getUserInput());
+//
+//    return 0;
+//}

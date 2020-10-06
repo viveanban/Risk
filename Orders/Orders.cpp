@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <algorithm>
 #include "Orders.h"
 
 using namespace std;
@@ -12,7 +13,8 @@ std::ostream &operator<<(std::ostream &stream, Order &order) {
 }
 
 bool DeployOrder::validate() {
-    return false;
+    cout << "Validating deploy order." << endl;
+    return true;
 }
 
 void DeployOrder::execute() {
@@ -23,7 +25,8 @@ void DeployOrder::execute() {
 DeployOrder::DeployOrder() { description = "Deploy!";}
 
 bool AdvanceOrder::validate() {
-    return false;
+    cout << "Validating advance order." << endl;
+    return true;
 
 }
 
@@ -36,7 +39,8 @@ void AdvanceOrder::execute() {
 AdvanceOrder::AdvanceOrder() {description = "Advance!";}
 
 bool BombOrder::validate() {
-    return false;
+    cout << "Validating bomb order." << endl;
+    return true;
 
 }
 
@@ -49,7 +53,8 @@ void BombOrder::execute() {
 BombOrder::BombOrder() {description = "Bomb!";}
 
 bool BlockadeOrder::validate() {
-    return false;
+    cout << "Validating blockade order." << endl;
+    return true;
 
 }
 
@@ -62,7 +67,8 @@ void BlockadeOrder::execute() {
 BlockadeOrder::BlockadeOrder() {description = "Blockade!";}
 
 bool AirliftOrder::validate() {
-    return false;
+    cout << "Validating airlift order." << endl;
+    return true;
 
 }
 
@@ -75,7 +81,8 @@ void AirliftOrder::execute() {
 AirliftOrder::AirliftOrder() {description = "Airlift!";}
 
 bool NegotiateOrder::validate() {
-    return false;
+    cout << "Validating negotiate order." << endl;
+    return true;
 }
 
 void NegotiateOrder::execute() {
@@ -124,4 +131,10 @@ bool OrdersList::move(Order * order, int destination) {
 void OrdersList::print() {
     for (Order *o: orderList)
         cout << o->description << endl;
+}
+
+void OrdersList::executeAll() {
+    for (Order *odr: orderList) {
+        odr->execute();
+    }
 }

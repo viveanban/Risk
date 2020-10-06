@@ -14,8 +14,6 @@ class Order {
 public:
     string description = "";
     friend ostream &operator<<(ostream &stream, Order &order);
-
-protected:
     // The following methods are pure virtual functions (must be overridden)
     virtual bool validate() =0;
 
@@ -99,6 +97,8 @@ public:
     bool move(Order *order, int destination);
 
     void print();
+
+    void executeAll();
 };
 
 #endif //RISK_ORDERS_H
