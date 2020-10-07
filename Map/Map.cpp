@@ -95,6 +95,10 @@ vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }
 
+void Territory::setAdjList(vector<Territory *> &adjList) {
+    this->adjList = adjList;
+
+}
 
 /**
  * Graph Class implementation
@@ -214,14 +218,14 @@ bool Graph::isContinentSubgraphConnected() {
     }
 }
 
-bool Graph::isTerritoryContinentOneToOne() {
+bool Graph::isTerritoryContinentUnique() {
 
-    set<Territory *> seenTerritories{};
+    set<string> seenTerritories{};
 
     for (Continent *continent : getContinentList()) {
         for (Territory *territory: (*continent).getTerritories()) {
-            if (seenTerritories.count(territory) == 0)
-                seenTerritories.insert(territory);
+            if (seenTerritories.count(territory->getTerritoryName()) == 0)
+                seenTerritories.insert(territory->getTerritoryName());
             else
                 return false;
         }
@@ -234,14 +238,31 @@ bool Graph::isTerritoryContinentOneToOne() {
 bool Graph::validate() {
     bool connectedTerritories = isGraphConnected();
     bool connectedContinents = isContinentSubgraphConnected();
-    bool oneToOneCorrespondence = isTerritoryContinentOneToOne();
+    bool uniqueTerritories = isTerritoryContinentUnique();
 
     cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
-         << ", One-to-One: " << oneToOneCorrespondence << endl;
+         << ", Unique Territories: " << uniqueTerritories << endl;
     return
             connectedTerritories &&
             connectedContinents &&
-            oneToOneCorrespondence;
+            uniqueTerritories;
+}
+
+Graph::~Graph() {
+    cout << "Deleting Graph..." << endl;
+    for (auto continent: continentList) {
+        cout << "Deleting Continent" << endl;
+        delete continent;
+        continent = nullptr;
+    }
+    continentList.clear();
+
+    for (auto territory: territoryList) {
+        cout << "Deleting Territory" << endl;
+        delete territory;
+        territory = nullptr;
+    }
+    territoryList.clear();
 }
 
 /**
