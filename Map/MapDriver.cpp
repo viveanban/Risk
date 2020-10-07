@@ -6,7 +6,7 @@ using namespace std;
 int main() {
     MapLoader mapLoader;
     Graph *map;
-    map = mapLoader.loadMap("DuplicateCountry.map");
+    map = mapLoader.loadMap("DuplicateTerritory.map");
 
     //in order to break the continent-territory mapping
     //(*(*map).getContinentList().at(0)).setTerritories({});

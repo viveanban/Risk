@@ -250,15 +250,17 @@ bool Graph::validate() {
 
 Graph::~Graph() {
     cout << "Deleting Graph..." << endl;
-    for (auto cont: continentList) {
+    for (auto continent: continentList) {
         cout << "Deleting Continent" << endl;
-        delete cont;
+        delete continent;
+        continent = nullptr;
     }
     continentList.clear();
 
-    for (auto ter: territoryList) {
+    for (auto territory: territoryList) {
         cout << "Deleting Territory" << endl;
-        delete ter;
+        delete territory;
+        territory = nullptr;
     }
     territoryList.clear();
 }

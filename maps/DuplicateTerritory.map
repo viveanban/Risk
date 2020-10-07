@@ -1,4 +1,4 @@
-; This map should work even if the [files] section is in the middle
+; This map has two countries called France, in different Continents.
 
 [continents]
 North_Europe 5 red
@@ -29,7 +29,7 @@ West_Europe 3 blue
 20 Majorca 4 184 319
 21 France 4 176 202
 22 Spain 4 96 285
-23 Portugal         4 38 290
+23 Portugal 4 38 290
 24 Luxembourg 4 227 172
 
 [files]
