@@ -6,6 +6,7 @@
 #define RISK_CARDS_H
 
 #include <vector>
+#include <ostream>
 
 using namespace std;
 

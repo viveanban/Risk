@@ -36,17 +36,8 @@ public:
     // Getters
     string getTerritoryName();
 
-<<<<<<< HEAD
-    void setTerritoryName(string territoryName);
-
     Player* getOwner();
 
-    void setOwner(Player *owner);
-
-=======
-    string getOwner();
-
->>>>>>> release1
     int getTerritoryId();
 
     int getUnitNbr();
@@ -58,7 +49,7 @@ public:
     // Setters
     void setTerritoryName(string territoryName);
 
-    void setOwner(string owner);
+    void setOwner(Player *owner);
 
     void setTerritoryId(int territoryId);
 
