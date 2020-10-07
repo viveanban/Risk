@@ -1,13 +1,14 @@
 #include <iostream>
+#include <ctime>
 #include "Player.h"
+#include <algorithm>
 
 /**
  * Player Class implementation
  */
 
-Player::Player() : playerName(), territories() {}//, cards() {}, orders() {}
+Player::Player() : playerName(), territories() {}//, cards(), orders()
 
-// Copy Constructor
 Player::Player(const Player &original) {
     playerName = original.playerName;
     territories = vector<Territory *>(original.territories.size());
@@ -32,24 +33,57 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
     // TODO: complete
     return stream << "\tInformation on Player object:" << endl
                   << "\tPlayer Name: " << player.getPlayerName() << endl
-                  << "\tNumber of Territories: " << player.getTerritories().size() << endl;
+                  << "\tNumber of Territories Owned: " << player.getTerritories().size() << endl;
 }
 
-vector<Territory *> & Player::toDefend() {
-
+vector<Territory *> Player::toDefend() {
+    return territories;
 }
 
-vector<Territory *> & Player::toAttack() {
+vector<Territory *> Player::toAttack() {
+    vector<Territory *> territoriesToAttack;
+    for(auto territory: territories) {
+        for(auto adjTerritory: territory->getAdjList()) {
+            if(find(territories.begin(), territories.end(), adjTerritory) == territories.end() &&
+                find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritory) == territoriesToAttack.end())
+                territoriesToAttack.push_back(adjTerritory);
+        }
+    }
 
+    return territoriesToAttack;
 }
 
+// TODO: complete
 void Player::issueOrder() {
+    // Create Order object
 
+    // Add OrdersList
 }
+
+string Player::getPlayerName() {
+    return this->playerName;
+}
+
+void Player::setPlayerName(string playerName) {
+    this->playerName = playerName;
+}
+
+vector<Territory *>& Player::getTerritories() {
+    return this->territories;
+}
+
+void Player::setTerritories(vector<Territory *> &territories) {
+    this->territories = territories;
+}
+
+// TODO: implement the other setters and getters
 
 Player::~Player()
 {
-    // TODO: implement
-}
+    // TODO: uncomment when merged orders and cards stuff
+//    delete cards;
+//    cards = NULL;
+//    delete orders; // TODO: double-check if orders is to be deleted here
+//    orders = NULL;
 
-// TODO: implement setters and getters
+}

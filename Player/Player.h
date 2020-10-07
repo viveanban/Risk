@@ -2,6 +2,9 @@
 #define RISK_PLAYER_H
 
 #include "../Map/Map.h"
+#include <string>
+
+using namespace std;
 
 /**
 * This class represents a Player in the Risk game.
@@ -10,8 +13,8 @@ class Player {
 private:
     string playerName;
     vector<Territory *> territories;
-//    vector<Card *> cards;
-//    vector<Order *> orders;
+    //    OrdersList* orders;
+    //    Hand* cards;
 public:
      Player();
      ~Player();
@@ -30,19 +33,21 @@ public:
 
      void setTerritories(vector<Territory *> &territories);
 
+     // TODO: create setters and getters for other two variables
+
      /**
      * This method returns a list of territories that need to be defended.
      *
      * @return Vector list of Territory pointers
      */
-     vector<Territory *> &toDefend();
+     vector<Territory *> toDefend();
 
     /**
     * This method returns a list of territories that need to be attacked.
     *
     * @return Vector list of Territory pointers
     */
-     vector<Territory *> &toAttack();
+     vector<Territory *> toAttack();
 
     /**
     * This method allows the Player to issue an order.
