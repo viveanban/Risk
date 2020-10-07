@@ -19,7 +19,10 @@ int main() {
     cout << "-----------Original OrderList-----------" << endl;
     list.print();
     cout << "-----------Test Move Deploy to 3rd place-----------" << endl;
-    list.move(overToMove, 3);
+    list.move(overToMove, 2);
+    list.print();
+    cout << "-----------Test Move Deploy to 1st place-----------" << endl;
+    list.move(overToMove, 0);
     list.print();
     cout << "-----------Test Remove Bomb Order-----------" << endl;
     list.remove(orderToRemove);

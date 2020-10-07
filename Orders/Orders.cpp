@@ -94,7 +94,7 @@ void NegotiateOrder::execute() {
 NegotiateOrder::NegotiateOrder() {description = "Negotiate!";}
 
 //--------------------- ORDERLIST --------------------------------------------------------------------------------------
-OrdersList::OrdersList() {}
+OrdersList::OrdersList() : orderList() {}
 
 void OrdersList::add(Order *order) {
     orderList.push_back(order);
@@ -107,24 +107,23 @@ bool OrdersList::remove(Order *order) {
         orderList.erase(position);
         return true;
     }
+    cout << "Error deleting order." << endl;
     return false;
 }
 bool OrdersList::move(Order * order, int destination) {
-    auto oldPosition = find(orderList.begin(), orderList.end(), order);
-    const int oldIndex = distance(orderList.begin(), oldPosition);
+    if (destination < orderList.size()) {
+        auto oldPosition = find(orderList.begin(), orderList.end(), order);
+        const int oldIndex = distance(orderList.begin(), oldPosition);
 
-    // == orderList.end() means the element was not found
-    if (oldPosition != orderList.end() && oldIndex != destination) {
-        Order * copy = order;
-        orderList.insert(orderList.begin() + destination, copy);
-
-        if(oldIndex < destination){
+        // == orderList.end() means the element was not found
+        if (oldPosition != orderList.end() && oldIndex != destination) {
+            Order *copy = order;
             orderList.erase(orderList.begin() + oldIndex);
-        }else if(oldIndex > destination) {
-            orderList.erase(orderList.begin() + oldIndex + 1);
+            orderList.insert(orderList.begin() + destination, copy);
+            return true;
         }
-        return true;
     }
+    cout << "Error moving order, please check indexes." << endl;
     return false;
 }
 
