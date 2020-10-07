@@ -1,7 +1,3 @@
-//
-// Created by Viveka Anban on 03-10-2020.
-//
-
 #include <iostream>
 #include <algorithm>
 #include "Orders.h"
@@ -137,3 +133,17 @@ void OrdersList::executeAll() {
         odr->execute();
     }
 }
+
+OrdersList::~OrdersList() {
+    for (auto o: orderList) {
+        delete o;
+    }
+    orderList.clear();
+}
+
+// Copy Constructor (Needs to be fixed, not required for now)
+//OrdersList::OrdersList(const OrdersList &original) {
+//    orderList = vector<Order *>(original.orderList.size());
+//    for (int i = 0; i < orderList.size(); i++)
+//        orderList[i] = new Order(*original.orderList[i]);
+//}

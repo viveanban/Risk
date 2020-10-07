@@ -1,7 +1,3 @@
-//
-// Created by Viveka Anban on 03-10-2020.
-//
-
 #ifndef RISK_ORDERS_H
 #define RISK_ORDERS_H
 
@@ -9,10 +5,13 @@
 #include <iostream>
 
 using namespace std;
-
+/**
+ * This class represents an Order that a player can give for the Risk Game
+ * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
+ */
 class Order {
 public:
-    string description = "";
+    string description;
     friend ostream &operator<<(ostream &stream, Order &order);
     // The following methods are pure virtual functions (must be overridden)
     virtual bool validate() =0;
@@ -25,9 +24,9 @@ public:
     DeployOrder();
 
 private:
-    bool validate();
+    bool validate() override;
 
-    void execute();
+    void execute() override;
 };
 
 class AdvanceOrder : public Order {
@@ -35,9 +34,9 @@ public:
     AdvanceOrder();
 
 private:
-    bool validate();
+    bool validate() override;
 
-    void execute();
+    void execute() override;
 };
 
 class BombOrder : public Order {
@@ -46,9 +45,9 @@ public:
 
 private:
 
-    bool validate();
+    bool validate() override;
 
-    void execute();
+    void execute() override;
 };
 
 class BlockadeOrder : public Order {
@@ -56,9 +55,9 @@ public:
     BlockadeOrder();
 
 private:
-    bool validate();
+    bool validate() override;
 
-    void execute();
+    void execute() override;
 };
 
 class AirliftOrder : public Order {
@@ -66,9 +65,9 @@ public:
     AirliftOrder();
 
 private:
-    bool validate();
+    bool validate() override;
 
-    void execute();
+    void execute() override;
 };
 
 class NegotiateOrder : public Order {
@@ -76,11 +75,15 @@ public:
     NegotiateOrder();
 
 private:
-    bool validate();
+    bool validate() override;
 
-    void execute();
+    void execute() override;
 };
 
+/**
+ * This class represents a list of orders for the Risk game
+ * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
+ */
 class OrdersList {
 
 private:
@@ -89,9 +92,12 @@ private:
 public:
     OrdersList();
 
+    ~OrdersList();
+// TODO: figure out how copy constructor works with inheritance.
+//    OrdersList(const OrdersList &original);
+
     void add(Order *order);
 
-    //TODO: Check with TA if it's ok to change method name to remove b/c delete() is reserved
     bool remove(Order *order);
 
     bool move(Order *order, int destination);
