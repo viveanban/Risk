@@ -12,13 +12,24 @@ using namespace std;
 class Order {
 public:
     string description;
+
     friend ostream &operator<<(ostream &stream, Order &order);
     // The following methods are pure virtual functions (must be overridden)
-    virtual bool validate() =0;
+    /**
+     * Checks if the Order given is a valid order.
+     * @return boolean
+     */
+    virtual bool validate() = 0;
 
-    virtual void execute() =0;
+    /**
+     * Executes the Order's actions.
+     */
+    virtual void execute() = 0;
 };
 
+/**
+ *
+ */
 class DeployOrder : public Order {
 public:
     DeployOrder();
@@ -95,11 +106,25 @@ public:
     ~OrdersList();
 // TODO: figure out how copy constructor works with inheritance.
 //    OrdersList(const OrdersList &original);
-
+    /**
+     * Adds an Order to the list of Orders
+     * @param order
+     */
     void add(Order *order);
 
+    /**
+     * Deletes an Order from the list of Orders
+     * @param order
+     * @return boolean indicating order removed successfully
+     */
     bool remove(Order *order);
 
+    /**
+     * Moves an order to the given destination index
+     * @param order
+     * @param destination
+     * @return boolean indicating if move was successful
+     */
     bool move(Order *order, int destination);
 
     void print();

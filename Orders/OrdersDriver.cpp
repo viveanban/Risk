@@ -2,7 +2,7 @@
 #include "Orders.h"
 
 int main() {
-    OrdersList *list = new OrdersList;
+    OrdersList *list = new OrdersList();
     Order *overToMove = new DeployOrder();
     Order *orderToRemove = new BombOrder();
     list->add(overToMove);
