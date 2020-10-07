@@ -23,37 +23,42 @@ private:
 public:
     Territory();
 
+    // No Destructor method because it would cause a loop
+
     Territory(const Territory &original);
 
-    Territory& operator=(const Territory& otherTerritory);
+    Territory &operator=(const Territory &otherTerritory);
 
-    friend std::ostream &operator<<(std::ostream &stream, Territory c);
+    friend std::ostream &operator<<(std::ostream &stream, Territory &c);
 
+    // Getters
     string getTerritoryName();
-
-    void setTerritoryName(string territoryName);
 
     string getOwner();
 
-    void setOwner(string owner);
-
     int getTerritoryId();
-
-    void setTerritoryId(int territoryId);
 
     int getUnitNbr();
 
-    void setUnitNbr(int unitNbr);
+    vector<Territory *> &getAdjList();
 
     int getContinentId();
 
+    // Setters
+    void setTerritoryName(string territoryName);
+
+    void setOwner(string owner);
+
+    void setTerritoryId(int territoryId);
+
+    void setUnitNbr(int unitNbr);
+
     void setContinentId(int continentId);
 
-    void addLink(Territory *n);
-
-    vector<Territory *> &getAdjList();
-
     void setAdjList(vector<Territory *> &adjList);
+
+    // Adds an edge between two territories
+    void addLink(Territory *n);
 };
 
 /**
@@ -73,28 +78,35 @@ private:
 public:
     Continent();
 
+    // No Destructor method because it would cause a loop
+
+    // copy constructor
     Continent(const Continent &original);
 
-    Continent& operator=(const Continent& otherContinent);
+    Continent &operator=(const Continent &otherContinent);
 
-    friend std::ostream &operator<<(std::ostream &stream, Continent c);
+    // output steam operator override
+    friend std::ostream &operator<<(std::ostream &stream, Continent &c);
 
+    // Getters
     int getContinentId();
-
-    void setContinentId(int continentId);
 
     string getContinentName();
 
-    void setContinentName(string continentName);
-
     int getBonus();
+
+    string getOwner();
+
+    vector<Territory *> &getTerritories();
+
+    // Setters
+    void setContinentId(int continentId);
+
+    void setContinentName(string continentName);
 
     void setBonus(int bonus);
 
-    vector<Territory *> &getTerritories();
     void setTerritories(vector<Territory *> territories);
-
-    string getOwner();
 };
 
 /**
@@ -108,35 +120,46 @@ private:
 
     vector<Continent *> continentList;
 
+    // Used to validate if the graph is fully connected
     bool isGraphConnected();
 
+    // Used to validate if the continents are connected
     bool isContinentSubgraphConnected();
 
-    bool isTerritoryContinentOneToOne();
+    // Used to validate if each territory exists in exactly one continent.
+    bool isTerritoryContinentUnique();
 
 public:
     Graph();
 
+    ~Graph();
+
     Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 
+    // Copy Constructor
     Graph(const Graph &original);
 
-    Graph& operator=(const Graph& otherGraph);
+    Graph &operator=(const Graph &otherGraph);
 
-    friend std::ostream &operator<<(std::ostream &stream, Graph c);
+    friend std::ostream &operator<<(std::ostream &stream, Graph &c);
 
+    // Getters
     vector<Territory *> &getTerritoryList();
-
-    void setTerritoryList(vector<Territory *> &territoryList);
 
     vector<Continent *> &getContinentList();
 
+    // Setters
+    void setTerritoryList(vector<Territory *> &territoryList);
+
     void setContinentList(vector<Continent *> &continentList);
 
+    // Add continents individually
     void addContinent(Continent *continent);
 
+    // Add territories individually
     void addTerritory(Territory *territory);
 
+    // Used to validate the graph using the 3 defined conditions for connectivity.
     bool validate();
 };
 
