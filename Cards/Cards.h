@@ -9,21 +9,18 @@
 
 using namespace std;
 
-enum CardType {
-    bomb = 0,
-    reinforcement = 1,
-    blockade = 2,
-    airlift = 3,
-    diplomacy = 4
-};
 
 class Card {
-private:
-    CardType type;
 public:
-    Card();
+    enum CardType {
+        bomb,
+        reinforcement,
+        blockade,
+        airlift,
+        diplomacy
+    };
 
-    Card(CardType type);
+    Card(CardType);
 
     Card(const Card &original);
 
@@ -36,15 +33,16 @@ public:
     CardType getType();
 
     void play();
+
+private:
+    CardType type;
 };
 
 class Deck {
 private:
     vector<Card *> cards;
 public:
-    Deck();
-
-    Deck(vector<Card *> cards);
+    Deck(int size);
 
     Deck(const Deck &original);
 
@@ -58,7 +56,9 @@ public:
 
     void setCards(vector<Card *> cards);
 
-    Card &draw();
+    void addCard(Card* card);
+
+    Card* draw();
 };
 
 class Hand {
@@ -66,14 +66,19 @@ private:
     vector<Card *> cards;
     int cardNbr;
 public:
+    Hand(vector<Card*> cards);
+
+    Hand(const Hand &original);
+
     int getCardNbr() const;
 
     void setCardNbr(int cardNbr);
 
-public:
     const vector<Card *> &getCards() const;
 
     void setCards(const vector<Card *> &cards);
+
+    void removeCard(int index);
 };
 
 #endif //RISK_CARDS_H

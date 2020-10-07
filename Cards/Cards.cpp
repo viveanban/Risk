@@ -12,8 +12,6 @@ using namespace std;
  * Card class
 **/
 
-Card::Card() : type() {}
-
 Card::Card(CardType type) : type(type) {}
 
 Card::Card(const Card &original) {
@@ -26,28 +24,57 @@ Card &Card::operator=(const Card &otherCard) {
 }
 
 std::ostream &operator<<(std::ostream &stream, Card c) {
-    return stream << "\tInformation on Card object:" << endl <<
-                  "\tCard type : " << c.getType() << endl;
-}
-
-void Card::setType(CardType type) {
-    this->type = type;
-}
-
-CardType Card::getType() {
-    return this->type;
+    return stream << "\tInformation on Card object:" << endl;
 }
 
 void Card::play() {
-// to add
+    cout << "Playing a card" << endl;
+    switch (type) {
+        case CardType::bomb:
+            // return new order bomb
+            break;
+        case CardType::reinforcement:
+            // return new order reinforcement
+            break;
+        case CardType::blockade:
+            // return new order blockade
+            break;
+        case CardType::airlift:
+            // return new order airlift
+            break;
+        case CardType::diplomacy:
+            // return new order diplomacy
+            break;
+    }
 }
 
 /**
  * DECK class
  */
-Deck::Deck() : cards() {}
-
-Deck::Deck(vector<Card *> cards) : cards(cards) {}
+Deck::Deck(int size) {
+    int counter = 0;
+    srand((unsigned) time(0));
+    while (counter < size) {
+        switch (rand() % 5) {
+            case 0:
+                cards.push_back(new Card(Card::bomb));
+                break;
+            case 1:
+                cards.push_back(new Card(Card::reinforcement));
+                break;
+            case 2:
+                cards.push_back(new Card(Card::blockade));
+                break;
+            case 3:
+                cards.push_back(new Card(Card::airlift));
+                break;
+            case 4:
+                cards.push_back(new Card(Card::diplomacy));
+                break;
+        }
+        counter++;
+    }
+}
 
 Deck::Deck(const Deck &original) {
     cards = vector<Card *>(original.cards.size());
@@ -80,16 +107,30 @@ vector<Card *> Deck::getCards() {
     return this->cards;
 }
 
-Card &Deck::draw() {
+Card *Deck::draw() {
+    srand((unsigned) time(0));
     int randomIndex = rand() % cards.size();
-    Card &card = (*cards.at(randomIndex));
+    Card *card = cards.at(randomIndex);
     cards.erase(cards.begin() + randomIndex);
     return card;
+}
+
+void Deck::addCard(Card *card) {
+    cout << "Adding card to deck" << endl;
+    cards.push_back(card);
 }
 
 /**
  * Hand class
  */
+
+Hand::Hand(vector<Card *> cards) : cards(cards) {}
+
+Hand::Hand(const Hand &original) {
+    cards = vector<Card *>(original.getCards().size());
+    for (int i = 0; i < cards.size(); i++)
+        cards[i] = new Card(*original.getCards().at(i));
+}
 
 const vector<Card *> &Hand::getCards() const {
     return cards;
@@ -105,4 +146,9 @@ int Hand::getCardNbr() const {
 
 void Hand::setCardNbr(int cardNbr) {
     Hand::cardNbr = cardNbr;
+}
+
+void Hand::removeCard(int index) {
+    cout << "Removing card from hand" << endl;
+    cards.erase(cards.begin() + index);
 }
