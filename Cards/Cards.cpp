@@ -24,26 +24,26 @@ Card &Card::operator=(const Card &otherCard) {
 }
 
 std::ostream &operator<<(std::ostream &stream, Card c) {
-    return stream << "\tInformation on Card object:" << endl;
+    return stream << "\tInformation on Card object:" <<
+                  "\tCard type: " << c.type << endl;
 }
 
 void Card::play() {
-    cout << "Playing a card" << endl;
     switch (type) {
         case CardType::bomb:
-            // return new order bomb
+            cout << "played bomb " << endl;
             break;
         case CardType::reinforcement:
-            // return new order reinforcement
+            cout << "played reinforcement " << endl;
             break;
         case CardType::blockade:
-            // return new order blockade
+            cout << "played blockade " << endl;
             break;
         case CardType::airlift:
-            // return new order airlift
+            cout << "played airlift " << endl;
             break;
         case CardType::diplomacy:
-            // return new order diplomacy
+            cout << "played diplomacy " << endl;
             break;
     }
 }
@@ -83,8 +83,10 @@ Deck::Deck(const Deck &original) {
 }
 
 Deck::~Deck() {
-    for (auto p : cards)
+    for (auto p : cards) {
         delete p;
+        p = NULL;
+    }
 }
 
 Deck &Deck::operator=(const Deck &otherDeck) {
@@ -99,12 +101,12 @@ std::ostream &operator<<(std::ostream &stream, Deck c) {
                   "\tNumber of cards in deck: " << c.getCards().size() << endl;
 }
 
-void Deck::setCards(vector<Card *> cards) {
-    this->cards = cards;
+const vector<Card *> &Deck::getCards() const {
+    return cards;
 }
 
-vector<Card *> Deck::getCards() {
-    return this->cards;
+void Deck::setCards(const vector<Card *> &cards) {
+    Deck::cards = cards;
 }
 
 Card *Deck::draw() {

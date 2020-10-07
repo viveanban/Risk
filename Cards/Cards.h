@@ -52,9 +52,9 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, Deck c);
 
-    vector<Card *> getCards();
+    const vector<Card *> &getCards() const;
 
-    void setCards(vector<Card *> cards);
+    void setCards(const vector<Card *> &cards);
 
     void addCard(Card* card);
 
