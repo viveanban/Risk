@@ -7,7 +7,6 @@
  */
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
-// TODO: verify if working properly
 Player::Player(const Player &original) {
     playerName = original.playerName;
     territories = vector<Territory *>(original.territories.size());
@@ -18,7 +17,6 @@ Player::Player(const Player &original) {
     orders = original.orders;
 }
 
-// TODO: verify if working properly
 Player &Player::operator=(const Player &otherPlayer) {
     playerName = otherPlayer.playerName;
     territories = vector<Territory *>(otherPlayer.territories.size());
@@ -31,7 +29,6 @@ Player &Player::operator=(const Player &otherPlayer) {
     return *this;
 }
 
-// TODO: verify if working properly
 std::ostream &operator<<(std::ostream &stream, Player &player) {
     return stream << "\tInformation on Player object:" << endl
                   << "\tPlayer Name: " << player.getPlayerName() << endl
@@ -61,20 +58,13 @@ void Player::issueOrder() {
     // Create Order objects
     DeployOrder* deployOrder = new DeployOrder();
     AdvanceOrder* advanceOrder = new AdvanceOrder();
-
-    // TODO: loop through hand and call play()
-    BombOrder* bombOrder = new BombOrder();
-    BlockadeOrder* blockadeOrder = new BlockadeOrder();
-    AirliftOrder* airliftOrder = new AirliftOrder();
-    NegotiateOrder* negotiateOrder = new NegotiateOrder();
-
-    // Add OrdersList
     orders->add(deployOrder);
     orders->add(advanceOrder);
-    orders->add(bombOrder);
-    orders->add(blockadeOrder);
-    orders->add(airliftOrder);
-    orders->add(negotiateOrder);
+
+//    for(Card* card: handOfCards->getCards()) {
+//        Order* order = card->play();
+//        orders->add(order);
+//    }
 
     cout << "Orders created and added to list of orders for " << this->getPlayerName() << endl;
 }
@@ -113,7 +103,6 @@ void Player::setOrders(OrdersList* orders) {
     this->orders = orders;
 }
 
-// TODO: verify if working properly
 Player::~Player()
 {
     delete handOfCards;
