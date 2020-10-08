@@ -103,7 +103,7 @@ void Player::setTerritories(vector<Territory *> &territories) {
     this->territories = territories;
 }
 
-void Player::setHandofCards(Hand* handOfCards) {
+void Player::setHandOfCards(Hand *handOfCards) {
     this->handOfCards = handOfCards;
 }
 

@@ -38,12 +38,11 @@ int main() {
     cardsP1.push_back(new Card(Card::bomb));
     cardsP1.push_back(new Card(Card::blockade));
     cardsP1.push_back(new Card(Card::airlift));
+    Hand *handP1 = new Hand(cardsP1);
 
     vector<Card *> cardsP2;
-    cardsP1.push_back(new Card(Card::reinforcement));
-    cardsP1.push_back(new Card(Card::diplomacy));
-
-    Hand *handP1 = new Hand(cardsP1);
+    cardsP2.push_back(new Card(Card::reinforcement));
+    cardsP2.push_back(new Card(Card::diplomacy));
     Hand *handP2 = new Hand(cardsP2);
 
     std::cout << "Creating Player 1.." << std::endl;
@@ -54,7 +53,7 @@ int main() {
     Player* p1 = new Player();
     p1->setPlayerName("Player 1");
     p1->setTerritories(territoriesOwnedP1);
-    p1->setHandofCards(handP1);
+    p1->setHandOfCards(handP1);
 
     std::cout << "Creating Player 2.." << std::endl;
     vector<Territory *> territoriesOwnedP2;
@@ -65,7 +64,7 @@ int main() {
     Player* p2 = new Player();
     p2->setPlayerName("Player 2");
     p2->setTerritories(territoriesOwnedP2);
-    p1->setHandofCards(handP2);
+    p2->setHandOfCards(handP2);
 
     std::cout << "Executing toDefend().." << std::endl;
     vector<Territory *> toDefendP1 = p1->toDefend();

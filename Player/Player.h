@@ -41,7 +41,7 @@ public:
 
      void setTerritories(vector<Territory *> &territories);
 
-     void setHandofCards(Hand* handOfCards);
+     void setHandOfCards(Hand *handOfCards);
 
      void setOrders(OrdersList* orders);
 
