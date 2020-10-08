@@ -5,6 +5,7 @@
 #include "Cards.h"
 #include <vector>
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -125,6 +126,8 @@ void Deck::addCard(Card *card) {
 /**
  * Hand class
  */
+
+Hand::Hand() : cardNbr(), cards() {}
 
 Hand::Hand(vector<Card *> cards) : cards(cards) {}
 

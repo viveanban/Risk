@@ -6,6 +6,7 @@
 #define RISK_CARDS_H
 
 #include <vector>
+#include <ostream>
 
 using namespace std;
 
@@ -66,6 +67,8 @@ private:
     vector<Card *> cards;
     int cardNbr;
 public:
+    Hand();
+
     Hand(vector<Card*> cards);
 
     Hand(const Hand &original);
