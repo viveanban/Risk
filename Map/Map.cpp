@@ -215,7 +215,6 @@ bool Graph::isContinentSubgraphConnected() {
 }
 
 bool Graph::isTerritoryContinentUnique() {
-
     set<string> seenTerritories{};
 
     for (Continent *continent : getContinentList()) {
@@ -226,7 +225,6 @@ bool Graph::isTerritoryContinentUnique() {
                 return false;
         }
     }
-
 
     return seenTerritories.size() == getTerritoryList().size();
 }

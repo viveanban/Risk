@@ -61,6 +61,8 @@ void Player::issueOrder() {
     // Create Order objects
     DeployOrder* deployOrder = new DeployOrder();
     AdvanceOrder* advanceOrder = new AdvanceOrder();
+
+    // TODO: loop through hand and call play()
     BombOrder* bombOrder = new BombOrder();
     BlockadeOrder* blockadeOrder = new BlockadeOrder();
     AirliftOrder* airliftOrder = new AirliftOrder();

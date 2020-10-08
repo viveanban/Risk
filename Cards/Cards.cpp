@@ -1,7 +1,3 @@
-//
-// Created by tarek ait hamouda on 2020-10-04.
-//
-
 #include "Cards.h"
 #include <vector>
 #include <iostream>

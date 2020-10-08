@@ -20,12 +20,13 @@
 //    return userInput;
 //}
 //
-
+//
 //int main() {
 //    // Load map
 //    MapLoader mapLoader;
 //    Graph *map;
 //    map = mapLoader.loadMap(getUserInput());
+//    cout << *map << endl;
 //
 //    return 0;
 //}

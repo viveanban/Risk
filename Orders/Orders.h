@@ -28,9 +28,6 @@ public:
     virtual void execute() = 0;
 };
 
-/**
- *
- */
 class DeployOrder : public Order {
 public:
     DeployOrder();
