@@ -36,13 +36,13 @@ Territory &Territory::operator=(const Territory &otherTerritory) {
 }
 
 std::ostream &operator<<(std::ostream &stream, Territory &t) {
-    return stream << "\tInformation on Territory object:" << endl <<
-                  "\tTerritory Name: " << t.getTerritoryName() << endl <<
-                  "\tTerritory ID: " << t.getTerritoryId() <<
-                  "\tContinent id it belongs to: " << t.getContinentId() << endl <<
-                  "\tNumber of adjacent Territories: " << t.getAdjList().size() << endl <<
-                  "\tNumber of unit deployed on territory: " << t.getUnitNbr() << endl <<
-                  "\tOwner of the Territory: " << t.getOwner() << endl;
+    return stream << "Information on Territory object:" << endl
+                  << "Territory Name: " << t.getTerritoryName() << endl
+                  << "Territory ID: " << t.getTerritoryId() << endl
+                  << "Continent id it belongs to: " << t.getContinentId() << endl
+                  << "Number of adjacent Territories: " << t.getAdjList().size() << endl
+                  << "Number of unit deployed on territory: " << t.getUnitNbr() << endl
+                  << "Owner of the Territory: " << t.getOwner() << endl;
 }
 
 string Territory::getTerritoryName() {
@@ -130,9 +130,9 @@ vector<Territory *> &Graph::getTerritoryList() {
 }
 
 std::ostream &operator<<(std::ostream &stream, Graph &g) {
-    return stream << "\tInformation on Graph object:" << endl <<
-                  "\tNumber of Territories: " << g.getTerritoryList().size() << endl <<
-                  "\tNumber of Continents: " << g.getContinentList().size() << endl;
+    return stream << "Information on Graph object:" << endl
+                  << "Number of Territories: " << g.getTerritoryList().size() << endl
+                  << "Number of Continents: " << g.getContinentList().size() << endl;
 }
 
 void Graph::setTerritoryList(vector<Territory *> &territoryList) {
@@ -287,11 +287,11 @@ Continent &Continent::operator=(const Continent &otherContinent) {
 }
 
 std::ostream &operator<<(std::ostream &stream, Continent &c) {
-    return stream << "\tInformation on Continent object:" << endl <<
-                  "\tName: " << c.getContinentName() << endl <<
-                  "\tId: " << c.getContinentId() << endl <<
-                  "\tNumber of countries in it: " << c.getTerritories().size() << endl <<
-                  "\tOwner owning continent (if any): " << c.getOwner() << endl;
+    return stream << "Information on Continent object:" << endl
+                  << "Name: " << c.getContinentName() << endl
+                  << "Id: " << c.getContinentId() << endl
+                  << "Number of countries in it: " << c.getTerritories().size() << endl
+                  << "Owner owning continent (if any): " << c.getOwner() << endl;
 }
 
 int Continent::getContinentId() {
