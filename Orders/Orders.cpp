@@ -134,6 +134,10 @@ void OrdersList::executeAll() {
     }
 }
 
+vector<Order *> &OrdersList::getOrderList() {
+    return this->orderList;
+}
+
 OrdersList::~OrdersList() {
     for (auto o: orderList) {
         delete o;

@@ -127,6 +127,8 @@ void Deck::addCard(Card *card) {
  * Hand class
  */
 
+Hand::Hand() : cardNbr(), cards() {}
+
 Hand::Hand(vector<Card *> cards) : cards(cards) {}
 
 Hand::Hand(const Hand &original) {

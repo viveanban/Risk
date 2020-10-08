@@ -2,6 +2,8 @@
 #define RISK_PLAYER_H
 
 #include "../Map/Map.h"
+#include "../Orders/Orders.h"
+#include "../Cards/Cards.h"
 #include <string>
 
 using namespace std;
@@ -13,8 +15,8 @@ class Player {
 private:
     string playerName;
     vector<Territory *> territories;
-    //    OrdersList* orders;
-    //    Hand* cards;
+    OrdersList* orders;
+    Hand* handOfCards;
 public:
      Player();
      ~Player();
@@ -25,15 +27,23 @@ public:
 
      friend std::ostream &operator<<(std::ostream &stream, Player player);
 
+     // Getters
      string getPlayerName();
-
-     void setPlayerName(string playerName);
 
      vector<Territory *> &getTerritories();
 
+     Hand* getHandofCards();
+
+     OrdersList* getOrders();
+
+     // Setters
+     void setPlayerName(string playerName);
+
      void setTerritories(vector<Territory *> &territories);
 
-     // TODO: create setters and getters for other two variables
+     void setHandofCards(Hand* handOfCards);
+
+     void setOrders(OrdersList* orders);
 
      /**
      * This method returns a list of territories that need to be defended.
@@ -47,16 +57,14 @@ public:
     *
     * @return Vector list of Territory pointers
     */
-     vector<Territory *> toAttack();
+    vector<Territory *> toAttack();
 
     /**
     * This method allows the Player to issue an order.
     *
     * @return void
     */
-     void issueOrder();
-
-
+    void issueOrder();
 };
 
 #endif //RISK_PLAYER_H

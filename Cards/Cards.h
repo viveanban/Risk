@@ -67,6 +67,8 @@ private:
     vector<Card *> cards;
     int cardNbr;
 public:
+    Hand();
+
     Hand(vector<Card*> cards);
 
     Hand(const Hand &original);

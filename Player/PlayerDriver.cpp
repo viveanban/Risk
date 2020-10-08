@@ -3,9 +3,7 @@
 
 int main() {
 
-    // TODO: show that the Player can own hand of cards?
-
-    // 1. Create players
+    std::cout << "Setting Up.." << std::endl;
 
     // Create Territories and their Adjacent Territories
     Territory *t1 = new Territory();
@@ -35,37 +33,51 @@ int main() {
 
     t5->getAdjList().push_back(t4);
 
-    // Player 1
+    // Create Hand
+    vector<Card *> cardsP1;
+    cardsP1.push_back(new Card(Card::bomb));
+    cardsP1.push_back(new Card(Card::blockade));
+    cardsP1.push_back(new Card(Card::airlift));
+
+    vector<Card *> cardsP2;
+    cardsP1.push_back(new Card(Card::reinforcement));
+    cardsP1.push_back(new Card(Card::diplomacy));
+
+    Hand *handP1 = new Hand(cardsP1);
+    Hand *handP2 = new Hand(cardsP2);
+
+    std::cout << "Creating Player 1.." << std::endl;
     vector<Territory *> territoriesOwnedP1;
     territoriesOwnedP1.push_back(t1);
     territoriesOwnedP1.push_back(t2);
 
     Player* p1 = new Player();
-    p1->setTerritories(territoriesOwnedP1);
     p1->setPlayerName("Player 1");
+    p1->setTerritories(territoriesOwnedP1);
+    p1->setHandofCards(handP1);
 
-    // Player 2
+    std::cout << "Creating Player 2.." << std::endl;
     vector<Territory *> territoriesOwnedP2;
     territoriesOwnedP2.push_back(t3);
     territoriesOwnedP2.push_back(t4);
     territoriesOwnedP2.push_back(t5);
 
     Player* p2 = new Player();
-    p2->setTerritories(territoriesOwnedP2);
     p2->setPlayerName("Player 2");
+    p2->setTerritories(territoriesOwnedP2);
+    p1->setHandofCards(handP2);
 
-    // 2. Demonstrate toDefend()
+    std::cout << "Executing toDefend().." << std::endl;
     vector<Territory *> toDefendP1 = p1->toDefend();
     vector<Territory *> toDefendP2 = p2->toDefend();
 
-    // 3. Demonstrate toAttack()
+    std::cout << "Executing toAttack().." << std::endl;
     vector<Territory *> toAttackP1 = p1->toAttack();
     vector<Territory *> toAttackP2 = p2->toAttack();
 
+    std::cout << "Executing issueOrder().." << std::endl;
+    p1->issueOrder();
+    p2->issueOrder();
+
     std::cout << "Execution of Player Terminated" << std::endl;
-
-    // 4. Demonstrate issueOrder()
-//    p1->issueOrder();
-//    p2->issueOrder();
-
 }

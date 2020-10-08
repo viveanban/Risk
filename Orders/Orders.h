@@ -14,6 +14,7 @@ public:
     string description;
 
     friend ostream &operator<<(ostream &stream, Order &order);
+
     // The following methods are pure virtual functions (must be overridden)
     /**
      * Checks if the Order given is a valid order.
@@ -130,6 +131,8 @@ public:
     void print();
 
     void executeAll();
+
+    vector<Order *> &getOrderList();
 };
 
 #endif //RISK_ORDERS_H
