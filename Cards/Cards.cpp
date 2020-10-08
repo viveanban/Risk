@@ -3,6 +3,7 @@
 //
 
 #include "Cards.h"
+#include "../Orders/Orders.h"
 #include <vector>
 #include <iostream>
 
@@ -29,21 +30,26 @@ std::ostream &operator<<(std::ostream &stream, Card c) {
 }
 
 void Card::play() {
+    Order* order;
     switch (type) {
         case CardType::bomb:
-            cout << "played bomb " << endl;
+            order = new BombOrder();
+            cout << "played BombOrder " << endl;
             break;
         case CardType::reinforcement:
             cout << "played reinforcement " << endl;
             break;
         case CardType::blockade:
+            order = new BlockadeOrder();
             cout << "played blockade " << endl;
             break;
         case CardType::airlift:
-            cout << "played airlift " << endl;
+            order = new AirliftOrder;
+            cout << "played AirliftOrder " << endl;
             break;
         case CardType::diplomacy:
-            cout << "played diplomacy " << endl;
+            order = new NegotiateOrder();
+            cout << "played NegotiateOrder " << endl;
             break;
     }
 }
