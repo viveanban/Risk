@@ -25,7 +25,7 @@ public:
 
      Player& operator=(const Player& otherPlayer);
 
-     friend std::ostream &operator<<(std::ostream &stream, Player player);
+     friend std::ostream &operator<<(std::ostream &stream, Player &player);
 
      // Getters
      string getPlayerName();

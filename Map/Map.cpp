@@ -19,8 +19,9 @@ Territory::Territory(const Territory &original) {
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
     adjList = vector<Territory *>(original.adjList.size());
-    for (int i = 0; i < adjList.size(); i++)
+    for (int i = 0; i < adjList.size(); i++) {
         adjList[i] = new Territory(*original.adjList[i]);
+    }
 }
 
 Territory &Territory::operator=(const Territory &otherTerritory) {

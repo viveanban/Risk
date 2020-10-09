@@ -125,7 +125,7 @@ void Deck::addCard(Card *card) {
 
 Hand::Hand() : cardNbr(), cards() {}
 
-Hand::Hand(vector<Card *> cards) : cards(cards) {}
+Hand::Hand(vector<Card *> cards) : cardNbr(), cards(cards) {}
 
 Hand::Hand(const Hand &original) {
     cards = vector<Card *>(original.getCards().size());

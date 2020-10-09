@@ -3,7 +3,7 @@
 
 int main() {
 
-    cout << "Setting Up.." << endl;
+    cout << "--------Setting Up..--------" << endl;
 
     // Create Territories and their Adjacent Territories
     Territory *t1 = new Territory();
@@ -62,16 +62,16 @@ int main() {
     p1->setPlayerName("Player 1");
     p1->setTerritories(territoriesOwnedP1);
     p1->setHandOfCards(handP1);
-//    cout << *p1 << endl;
+    cout << *p1 << endl;
 
     cout << "Creating Player 2..\n" << endl;
     Player* p2 = new Player();
     p2->setPlayerName("Player 2");
     p2->setTerritories(territoriesOwnedP2);
     p2->setHandOfCards(handP2);
-//    cout << *p2 << endl;
+    cout << *p2 << endl;
 
-    cout << "Executing toDefend()..\n" << endl;
+    cout << "--------Executing toDefend()..--------\n" << endl;
 
     vector<Territory *> toDefendP1 = p1->toDefend();
     cout << "Territories to defend by Player 1\n" << endl;
@@ -84,7 +84,7 @@ int main() {
         cout << *territory << endl;
     }
 
-    cout << "Executing toAttack()..\n" << endl;
+    cout << "--------Executing toAttack()..--------\n" << endl;
 
     vector<Territory *> toAttackP1 = p1->toAttack();
     cout << "Territories to attack by Player 1\n" << endl;
@@ -98,9 +98,29 @@ int main() {
         cout << *territory << endl;
     }
 
-    cout << "Executing issueOrder().." << endl;
+    cout << "--------Executing issueOrder()..--------" << endl;
     p1->issueOrder();
     p2->issueOrder();
 
-    cout << "Execution of Player Terminated" << endl;
+//    // Copy constructor
+//    cout << "--------Copy Constructor: Creating a new Player from Player 1-------- \n" << endl;
+//    Player *p3 = new Player(*p1);
+//    cout << "Player 3\n " << *p3 << endl;
+//    cout << "Player 1\n" << *p1 << endl;
+//
+//    // Assignment operator
+//    cout << "--------Assignment Operator: Assigning Player 1 to Player 2-------- \n" << endl;
+//    *p2 = *p1;
+//    cout << "Player 2\n " << *p2 << endl;
+//    cout << "Player 1\n" << *p1 << endl;
+//
+//    // Destructor
+//    delete p1;
+//    p1 = nullptr;
+//    delete p2;
+//    p2 = nullptr;
+//    delete p3;
+//    p3 = nullptr;
+
+    cout << "--------Execution of Player Terminated--------" << endl;
 }
