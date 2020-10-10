@@ -11,8 +11,8 @@ using namespace std;
 /**
  * MapLoader Class implementation
  */
-const string MAP_DIRECTORY = "../maps/";
 const string MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
+const string MAP_DIRECTORY = "../maps/";
 const string CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
 const string COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
 const string BORDER_REGEX = "(\\d+\\s+)+\\d+";
@@ -22,8 +22,8 @@ enum Section {
 };
 
 Section currentSection;
-vector<Continent *> continentsList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
-vector<Territory *> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
+vector<Continent *> continentsList;
+vector<Territory *> territoriesList;
 
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 
@@ -43,12 +43,14 @@ Graph *MapLoader::loadMap(const string &mapName) {
     fstream mapFile;
     checkPattern(mapName, MAP_FILENAME_FORMAT_REGEX);
 
-    mapFile.open(MAP_DIRECTORY + mapName, ios::in | ios::binary);
+    mapFile.open(MAP_DIRECTORY + mapName, ios::in);
 
     if (mapFile.is_open()) {
         parseFile(mapFile);
         mapFile.close();
     }
+    else
+        exitWithError();
 
     // Construct Graph object
     auto *graph = new Graph(territoriesList, continentsList);
