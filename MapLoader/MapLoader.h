@@ -16,23 +16,13 @@ using namespace std;
  * This class takes care of creating a Graph object (the map) in the Risk game based on user input.
  */
 class MapLoader {
-public:
-    /**
-     * This method creates the Graph object and returns a pointer to it.
-     *
-     * @return Graph pointer.
-     */
-    static Graph *loadMap(const string& mapName);
-
+private:
     MapLoader() = default;
 
     MapLoader(const MapLoader &original);
 
     MapLoader &operator=(const MapLoader &original);
 
-    friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
-
-private:
     /**
      * This method creates the Graph object and returns a pointer to it.
      *
@@ -87,6 +77,16 @@ private:
      * @param None.
      */
     static void exitWithError();
+
+public:
+    /**
+     * This method creates the Graph object and returns a pointer to it.
+     *
+     * @return Graph pointer.
+     */
+    static Graph *loadMap(const string& mapName);
+
+    friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
 
 };
 
