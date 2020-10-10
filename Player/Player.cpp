@@ -117,7 +117,7 @@ void Player::setOrders(OrdersList* orders) {
 Player::~Player()
 {
     delete handOfCards;
-    handOfCards = NULL;
+    handOfCards = nullptr;
     delete orders;
-    orders = NULL;
+    orders = nullptr;
 }

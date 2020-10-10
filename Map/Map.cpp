@@ -101,6 +101,92 @@ void Territory::setAdjList(vector<int> &adjList) {
 }
 
 /**
+ * Continent Class implementation
+ */
+Continent::Continent() : continentId(), continentName(),
+                         territories(), bonus() {}
+
+Continent::~Continent() {
+    for(auto territory: territories) {
+        delete territory;
+        territory = nullptr;
+    }
+}                         
+
+Continent::Continent(const Continent &original) {
+    continentId = original.continentId;
+    bonus = original.bonus;
+    continentName = original.continentName;
+    territories = vector<Territory *>(original.territories.size());
+    for (int i = 0; i < territories.size(); i++)
+        territories[i] = new Territory(*original.territories[i]);
+}
+
+Continent &Continent::operator=(const Continent &otherContinent) {
+
+    continentName = otherContinent.continentName;
+    continentId = otherContinent.continentId;
+    bonus = otherContinent.bonus;
+    territories = vector<Territory *>(otherContinent.territories.size());
+    for (int i = 0; i < territories.size(); i++)
+        territories[i] = new Territory(*otherContinent.territories[i]);
+
+    return *this;
+}
+
+std::ostream &operator<<(std::ostream &stream, Continent &c) {
+    return stream << "Information on Continent object:" << endl
+                  << "Name: " << c.getContinentName() << endl
+                  << "Id: " << c.getContinentId() << endl
+                  << "Number of countries in it: " << c.getTerritories().size() << endl
+                  << "Owner owning continent (if any): " << c.getOwner() << endl;
+}
+
+int Continent::getContinentId() {
+    return this->continentId;
+}
+
+void Continent::setContinentId(int continentId) {
+    this->continentId = continentId;
+}
+
+string Continent::getContinentName() {
+    return this->continentName;
+}
+
+void Continent::setContinentName(string continentName) {
+    this->continentName = continentName;
+}
+
+int Continent::getBonus() {
+    return this->bonus;
+}
+
+void Continent::setBonus(int bonus) {
+    this->bonus = bonus;
+}
+
+bool Continent::isSameOwner() {
+    set<Territory *> setOfTerritoriesInContinent;
+    for (Territory *territory : getTerritories()) {
+        setOfTerritoriesInContinent.insert(territory);
+    }
+    return setOfTerritoriesInContinent.size() == 1;
+}
+
+Player *Continent::getOwner() {
+    return isSameOwner() ? (*getTerritories().at(0)).getOwner() : nullptr;
+}
+
+vector<Territory *> &Continent::getTerritories() {
+    return this->territories;
+}
+
+void Continent::setTerritories(vector<Territory *> territories) {
+    this->territories = territories;
+}
+
+/**
  * Graph Class implementation
  */
 Graph::Graph() : territoryList() {}
@@ -271,83 +357,4 @@ Territory *Graph::getTerritoryById(int id) {
             return t;
     }
     return nullptr;
-}
-
-/**
- * Continent Class implementation
- */
-Continent::Continent() : continentId(), continentName(),
-                         territories(), bonus() {}
-
-Continent::Continent(const Continent &original) {
-    continentId = original.continentId;
-    bonus = original.bonus;
-    continentName = original.continentName;
-    territories = vector<Territory *>(original.territories.size());
-    for (int i = 0; i < territories.size(); i++)
-        territories[i] = new Territory(*original.territories[i]);
-}
-
-Continent &Continent::operator=(const Continent &otherContinent) {
-
-    continentName = otherContinent.continentName;
-    continentId = otherContinent.continentId;
-    bonus = otherContinent.bonus;
-    territories = vector<Territory *>(otherContinent.territories.size());
-    for (int i = 0; i < territories.size(); i++)
-        territories[i] = new Territory(*otherContinent.territories[i]);
-
-    return *this;
-}
-
-std::ostream &operator<<(std::ostream &stream, Continent &c) {
-    return stream << "Information on Continent object:" << endl
-                  << "Name: " << c.getContinentName() << endl
-                  << "Id: " << c.getContinentId() << endl
-                  << "Number of countries in it: " << c.getTerritories().size() << endl
-                  << "Owner owning continent (if any): " << c.getOwner() << endl;
-}
-
-int Continent::getContinentId() {
-    return this->continentId;
-}
-
-void Continent::setContinentId(int continentId) {
-    this->continentId = continentId;
-}
-
-string Continent::getContinentName() {
-    return this->continentName;
-}
-
-void Continent::setContinentName(string continentName) {
-    this->continentName = continentName;
-}
-
-int Continent::getBonus() {
-    return this->bonus;
-}
-
-void Continent::setBonus(int bonus) {
-    this->bonus = bonus;
-}
-
-bool Continent::isSameOwner() {
-    set<Territory *> setOfTerritoriesInContinent;
-    for (Territory *territory : getTerritories()) {
-        setOfTerritoriesInContinent.insert(territory);
-    }
-    return setOfTerritoriesInContinent.size() == 1;
-}
-
-Player *Continent::getOwner() {
-    return isSameOwner() ? (*getTerritories().at(0)).getOwner() : nullptr;
-}
-
-vector<Territory *> &Continent::getTerritories() {
-    return this->territories;
-}
-
-void Continent::setTerritories(vector<Territory *> territories) {
-    this->territories = territories;
 }

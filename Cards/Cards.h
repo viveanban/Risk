@@ -35,7 +35,7 @@ public:
     void setType(CardType type);
 
     /**
-     * th play method should create an order based on the card type and
+     * This method should create an order based on the card type and
      * return it to be used in the issueOrder method of player
      */
     Order *play();

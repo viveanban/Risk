@@ -8,7 +8,6 @@ using namespace std;
 /**
  * Card class
 **/
-
 Card::Card(CardType type) : type(type) {}
 
 Card::Card(const Card &original) {
@@ -21,8 +20,8 @@ Card &Card::operator=(const Card &otherCard) {
 }
 
 std::ostream &operator<<(std::ostream &stream, const Card &c) {
-    return stream << "Information on Card object:" <<
-                  "Card type: " << c.type << endl;
+    return stream << "Information on Card object:"
+                  << "Card type: " << c.type << endl;
 }
 
 Order *Card::play() {
@@ -61,7 +60,7 @@ void Card::setType(Card::CardType type) {
 }
 
 /**
- * DECK class
+ * Deck class
  */
 Deck::Deck(int size) {
     int counter = 0;
@@ -108,8 +107,8 @@ Deck &Deck::operator=(const Deck &otherDeck) {
 }
 
 std::ostream &operator<<(std::ostream &stream, const Deck &d) {
-    return stream << "Information on Deck object:" << endl <<
-                  "Number of cards in deck: " << d.getCards().size() << endl;
+    return stream << "Information on Deck object:" << endl
+                  << "Number of cards in deck: " << d.getCards().size() << endl;
 }
 
 const vector<Card *> &Deck::getCards() const {
@@ -136,7 +135,6 @@ void Deck::addCard(Card *card) {
 /**
  * Hand class
  */
-
 Hand::Hand() : cardNbr(), cards() {}
 
 Hand::Hand(vector<Card *> cards) : cards(cards), cardNbr(cards.size()) {}
@@ -157,8 +155,8 @@ Hand &Hand::operator=(const Hand &otherHand) {
 }
 
 std::ostream &operator<<(std::ostream &stream, const Hand &h) {
-    return stream << "Information on Hand object:" << endl <<
-                  "Number of cards in Hand: " << h.getCards().size() << endl;
+    return stream << "Information on Hand object:" << endl
+                  << "Number of cards in Hand: " << h.getCards().size() << endl;
 }
 
 Hand::~Hand() {
