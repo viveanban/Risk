@@ -150,6 +150,7 @@ Hand::Hand(const Hand &original) {
 
 Hand &Hand::operator=(const Hand &otherHand) {
     cards = vector<Card *>(otherHand.getCards().size());
+    cardNbr = otherHand.cardNbr;
     for (int i = 0; i < cards.size(); i++)
         cards[i] = new Card(*otherHand.getCards().at(i));
     return *this;
