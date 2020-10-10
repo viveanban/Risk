@@ -28,6 +28,9 @@ public:
     virtual void execute() = 0;
 };
 
+/**
+ * Places some armies on one of the current player’s territories.
+ */
 class DeployOrder : public Order {
 public:
     DeployOrder();
@@ -38,6 +41,12 @@ private:
     void execute() override;
 };
 
+/**
+ * Move some armies from one of the current player’s territories (source) to an adjacent territory
+ * (target). If the target territory belongs to the current player, the armies are moved to the target
+ * territory. If the target territory belongs to another player, an attack happens between the two
+ * territories.
+ */
 class AdvanceOrder : public Order {
 public:
     AdvanceOrder();
@@ -48,6 +57,10 @@ private:
     void execute() override;
 };
 
+/**
+ * Destroy half of the armies located on an opponent’s territory that is adjacent to one of the current
+ * player’s territories.
+ */
 class BombOrder : public Order {
 public:
     BombOrder();
@@ -59,6 +72,9 @@ private:
     void execute() override;
 };
 
+/**
+ * Triple the number of armies on one of the current player’s territories and make it a neutral territory
+ */
 class BlockadeOrder : public Order {
 public:
     BlockadeOrder();
@@ -69,6 +85,9 @@ private:
     void execute() override;
 };
 
+/*
+ * Advance some armies from one of the current player’s territories to any another territory.
+ */
 class AirliftOrder : public Order {
 public:
     AirliftOrder();
@@ -79,6 +98,9 @@ private:
     void execute() override;
 };
 
+/**
+ * Prevent attacks between the current player and another player until the end of the turn.
+ */
 class NegotiateOrder : public Order {
 public:
     NegotiateOrder();
@@ -89,6 +111,19 @@ private:
     void execute() override;
 };
 
+class ReinforcementOrder : public Order {
+public:
+    ReinforcementOrder();
+
+    ReinforcementOrder(const ReinforcementOrder &original);
+
+    ReinforcementOrder &operator=(const ReinforcementOrder &order) ;
+
+private:
+    bool validate() override;
+
+    void execute() override;
+};
 /**
  * This class represents a list of orders for the Risk game
  * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.

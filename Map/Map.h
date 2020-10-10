@@ -21,7 +21,7 @@ private:
     int continentId;
     int territoryId;
     int unitNbr;
-    vector<Territory *> adjList;
+    vector<int> adjList;
 public:
     Territory();
 
@@ -42,7 +42,7 @@ public:
 
     int getUnitNbr();
 
-    vector<Territory *> &getAdjList();
+    vector<int> &getAdjList();
 
     int getContinentId();
 
@@ -57,10 +57,10 @@ public:
 
     void setContinentId(int continentId);
 
-    void setAdjList(vector<Territory *> &adjList);
+    void setAdjList(vector<int> &adjList);
 
     // Adds an edge between two territories
-    void addLink(Territory *n);
+    void addLink(int id);
 };
 
 /**
@@ -146,6 +146,8 @@ public:
     vector<Territory *> &getTerritoryList();
 
     vector<Continent *> &getContinentList();
+
+    Territory *getTerritoryById(int id);
 
     // Setters
     void setTerritoryList(vector<Territory *> &territoryList);

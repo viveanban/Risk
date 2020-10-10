@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <iostream>
 #include "Player.h"
 
