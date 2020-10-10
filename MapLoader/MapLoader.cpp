@@ -12,6 +12,7 @@ using namespace std;
  * MapLoader Class implementation
  */
 const string MAP_DIRECTORY = "../maps/";
+const string MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
 const string CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
 const string COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
 const string BORDER_REGEX = "(\\d+\\s+)+\\d+";
@@ -24,10 +25,25 @@ Section currentSection;
 vector<Continent *> continentsList; // Composed of pointers b/c we want to point to 1 single continent object instead of creating new ones
 vector<Territory *> territoriesList; // Vectors are dynamic array so they are in the heap (stack has static size)
 
+MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
+
+MapLoader &MapLoader::operator=(const MapLoader &original) { return *this; }
+
+std::ostream &operator<<(ostream &stream, MapLoader &mapLoader) {
+    return stream << "MapLoader: [continentList size =" << continentsList.size()
+                  << ", territoriesList size = " << continentsList.size() << "]" << endl;
+}
+
 Graph *MapLoader::loadMap(string userInput) {
+    // Have a clear setup when loading a new map
+    continentsList.clear();
+    territoriesList.clear();
+
     // Read map
     string mapName = userInput;
     fstream mapFile;
+    checkPattern(mapName, MAP_FILENAME_FORMAT_REGEX);
+
     mapFile.open(MAP_DIRECTORY + mapName, ios::in | ios::binary);
 
     if (mapFile.is_open()) {
@@ -104,7 +120,7 @@ Continent *MapLoader::createContinents(const string &line, int &continentId) {
 }
 
 Territory *MapLoader::createTerritories(const string &line) {
-    if(continentsList.empty()) exitWithError();
+    if (continentsList.empty()) exitWithError();
 
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
@@ -141,10 +157,11 @@ void MapLoader::createAdjencyList(const string &line) {
             int borderId = atoi(token);
             // TODO: change for something better?
             for (Territory *territory : territoriesList) {
-                if(territory->getTerritoryId() == territoryId) {
+                if (territory->getTerritoryId() == territoryId) {
                     for (Territory *border : territoriesList) {
-                        if(border->getTerritoryId() == borderId) {
-                            territory->getAdjList().push_back(border); // getAdjList returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+                        if (border->getTerritoryId() == borderId) {
+                            territory->getAdjList().push_back(
+                                    borderId); // getAdjList returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
                             break;
                         }
                     }
@@ -157,7 +174,7 @@ void MapLoader::createAdjencyList(const string &line) {
 }
 
 void MapLoader::checkPattern(string line, string pattern) {
-    if (!regex_match (line,regex(pattern))) {
+    if (!regex_match(line, regex(pattern))) {
         exitWithError();
     }
 }

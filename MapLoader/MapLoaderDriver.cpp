@@ -20,12 +20,24 @@
 //    return userInput;
 //}
 //
-
+//
 //int main() {
-//    // Load map
+//    cout << "Getting input from player.. \n";
+//    string userInput = getUserInput();
+//
+//    cout << "Map is being loaded.. \n";
 //    MapLoader mapLoader;
 //    Graph *map;
-//    map = mapLoader.loadMap(getUserInput());
+//    map = mapLoader.loadMap(userInput);
+//    cout << *map << endl;
 //
+//    Graph *mapValid = mapLoader.loadMap("Europe.map");
+//    Graph *mapUnconnected = mapLoader.loadMap("EuropeUnconnected.map");
+//    Graph *mapDuplicateTerritory = mapLoader.loadMap("DuplicateTerritory.map");
+//    Graph *mapIsolateContinent = mapLoader.loadMap("IsolateContinent.map");
+//    cout << "validate outcome for known valid map:\n" << boolalpha << (*mapValid).validate() << endl;
+//    cout << "validate outcome for unconnected map:\n" << boolalpha << (*mapUnconnected).validate() << endl;
+//    cout << "validate outcome for map with duplicated territory:\n" << boolalpha << (*mapDuplicateTerritory).validate() << endl;
+//    cout << "validate outcome for map with unconnected continent:\n" << boolalpha << (*mapIsolateContinent).validate() << endl;
 //    return 0;
 //}

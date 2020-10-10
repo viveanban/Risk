@@ -89,6 +89,25 @@ void NegotiateOrder::execute() {
 
 NegotiateOrder::NegotiateOrder() {description = "Negotiate!";}
 
+// ReinforcementOrder ------------------------------------------------------------------------------------------------------
+
+ReinforcementOrder::ReinforcementOrder() {description = "Reinforce!";}
+
+ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder(){}
+
+ReinforcementOrder &ReinforcementOrder::operator=(const ReinforcementOrder &order) { return *this; }
+
+bool ReinforcementOrder::validate() {
+    cout << "Validating reinforce order." << endl;
+    return true;
+}
+
+void ReinforcementOrder::execute() {
+    if (validate()) {
+        cout << "Executing reinforce order." << endl;
+    }
+}
+
 //--------------------- ORDERLIST --------------------------------------------------------------------------------------
 OrdersList::OrdersList() : orderList() {}
 
@@ -98,7 +117,6 @@ void OrdersList::add(Order *order) {
 
 bool OrdersList::remove(Order *order) {
     auto position = find(orderList.begin(), orderList.end(), order);
-    // == orderList.end() means the element was not found
     if (position != orderList.end()) {
         orderList.erase(position);
         return true;
@@ -111,7 +129,6 @@ bool OrdersList::move(Order * order, int destination) {
         auto oldPosition = find(orderList.begin(), orderList.end(), order);
         const int oldIndex = distance(orderList.begin(), oldPosition);
 
-        // == orderList.end() means the element was not found
         if (oldPosition != orderList.end() && oldIndex != destination) {
             Order *copy = order;
             orderList.erase(orderList.begin() + oldIndex);
@@ -141,6 +158,7 @@ vector<Order *> &OrdersList::getOrderList() {
 OrdersList::~OrdersList() {
     for (auto o: orderList) {
         delete o;
+        o = nullptr;
     }
     orderList.clear();
 }

@@ -60,7 +60,7 @@ public:
 
     Deck &operator=(const Deck &otherDeck);
 
-    friend std::ostream &operator<<(std::ostream &stream, Deck d);
+    friend std::ostream &operator<<(std::ostream &stream, const Deck &d);
 
     const vector<Card *> &getCards() const;
 

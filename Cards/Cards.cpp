@@ -33,7 +33,7 @@ Order *Card::play() {
             cout << "played bomb " << endl;
             break;
         case CardType::reinforcement:
-            order = nullptr;
+            order = new ReinforcementOrder();
             cout << "played reinforcement " << endl;
             break;
         case CardType::blockade:
@@ -107,9 +107,9 @@ Deck &Deck::operator=(const Deck &otherDeck) {
     return *this;
 }
 
-std::ostream &operator<<(std::ostream &stream, Deck c) {
+std::ostream &operator<<(std::ostream &stream, const Deck &d) {
     return stream << "Information on Deck object:" << endl <<
-                  "Number of cards in deck: " << c.getCards().size() << endl;
+                  "Number of cards in deck: " << d.getCards().size() << endl;
 }
 
 const vector<Card *> &Deck::getCards() const {
