@@ -1,8 +1,8 @@
-//#include "./Cards.h"
-//#include <iostream>
-//
-//using namespace std;
-//
+#include "./Cards.h"
+#include <iostream>
+
+using namespace std;
+
 //int main() {
 //    Deck *deck = new Deck(10);
 //
@@ -38,4 +38,3 @@
 //    cout << "Deck size: "<< deck->getCards().size() << endl;
 //    cout << "Cards currently in hand: "<< hand->getCards().size() << endl;
 //}
-//
