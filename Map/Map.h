@@ -82,12 +82,10 @@ public:
 
     // No Destructor method because it would cause a loop
 
-    // copy constructor
     Continent(const Continent &original);
 
     Continent &operator=(const Continent &otherContinent);
 
-    // output steam operator override
     friend std::ostream &operator<<(std::ostream &stream, Continent &c);
 
     // Getters
@@ -138,7 +136,6 @@ public:
 
     Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 
-    // Copy Constructor
     Graph(const Graph &original);
 
     Graph &operator=(const Graph &otherGraph);

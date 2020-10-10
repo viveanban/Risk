@@ -25,7 +25,7 @@ public:
 
      Player& operator=(const Player& otherPlayer);
 
-     friend std::ostream &operator<<(std::ostream &stream, Player player);
+     friend std::ostream &operator<<(std::ostream &stream, Player &player);
 
      // Getters
      string getPlayerName();
@@ -48,16 +48,16 @@ public:
      /**
      * This method returns a list of territories that need to be defended.
      *
-     * @return Vector list of Territory pointers
+     * @return Vector list of Territory IDs
      */
-     vector<Territory *> toDefend();
+     vector<int> toDefend();
 
     /**
     * This method returns a list of territories that need to be attacked.
     *
-    * @return Vector list of Territory pointers
+    * @return Vector list of Territory IDs
     */
-    vector<Territory *> toAttack();
+    vector<int> toAttack();
 
     /**
     * This method allows the Player to issue an order.

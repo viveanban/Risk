@@ -1,7 +1,3 @@
-//
-// Created by tarek ait hamouda on 2020-10-04.
-//
-
 #ifndef RISK_CARDS_H
 #define RISK_CARDS_H
 
@@ -45,9 +41,9 @@ private:
 public:
     Deck(int size);
 
-    Deck(const Deck &original);
-
     ~Deck();
+
+    Deck(const Deck &original);
 
     Deck &operator=(const Deck &otherTerritory);
 
