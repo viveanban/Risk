@@ -7,6 +7,8 @@
 
 using namespace std;
 
+class Player;
+
 /**
  * This class represents a territory in the Risk game
  * A Territory represents any land that can be owned by a player.
@@ -15,7 +17,7 @@ using namespace std;
 class Territory {
 private:
     string territoryName;
-    string owner; // until we have a Player object we will use string
+    Player* owner;
     int continentId;
     int territoryId;
     int unitNbr;
@@ -34,7 +36,7 @@ public:
     // Getters
     string getTerritoryName();
 
-    string getOwner();
+    Player* getOwner();
 
     int getTerritoryId();
 
@@ -47,7 +49,7 @@ public:
     // Setters
     void setTerritoryName(string territoryName);
 
-    void setOwner(string owner);
+    void setOwner(Player *owner);
 
     void setTerritoryId(int territoryId);
 

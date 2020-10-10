@@ -11,10 +11,8 @@ using namespace std;
  * Territory Class implementation
  */
 
-Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(),
-                         adjList() {}
+Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(), adjList() {}
 
-// Copy Constructor
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
     owner = original.owner;
@@ -80,11 +78,11 @@ void Territory::setContinentId(int continentId) {
     this->continentId = continentId;
 }
 
-string Territory::getOwner() {
+Player* Territory::getOwner() {
     return this->owner;
 }
 
-void Territory::setOwner(string owner) {
+void Territory::setOwner(Player *owner) {
     this->owner = owner;
 }
 
@@ -109,7 +107,6 @@ Graph::Graph() : territoryList() {}
 Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
                                                                                        continentList(continentList) {}
 
-// Copy Constructor
 Graph::Graph(const Graph &original) {
     territoryList = vector<Territory *>(original.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
@@ -120,7 +117,6 @@ Graph::Graph(const Graph &original) {
 }
 
 Graph &Graph::operator=(const Graph &otherGraph) {
-
     territoryList = vector<Territory *>(otherGraph.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
         territoryList[i] = new Territory(*otherGraph.territoryList[i]);
@@ -284,7 +280,6 @@ Territory *Graph::getTerritoryById(int id) {
 Continent::Continent() : continentId(), continentName(),
                          territories(), bonus() {}
 
-// Copy Constructor
 Continent::Continent(const Continent &original) {
     continentId = original.continentId;
     bonus = original.bonus;
@@ -352,9 +347,9 @@ bool Continent::isSameOwner() {
 
 string Continent::getOwner() {
 
-    if (isSameOwner()) {
-        return getTerritories().at(0)->getOwner();
-    }
+//    if (isSameOwner()) {
+//        return getTerritories().at(0)->getOwner().getPlayerName();
+//    }
     return "";
 }
 
