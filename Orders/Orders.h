@@ -15,6 +15,8 @@ public:
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
+    virtual ~Order() = default;
+
     // The following methods are pure virtual functions (must be overridden)
     /**
      * Checks if the Order given is a valid order.

@@ -163,10 +163,3 @@ OrdersList::~OrdersList() {
     }
     orderList.clear();
 }
-
-// Copy Constructor (Needs to be fixed, not required for now)
-//OrdersList::OrdersList(const OrdersList &original) {
-//    orderList = vector<Order *>(original.orderList.size());
-//    for (int i = 0; i < orderList.size(); i++)
-//        orderList[i] = new Order(*original.orderList[i]);
-//}
