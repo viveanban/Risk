@@ -48,16 +48,16 @@ public:
      /**
      * This method returns a list of territories that need to be defended.
      *
-     * @return Vector list of Territory pointers
+     * @return Vector list of Territory IDs
      */
-     vector<Territory *> toDefend();
+     vector<int> toDefend();
 
     /**
     * This method returns a list of territories that need to be attacked.
     *
-    * @return Vector list of Territory pointers
+    * @return Vector list of Territory IDs
     */
-    vector<Territory *> toAttack();
+    vector<int> toAttack();
 
     /**
     * This method allows the Player to issue an order.
