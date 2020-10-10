@@ -232,6 +232,7 @@ vector<Order *> &OrdersList::getOrderList() {
 OrdersList::~OrdersList() {
     for (auto o: orderList) {
         delete o;
+        o = nullptr;
     }
     orderList.clear();
 }
