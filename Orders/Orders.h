@@ -146,9 +146,8 @@ private:
      * the assignment operator.
      * @param originalVector: vector whose contents will be copied
      * @param destinationVector: vector which will be updated with the copies
-     * @return the destinationVector updated with a copy of the contents of the original
      */
-    static vector<Order *> &getOrderListCopyFrom(vector<Order *> originalVector, vector<Order *> destinationVector);
+    static void copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector);
 
 public:
     OrdersList();

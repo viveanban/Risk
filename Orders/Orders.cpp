@@ -148,17 +148,19 @@ OrdersList::OrdersList() : orderList() {}
 
 OrdersList::OrdersList(const OrdersList &original) {
     auto newOrderList = vector<Order *>();
-    orderList = getOrderListCopyFrom(original.orderList, newOrderList);
+    copyOrderList(original.orderList, newOrderList);
+    orderList = newOrderList;
 }
 
 OrdersList &OrdersList::operator=(const OrdersList &original) {
     auto newOrderList = vector<Order *>();
-    orderList = getOrderListCopyFrom(original.orderList, newOrderList);
+    copyOrderList(original.orderList, newOrderList);
+    orderList = newOrderList;
     return *this;
 }
 
-vector<Order *> &OrdersList::getOrderListCopyFrom(vector<Order *> originalVector, vector<Order *> destinationVector) {
-    for (auto &order : originalVector) {
+void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector) {
+    for (auto order : originalVector) {
         if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
             destinationVector.push_back(new DeployOrder(*deployOrder));
         } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
@@ -177,7 +179,6 @@ vector<Order *> &OrdersList::getOrderListCopyFrom(vector<Order *> originalVector
             cout << "WARNING: Order of unknown type" << endl;
         }
     }
-    return destinationVector;
 }
 
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {
