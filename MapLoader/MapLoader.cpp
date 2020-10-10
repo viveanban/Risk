@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 #include <regex>
 
 using namespace std;
@@ -34,13 +34,12 @@ std::ostream &operator<<(ostream &stream, MapLoader &mapLoader) {
                   << ", territoriesList size = " << continentsList.size() << "]" << endl;
 }
 
-Graph *MapLoader::loadMap(string userInput) {
+Graph *MapLoader::loadMap(const string &mapName) {
     // Have a clear setup when loading a new map
     continentsList.clear();
     territoriesList.clear();
 
     // Read map
-    string mapName = userInput;
     fstream mapFile;
     checkPattern(mapName, MAP_FILENAME_FORMAT_REGEX);
 
@@ -52,7 +51,7 @@ Graph *MapLoader::loadMap(string userInput) {
     }
 
     // Construct Graph object
-    Graph *graph = new Graph(territoriesList, continentsList);
+    auto *graph = new Graph(territoriesList, continentsList);
 
     return graph;
 }
@@ -77,7 +76,7 @@ void MapLoader::parseFile(fstream &mapFile) {
                 territoriesList.push_back(createTerritories(line));
             } else if (currentSection == borders) {
                 checkPattern(line, BORDER_REGEX);
-                createAdjencyList(line);
+                constructAdjencyList(line);
             }
         }
     }
@@ -103,14 +102,14 @@ bool MapLoader::updateSection(string &line) {
 Continent *MapLoader::createContinents(const string &line, int &continentId) {
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
-    Continent *continent = new Continent(); // must create with new operator or else will be deleted at end of the method
-    while (token != NULL) {
+    auto *continent = new Continent(); // must create with new operator or else will be deleted at end of the method
+    while (token != nullptr) {
         if (counter == 0) {
             continent->setContinentName(token);
         } else if (counter == 1) {
             continent->setBonus(atoi(token));
         }
-        token = strtok(NULL, " ");
+        token = strtok(nullptr, " ");
         counter++;
     }
 
@@ -124,8 +123,8 @@ Territory *MapLoader::createTerritories(const string &line) {
 
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
-    Territory *territory = new Territory();
-    while (token != NULL) {
+    auto *territory = new Territory();
+    while (token != nullptr) {
         if (counter == 0) {
             territory->setTerritoryId(atoi(token));
         } else if (counter == 1) {
@@ -133,29 +132,26 @@ Territory *MapLoader::createTerritories(const string &line) {
         } else if (counter == 2) {
             territory->setContinentId(atoi(token));
         }
-        token = strtok(NULL, " ");
+        token = strtok(nullptr, " ");
         counter++;
     }
 
-    // TODO: break into two
     continentsList.at(territory->getContinentId() - 1)->getTerritories().push_back(territory);
 
     return territory;
 }
 
-// TODO: change method name
-void MapLoader::createAdjencyList(const string &line) {
+void MapLoader::constructAdjencyList(const string &line) {
     if (territoriesList.empty()) exitWithError();
 
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
     int territoryId;
-    while (token != NULL) {
+    while (token != nullptr) {
         if (counter == 0) {
             territoryId = atoi(token);
         } else if (counter >= 1) {
             int borderId = atoi(token);
-            // TODO: change for something better?
             for (Territory *territory : territoriesList) {
                 if (territory->getTerritoryId() == territoryId) {
                     for (Territory *border : territoriesList) {
@@ -168,12 +164,12 @@ void MapLoader::createAdjencyList(const string &line) {
                 }
             }
         }
-        token = strtok(NULL, " ");
+        token = strtok(nullptr, " ");
         counter++;
     }
 }
 
-void MapLoader::checkPattern(string line, string pattern) {
+void MapLoader::checkPattern(const string &line, const string &pattern) {
     if (!regex_match(line, regex(pattern))) {
         exitWithError();
     }

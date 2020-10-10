@@ -5,6 +5,7 @@
 #include <iostream>
 
 using namespace std;
+
 /**
  * This class represents an Order that a player can give for the Risk Game
  * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
@@ -26,6 +27,8 @@ public:
      * Executes the Order's actions.
      */
     virtual void execute() = 0;
+
+    virtual ~Order();
 };
 
 /**
@@ -34,6 +37,10 @@ public:
 class DeployOrder : public Order {
 public:
     DeployOrder();
+
+    DeployOrder(const DeployOrder &original);
+
+    DeployOrder &operator=(const DeployOrder &order) ;
 
 private:
     bool validate() override;
@@ -51,6 +58,9 @@ class AdvanceOrder : public Order {
 public:
     AdvanceOrder();
 
+    AdvanceOrder(const AdvanceOrder &original);
+
+    AdvanceOrder &operator=(const AdvanceOrder &order);
 private:
     bool validate() override;
 
@@ -64,6 +74,11 @@ private:
 class BombOrder : public Order {
 public:
     BombOrder();
+
+    BombOrder(const BombOrder &original);
+
+    BombOrder &operator=(const BombOrder &order);
+
 
 private:
 
@@ -79,23 +94,31 @@ class BlockadeOrder : public Order {
 public:
     BlockadeOrder();
 
+    BlockadeOrder(const BlockadeOrder &original);
+
+    BlockadeOrder &operator=(const BlockadeOrder &order) ;
 private:
     bool validate() override;
 
     void execute() override;
+
 };
 
-/*
+/**
  * Advance some armies from one of the current player’s territories to any another territory.
  */
 class AirliftOrder : public Order {
 public:
     AirliftOrder();
 
+    AirliftOrder(const AirliftOrder &original);
+
+    AirliftOrder &operator=(const AirliftOrder &order);
 private:
     bool validate() override;
 
     void execute() override;
+
 };
 
 /**
@@ -104,6 +127,10 @@ private:
 class NegotiateOrder : public Order {
 public:
     NegotiateOrder();
+
+    NegotiateOrder(const NegotiateOrder &original);
+
+    NegotiateOrder &operator=(const NegotiateOrder &order);
 
 private:
     bool validate() override;
@@ -126,19 +153,32 @@ private:
 };
 /**
  * This class represents a list of orders for the Risk game
- * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
+ * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate, Reinforce.
  */
 class OrdersList {
 
 private:
     vector<Order *> orderList;
 
+    /**
+     * Helper method used to create a deep copy of an existing vector of Order *. Useful for the copy constructor and
+     * the assignment operator.
+     * @param originalVector: vector whose contents will be copied
+     * @param destinationVector: vector which will be updated with the copies
+     */
+    static void copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector);
+
 public:
     OrdersList();
 
     ~OrdersList();
-// TODO: figure out how copy constructor works with inheritance.
-//    OrdersList(const OrdersList &original);
+
+    OrdersList(const OrdersList &original);
+
+    OrdersList &operator=(const OrdersList &original);
+
+    friend ostream &operator<<(ostream &stream, OrdersList &ordersList);
+
     /**
      * Adds an Order to the list of Orders
      * @param order
@@ -159,8 +199,6 @@ public:
      * @return boolean indicating if move was successful
      */
     bool move(Order *order, int destination);
-
-    void print();
 
     void executeAll();
 

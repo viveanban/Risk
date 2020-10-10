@@ -22,7 +22,7 @@ public:
      *
      * @return Graph pointer.
      */
-    Graph *loadMap(string userInput);
+    static Graph *loadMap(const string& mapName);
 
     MapLoader() = default;
 
@@ -39,14 +39,14 @@ private:
      * @return void.
      * @param fstream: the file that will be parsed.
      */
-    void parseFile(fstream &mapFile);
+    static void parseFile(fstream &mapFile);
 
     /**
      * This method keeps track and updates the current section in which the parsing is happening.
      *
      * @param string: the line being read.
      */
-    bool updateSection(string &line);
+    static bool updateSection(string &line);
 
     /**
      * This method creates a Continent object by parsing a Continent entry from the file.
@@ -54,7 +54,7 @@ private:
      * @return Continent pointer.
      * @param string: the line being read, int: the continent id (reference).
      */
-    Continent *createContinents(const string &line, int &continentId);
+    static Continent *createContinents(const string &line, int &continentId);
 
     /**
      * This method creates a Territory object by parsing a Country entry from the file.
@@ -62,15 +62,15 @@ private:
      * @return Territory pointer.
      * @param string: the line being read.
      */
-    Territory *createTerritories(const string &line);
+    static Territory *createTerritories(const string &line);
 
     /**
      * This method populates the adjList vector of a Territory by parsing a Border entry from the file.
      *
      * @return void.
      * @param string: the line being read.
-     */
-    void createAdjencyList(const string &line);
+     static */
+    static void constructAdjencyList(const string &line);
 
     /**
      * This method verifies that a parsed line follows a specific pattern depending under which section it resides.
@@ -78,7 +78,7 @@ private:
      * @return void.
      * @param string: the line being read, string: the regex pattern.
      */
-    void checkPattern(string line, string pattern);
+    static void checkPattern(const string& line, const string& pattern);
 
     /**
      * This method exits the program with an error.
@@ -86,7 +86,7 @@ private:
      * @return void.
      * @param None.
      */
-    void exitWithError();
+    static void exitWithError();
 
 };
 

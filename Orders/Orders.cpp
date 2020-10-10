@@ -4,9 +4,20 @@
 
 using namespace std;
 
+// Superclass: Order ---------------------------------------------------------------------------------------------------
+
 std::ostream &operator<<(std::ostream &stream, Order &order) {
     return stream << order.description << endl;
 }
+
+Order::~Order() = default;
+
+// DeployOrder ---------------------------------------------------------------------------------------------------------
+DeployOrder::DeployOrder() { description = "Deploy!"; }
+
+DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}
+
+DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
 
 bool DeployOrder::validate() {
     cout << "Validating deploy order." << endl;
@@ -14,11 +25,17 @@ bool DeployOrder::validate() {
 }
 
 void DeployOrder::execute() {
-    if(validate()) {
+    if (validate()) {
         cout << "Executing deploy order." << endl;
     }
 }
-DeployOrder::DeployOrder() { description = "Deploy!";}
+
+// AdvanceOrder --------------------------------------------------------------------------------------------------------
+AdvanceOrder::AdvanceOrder() { description = "Advance!"; }
+
+AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
+
+AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &order) { return *this; }
 
 bool AdvanceOrder::validate() {
     cout << "Validating advance order." << endl;
@@ -27,12 +44,17 @@ bool AdvanceOrder::validate() {
 }
 
 void AdvanceOrder::execute() {
-    if(validate()) {
+    if (validate()) {
         cout << "Executing advance order." << endl;
     }
 }
 
-AdvanceOrder::AdvanceOrder() {description = "Advance!";}
+// BombOrder -----------------------------------------------------------------------------------------------------------
+BombOrder::BombOrder() { description = "Bomb!"; }
+
+BombOrder::BombOrder(const BombOrder &original) : BombOrder() {}
+
+BombOrder &BombOrder::operator=(const BombOrder &order) { return *this; }
 
 bool BombOrder::validate() {
     cout << "Validating bomb order." << endl;
@@ -41,12 +63,17 @@ bool BombOrder::validate() {
 }
 
 void BombOrder::execute() {
-    if(validate()) {
+    if (validate()) {
         cout << "Executing bomb order." << endl;
     }
 }
 
-BombOrder::BombOrder() {description = "Bomb!";}
+// BlockadeOrder -------------------------------------------------------------------------------------------------------
+BlockadeOrder::BlockadeOrder() { description = "Blockade!"; }
+
+BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
+
+BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &order) { return *this; }
 
 bool BlockadeOrder::validate() {
     cout << "Validating blockade order." << endl;
@@ -55,12 +82,17 @@ bool BlockadeOrder::validate() {
 }
 
 void BlockadeOrder::execute() {
-    if(validate()) {
+    if (validate()) {
         cout << "Executing blockade order." << endl;
     }
 }
 
-BlockadeOrder::BlockadeOrder() {description = "Blockade!";}
+// AirliftOrder --------------------------------------------------------------------------------------------------------
+AirliftOrder::AirliftOrder() { description = "Airlift!"; }
+
+AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
+
+AirliftOrder &AirliftOrder::operator=(const AirliftOrder &order) { return *this; }
 
 bool AirliftOrder::validate() {
     cout << "Validating airlift order." << endl;
@@ -69,12 +101,17 @@ bool AirliftOrder::validate() {
 }
 
 void AirliftOrder::execute() {
-    if(validate()) {
+    if (validate()) {
         cout << "Executing airlift order." << endl;
     }
 }
 
-AirliftOrder::AirliftOrder() {description = "Airlift!";}
+// NegotiateOrder ------------------------------------------------------------------------------------------------------
+NegotiateOrder::NegotiateOrder() { description = "Negotiate!"; }
+
+NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : NegotiateOrder() {}
+
+NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &order) { return *this; }
 
 bool NegotiateOrder::validate() {
     cout << "Validating negotiate order." << endl;
@@ -82,18 +119,16 @@ bool NegotiateOrder::validate() {
 }
 
 void NegotiateOrder::execute() {
-    if(validate()) {
+    if (validate()) {
         cout << "Executing negotiate order." << endl;
     }
 }
 
-NegotiateOrder::NegotiateOrder() {description = "Negotiate!";}
+// ReinforcementOrder --------------------------------------------------------------------------------------------------
 
-// ReinforcementOrder ------------------------------------------------------------------------------------------------------
+ReinforcementOrder::ReinforcementOrder() { description = "Reinforce!"; }
 
-ReinforcementOrder::ReinforcementOrder() {description = "Reinforce!";}
-
-ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder(){}
+ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder() {}
 
 ReinforcementOrder &ReinforcementOrder::operator=(const ReinforcementOrder &order) { return *this; }
 
@@ -108,8 +143,50 @@ void ReinforcementOrder::execute() {
     }
 }
 
-//--------------------- ORDERLIST --------------------------------------------------------------------------------------
+//--------------------- ORDERS LIST-------------------------------------------------------------------------------------
 OrdersList::OrdersList() : orderList() {}
+
+OrdersList::OrdersList(const OrdersList &original) {
+    auto newOrderList = vector<Order *>();
+    copyOrderList(original.orderList, newOrderList);
+    orderList = newOrderList;
+}
+
+OrdersList &OrdersList::operator=(const OrdersList &original) {
+    auto newOrderList = vector<Order *>();
+    copyOrderList(original.orderList, newOrderList);
+    orderList = newOrderList;
+    return *this;
+}
+
+void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector) {
+    for (auto order : originalVector) {
+        if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
+            destinationVector.push_back(new DeployOrder(*deployOrder));
+        } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
+            destinationVector.push_back(new AdvanceOrder(*advanceOrder));
+        } else if (auto *bombOrder = dynamic_cast<BombOrder *>(order)) {
+            destinationVector.push_back(new BombOrder(*bombOrder));
+        } else if (auto *blockadeOrder = dynamic_cast<BlockadeOrder *>(order)) {
+            destinationVector.push_back(new BlockadeOrder(*blockadeOrder));
+        } else if (auto *airliftOrder = dynamic_cast<AirliftOrder *>(order)) {
+            destinationVector.push_back(new AirliftOrder(*airliftOrder));
+        } else if (auto *negotiateOrder = dynamic_cast<NegotiateOrder *>(order)) {
+            destinationVector.push_back(new NegotiateOrder(*negotiateOrder));
+        } else if (auto *reinforceOrder = dynamic_cast<ReinforcementOrder *>(order)) {
+            destinationVector.push_back(new ReinforcementOrder(*reinforceOrder));
+        } else {
+            cout << "WARNING: Order of unknown type" << endl;
+        }
+    }
+}
+
+ostream &operator<<(ostream &stream, OrdersList &ordersList) {
+    string result = "Orders in list:\n";
+    for (Order *o : ordersList.orderList)
+        result += o->description + "\n";
+    return stream << result << endl;
+}
 
 void OrdersList::add(Order *order) {
     orderList.push_back(order);
@@ -124,7 +201,8 @@ bool OrdersList::remove(Order *order) {
     cout << "Error deleting order." << endl;
     return false;
 }
-bool OrdersList::move(Order * order, int destination) {
+
+bool OrdersList::move(Order *order, int destination) {
     if (destination < orderList.size()) {
         auto oldPosition = find(orderList.begin(), orderList.end(), order);
         const int oldIndex = distance(orderList.begin(), oldPosition);
@@ -138,11 +216,6 @@ bool OrdersList::move(Order * order, int destination) {
     }
     cout << "Error moving order, please check indexes." << endl;
     return false;
-}
-
-void OrdersList::print() {
-    for (Order *o: orderList)
-        cout << o->description << endl;
 }
 
 void OrdersList::executeAll() {
@@ -162,10 +235,3 @@ OrdersList::~OrdersList() {
     }
     orderList.clear();
 }
-
-// Copy Constructor (Needs to be fixed, not required for now)
-//OrdersList::OrdersList(const OrdersList &original) {
-//    orderList = vector<Order *>(original.orderList.size());
-//    for (int i = 0; i < orderList.size(); i++)
-//        orderList[i] = new Order(*original.orderList[i]);
-//}

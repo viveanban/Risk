@@ -1,8 +1,8 @@
-//#include "./Map.h"
-//#include "./../MapLoader/MapLoader.h"
-//
-//using namespace std;
-//
+#include "./Map.h"
+#include "./../MapLoader/MapLoader.h"
+
+using namespace std;
+
 //int main() {
 //    MapLoader mapLoader;
 //    Graph *mapValid = mapLoader.loadMap("Europe.map");
