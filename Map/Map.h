@@ -17,11 +17,11 @@ class Player;
 class Territory {
 private:
     string territoryName;
-    Player* owner;
+    Player *owner;
     int continentId;
     int territoryId;
     int unitNbr;
-    vector<Territory *> adjList;
+    vector<int> adjList;
 public:
     Territory();
 
@@ -36,13 +36,13 @@ public:
     // Getters
     string getTerritoryName();
 
-    Player* getOwner();
+    Player *getOwner();
 
     int getTerritoryId();
 
     int getUnitNbr();
 
-    vector<Territory *> &getAdjList();
+    vector<int> &getAdjList();
 
     int getContinentId();
 
@@ -57,10 +57,10 @@ public:
 
     void setContinentId(int continentId);
 
-    void setAdjList(vector<Territory *> &adjList);
+    void setAdjList(vector<int> &adjList);
 
     // Adds an edge between two territories
-    void addLink(Territory *n);
+    void addLink(int id);
 };
 
 /**
@@ -75,20 +75,19 @@ private:
     string continentName;
     vector<Territory *> territories;
 
-    bool isSameOwner();
-
 public:
     Continent();
 
     // No Destructor method because it would cause a loop
 
-    // copy constructor
     Continent(const Continent &original);
 
     Continent &operator=(const Continent &otherContinent);
 
-    // output steam operator override
+    // output insertion stream operator override
     friend std::ostream &operator<<(std::ostream &stream, Continent &c);
+
+    bool isSameOwner();
 
     // Getters
     int getContinentId();
@@ -97,7 +96,7 @@ public:
 
     int getBonus();
 
-    string getOwner();
+    Player* getOwner();
 
     vector<Territory *> &getTerritories();
 
@@ -138,7 +137,6 @@ public:
 
     Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 
-    // Copy Constructor
     Graph(const Graph &original);
 
     Graph &operator=(const Graph &otherGraph);
@@ -149,6 +147,8 @@ public:
     vector<Territory *> &getTerritoryList();
 
     vector<Continent *> &getContinentList();
+
+    Territory *getTerritoryById(int id);
 
     // Setters
     void setTerritoryList(vector<Territory *> &territoryList);

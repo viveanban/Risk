@@ -22,10 +22,14 @@
 //
 //
 //int main() {
-//    // Load map
+//    cout << "Getting input from player.. \n";
+//    string userInput = getUserInput();
+//
+//    cout << "Map is being loaded.. \n";
 //    MapLoader mapLoader;
 //    Graph *map;
-//    map = mapLoader.loadMap(getUserInput());
+//    map = mapLoader.loadMap(userInput);
+//    cout << *map << endl;
 //
 //    Graph *mapValid = mapLoader.loadMap("Europe.map");
 //    Graph *mapUnconnected = mapLoader.loadMap("EuropeUnconnected.map");

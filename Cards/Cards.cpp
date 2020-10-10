@@ -1,7 +1,3 @@
-//
-// Created by tarek ait hamouda on 2020-10-04.
-//
-
 #include "Cards.h"
 #include <vector>
 #include <iostream>
@@ -24,29 +20,44 @@ Card &Card::operator=(const Card &otherCard) {
     return *this;
 }
 
-std::ostream &operator<<(std::ostream &stream, Card c) {
-    return stream << "\tInformation on Card object:" <<
-                  "\tCard type: " << c.type << endl;
+std::ostream &operator<<(std::ostream &stream, const Card &c) {
+    return stream << "Information on Card object:" <<
+                  "Card type: " << c.type << endl;
 }
 
-void Card::play() {
+Order *Card::play() {
+    Order *order;
     switch (type) {
         case CardType::bomb:
+            order = new BombOrder();
             cout << "played bomb " << endl;
             break;
         case CardType::reinforcement:
+            order = new ReinforcementOrder();
             cout << "played reinforcement " << endl;
             break;
         case CardType::blockade:
+            order = new BlockadeOrder();
             cout << "played blockade " << endl;
             break;
         case CardType::airlift:
+            order = new AirliftOrder();
             cout << "played airlift " << endl;
             break;
         case CardType::diplomacy:
+            order = new NegotiateOrder();
             cout << "played diplomacy " << endl;
             break;
     }
+    return order;
+}
+
+Card::CardType Card::getType() const {
+    return type;
+}
+
+void Card::setType(Card::CardType type) {
+    Card::type = type;
 }
 
 /**
@@ -54,7 +65,6 @@ void Card::play() {
  */
 Deck::Deck(int size) {
     int counter = 0;
-    srand((unsigned) time(0));
     while (counter < size) {
         switch (rand() % 5) {
             case 0:
@@ -86,7 +96,7 @@ Deck::Deck(const Deck &original) {
 Deck::~Deck() {
     for (auto p : cards) {
         delete p;
-        p = NULL;
+        p = nullptr;
     }
 }
 
@@ -97,9 +107,9 @@ Deck &Deck::operator=(const Deck &otherDeck) {
     return *this;
 }
 
-std::ostream &operator<<(std::ostream &stream, Deck c) {
-    return stream << "\tInformation on Deck object:" << endl <<
-                  "\tNumber of cards in deck: " << c.getCards().size() << endl;
+std::ostream &operator<<(std::ostream &stream, const Deck &d) {
+    return stream << "Information on Deck object:" << endl <<
+                  "Number of cards in deck: " << d.getCards().size() << endl;
 }
 
 const vector<Card *> &Deck::getCards() const {
@@ -111,9 +121,9 @@ void Deck::setCards(const vector<Card *> &cards) {
 }
 
 Card *Deck::draw() {
-    srand((unsigned) time(0));
     int randomIndex = rand() % cards.size();
     Card *card = cards.at(randomIndex);
+    cout << *card;
     cards.erase(cards.begin() + randomIndex);
     return card;
 }
@@ -129,12 +139,33 @@ void Deck::addCard(Card *card) {
 
 Hand::Hand() : cardNbr(), cards() {}
 
-Hand::Hand(vector<Card *> cards) : cards(cards) {}
+Hand::Hand(vector<Card *> cards) : cards(cards), cardNbr(cards.size()) {}
 
 Hand::Hand(const Hand &original) {
     cards = vector<Card *>(original.getCards().size());
+    cardNbr = original.cardNbr;
     for (int i = 0; i < cards.size(); i++)
         cards[i] = new Card(*original.getCards().at(i));
+}
+
+Hand &Hand::operator=(const Hand &otherHand) {
+    cards = vector<Card *>(otherHand.getCards().size());
+    cardNbr = otherHand.cardNbr;
+    for (int i = 0; i < cards.size(); i++)
+        cards[i] = new Card(*otherHand.getCards().at(i));
+    return *this;
+}
+
+std::ostream &operator<<(std::ostream &stream, const Hand &h) {
+    return stream << "Information on Hand object:" << endl <<
+                  "Number of cards in Hand: " << h.getCards().size() << endl;
+}
+
+Hand::~Hand() {
+    for (auto p : cards) {
+        delete p;
+        p = nullptr;
+    }
 }
 
 const vector<Card *> &Hand::getCards() const {
@@ -151,6 +182,11 @@ int Hand::getCardNbr() const {
 
 void Hand::setCardNbr(int cardNbr) {
     Hand::cardNbr = cardNbr;
+}
+
+void Hand::addCard(Card *card) {
+    cout << "Adding card to hand" << endl;
+    cards.push_back(card);
 }
 
 void Hand::removeCard(int index) {

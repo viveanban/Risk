@@ -194,7 +194,6 @@ void OrdersList::add(Order *order) {
 
 bool OrdersList::remove(Order *order) {
     auto position = find(orderList.begin(), orderList.end(), order);
-    // == orderList.end() means the element was not found
     if (position != orderList.end()) {
         orderList.erase(position);
         return true;
@@ -208,7 +207,6 @@ bool OrdersList::move(Order *order, int destination) {
         auto oldPosition = find(orderList.begin(), orderList.end(), order);
         const int oldIndex = distance(orderList.begin(), oldPosition);
 
-        // == orderList.end() means the element was not found
         if (oldPosition != orderList.end() && oldIndex != destination) {
             Order *copy = order;
             orderList.erase(orderList.begin() + oldIndex);

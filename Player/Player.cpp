@@ -7,50 +7,61 @@
  */
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
-// TODO: verify if working properly
 Player::Player(const Player &original) {
     playerName = original.playerName;
     territories = vector<Territory *>(original.territories.size());
-    for (int i = 0; i < territories.size(); i++)
+    for (int i = 0; i < territories.size(); i++) {
         territories[i] = new Territory(*original.territories[i]);
+    }
 
-    handOfCards = original.handOfCards;
-    orders = original.orders;
+    handOfCards = new Hand(*original.handOfCards);
+    orders = new OrdersList(*original.orders);
 }
 
-// TODO: verify if working properly
 Player &Player::operator=(const Player &otherPlayer) {
     playerName = otherPlayer.playerName;
     territories = vector<Territory *>(otherPlayer.territories.size());
-    for (int i = 0; i < territories.size(); i++)
+    for (int i = 0; i < territories.size(); i++) {
         territories[i] = new Territory(*otherPlayer.territories[i]);
+    }
 
-    handOfCards = otherPlayer.handOfCards;
-    orders = otherPlayer.orders;
+    handOfCards = new Hand(*otherPlayer.handOfCards);
+    orders = new OrdersList(*otherPlayer.orders);
 
     return *this;
 }
 
-// TODO: verify if working properly
 std::ostream &operator<<(std::ostream &stream, Player &player) {
-    return stream << "\tInformation on Player object:" << endl
-                  << "\tPlayer Name: " << player.getPlayerName() << endl
-                  << "\tNumber of Territories Owned: " << player.getTerritories().size()
-                  << "\tSize of Hand: " << player.getHandofCards()->getCards().size()
-                  << "\tNumber of Orders: " << player.getOrders()->getOrderList().size() << endl;
+    return stream << "Information on Player object:" << endl
+                  << "Address: " << &player << endl
+                  << "Player Name: " << player.getPlayerName() << endl
+                  << "Number of Territories Owned: " << player.getTerritories().size() << endl
+                  << "Size of Hand: " << player.getHandofCards()->getCards().size() << endl
+                  << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl;
 }
 
-vector<Territory *> Player::toDefend() {
-    return territories;
-}
-
-vector<Territory *> Player::toAttack() {
-    vector<Territory *> territoriesToAttack;
+vector<int> Player::toDefend() {
+    vector<int> territoriesToDefend;
     for(auto territory: territories) {
-        for(auto adjTerritory: territory->getAdjList()) {
-            if(find(territories.begin(), territories.end(), adjTerritory) == territories.end() &&
-                find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritory) == territoriesToAttack.end())
-                territoriesToAttack.push_back(adjTerritory);
+        territoriesToDefend.push_back(territory->getTerritoryId());
+    }
+
+    return territoriesToDefend;
+}
+
+vector<int> Player::toAttack() {
+    vector<int> territoriesToAttack;
+
+    vector<int> territoriesOwned;
+    for(auto territory: territories) {
+        territoriesOwned.push_back(territory->getTerritoryId());
+    }
+
+    for(auto territory: territories) {
+        for(auto adjTerritoryId: territory->getAdjList()) {
+            if(find(territoriesOwned.begin(), territoriesOwned.end(), adjTerritoryId) == territoriesOwned.end() &&
+                find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritoryId) == territoriesToAttack.end())
+                territoriesToAttack.push_back(adjTerritoryId);
         }
     }
 
@@ -58,23 +69,15 @@ vector<Territory *> Player::toAttack() {
 }
 
 void Player::issueOrder() {
-    // Create Order objects
     DeployOrder* deployOrder = new DeployOrder();
     AdvanceOrder* advanceOrder = new AdvanceOrder();
-    BombOrder* bombOrder = new BombOrder();
-    BlockadeOrder* blockadeOrder = new BlockadeOrder();
-    AirliftOrder* airliftOrder = new AirliftOrder();
-    NegotiateOrder* negotiateOrder = new NegotiateOrder();
 
-    // Add OrdersList
     orders->add(deployOrder);
+    cout << "Deploy order added to the list for " << this->getPlayerName() << endl;
     orders->add(advanceOrder);
-    orders->add(bombOrder);
-    orders->add(blockadeOrder);
-    orders->add(airliftOrder);
-    orders->add(negotiateOrder);
+    cout << "Advance order added to the list for " << this->getPlayerName() << endl;
 
-    cout << "Orders created and added to list of orders for " << this->getPlayerName() << endl;
+    cout << endl;
 }
 
 // Getters
@@ -111,7 +114,6 @@ void Player::setOrders(OrdersList* orders) {
     this->orders = orders;
 }
 
-// TODO: verify if working properly
 Player::~Player()
 {
     delete handOfCards;

@@ -157,7 +157,7 @@ void MapLoader::constructAdjencyList(const string &line) {
                     for (Territory *border : territoriesList) {
                         if (border->getTerritoryId() == borderId) {
                             territory->getAdjList().push_back(
-                                    border); // getAdjList returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+                                    borderId); // getAdjList returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
                             break;
                         }
                     }
