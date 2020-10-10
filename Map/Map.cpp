@@ -10,7 +10,7 @@ using namespace std;
  * Territory Class implementation
  */
 
-Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(), adjList() {}
+Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList() {}
 
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
@@ -47,6 +47,7 @@ std::ostream &operator<<(std::ostream &stream, Territory &t) {
 
 string Territory::getTerritoryName() {
     return this->territoryName;
+
 }
 
 void Territory::setTerritoryName(string territoryName) {
@@ -77,7 +78,7 @@ void Territory::setContinentId(int continentId) {
     this->continentId = continentId;
 }
 
-Player* Territory::getOwner() {
+Player *Territory::getOwner() {
     return this->owner;
 }
 
@@ -320,10 +321,6 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-vector<Territory *> &Continent::getTerritories() {
-    return this->territories;
-}
-
 bool Continent::isSameOwner() {
     set<Territory *> setOfTerritoriesInContinent;
     for (Territory *territory : getTerritories()) {
@@ -332,12 +329,12 @@ bool Continent::isSameOwner() {
     return setOfTerritoriesInContinent.size() == 1;
 }
 
-string Continent::getOwner() {
+Player *Continent::getOwner() {
+    return isSameOwner() ? (*getTerritories().at(0)).getOwner() : nullptr;
+}
 
-//    if (isSameOwner()) {
-//        return getTerritories().at(0)->getOwner().getPlayerName();
-//    }
-    return "";
+vector<Territory *> &Continent::getTerritories() {
+    return this->territories;
 }
 
 void Continent::setTerritories(vector<Territory *> territories) {
