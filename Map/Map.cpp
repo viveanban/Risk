@@ -4,6 +4,7 @@
 #include <stack>
 #include <algorithm>
 #include "Map.h"
+#include "../Player/Player.h"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(
 
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
-    owner = original.owner;
+    owner = new Player(*original.owner);
     continentId = original.continentId;
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
