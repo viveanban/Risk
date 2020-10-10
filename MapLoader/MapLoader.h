@@ -24,6 +24,14 @@ public:
      */
     Graph *loadMap(string userInput);
 
+    MapLoader() = default;
+
+    MapLoader(const MapLoader &original);
+
+    MapLoader &operator=(const MapLoader &original);
+
+    friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
+
 private:
     /**
      * This method creates the Graph object and returns a pointer to it.
