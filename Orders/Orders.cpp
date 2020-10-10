@@ -89,6 +89,25 @@ void NegotiateOrder::execute() {
 
 NegotiateOrder::NegotiateOrder() {description = "Negotiate!";}
 
+// ReinforcementOrder ------------------------------------------------------------------------------------------------------
+
+ReinforcementOrder::ReinforcementOrder() {description = "Reinforce!";}
+
+ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder(){}
+
+ReinforcementOrder &ReinforcementOrder::operator=(const ReinforcementOrder &order) { return *this; }
+
+bool ReinforcementOrder::validate() {
+    cout << "Validating reinforce order." << endl;
+    return true;
+}
+
+void ReinforcementOrder::execute() {
+    if (validate()) {
+        cout << "Executing reinforce order." << endl;
+    }
+}
+
 //--------------------- ORDERLIST --------------------------------------------------------------------------------------
 OrdersList::OrdersList() : orderList() {}
 
