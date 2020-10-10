@@ -25,8 +25,6 @@ private:
 public:
     Territory();
 
-    // No Destructor method because it would cause a loop
-
     Territory(const Territory &original);
 
     Territory &operator=(const Territory &otherTerritory);
@@ -78,7 +76,7 @@ private:
 public:
     Continent();
 
-    // No Destructor method because it would cause a loop
+    ~Continent();
 
     Continent(const Continent &original);
 

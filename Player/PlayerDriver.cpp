@@ -51,16 +51,16 @@
 //    // Create Hand
 //    Deck *deck = new Deck(10);
 //    vector<Card *> cardsP1;
-//    cardsP1.push_back(deck->draw());
-//    cardsP1.push_back(deck->draw());
-//    cardsP1.push_back(deck->draw());
 //    Hand *handP1 = new Hand(cardsP1);
+//    handP1->addCard(deck->draw());
+//    handP1->addCard(deck->draw());
+//    handP1->addCard(deck->draw());
 //
 //    vector<Card *> cardsP2;
-//    cardsP2.push_back(deck->draw());
-//    cardsP2.push_back(deck->draw());
-//    cardsP2.push_back(deck->draw());
 //    Hand *handP2 = new Hand(cardsP2);
+//    handP2->addCard(deck->draw());
+//    handP2->addCard(deck->draw());
+//    handP2->addCard(deck->draw());
 //
 //    cout << "Creating Player 1..\n" << endl;
 //    Player* p1 = new Player();
@@ -118,14 +118,16 @@
 //    *p2 = *p1;
 //    cout << "Player 2\n" << *p2 << endl;
 //    cout << "Player 1\n" << *p1 << endl;
-////
-////    // Destructor
-////    delete p1;
-////    p1 = nullptr;
-////    delete p2;
-////    p2 = nullptr;
-////    delete p3;
-////    p3 = nullptr;
+//
+//    // Destructor
+//    delete p1;
+//    p1 = nullptr;
+//
+//    delete p2;
+//    p2 = nullptr;
+//
+//    delete p3;
+//    p3 = nullptr;
 //
 //    cout << "--------Execution of Player Terminated--------" << endl;
 //}
