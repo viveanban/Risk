@@ -17,7 +17,7 @@ class Player;
 class Territory {
 private:
     string territoryName;
-    Player* owner;
+    Player *owner;
     int continentId;
     int territoryId;
     int unitNbr;
@@ -36,7 +36,7 @@ public:
     // Getters
     string getTerritoryName();
 
-    Player* getOwner();
+    Player *getOwner();
 
     int getTerritoryId();
 
@@ -75,8 +75,6 @@ private:
     string continentName;
     vector<Territory *> territories;
 
-    bool isSameOwner();
-
 public:
     Continent();
 
@@ -86,7 +84,10 @@ public:
 
     Continent &operator=(const Continent &otherContinent);
 
+    // output insertion stream operator override
     friend std::ostream &operator<<(std::ostream &stream, Continent &c);
+
+    bool isSameOwner();
 
     // Getters
     int getContinentId();
@@ -95,7 +96,7 @@ public:
 
     int getBonus();
 
-    string getOwner();
+    Player* getOwner();
 
     vector<Territory *> &getTerritories();
 
