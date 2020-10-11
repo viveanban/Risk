@@ -116,8 +116,6 @@ void Territory::setAdjList(vector<int> &adjList) {
 
 }
 
-Territory::~Territory() = default;
-
 /**
  * Continent Class implementation
  */

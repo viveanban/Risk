@@ -25,8 +25,6 @@ private:
 public:
     Territory();
 
-    ~Territory();
-
     Territory(const Territory &original);
 
     // Copy constructor called from the Copy Constructor of Player
