@@ -97,6 +97,8 @@ Deck::~Deck() {
         delete p;
         p = nullptr;
     }
+
+    cards.clear();
 }
 
 Deck &Deck::operator=(const Deck &otherDeck) {
@@ -164,6 +166,8 @@ Hand::~Hand() {
         delete p;
         p = nullptr;
     }
+
+    cards.clear();
 }
 
 const vector<Card *> &Hand::getCards() const {
