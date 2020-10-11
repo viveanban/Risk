@@ -9,17 +9,10 @@ int main() {
     cout << "Deck size: "<< deck->getCards().size() << endl;
     cout << "Drawing some cards... "<< endl;
 
-    vector<Card *> cards;
-    cards.push_back(deck->draw());
-    cards.push_back(deck->draw());
-    cards.push_back(deck->draw());
-    cards.push_back(deck->draw());
-    cards.push_back(deck->draw());
-    cards.push_back(deck->draw());
-    cards.push_back(deck->draw());
-
-    Hand *hand = new Hand(cards);
-
+    Hand *hand = new Hand();
+    for(int i; i < 8; i++){
+        hand->addCard(deck->draw());
+    }
     cout << "Deck size: "<< deck->getCards().size() << endl;
     cout << "Cards currently in hand: "<< hand->getCards().size() << endl;
 
@@ -28,8 +21,9 @@ int main() {
 
     while (hand->getCards().size()!=0) {
         (*hand->getCards().at(0)).play();
+        (*deck).addCard(hand->getCards().at(0));
         (*hand).removeCard(0);
-        (*deck).addCard(cards.at(0));
+
     }
 
     cout << "=========================================================" << endl;
@@ -38,9 +32,9 @@ int main() {
     cout << "Deck size: "<< deck->getCards().size() << endl;
     cout << "Cards currently in hand: "<< hand->getCards().size() << endl;
 
-//    delete hand;
-//    hand = nullptr;
-//
-//    delete deck;
-//    deck = nullptr;
+    delete hand;
+    hand = nullptr;
+
+    delete deck;
+    deck = nullptr;
 }
