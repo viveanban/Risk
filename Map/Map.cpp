@@ -16,7 +16,21 @@ Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(
 
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
-    owner = new Player(*original.owner);
+    if(original.owner != nullptr)
+        owner = new Player(*original.owner);
+    else
+        owner = nullptr;
+    continentId = original.continentId;
+    territoryId = original.territoryId;
+    unitNbr = original.unitNbr;
+    adjList = vector<int>(original.adjList.size());
+    for (int i = 0; i < adjList.size(); i++)
+        adjList[i] = original.adjList[i];
+}
+
+Territory::Territory(const Territory &original, Player *player) {
+    territoryName = original.territoryName;
+    owner = player;
     continentId = original.continentId;
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
@@ -39,6 +53,7 @@ Territory &Territory::operator=(const Territory &otherTerritory) {
 
 std::ostream &operator<<(std::ostream &stream, Territory &t) {
     return stream << "Information on Territory object:" << endl
+                  << "Address: " << &t << endl
                   << "Territory Name: " << t.getTerritoryName() << endl
                   << "Territory ID: " << t.getTerritoryId() << endl
                   << "Continent id it belongs to: " << t.getContinentId() << endl
