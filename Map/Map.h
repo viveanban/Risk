@@ -25,7 +25,13 @@ private:
 public:
     Territory();
 
+    ~Territory();
+
     Territory(const Territory &original);
+
+    // Copy constructor called from the Copy Constructor of Player
+    // Create a new Territory based on an existing Territory but no new Player is created.
+    Territory(const Territory &original, Player *player);
 
     Territory &operator=(const Territory &otherTerritory);
 

@@ -11,7 +11,7 @@ Player::Player(const Player &original) {
     playerName = original.playerName;
     territories = vector<Territory *>(original.territories.size());
     for (int i = 0; i < territories.size(); i++) {
-        territories[i] = new Territory(*original.territories[i]);
+        territories[i] = new Territory(*original.territories[i], this);
     }
 
     handOfCards = new Hand(*original.handOfCards);
@@ -22,7 +22,7 @@ Player &Player::operator=(const Player &otherPlayer) {
     playerName = otherPlayer.playerName;
     territories = vector<Territory *>(otherPlayer.territories.size());
     for (int i = 0; i < territories.size(); i++) {
-        territories[i] = new Territory(*otherPlayer.territories[i]);
+        territories[i] = new Territory(*otherPlayer.territories[i], this);
     }
 
     handOfCards = new Hand(*otherPlayer.handOfCards);
