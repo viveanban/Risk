@@ -12,9 +12,6 @@
 //    list->add(new AirliftOrder());
 //    list->add(new NegotiateOrder());
 //
-//    // Copy constructor
-//    OrdersList *list2 = new OrdersList(*list);
-//
 //    // Tests
 //    cout << "-----------Original OrderList-----------" << endl;
 //    cout << *list << endl;
@@ -30,14 +27,5 @@
 //    cout << "-----------Test Execute-----------" << endl;
 //    list->executeAll();
 //
-//    // Assignment operator
-//    *list2 = *list;
-//
-//    // Destructors
-//    delete list;
-//    list = nullptr;
-//    delete list2;
-//    list2 = nullptr;
-//
-//    return 0;
+//    cout << "--------Execution of Orders Terminated--------" << endl;
 //}

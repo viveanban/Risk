@@ -20,7 +20,7 @@ Card &Card::operator=(const Card &otherCard) {
 }
 
 std::ostream &operator<<(std::ostream &stream, const Card &c) {
-    return stream << "Information on Card object:"
+    return stream << "Information on Card object: " << endl
                   << "Card type: " << c.type << endl;
 }
 

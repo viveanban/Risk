@@ -30,6 +30,5 @@
 //    map = MapLoader::loadMap(userInput);
 //    cout << *map << endl;
 //
-//    delete map;
-//    map = nullptr;
+//    cout << "--------Execution of MapLoader Terminated--------" << endl;
 //}
