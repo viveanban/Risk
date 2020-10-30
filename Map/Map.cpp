@@ -203,14 +203,14 @@ void Continent::setTerritories(vector<Territory *> territories) {
 }
 
 /**
- * Graph Class implementation
+ * Map Class implementation
  */
-Graph::Graph() : territoryList() {}
+Map::Map() : territoryList() {}
 
-Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
-                                                                                       continentList(continentList) {}
+Map::Map(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
+                                                                                   continentList(continentList) {}
 
-Graph::Graph(const Graph &original) {
+Map::Map(const Map &original) {
     territoryList = vector<Territory *>(original.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
         territoryList[i] = new Territory(*original.territoryList[i]);
@@ -219,7 +219,7 @@ Graph::Graph(const Graph &original) {
         continentList[i] = new Continent(*original.continentList[i]);
 }
 
-Graph &Graph::operator=(const Graph &otherGraph) {
+Map &Map::operator=(const Map &otherGraph) {
     territoryList = vector<Territory *>(otherGraph.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
         territoryList[i] = new Territory(*otherGraph.territoryList[i]);
@@ -229,37 +229,37 @@ Graph &Graph::operator=(const Graph &otherGraph) {
     return *this;
 }
 
-vector<Territory *> &Graph::getTerritoryList() {
+vector<Territory *> &Map::getTerritoryList() {
     return this->territoryList;
 }
 
-std::ostream &operator<<(std::ostream &stream, Graph &g) {
-    return stream << "Information on Graph object:" << endl
+std::ostream &operator<<(std::ostream &stream, Map &g) {
+    return stream << "Information on Map object:" << endl
                   << "Number of Territories: " << g.getTerritoryList().size() << endl
                   << "Number of Continents: " << g.getContinentList().size() << endl;
 }
 
-void Graph::setTerritoryList(vector<Territory *> &territoryList) {
+void Map::setTerritoryList(vector<Territory *> &territoryList) {
     this->territoryList = territoryList;
 }
 
-void Graph::addTerritory(Territory *territory) {
+void Map::addTerritory(Territory *territory) {
     territoryList.push_back(territory);
 }
 
-vector<Continent *> &Graph::getContinentList() {
+vector<Continent *> &Map::getContinentList() {
     return this->continentList;
 }
 
-void Graph::setContinentList(vector<Continent *> &continentList) {
+void Map::setContinentList(vector<Continent *> &continentList) {
     this->continentList = continentList;
 }
 
-void Graph::addContinent(Continent *continent) {
+void Map::addContinent(Continent *continent) {
     continentList.push_back(continent);
 }
 
-bool Graph::isGraphConnected() {
+bool Map::isMapConnected() {
     set<int> seenTerritories{};
     stack<int> toVisitStack;
 
@@ -289,7 +289,7 @@ bool Graph::isGraphConnected() {
     }
 }
 
-bool Graph::isContinentSubgraphConnected() {
+bool Map::isContinentSubgraphConnected() {
     set<int> visitedContinents{};
     set<int> seenTerritories;
     stack<int> territoriesToVisit;
@@ -319,7 +319,7 @@ bool Graph::isContinentSubgraphConnected() {
     }
 }
 
-bool Graph::isTerritoryContinentUnique() {
+bool Map::isTerritoryContinentUnique() {
     set<string> seenTerritoryNames{};
     set<int> seenTerritoryIds{};
 
@@ -337,8 +337,8 @@ bool Graph::isTerritoryContinentUnique() {
     return seenTerritoryNames.size() == getTerritoryList().size();
 }
 
-bool Graph::validate() {
-    bool connectedTerritories = isGraphConnected();
+bool Map::validate() {
+    bool connectedTerritories = isMapConnected();
     bool connectedContinents = isContinentSubgraphConnected();
     bool uniqueTerritories = isTerritoryContinentUnique();
 
@@ -350,8 +350,8 @@ bool Graph::validate() {
             uniqueTerritories;
 }
 
-Graph::~Graph() {
-    cout << "Deleting Graph..." << endl;
+Map::~Map() {
+    cout << "Deleting Map..." << endl;
     cout << "Deleting Continents" << endl;
     for (auto continent: continentList) {
         delete continent;
@@ -367,7 +367,7 @@ Graph::~Graph() {
     territoryList.clear();
 }
 
-Territory *Graph::getTerritoryById(int id) {
+Territory *Map::getTerritoryById(int id) {
     for (Territory *t: territoryList) {
         if (t->getTerritoryId() == id)
             return t;

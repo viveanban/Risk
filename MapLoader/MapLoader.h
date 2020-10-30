@@ -13,7 +13,7 @@
 using namespace std;
 
 /**
- * This class takes care of creating a Graph object (the map) in the Risk game based on user input.
+ * This class takes care of creating a Map object (the map) in the Risk game based on user input.
  */
 class MapLoader {
 private:
@@ -24,7 +24,7 @@ private:
     MapLoader &operator=(const MapLoader &original);
 
     /**
-     * This method creates the Graph object and returns a pointer to it.
+     * This method creates the Map object and returns a pointer to it.
      *
      * @return void.
      * @param fstream: the file that will be parsed.
@@ -80,11 +80,11 @@ private:
 
 public:
     /**
-     * This method creates the Graph object and returns a pointer to it.
+     * This method creates the Map object and returns a pointer to it.
      *
-     * @return Graph pointer.
+     * @return Map pointer.
      */
-    static Graph *loadMap(const string& mapName);
+    static Map *loadMap(const string& mapName);
 
     friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
 

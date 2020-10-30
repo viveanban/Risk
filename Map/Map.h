@@ -114,17 +114,17 @@ public:
 
 /**
  * This class represents a graph in the Risk game
- * A Graph is a list of connected Territories. In other words, it represents a list of countries
+ * A Map is a list of connected Territories. In other words, it represents a list of countries
  * and continent that are interconnected with each other
  */
-class Graph {
+class Map {
 private:
     vector<Territory *> territoryList;
 
     vector<Continent *> continentList;
 
     // Used to validate if the graph is fully connected
-    bool isGraphConnected();
+    bool isMapConnected();
 
     // Used to validate if the continents are connected
     bool isContinentSubgraphConnected();
@@ -133,17 +133,17 @@ private:
     bool isTerritoryContinentUnique();
 
 public:
-    Graph();
+    Map();
 
-    ~Graph();
+    ~Map();
 
-    Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
+    Map(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 
-    Graph(const Graph &original);
+    Map(const Map &original);
 
-    Graph &operator=(const Graph &otherGraph);
+    Map &operator=(const Map &otherGraph);
 
-    friend std::ostream &operator<<(std::ostream &stream, Graph &c);
+    friend std::ostream &operator<<(std::ostream &stream, Map &c);
 
     // Getters
     vector<Territory *> &getTerritoryList();
