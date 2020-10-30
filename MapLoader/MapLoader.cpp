@@ -34,7 +34,7 @@ std::ostream &operator<<(ostream &stream, MapLoader &mapLoader) {
                   << ", territoriesList size = " << continentsList.size() << "]" << endl;
 }
 
-Graph *MapLoader::loadMap(const string &mapName) {
+Map *MapLoader::loadMap(const string &mapName) {
     // Have a clear setup when loading a new map
     continentsList.clear();
     territoriesList.clear();
@@ -52,8 +52,8 @@ Graph *MapLoader::loadMap(const string &mapName) {
     else
         exitWithError();
 
-    // Construct Graph object
-    auto *graph = new Graph(territoriesList, continentsList);
+    // Construct Map object
+    auto *graph = new Map(territoriesList, continentsList);
 
     return graph;
 }
