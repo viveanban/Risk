@@ -102,10 +102,6 @@ void Territory::setOwner(Player *owner) {
     this->owner = owner;
 }
 
-void Territory::addLink(Territory * t) {
-    adjList.push_back(t);
-}
-
 vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }

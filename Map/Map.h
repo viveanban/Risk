@@ -58,9 +58,6 @@ public:
     void setContinentId(int continentId);
 
     void setAdjList(vector<Territory *> &adjList);
-
-    // Adds an edge between two territories
-    void addLink(Territory * territory);
 };
 
 /**
