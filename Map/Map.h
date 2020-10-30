@@ -21,15 +21,13 @@ private:
     int continentId;
     int territoryId;
     int unitNbr;
-    vector<int> adjList;
+    vector<Territory *> adjList;
 public:
     Territory();
 
-    Territory(const Territory &original);
+    ~Territory();
 
-    // Copy constructor called from the Copy Constructor of Player
-    // Create a new Territory based on an existing Territory but no new Player is created.
-    Territory(const Territory &original, Player *player);
+    Territory(const Territory &original);
 
     Territory &operator=(const Territory &otherTerritory);
 
@@ -44,7 +42,7 @@ public:
 
     int getUnitNbr();
 
-    vector<int> &getAdjList();
+    vector<Territory *> &getAdjList();
 
     int getContinentId();
 
@@ -59,10 +57,10 @@ public:
 
     void setContinentId(int continentId);
 
-    void setAdjList(vector<int> &adjList);
+    void setAdjList(vector<Territory *> &adjList);
 
     // Adds an edge between two territories
-    void addLink(int id);
+    void addLink(Territory * territory);
 };
 
 /**
@@ -141,7 +139,7 @@ public:
 
     Map(const Map &original);
 
-    Map &operator=(const Map &otherGraph);
+    Map &operator=(const Map &otherMap);
 
     friend std::ostream &operator<<(std::ostream &stream, Map &c);
 

@@ -7,11 +7,19 @@
  */
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
+Player::~Player()
+{
+    delete handOfCards;
+    handOfCards = nullptr;
+    delete orders;
+    orders = nullptr;
+}
+
 Player::Player(const Player &original) {
     playerName = original.playerName;
     territories = vector<Territory *>(original.territories.size());
     for (int i = 0; i < territories.size(); i++) {
-        territories[i] = new Territory(*original.territories[i], this);
+        territories[i] = original.territories[i];
     }
 
     handOfCards = new Hand(*original.handOfCards);
@@ -22,7 +30,7 @@ Player &Player::operator=(const Player &otherPlayer) {
     playerName = otherPlayer.playerName;
     territories = vector<Territory *>(otherPlayer.territories.size());
     for (int i = 0; i < territories.size(); i++) {
-        territories[i] = new Territory(*otherPlayer.territories[i], this);
+        territories[i] = otherPlayer.territories[i];
     }
 
     handOfCards = new Hand(*otherPlayer.handOfCards);
@@ -40,28 +48,23 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl;
 }
 
-vector<int> Player::toDefend() {
-    vector<int> territoriesToDefend;
-    for(auto territory: territories) {
-        territoriesToDefend.push_back(territory->getTerritoryId());
+vector<Territory *> Player::toDefend() {
+    vector<Territory *> territoriesToDefend;
+    for(Territory * territory: territories) {
+        territoriesToDefend.push_back(territory);
     }
 
     return territoriesToDefend;
 }
 
-vector<int> Player::toAttack() {
-    vector<int> territoriesToAttack;
+vector<Territory *> Player::toAttack() {
+    vector<Territory *> territoriesToAttack;
 
-    vector<int> territoriesOwned;
-    for(auto territory: territories) {
-        territoriesOwned.push_back(territory->getTerritoryId());
-    }
-
-    for(auto territory: territories) {
-        for(auto adjTerritoryId: territory->getAdjList()) {
-            if(find(territoriesOwned.begin(), territoriesOwned.end(), adjTerritoryId) == territoriesOwned.end() &&
-                find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritoryId) == territoriesToAttack.end())
-                territoriesToAttack.push_back(adjTerritoryId);
+    for(Territory * territory: territories) {
+        for(Territory * adjTerritory: territory->getAdjList()) {
+            if(find(territories.begin(), territories.end(), adjTerritory) == territories.end() &&
+               find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritory) == territoriesToAttack.end())
+                territoriesToAttack.push_back(adjTerritory);
         }
     }
 
@@ -112,12 +115,4 @@ void Player::setHandOfCards(Hand *handOfCards) {
 
 void Player::setOrders(OrdersList* orders) {
     this->orders = orders;
-}
-
-Player::~Player()
-{
-    delete handOfCards;
-    handOfCards = nullptr;
-    delete orders;
-    orders = nullptr;
 }

@@ -23,22 +23,22 @@
 //    t5->setTerritoryId(5);
 //    t5->setTerritoryName("Territory 5");
 //
-//    t1->getAdjList().push_back(t3->getTerritoryId());
-//    t1->getAdjList().push_back(t4->getTerritoryId());
-//    t1->getAdjList().push_back(t2->getTerritoryId());
+//    t1->getAdjList().push_back(t3);
+//    t1->getAdjList().push_back(t4);
+//    t1->getAdjList().push_back(t2);
 //
-//    t2->getAdjList().push_back(t1->getTerritoryId());
-//    t2->getAdjList().push_back(t3->getTerritoryId());
+//    t2->getAdjList().push_back(t1);
+//    t2->getAdjList().push_back(t3);
 //
-//    t3->getAdjList().push_back(t1->getTerritoryId());
-//    t3->getAdjList().push_back(t2->getTerritoryId());
-//    t3->getAdjList().push_back(t4->getTerritoryId());
+//    t3->getAdjList().push_back(t1);
+//    t3->getAdjList().push_back(t2);
+//    t3->getAdjList().push_back(t4);
 //
-//    t4->getAdjList().push_back(t1->getTerritoryId());
-//    t4->getAdjList().push_back(t3->getTerritoryId());
-//    t4->getAdjList().push_back(t5->getTerritoryId());
+//    t4->getAdjList().push_back(t1);
+//    t4->getAdjList().push_back(t3);
+//    t4->getAdjList().push_back(t5);
 //
-//    t5->getAdjList().push_back(t4->getTerritoryId());
+//    t5->getAdjList().push_back(t4);
 //
 //    vector<Territory *> territoriesOwnedP1;
 //    territoriesOwnedP1.push_back(t1);
@@ -80,28 +80,28 @@
 //
 //    cout << "--------Executing toDefend()--------\n" << endl;
 //
-//    vector<int> toDefendP1 = p1->toDefend();
+//    vector<Territory *> toDefendP1 = p1->toDefend();
 //    cout << "Territories to defend by Player 1\n" << endl;
-//    for(auto territory: toDefendP1) {
+//    for(Territory * territory: toDefendP1) {
 //        cout << territory << endl;
 //    }
-//    vector<int> toDefendP2 = p2->toDefend();
+//    vector<Territory *> toDefendP2 = p2->toDefend();
 //    cout << "Territories to defend by Player 2\n" << endl;
-//    for(auto territory: toDefendP2) {
+//    for(Territory * territory: toDefendP2) {
 //        cout << territory << endl;
 //    }
 //
 //    cout << "--------Executing toAttack()--------\n" << endl;
 //
-//    vector<int> toAttackP1 = p1->toAttack();
+//    vector<Territory *> toAttackP1 = p1->toAttack();
 //    cout << "Territories to attack by Player 1\n" << endl;
-//    for(auto territory: toAttackP1) {
+//    for(Territory * territory: toAttackP1) {
 //        cout << territory << endl;
 //    }
 //
-//    vector<int> toAttackP2 = p2->toAttack();
+//    vector<Territory *> toAttackP2 = p2->toAttack();
 //    cout << "Territories to attack by Player 2\n" << endl;
-//    for(auto territory: toAttackP2) {
+//    for(Territory * territory: toAttackP2) {
 //        cout << territory << endl;
 //    }
 //

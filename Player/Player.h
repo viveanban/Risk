@@ -19,6 +19,7 @@ private:
     Hand* handOfCards;
 public:
      Player();
+
      ~Player();
 
      Player(const Player &original);
@@ -48,16 +49,16 @@ public:
      /**
      * This method returns a list of territories that need to be defended.
      *
-     * @return Vector list of Territory IDs
+     * @return Vector list of Territory pointers
      */
-     vector<int> toDefend();
+     vector<Territory *> toDefend();
 
     /**
     * This method returns a list of territories that need to be attacked.
     *
-    * @return Vector list of Territory IDs
+    * @return Vector list of Territory pinters
     */
-    vector<int> toAttack();
+    vector<Territory *> toAttack();
 
     /**
     * This method allows the Player to issue an order.
