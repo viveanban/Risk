@@ -54,9 +54,9 @@ private:
 public:
     Deck(int size);
 
-    Deck(const Deck &original);
-
     ~Deck();
+
+    Deck(const Deck &original);
 
     Deck &operator=(const Deck &otherDeck);
 
@@ -87,13 +87,13 @@ private:
 public:
     Hand();
 
+    ~Hand();
+
     Hand(vector<Card *> cards);
 
     Hand(const Hand &original);
 
     Hand &operator=(const Hand &otherHand);
-
-    ~Hand();
 
     friend std::ostream &operator<<(std::ostream &stream, const Hand &c);
 
