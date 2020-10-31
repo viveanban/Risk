@@ -17,6 +17,9 @@ private:
 
 public:
     GameEngine();
+
+    GameEngine(Map *map, Deck *deck, vector<Player *> &players);
+
     ~GameEngine();
     void startupPhase();
     void mainGameLoop();

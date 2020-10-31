@@ -348,12 +348,16 @@ bool Map::validate() {
     bool connectedContinents = isContinentSubgraphConnected();
     bool uniqueTerritories = isTerritoryContinentUnique();
 
+    cout << "Validating Map..." << endl;
     cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
          << ", Unique Territories: " << uniqueTerritories << endl;
-    return
-            connectedTerritories &&
-            connectedContinents &&
-            uniqueTerritories;
+    bool isValid = connectedTerritories &&
+                   connectedContinents &&
+                   uniqueTerritories;
+    if (!isValid) {
+        cout << "The Map is therefore not valid!" << endl;
+    }
+    return isValid;
 }
 
 Territory *Map::getTerritoryById(int id) {
