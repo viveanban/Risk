@@ -5,6 +5,20 @@
 #include "../Map/Map.h"
 #include "../Cards/Cards.h"
 
+class GameSetup {
+private:
+    Map* map;
+    Deck* deck;
+    vector<Player*> players;
+    vector<string> availableMaps;
+    void selectMap();
+    void selectPlayerNumber();
+public:
+    void gameStart();
+
+    void setAvailableMaps(const string &path);
+};
+
 class GameEngine {
 private:
     Map* map;
