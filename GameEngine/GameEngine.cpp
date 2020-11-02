@@ -1,6 +1,7 @@
 #include <fstream>
 #include "GameEngine.h"
 #include "../MapLoader/MapLoader.h"
+#include "../Player/Player.h"
 #include <string>
 #include <iostream>
 #include <filesystem>
@@ -89,6 +90,11 @@ void GameSetup::gameStart() {
     selectMap();
     selectPlayerNumber();
     setupObservers();
+
+    setupPlayers();
+    setupOrders();
+    assignCards();
+
 }
 
 Map *GameSetup::getMap() const {
@@ -145,6 +151,27 @@ int GameSetup::getNumPlayer() const {
 
 void GameSetup::setNumPlayer(int numPlayer) {
     GameSetup::numPlayer = numPlayer;
+}
+
+void GameSetup::setupPlayers() {
+
+    for (int i = 0; i < this->getNumPlayer(); i++) {
+        this->players.push_back(new Player());
+    }
+}
+
+void GameSetup::setupOrders() {
+    for (auto player : players) {
+        player->setOrders(new OrdersList());
+    }
+}
+
+void GameSetup::assignCards() {
+
+    this->deck = new Deck(50);
+    for (auto player : players) {
+        player->setHandOfCards(new Hand());
+    }
 }
 
 

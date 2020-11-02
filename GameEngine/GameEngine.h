@@ -52,6 +52,11 @@ public:
     void gameStart();
 
 
+    void setupPlayers();
+
+    void setupOrders();
+
+    void assignCards();
 };
 
 class GameEngine {
