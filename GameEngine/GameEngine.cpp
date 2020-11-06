@@ -9,15 +9,15 @@
 #include <sys/stat.h>
 #include <vector>
 #include <limits>
+#include <algorithm>
 
 using namespace std;
 
-GameEngine::GameEngine(Map *map, Deck *deck, vector<Player *> &players) : map(map), deck(deck),
-                                                                          players(players) {}
+//GAME INITIALIZATION PHASE
 
 void GameInitialization::selectMap() {
     const string MAP_DIRECTORY = "../maps/";
-    int chosenMap = 0;
+    int chosenMap;
     ifstream inputFile;
     do {
         cout << "Please choose a game Map from the following list:" << endl;
