@@ -12,14 +12,17 @@ const string MAP_DIRECTORY = "../maps/";
 
 int main() {
 
-    GameSetup gameSetup;
+    GameInitialization gameInitialization;
 
-    gameSetup.gameStart();
+    gameInitialization.gameStart();
 
-    cout << boolalpha << gameSetup.getMap() << endl;
-    cout << gameSetup.getNumPlayer() << endl;
-    cout << gameSetup.isPhaseObserver() << endl;
-    cout << gameSetup.isStatisticsObserver() << endl;
+    cout << boolalpha << gameInitialization.getMap() << endl;
+    cout << gameInitialization.getNumPlayer() << endl;
+    cout << gameInitialization.isPhaseObserver() << endl;
+    cout << gameInitialization.isStatisticsObserver() << endl;
+
+    GameSetup gameSetup(gameInitialization.getPlayers());
+    gameSetup.randomlySetOrder();
 //    cout << "Validate outcome for known valid map:\n" << boolalpha << (*mapValid).validate() << endl;
 //    cout << "Validate outcome for unconnected map:\n" << boolalpha << (*mapUnconnected).validate() << endl;
 //    cout << "Validate outcome for map with duplicated territory:\n" << boolalpha << (*mapDuplicateTerritory).validate() << endl;
