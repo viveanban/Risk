@@ -207,5 +207,8 @@ void GameSetup::assignCountries() {
         //remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size())->addTerritory(territory);
+        cout << "assigning territory " << territory->getTerritoryName() << " to " << oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size()) << endl;
+        territoriesAssigned++;
     }
+
 }
