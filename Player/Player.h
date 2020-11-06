@@ -46,6 +46,7 @@ public:
 
      void setOrders(OrdersList* orders);
 
+     void addTerritory(Territory* territory);
      /**
      * This method returns a list of territories that need to be defended.
      *

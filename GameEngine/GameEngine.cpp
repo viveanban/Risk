@@ -174,7 +174,13 @@ void GameInitialization::assignCards() {
 
 //GAME STARTUP PHASE
 
-GameSetup::GameSetup(vector<Player *> orderOfPlay) : oderOfPlayer(orderOfPlay) {}
+GameSetup::GameSetup(vector<Player *> oderOfPlayer, Map *map) {
+    this->oderOfPlayer = oderOfPlayer;
+    this->map = map;
+    randomlySetOrder();
+    assignCountries();
+}
+
 
 void GameSetup::randomlySetOrder() {
 
@@ -188,4 +194,18 @@ void GameSetup::randomlySetOrder() {
     for (auto &it : oderOfPlayer)
         std::cout << ' ' << it;
 
+}
+
+void GameSetup::assignCountries() {
+    int assignedCoutriesCount = 0;
+    int territoriesAssigned = 0;
+    vector<Territory *> territoriesAvailable = map->getTerritoryList();
+
+    while (territoriesAvailable.size() > 0) {
+        int randomIndex = rand() % territoriesAvailable.size();
+        Territory *territory = territoriesAvailable.at(randomIndex);
+        //remove it from available territories
+        territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
+        oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size())->addTerritory(territory);
+    }
 }

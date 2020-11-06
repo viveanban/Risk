@@ -65,11 +65,12 @@ public:
 class GameSetup {
 private:
     vector<Player *> oderOfPlayer;
-
+    Map* map;
     void randomlySetOrder();
+    void assignCountries();
 
 public:
-    GameSetup(vector<Player *>);
+    GameSetup(vector<Player *> orderOfPlayer, Map* map);
 };
 
 #endif //RISK_GAMEENGINE_H
