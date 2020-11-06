@@ -16,7 +16,9 @@ private:
     int numPlayer;
     void selectMap();
     void selectPlayerNumber();
-    void setAvailableMaps(const string &path);
+
+    void setAvailableMaps(const char *path);
+
     void setupObservers();
 
 public:
@@ -50,7 +52,6 @@ public:
 
 public:
     void gameStart();
-
 
     void setupPlayers();
 

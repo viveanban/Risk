@@ -4,10 +4,12 @@
 #include "../Player/Player.h"
 #include <string>
 #include <iostream>
-#include <filesystem>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <vector>
+#include <limits>
 
-namespace fs = std::__fs::filesystem;
-
+using namespace std;
 
 GameEngine::GameEngine(Map *map, Deck *deck, vector<Player *> &players) : map(map), deck(deck),
                                                                           players(players) {}
@@ -15,40 +17,79 @@ GameEngine::GameEngine(Map *map, Deck *deck, vector<Player *> &players) : map(ma
 
 void GameSetup::selectMap() {
     const string MAP_DIRECTORY = "../maps/";
-    int chosenMap;
+    int chosenMap = 0;
     ifstream inputFile;
     do {
         cout << "Please choose a game Map from the following list:" << endl;
-        std::string path = "../maps/";
+        auto path = "../maps/";
         setAvailableMaps(path);
         for (int i = 1; i <= availableMaps.size(); i++) {
             cout << i << " - " << availableMaps.at(i - 1) << endl;
         }
         cin >> chosenMap;
-        inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
+        if (cin.fail()) {
+            cin.clear();
+            chosenMap = -1;
+            // discard 'bad' character(s)
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        if (chosenMap > 0 and chosenMap < availableMaps.size()) {
+            inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
+        }
         while (!inputFile) {
             inputFile.close();
             cout << "Hey you made a mistake, " << chosenMap << " is not one of the choices." << endl;
             cout << "Please pick another map now: " << endl;
             cin >> chosenMap;
-            inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
+            if (cin.fail()) {
+                cin.clear();
+                chosenMap = -1;
+                // discard 'bad' character(s)
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            if (chosenMap > 0 and chosenMap < availableMaps.size()) {
+                inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
+            }
         }
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (!map->validate());
     inputFile.close();
 }
 
-void GameSetup::setAvailableMaps(const string &path) {
-    for (const auto &entry : fs::directory_iterator(path))
-        if (!entry.is_directory())
-            this->availableMaps.push_back(entry.path().filename());
+int isRegularFile(const char *path) {
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
 }
+
+void GameSetup::setAvailableMaps(const char *path) {
+    DIR *dir = opendir(path);
+    struct dirent *current;
+    if (dir != NULL) {
+        string parent(path);
+        while ((current = readdir(dir)) != NULL) {
+            string filePath = parent + current->d_name;
+            const char *entry = filePath.c_str();
+            if (isRegularFile(entry)) {
+                this->availableMaps.push_back(current->d_name);
+            }
+        }
+        closedir(dir);
+    }
+}
+
 
 void GameSetup::selectPlayerNumber() {
     int numPlayerTmp = -1;
     cout << "The game supports up to 5 players with a minimum of 2."
             " Please input the desired number of players" << endl;
     cin >> numPlayerTmp;
+    if (cin.fail()) {
+        cin.clear();
+        numPlayerTmp = 0;
+        // discard 'bad' character(s)
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
     while (numPlayerTmp < 2 or numPlayerTmp > 5) {
         cout << "This does not look like a number between 2 to 5."
                 "The game supports up to 5 players with a minimum of 2."
