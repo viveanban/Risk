@@ -5,16 +5,18 @@
 #include "../Map/Map.h"
 #include "../Cards/Cards.h"
 
-class GameSetup {
+class GameInitialization {
 private:
-    Map* map;
-    Deck* deck;
-    vector<Player*> players;
+    Map *map;
+    Deck *deck;
+    vector<Player *> players;
     vector<string> availableMaps;
     bool phaseObserver = false;
     bool statisticsObserver = false;
     int numPlayer;
+
     void selectMap();
+
     void selectPlayerNumber();
 
     void setAvailableMaps(const char *path);
@@ -22,6 +24,7 @@ private:
     void setupObservers();
 
 public:
+
     Map *getMap() const;
 
     void setMap(Map *map);
@@ -50,7 +53,6 @@ public:
 
     void setNumPlayer(int numPlayer);
 
-public:
     void gameStart();
 
     void setupPlayers();
@@ -60,25 +62,15 @@ public:
     void assignCards();
 };
 
-class GameEngine {
+class GameSetup {
 private:
+    vector<Player *> oderOfPlayer;
     Map* map;
-    Deck* deck;
-    vector<Player*> players;
-
-    void reinforcementPhase();
-    void issueOrdersPhase();
-    void executeOrdersPhase();
+    void randomlySetOrder();
+    void assignCountries();
 
 public:
-    GameEngine();
-
-    GameEngine(Map *map, Deck *deck, vector<Player *> &players);
-
-    ~GameEngine();
-    void startupPhase();
-    void mainGameLoop();
+    GameSetup(vector<Player *> orderOfPlayer, Map* map);
 };
-
 
 #endif //RISK_GAMEENGINE_H

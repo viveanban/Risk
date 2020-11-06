@@ -116,3 +116,7 @@ void Player::setHandOfCards(Hand *handOfCards) {
 void Player::setOrders(OrdersList* orders) {
     this->orders = orders;
 }
+
+void Player::addTerritory(Territory *territory) {
+    territories.push_back(territory);
+}

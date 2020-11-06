@@ -2,6 +2,7 @@
 #include "GameEngine.h"
 #include "../MapLoader/MapLoader.h"
 #include "../Player/Player.h"
+#include <random>
 #include <string>
 #include <iostream>
 #include <dirent.h>
@@ -14,8 +15,7 @@ using namespace std;
 GameEngine::GameEngine(Map *map, Deck *deck, vector<Player *> &players) : map(map), deck(deck),
                                                                           players(players) {}
 
-
-void GameSetup::selectMap() {
+void GameInitialization::selectMap() {
     const string MAP_DIRECTORY = "../maps/";
     int chosenMap = 0;
     ifstream inputFile;
@@ -62,7 +62,7 @@ int isRegularFile(const char *path) {
     return S_ISREG(path_stat.st_mode);
 }
 
-void GameSetup::setAvailableMaps(const char *path) {
+void GameInitialization::setAvailableMaps(const char *path) {
     DIR *dir = opendir(path);
     struct dirent *current;
     if (dir != NULL) {
@@ -79,7 +79,7 @@ void GameSetup::setAvailableMaps(const char *path) {
 }
 
 
-void GameSetup::selectPlayerNumber() {
+void GameInitialization::selectPlayerNumber() {
     int numPlayerTmp = -1;
     cout << "The game supports up to 5 players with a minimum of 2."
             " Please input the desired number of players" << endl;
@@ -105,7 +105,7 @@ void GameSetup::selectPlayerNumber() {
     this->numPlayer = numPlayerTmp;
 }
 
-void GameSetup::setupObservers() {
+void GameInitialization::setupObservers() {
 
     //  3) turn on/off any of the observers as described in Part 5
     do {
@@ -127,7 +127,7 @@ void GameSetup::setupObservers() {
     } while (cin.fail());
 }
 
-void GameSetup::gameStart() {
+void GameInitialization::gameStart() {
     selectMap();
     selectPlayerNumber();
     setupObservers();
@@ -138,76 +138,76 @@ void GameSetup::gameStart() {
 
 }
 
-Map *GameSetup::getMap() const {
+Map *GameInitialization::getMap() const {
     return map;
 }
 
-void GameSetup::setMap(Map *map) {
-    GameSetup::map = map;
+void GameInitialization::setMap(Map *map) {
+    GameInitialization::map = map;
 }
 
-Deck *GameSetup::getDeck() const {
+Deck *GameInitialization::getDeck() const {
     return deck;
 }
 
-void GameSetup::setDeck(Deck *deck) {
-    GameSetup::deck = deck;
+void GameInitialization::setDeck(Deck *deck) {
+    GameInitialization::deck = deck;
 }
 
-const vector<Player *> &GameSetup::getPlayers() const {
+const vector<Player *> &GameInitialization::getPlayers() const {
     return players;
 }
 
-void GameSetup::setPlayers(const vector<Player *> &players) {
-    GameSetup::players = players;
+void GameInitialization::setPlayers(const vector<Player *> &players) {
+    GameInitialization::players = players;
 }
 
-const vector<string> &GameSetup::getAvailableMaps() const {
+const vector<string> &GameInitialization::getAvailableMaps() const {
     return availableMaps;
 }
 
-void GameSetup::setAvailableMaps1(const vector<string> &availableMaps) {
-    GameSetup::availableMaps = availableMaps;
+void GameInitialization::setAvailableMaps1(const vector<string> &availableMaps) {
+    GameInitialization::availableMaps = availableMaps;
 }
 
-bool GameSetup::isPhaseObserver() const {
+bool GameInitialization::isPhaseObserver() const {
     return phaseObserver;
 }
 
-void GameSetup::setPhaseObserver(bool phaseObserver) {
-    GameSetup::phaseObserver = phaseObserver;
+void GameInitialization::setPhaseObserver(bool phaseObserver) {
+    GameInitialization::phaseObserver = phaseObserver;
 }
 
-bool GameSetup::isStatisticsObserver() const {
+bool GameInitialization::isStatisticsObserver() const {
     return statisticsObserver;
 }
 
-void GameSetup::setStatisticsObserver(bool statisticsObserver) {
-    GameSetup::statisticsObserver = statisticsObserver;
+void GameInitialization::setStatisticsObserver(bool statisticsObserver) {
+    GameInitialization::statisticsObserver = statisticsObserver;
 }
 
-int GameSetup::getNumPlayer() const {
+int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-void GameSetup::setNumPlayer(int numPlayer) {
-    GameSetup::numPlayer = numPlayer;
+void GameInitialization::setNumPlayer(int numPlayer) {
+    GameInitialization::numPlayer = numPlayer;
 }
 
-void GameSetup::setupPlayers() {
+void GameInitialization::setupPlayers() {
 
     for (int i = 0; i < this->getNumPlayer(); i++) {
         this->players.push_back(new Player());
     }
 }
 
-void GameSetup::setupOrders() {
+void GameInitialization::setupOrders() {
     for (auto player : players) {
         player->setOrders(new OrdersList());
     }
 }
 
-void GameSetup::assignCards() {
+void GameInitialization::assignCards() {
 
     this->deck = new Deck(50);
     for (auto player : players) {
@@ -215,4 +215,43 @@ void GameSetup::assignCards() {
     }
 }
 
+//GAME STARTUP PHASE
 
+GameSetup::GameSetup(vector<Player *> oderOfPlayer, Map *map) {
+    this->oderOfPlayer = oderOfPlayer;
+    this->map = map;
+    randomlySetOrder();
+    assignCountries();
+}
+
+
+void GameSetup::randomlySetOrder() {
+
+    cout << "Before shuffling, this is the order of players" << endl;
+    for (auto &it : oderOfPlayer)
+        std::cout << ' ' << it;
+
+    shuffle(oderOfPlayer.begin(), oderOfPlayer.end(), std::mt19937(std::random_device()()));
+
+    cout << "After shuffling, this is the order of players" << endl;
+    for (auto &it : oderOfPlayer)
+        std::cout << ' ' << it;
+
+}
+
+void GameSetup::assignCountries() {
+    int assignedCoutriesCount = 0;
+    int territoriesAssigned = 0;
+    vector<Territory *> territoriesAvailable = map->getTerritoryList();
+
+    while (territoriesAvailable.size() > 0) {
+        int randomIndex = rand() % territoriesAvailable.size();
+        Territory *territory = territoriesAvailable.at(randomIndex);
+        //remove it from available territories
+        territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
+        oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size())->addTerritory(territory);
+        cout << "assigning territory " << territory->getTerritoryName() << " to " << oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size()) << endl;
+        territoriesAssigned++;
+    }
+
+}
