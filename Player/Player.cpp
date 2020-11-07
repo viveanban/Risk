@@ -45,7 +45,8 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Player Name: " << player.getPlayerName() << endl
                   << "Number of Territories Owned: " << player.getTerritories().size() << endl
                   << "Size of Hand: " << player.getHandofCards()->getCards().size() << endl
-                  << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl;
+                  << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl
+                  << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
 vector<Territory *> Player::toDefend() {
@@ -115,4 +116,8 @@ void Player::setHandOfCards(Hand *handOfCards) {
 
 void Player::setOrders(OrdersList* orders) {
     this->orders = orders;
+}
+
+void Player::setNumberOfArmies(int numberOfArmies) {
+    this->numberOfArmies = numberOfArmies;
 }

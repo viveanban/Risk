@@ -179,6 +179,7 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
+// TODO: redo
 bool Continent::isSameOwner() {
     set<Territory *> setOfTerritoriesInContinent;
     for (Territory *territory : getTerritories()) {

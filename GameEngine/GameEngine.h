@@ -4,6 +4,7 @@
 
 #include "../Map/Map.h"
 #include "../Cards/Cards.h"
+#include "../Player/Player.h"
 
 class GameEngine {
 private:
@@ -11,9 +12,29 @@ private:
     Deck* deck;
     vector<Player*> players;
 
+    /**
+     * The reinforcementPhase method determines how many armies to give to a player
+     * @param player: a pointer to a Player object
+     * @return void.
+     */
     void reinforcementPhase();
+
+    /**
+     * The issueOrdersPhase method ____________
+     * @param
+     * @return
+     */
     void issueOrdersPhase();
+
+    /**
+     * The executeOrdersPhase method _______________
+     * @param
+     * @return
+     */
     void executeOrdersPhase();
+
+    bool winnerExists();
+    void removePlayersWithoutTerritoriesOwned();
 
 public:
     GameEngine();

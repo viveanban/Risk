@@ -14,6 +14,7 @@ using namespace std;
 class Player {
 private:
     string playerName;
+    int numberOfArmies;
     vector<Territory *> territories;
     OrdersList* orders;
     Hand* handOfCards;
@@ -45,6 +46,8 @@ public:
      void setHandOfCards(Hand *handOfCards);
 
      void setOrders(OrdersList* orders);
+
+     void setNumberOfArmies(int numberOfArmies);
 
      /**
      * This method returns a list of territories that need to be defended.
