@@ -36,7 +36,7 @@ void GameInitialization::selectMap() {
         if (chosenMap > 0 and chosenMap < availableMaps.size()) {
             inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
         }
-        while (!inputFile) {
+        while (!inputFile.is_open()) {
             inputFile.close();
             cout << "Hey you made a mistake, " << chosenMap << " is not one of the choices." << endl;
             cout << "Please pick another map now: " << endl;
@@ -262,6 +262,7 @@ void GameSetup::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
     for (auto p : this->oderOfPlayer) {
         p->setNumberOfArmies(nmbArmy);
+        cout << "Player " << p << "got assigned A = " << nmbArmy << endl;
     }
 }
 
