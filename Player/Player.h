@@ -34,7 +34,7 @@ public:
 
     vector<Territory *> &getTerritories();
 
-    Hand *getHandofCards();
+    Hand *getHandOfCards();
 
     OrdersList *getOrders();
 
