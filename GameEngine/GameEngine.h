@@ -19,7 +19,7 @@ private:
 
     void selectPlayerNumber();
 
-    void setAvailableMaps(const string &path);
+    void setAvailableMaps(const char *path);
 
     void setupObservers();
 
