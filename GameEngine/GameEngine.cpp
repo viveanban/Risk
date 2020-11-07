@@ -177,10 +177,13 @@ void GameInitialization::assignCards() {
 GameSetup::GameSetup(vector<Player *> oderOfPlayer, Map *map) {
     this->oderOfPlayer = oderOfPlayer;
     this->map = map;
-    randomlySetOrder();
-    assignCountries();
 }
 
+void GameSetup::startupPhase() {
+    randomlySetOrder();
+    assignCountriesToPlayers();
+    assignArmiesToPlayers();
+}
 
 void GameSetup::randomlySetOrder() {
 
@@ -196,19 +199,40 @@ void GameSetup::randomlySetOrder() {
 
 }
 
-void GameSetup::assignCountries() {
-    int assignedCoutriesCount = 0;
+void GameSetup::assignCountriesToPlayers() {
     int territoriesAssigned = 0;
     vector<Territory *> territoriesAvailable = map->getTerritoryList();
 
-    while (territoriesAvailable.size() > 0) {
+    while (!territoriesAvailable.empty()) {
         int randomIndex = rand() % territoriesAvailable.size();
         Territory *territory = territoriesAvailable.at(randomIndex);
         //remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size())->addTerritory(territory);
-        cout << "assigning territory " << territory->getTerritoryName() << " to " << oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size()) << endl;
+        cout << "assigning territory " << territory->getTerritoryName() << " to "
+             << oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size()) << endl;
         territoriesAssigned++;
     }
-
 }
+
+void GameSetup::assignArmiesToPlayers() {
+    int nmbArmy = getInitialArmyNumber();
+    for (auto p : this->oderOfPlayer) {
+        p->setNumberOfArmies(nmbArmy);
+    }
+}
+
+int GameSetup::getInitialArmyNumber() {
+    switch (this->oderOfPlayer.size()) {
+        case 2:
+            return 40;
+        case 3:
+            return 35;
+        case 4:
+            return 30;
+        case 5:
+            return 25;
+    }
+}
+
+

@@ -120,3 +120,15 @@ void Player::setOrders(OrdersList* orders) {
 void Player::addTerritory(Territory *territory) {
     territories.push_back(territory);
 }
+
+int Player::getNumberOfArmies() const {
+    return numberOfArmies;
+}
+
+void Player::setNumberOfArmies(int numberOfArmies) {
+    Player::numberOfArmies = numberOfArmies;
+}
+
+Hand *Player::getHandOfCards() const {
+    return handOfCards;
+}

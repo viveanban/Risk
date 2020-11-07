@@ -67,10 +67,13 @@ private:
     vector<Player *> oderOfPlayer;
     Map* map;
     void randomlySetOrder();
-    void assignCountries();
+    void assignCountriesToPlayers();
+    void assignArmiesToPlayers();
 
 public:
     GameSetup(vector<Player *> orderOfPlayer, Map* map);
+    void startupPhase();
+    int getInitialArmyNumber();
 };
 
 #endif //RISK_GAMEENGINE_H
