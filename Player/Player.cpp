@@ -128,7 +128,3 @@ int Player::getNumberOfArmies() const {
 void Player::setNumberOfArmies(int numberOfArmies) {
     Player::numberOfArmies = numberOfArmies;
 }
-
-Hand *Player::getHandOfCards() const {
-    return handOfCards;
-}

@@ -22,6 +22,7 @@ int main() {
     cout << gameInitialization.isStatisticsObserver() << endl;
 
     GameSetup gameSetup(gameInitialization.getPlayers(), gameInitialization.getMap());
+    gameSetup.startupPhase();
 //    cout << "Validate outcome for known valid map:\n" << boolalpha << (*mapValid).validate() << endl;
 //    cout << "Validate outcome for unconnected map:\n" << boolalpha << (*mapUnconnected).validate() << endl;
 //    cout << "Validate outcome for map with duplicated territory:\n" << boolalpha << (*mapDuplicateTerritory).validate() << endl;
