@@ -67,6 +67,8 @@ vector<Territory *> Player::toAttack() {
     return territoriesToAttack;
 }
 
+// TODO: display stuff where it is relevant for the user so that they can make a good choice
+// TODO: create help guide?
 bool Player::issueOrder() {
     // Deploy orders
     if(this->getNumberofArmies() > 0) {
@@ -80,7 +82,8 @@ bool Player::issueOrder() {
         } while(yesOrNo != 'Y' && yesOrNo != 'N');
 
         if(yesOrNo == 'Y') {
-            // TODO: All other orders
+            cout << "Which Order would you like to issue?" << endl;
+            // Print Advance Order + All Cards in Hand. Numerote
 
         }
         else {
@@ -90,10 +93,8 @@ bool Player::issueOrder() {
 }
 
 void Player::issueDeployOrder() {
-
-    bool orderIssued;
     string territoryName;
-    Territory* territoryToDeployOn = nullptr;
+    Territory* targetTerritory = nullptr;
     int numberOfArmiesToDeploy = -1;
 
     cout << "Here is a list of territories where you can deploy your armies: " << endl;
@@ -104,12 +105,12 @@ void Player::issueDeployOrder() {
         cout << "Enter the name of the territory you would like to deploy your armies to: ";
         cin >> territoryName;
 
-        for (Territory *t: territories) {
+        for (Territory *t: toDefend()) {
             if (t->getTerritoryName() == territoryName)
-                territoryToDeployOn = t;
+                targetTerritory = t;
         }
 
-    } while(!territoryToDeployOn);
+    } while(!targetTerritory);
 
     // Determine Number of Armies
     do {
@@ -122,7 +123,46 @@ void Player::issueDeployOrder() {
     numberOfArmies -= numberOfArmiesToDeploy;
 
     // Update order list
-    orders->add(new DeployOrder(territoryToDeployOn, numberOfArmiesToDeploy));
+    orders->add(new DeployOrder(targetTerritory, numberOfArmiesToDeploy));
+}
+
+// TODO: continue
+void Player::issueAdvanceOrder() {
+    string territoryName;
+    Territory* targetTerritory = nullptr;
+    Territory* srcTerritory = nullptr;
+    int numberOfArmiesToAdvance = -1;
+
+    cout << "Here is a list of territories that you can defend: " << endl;
+    // TODO: print list
+    cout << "Here is a list of territories that you can attack: " << endl;
+    // TODO: print list
+
+    // Determine Territory to Advance On
+    do {
+        cout << "Enter the name of the territory you would like to advance on: ";
+        cin >> territoryName;
+
+        // Name Check
+        for (Territory *t: toDefend()) {
+            if (t->getTerritoryName() == territoryName)
+                targetTerritory = t;
+        }
+
+        if(!targetTerritory) {
+            for (Territory *t: toAttack()) {
+                if (t->getTerritoryName() == territoryName)
+                    targetTerritory = t;
+            }
+        }
+
+    } while(!targetTerritory);
+
+    // Determine Number of Armies
+    do {
+        cout << "Enter the amount of armies you want to advance in that territory: " << endl;
+        cin >> numberOfArmiesToAdvance;
+    } while(numberOfArmiesToAdvance == -1 || numberOfArmiesToAdvance > numberOfArmies);
 }
 
 // Getters

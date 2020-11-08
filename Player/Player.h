@@ -20,6 +20,7 @@ private:
     Hand* handOfCards;
 
     void issueDeployOrder();
+    void issueAdvanceOrder();
 public:
      Player();
 

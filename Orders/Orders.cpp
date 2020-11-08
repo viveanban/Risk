@@ -19,8 +19,8 @@ const string &Order::getDescription() const {
 Order::~Order() = default;
 
 // DeployOrder ---------------------------------------------------------------------------------------------------------
-DeployOrder::DeployOrder(Territory *territoryToDeployOn, int numberOfArmiesToDeploy) : territoryToDeployOn(
-        territoryToDeployOn), numberOfArmiesToDeploy(numberOfArmiesToDeploy), Order("Deploy!") {}
+DeployOrder::DeployOrder(Territory *targetTerritory, int numberOfArmiesToDeploy) : targetTerritory(
+        targetTerritory), numberOfArmiesToDeploy(numberOfArmiesToDeploy), Order("Deploy!") {}
 
 // TODO: create copy cstor comme du monde
 //DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}

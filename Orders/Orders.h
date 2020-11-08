@@ -41,14 +41,14 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    DeployOrder(Territory* territoryToDeployOn, int numberOfArmiesToDeploy);
+    DeployOrder(Territory* targetTerritory, int numberOfArmiesToDeploy);
 
     DeployOrder(const DeployOrder &original);
 
     DeployOrder &operator=(const DeployOrder &order) ;
 
 private:
-    Territory* territoryToDeployOn;
+    Territory* targetTerritory;
     int numberOfArmiesToDeploy;
 
     bool validate() override;
