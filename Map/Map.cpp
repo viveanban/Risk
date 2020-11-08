@@ -12,6 +12,7 @@ using namespace std;
  * Territory Class implementation
  */
 
+// TODO: continent object instead of continent ID?
 Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList() {}
 
 Territory::~Territory() {
@@ -179,13 +180,15 @@ void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
 
-// TODO: redo
 bool Continent::isSameOwner() {
-    set<Territory *> setOfTerritoriesInContinent;
+    set<Player *> players;
     for (Territory *territory : getTerritories()) {
-        setOfTerritoriesInContinent.insert(territory);
+        if(territory->getOwner() == nullptr)
+            return false;
+        else
+            players.insert(territory->getOwner());
     }
-    return setOfTerritoriesInContinent.size() == 1;
+    return players.size() == 1;
 }
 
 Player *Continent::getOwner() {

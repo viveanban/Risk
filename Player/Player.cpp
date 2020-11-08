@@ -50,12 +50,7 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
 }
 
 vector<Territory *> Player::toDefend() {
-    vector<Territory *> territoriesToDefend;
-    for(Territory * territory: territories) {
-        territoriesToDefend.push_back(territory);
-    }
-
-    return territoriesToDefend;
+    return territories;
 }
 
 vector<Territory *> Player::toAttack() {
@@ -72,16 +67,62 @@ vector<Territory *> Player::toAttack() {
     return territoriesToAttack;
 }
 
-void Player::issueOrder() {
-    DeployOrder* deployOrder = new DeployOrder();
-    AdvanceOrder* advanceOrder = new AdvanceOrder();
+bool Player::issueOrder() {
+    // Deploy orders
+    if(this->getNumberofArmies() > 0) {
+        issueDeployOrder();
+        return true;
+    } else {
+        char yesOrNo;
+        do {
+            cout << "Do you want to issue an order? (Y/N)" << endl;
+            cin >> yesOrNo;
+        } while(yesOrNo != 'Y' && yesOrNo != 'N');
 
-    orders->add(deployOrder);
-    cout << "Deploy order added to the list for " << this->getPlayerName() << endl;
-    orders->add(advanceOrder);
-    cout << "Advance order added to the list for " << this->getPlayerName() << endl;
+        if(yesOrNo == 'Y') {
+            // TODO: All other orders
 
-    cout << endl;
+        }
+        else {
+            return false;
+        }
+    }
+}
+
+void Player::issueDeployOrder() {
+
+    bool orderIssued;
+    string territoryName;
+    Territory* territoryToDeployOn = nullptr;
+    int numberOfArmiesToDeploy = -1;
+
+    cout << "Here is a list of territories where you can deploy your armies: " << endl;
+    // TODO: print la liste avec les armies
+
+    // Determine Territory to Deploy On
+    do {
+        cout << "Enter the name of the territory you would like to deploy your armies to: ";
+        cin >> territoryName;
+
+        for (Territory *t: territories) {
+            if (t->getTerritoryName() == territoryName)
+                territoryToDeployOn = t;
+        }
+
+    } while(!territoryToDeployOn);
+
+    // Determine Number of Armies
+    do {
+        cout << "Enter the amount of armies you want to deploy in that territory: " << endl;
+        cin >> numberOfArmiesToDeploy;
+    } while(numberOfArmiesToDeploy == -1 || numberOfArmiesToDeploy > numberOfArmies);
+
+
+    // Update number of Armies
+    numberOfArmies -= numberOfArmiesToDeploy;
+
+    // Update order list
+    orders->add(new DeployOrder(territoryToDeployOn, numberOfArmiesToDeploy));
 }
 
 // Getters
@@ -99,6 +140,10 @@ Hand* Player::getHandofCards() {
 
 OrdersList* Player::getOrders() {
     return this->orders;
+}
+
+int Player::getNumberofArmies() {
+    return this->numberOfArmies;
 }
 
 // Setters

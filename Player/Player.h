@@ -18,6 +18,8 @@ private:
     vector<Territory *> territories;
     OrdersList* orders;
     Hand* handOfCards;
+
+    void issueDeployOrder();
 public:
      Player();
 
@@ -37,6 +39,8 @@ public:
      Hand* getHandofCards();
 
      OrdersList* getOrders();
+
+     int getNumberofArmies();
 
      // Setters
      void setPlayerName(string playerName);
@@ -66,9 +70,10 @@ public:
     /**
     * This method allows the Player to issue an order.
     *
-    * @return void
+    * @return boolean
     */
-    void issueOrder();
+    bool issueOrder();
+
 };
 
 #endif //RISK_PLAYER_H

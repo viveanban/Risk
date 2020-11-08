@@ -1,8 +1,15 @@
 #include "GameEngine.h"
+#include <set>
+#include <algorithm>
 
 void GameEngine::mainGameLoop() {
-    while(!winnerExists()) {
 
+    while(!winnerExists()) {
+        // reinforce phase
+
+        // issue orders phase
+
+        // executing orders phase
 
         removePlayersWithoutTerritoriesOwned();
     }
@@ -10,33 +17,51 @@ void GameEngine::mainGameLoop() {
 }
 
 void GameEngine::reinforcementPhase() {
-    // TODO: loop through all the players
+    for(Player* player: players) {
 
-    Player* currentPlayer = this->players.at(0); // TODO: change that
+        int numberOfTerritoriesOwned = player->getTerritories().size();
+        int numberOfArmiesToGive = numberOfTerritoriesOwned/3; // TODO: does it round down (floor) always?
+        if(numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
+            numberOfArmiesToGive = 3;
 
-    int numberOfTerritoriesOwned = currentPlayer->getTerritories().size();
-    int numberOfArmiesToGive = numberOfTerritoriesOwned/3; // TODO: does it round down (floor) always?
+        // TODO: review logic of control value bonus
+        // Step 1. check if acquired new territories since last round
+        // Step 2. Territory completes continent?
+        // Step 3. Determine control value bonus
+        // Control Value Bonus
+        int controlValueBonus = 0;
+        set<Continent *> continentsWherePlayerOwnsTerritories;
+        for(Territory* territory: player->getTerritories()) {
+            int continentId = territory->getContinentId();
+            continentsWherePlayerOwnsTerritories.insert(map->getContinentList().at(continentId - 1));
+        }
 
-    if(playerOwnsEntireContinent()) {     // TODO: efficient way to check if player owns entire continent?
-        // retrieve said continent's control value
-        int continentControlBonusValue = 0;
-        numberOfArmiesToGive += continentControlBonusValue;
+        // TODO: might need to check previous status of player in terms of continent
+        for(Continent* continent: continentsWherePlayerOwnsTerritories) {
+            if (continent->getOwner() == player)
+                controlValueBonus += continent->getBonus();
+        }
+
+        numberOfArmiesToGive += controlValueBonus;
+
+        player->setNumberOfArmies(numberOfArmiesToGive);
     }
-
-    if(numberOfArmiesToGive == 0 || numberOfArmiesToGive == 1 || numberOfArmiesToGive == 2)
-        currentPlayer->setNumberOfArmies(3);
-    else
-        currentPlayer->setNumberOfArmies(numberOfArmiesToGive);
-
 }
 
 void GameEngine::issueOrdersPhase() {
-    // TODO: loop through all the players
+    vector<Player*> playersWithNoMoreOrderstoIssue;
+    bool playerStillIssuingOrders;
 
-    Player* currentPlayer = this->players.at(0); // TODO: change that
-    currentPlayer->issueOrder();
+    while(playersWithNoMoreOrderstoIssue.size() != players.size()) {
+        for(Player* player: players) {
+            if(find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) == playersWithNoMoreOrderstoIssue.end()) {
+                playerStillIssuingOrders = player->issueOrder();
 
-
+                if(!playerStillIssuingOrders)
+                    playersWithNoMoreOrderstoIssue.push_back(player);
+            }
+        }
+    }
 }
 
 void GameEngine::executeOrdersPhase() {
@@ -47,8 +72,3 @@ void GameEngine::executeOrdersPhase() {
 bool GameEngine::winnerExists() {
     return false;
 }
-
-// TODO: implement
-void GameEngine::removePlayersWithoutTerritoriesOwned() {
-
-};

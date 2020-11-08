@@ -72,6 +72,8 @@ private:
     string continentName;
     vector<Territory *> territories;
 
+    bool isSameOwner();
+
 public:
     Continent();
 
@@ -83,8 +85,6 @@ public:
 
     // output insertion stream operator override
     friend std::ostream &operator<<(std::ostream &stream, Continent &c);
-
-    bool isSameOwner();
 
     // Getters
     int getContinentId();
