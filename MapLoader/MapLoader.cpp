@@ -25,6 +25,8 @@ Section currentSection;
 vector<Continent *> continentsList;
 vector<Territory *> territoriesList;
 
+// TODO: create data structure that won't depend on index for continent list
+
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 
 MapLoader &MapLoader::operator=(const MapLoader &original) { return *this; }
@@ -73,6 +75,7 @@ void MapLoader::parseFile(fstream &mapFile) {
             if (currentSection == continents) {
                 checkPattern(line, CONTINENT_REGEX);
                 continentsList.push_back(createContinents(line, continentId));
+                continentId++;
             } else if (currentSection == countries) {
                 checkPattern(line, COUNTRY_REGEX);
                 territoriesList.push_back(createTerritories(line));
@@ -115,7 +118,7 @@ Continent *MapLoader::createContinents(const string &line, int &continentId) {
         counter++;
     }
 
-    continent->setContinentId(continentId++);
+    continent->setContinentId(continentId);
 
     return continent;
 }
