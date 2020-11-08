@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include "../Map/Map.h"
 
 using namespace std;
 
@@ -11,8 +12,10 @@ using namespace std;
  * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
  */
 class Order {
-public:
+private:
     string description;
+public:
+    Order(string description);
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
@@ -28,6 +31,8 @@ public:
      */
     virtual void execute() = 0;
 
+    const string &getDescription() const;
+
     virtual ~Order();
 };
 
@@ -36,15 +41,17 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    DeployOrder();
+    DeployOrder(Territory* territoryToDeployOn, int numberOfArmiesToDeploy);
 
     DeployOrder(const DeployOrder &original);
 
     DeployOrder &operator=(const DeployOrder &order) ;
 
 private:
-    bool validate() override;
+    Territory* territoryToDeployOn;
+    int numberOfArmiesToDeploy;
 
+    bool validate() override;
     void execute() override;
 };
 

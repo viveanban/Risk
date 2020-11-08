@@ -6,16 +6,24 @@ using namespace std;
 
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 
+Order::Order(string description) : description(description) {}
+
 std::ostream &operator<<(std::ostream &stream, Order &order) {
     return stream << order.description << endl;
+}
+
+const string &Order::getDescription() const {
+    return description;
 }
 
 Order::~Order() = default;
 
 // DeployOrder ---------------------------------------------------------------------------------------------------------
-DeployOrder::DeployOrder() { description = "Deploy!"; }
+DeployOrder::DeployOrder(Territory *territoryToDeployOn, int numberOfArmiesToDeploy) : territoryToDeployOn(
+        territoryToDeployOn), numberOfArmiesToDeploy(numberOfArmiesToDeploy), Order("Deploy!") {}
 
-DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}
+// TODO: create copy cstor comme du monde
+//DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}
 
 DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
 
@@ -31,7 +39,7 @@ void DeployOrder::execute() {
 }
 
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
-AdvanceOrder::AdvanceOrder() { description = "Advance!"; }
+AdvanceOrder::AdvanceOrder() : Order("Advance!") {}
 
 AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
 
@@ -50,7 +58,7 @@ void AdvanceOrder::execute() {
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
-BombOrder::BombOrder() { description = "Bomb!"; }
+BombOrder::BombOrder() : Order("Bomb!") {}
 
 BombOrder::BombOrder(const BombOrder &original) : BombOrder() {}
 
@@ -69,7 +77,7 @@ void BombOrder::execute() {
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
-BlockadeOrder::BlockadeOrder() { description = "Blockade!"; }
+BlockadeOrder::BlockadeOrder() : Order("Blockade!") {}
 
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
 
@@ -88,7 +96,7 @@ void BlockadeOrder::execute() {
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
-AirliftOrder::AirliftOrder() { description = "Airlift!"; }
+AirliftOrder::AirliftOrder() : Order("Airlift!") {}
 
 AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
 
@@ -107,7 +115,7 @@ void AirliftOrder::execute() {
 }
 
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
-NegotiateOrder::NegotiateOrder() { description = "Negotiate!"; }
+NegotiateOrder::NegotiateOrder() : Order("Negotiate!") {}
 
 NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : NegotiateOrder() {}
 
@@ -126,7 +134,7 @@ void NegotiateOrder::execute() {
 
 // ReinforcementOrder --------------------------------------------------------------------------------------------------
 
-ReinforcementOrder::ReinforcementOrder() { description = "Reinforce!"; }
+ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!") {}
 
 ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder() {}
 
@@ -184,7 +192,7 @@ void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Ord
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {
     string result = "Orders in list:\n";
     for (Order *o : ordersList.orderList)
-        result += o->description + "\n";
+        result += o->getDescription() + "\n";
     return stream << result << endl;
 }
 
