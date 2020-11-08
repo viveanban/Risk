@@ -206,9 +206,8 @@ void GameInitialization::setupOrders() {
         player->setOrders(new OrdersList());
     }
 }
-
+// TODO: check how many cards the deck should start with, is 50 the right number?
 void GameInitialization::assignCards() {
-
     this->deck = new Deck(50);
     for (auto player : players) {
         player->setHandOfCards(new Hand());
@@ -218,7 +217,7 @@ void GameInitialization::assignCards() {
 //GAME STARTUP PHASE
 
 GameSetup::GameSetup(vector<Player *> oderOfPlayer, Map *map) {
-    this->oderOfPlayer = oderOfPlayer;
+    this->orderedPlayerList = oderOfPlayer;
     this->map = map;
 }
 
@@ -228,46 +227,53 @@ void GameSetup::startupPhase() {
     assignArmiesToPlayers();
 }
 
+// TODO: should we add a static playerNumber variable to the Player class to set Player.playerName as player{1,2,3..} and increment everytime we make a player.
 void GameSetup::randomlySetOrder() {
 
     cout << "Before shuffling, this is the order of players" << endl;
-    for (auto &it : oderOfPlayer)
+    for (auto &it : orderedPlayerList)
         std::cout << ' ' << it;
 
-    shuffle(oderOfPlayer.begin(), oderOfPlayer.end(), std::mt19937(std::random_device()()));
+    shuffle(orderedPlayerList.begin(), orderedPlayerList.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
-    for (auto &it : oderOfPlayer)
+    for (auto &it : orderedPlayerList)
         std::cout << ' ' << it;
-
 }
 
 void GameSetup::assignCountriesToPlayers() {
     int territoriesAssigned = 0;
-    vector<Territory *> territoriesAvailable = map->getTerritoryList();
+    vector<Territory *> territoriesAvailable = map->getTerritoryList(); //TODO: check if modifying this list modifies the map's list
 
     while (!territoriesAvailable.empty()) {
+        // pick a random territory
         int randomIndex = rand() % territoriesAvailable.size();
         Territory *territory = territoriesAvailable.at(randomIndex);
-        //remove it from available territories
+        // remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
-        oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size())->addTerritory(territory);
+        // assign using Round Robin Method
+        orderedPlayerList.at(territoriesAssigned % orderedPlayerList.size())->addTerritory(territory);
         cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << oderOfPlayer.at(territoriesAssigned % oderOfPlayer.size()) << endl;
+             << orderedPlayerList.at(territoriesAssigned % orderedPlayerList.size()) << endl;
         territoriesAssigned++;
+    }
+    if (territoriesAssigned == map->getTerritoryList().size()) {
+        cout << "All territories Assigned." << endl;
+    } else {
+        cout << "Error during territory assignment, not all territories assigned." << endl;
     }
 }
 
 void GameSetup::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
-    for (auto p : this->oderOfPlayer) {
+    for (auto p : this->orderedPlayerList) {
         p->setNumberOfArmies(nmbArmy);
-        cout << "Player " << p << "got assigned A = " << nmbArmy << endl;
+        cout << "Player " << p << "got assigned A = " << p->getNumberOfArmies() << endl;
     }
 }
 
 int GameSetup::getInitialArmyNumber() {
-    switch (this->oderOfPlayer.size()) {
+    switch (this->orderedPlayerList.size()) {
         case 2:
             return 40;
         case 3:

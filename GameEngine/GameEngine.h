@@ -64,8 +64,8 @@ public:
 
 class GameSetup {
 private:
-    vector<Player *> oderOfPlayer;
-    Map* map;
+    vector<Player *> orderedPlayerList;
+    Map *map;
     void randomlySetOrder();
     void assignCountriesToPlayers();
     void assignArmiesToPlayers();
