@@ -1,14 +1,14 @@
 #include <iostream>
 #include "Player.h"
 #include <algorithm>
+#include <set>
 
 /**
  * Player Class implementation
  */
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
-Player::~Player()
-{
+Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
     delete orders;
@@ -49,17 +49,19 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
+//TODO: Change method to take a srcTerritory as param
 vector<Territory *> Player::toDefend() {
     return territories;
 }
 
+//TODO: Change method to take a srcTerritory as param
 vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
-    for(Territory * territory: territories) {
-        for(Territory * adjTerritory: territory->getAdjList()) {
-            if(find(territories.begin(), territories.end(), adjTerritory) == territories.end() &&
-               find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritory) == territoriesToAttack.end())
+    for (Territory *territory: territories) {
+        for (Territory *adjTerritory: territory->getAdjList()) {
+            if (find(territories.begin(), territories.end(), adjTerritory) == territories.end() &&
+                find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritory) == territoriesToAttack.end())
                 territoriesToAttack.push_back(adjTerritory);
         }
     }
@@ -71,7 +73,7 @@ vector<Territory *> Player::toAttack() {
 // TODO: create help guide?
 bool Player::issueOrder() {
     // Deploy orders
-    if(this->getNumberofArmies() > 0) {
+    if (this->getNumberofArmies() > 0) {
         issueDeployOrder();
         return true;
     } else {
@@ -79,22 +81,49 @@ bool Player::issueOrder() {
         do {
             cout << "Do you want to issue an order? (Y/N)" << endl;
             cin >> yesOrNo;
-        } while(yesOrNo != 'Y' && yesOrNo != 'N');
+        } while (yesOrNo != 'Y' && yesOrNo != 'N');
 
-        if(yesOrNo == 'Y') {
-            cout << "Which Order would you like to issue?" << endl;
-            // Print Advance Order + All Cards in Hand. Numerote
+        if (yesOrNo == 'Y') {
+            printOrderOptions();
+            cout << "Which order would you like to issue?" << endl;
+            cout << "Enter the order option: ";
+            string selectedOrder;
+            cin >> selectedOrder;
 
-        }
-        else {
+            if(selectedOrder == "Advance") {
+               issueAdvanceOrder();
+            }else if(selectedOrder == "Bomb"){
+
+            }
+
+            // TODO: Print Advance Order + All Cards in Hand. Numerote
+
+
+        } else {
             return false;
         }
     }
 }
 
+void Player::printOrderOptions() {
+    cout << "Here are your order options: \n" << endl;
+
+    cout << "Advance - " << "unlimited" << endl;
+    set<Card::CardType> cardTypesInHand;
+    for (Card *card: this->handOfCards->getCards()) {
+        Card::CardType cardType = card->getType();
+        if (find(cardTypesInHand.begin(), cardTypesInHand.end(), cardType) == cardTypesInHand.end()) {
+            cardTypesInHand.insert(cardType);
+            cout << cardType << " - " << handOfCards->getAmountOfCardsOfType(cardType) << endl;
+        }
+    }
+}
+
+
+
 void Player::issueDeployOrder() {
     string territoryName;
-    Territory* targetTerritory = nullptr;
+    Territory *targetTerritory = nullptr;
     int numberOfArmiesToDeploy = -1;
 
     cout << "Here is a list of territories where you can deploy your armies: " << endl;
@@ -102,22 +131,21 @@ void Player::issueDeployOrder() {
 
     // Determine Territory to Deploy On
     do {
-        cout << "Enter the name of the territory you would like to deploy your armies to: ";
+        cout << "Enter the target territory: ";
         cin >> territoryName;
 
-        for (Territory *t: toDefend()) {
+        for (Territory *t: territories) {
             if (t->getTerritoryName() == territoryName)
                 targetTerritory = t;
         }
 
-    } while(!targetTerritory);
+    } while (!targetTerritory);
 
     // Determine Number of Armies
     do {
         cout << "Enter the amount of armies you want to deploy in that territory: " << endl;
         cin >> numberOfArmiesToDeploy;
-    } while(numberOfArmiesToDeploy == -1 || numberOfArmiesToDeploy > numberOfArmies);
-
+    } while (numberOfArmiesToDeploy == -1 || numberOfArmiesToDeploy > numberOfArmies);
 
     // Update number of Armies
     numberOfArmies -= numberOfArmiesToDeploy;
@@ -126,21 +154,37 @@ void Player::issueDeployOrder() {
     orders->add(new DeployOrder(targetTerritory, numberOfArmiesToDeploy));
 }
 
-// TODO: continue
 void Player::issueAdvanceOrder() {
     string territoryName;
-    Territory* targetTerritory = nullptr;
-    Territory* srcTerritory = nullptr;
+    Territory *targetTerritory = nullptr;
+    Territory *srcTerritory = nullptr;
     int numberOfArmiesToAdvance = -1;
 
-    cout << "Here is a list of territories that you can defend: " << endl;
-    // TODO: print list
-    cout << "Here is a list of territories that you can attack: " << endl;
-    // TODO: print list
+    cout << "Here is a list of territories that you own: " << endl;
+    // TODO: print list territories [TerritoryName - Unit]
 
-    // Determine Territory to Advance On
+    //Determine source territory
     do {
-        cout << "Enter the name of the territory you would like to advance on: ";
+        cout << "Enter the source territory: ";
+        cin >> territoryName;
+
+        // Name Check
+        for (Territory *t: territories) {
+            if (t->getTerritoryName() == territoryName)
+                srcTerritory = t;
+        }
+
+    } while (!srcTerritory);
+
+    cout << "Here is a list of territories that you can attack from your chosen source territory: " << endl;
+    // TODO: print list toAttack(src) [TerritoryName - Unit]
+
+    cout << "Here is a list of territories that you can defend from your chosen source territory: " << endl;
+    // TODO: print list toDefend(src) [TerritoryName - Unit]
+
+    // Determine target territory
+    do {
+        cout << "Enter the target territory: ";
         cin >> territoryName;
 
         // Name Check
@@ -149,20 +193,46 @@ void Player::issueAdvanceOrder() {
                 targetTerritory = t;
         }
 
-        if(!targetTerritory) {
+        if (!targetTerritory) {
             for (Territory *t: toAttack()) {
                 if (t->getTerritoryName() == territoryName)
                     targetTerritory = t;
             }
         }
 
-    } while(!targetTerritory);
+    } while (!targetTerritory);
 
     // Determine Number of Armies
     do {
-        cout << "Enter the amount of armies you want to advance in that territory: " << endl;
+        cout << "Enter the amount of armies you want to advance in the target territory: " << endl;
         cin >> numberOfArmiesToAdvance;
-    } while(numberOfArmiesToAdvance == -1 || numberOfArmiesToAdvance > numberOfArmies);
+    } while (numberOfArmiesToAdvance == -1 || numberOfArmiesToAdvance > srcTerritory->getUnitNbr());
+
+    // Update order list
+    orders->add(new AdvanceOrder(srcTerritory, targetTerritory, numberOfArmiesToAdvance));
+}
+
+
+//TODO: Continue from here
+void Player::issueBombOrder() {
+    string territoryName;
+    Territory *targetTerritory = nullptr;
+
+    //TODO: Show map so that the player can make an informed decision
+
+    //Determine target territory
+    do {
+        cout << "Enter the target territory: ";
+        cin >> territoryName;
+
+        // Name Check
+        //TODO: decide what is the territory options based on TA response
+        for (Territory *t: listofAllTerritories) {
+            if (t->getTerritoryName() == territoryName)
+                targetTerritory = t;
+        }
+
+    } while (!targetTerritory);
 }
 
 // Getters
@@ -170,15 +240,15 @@ string Player::getPlayerName() {
     return this->playerName;
 }
 
-vector<Territory *>& Player::getTerritories() {
+vector<Territory *> &Player::getTerritories() {
     return this->territories;
 }
 
-Hand* Player::getHandofCards() {
+Hand *Player::getHandofCards() {
     return this->handOfCards;
 }
 
-OrdersList* Player::getOrders() {
+OrdersList *Player::getOrders() {
     return this->orders;
 }
 
@@ -199,10 +269,11 @@ void Player::setHandOfCards(Hand *handOfCards) {
     this->handOfCards = handOfCards;
 }
 
-void Player::setOrders(OrdersList* orders) {
+void Player::setOrders(OrdersList *orders) {
     this->orders = orders;
 }
 
 void Player::setNumberOfArmies(int numberOfArmies) {
     this->numberOfArmies = numberOfArmies;
 }
+

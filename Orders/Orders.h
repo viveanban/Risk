@@ -63,12 +63,16 @@ private:
  */
 class AdvanceOrder : public Order {
 public:
-    AdvanceOrder();
+    AdvanceOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAdvance);
 
     AdvanceOrder(const AdvanceOrder &original);
 
     AdvanceOrder &operator=(const AdvanceOrder &order);
 private:
+    Territory* sourceTerritory;
+    Territory* targetTerritory;
+    int numberOfArmiesToAdvance;
+
     bool validate() override;
 
     void execute() override;

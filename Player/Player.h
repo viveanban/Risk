@@ -19,8 +19,10 @@ private:
     OrdersList* orders;
     Hand* handOfCards;
 
+    void issueBombOrder();
     void issueDeployOrder();
     void issueAdvanceOrder();
+    void printOrderOptions();
 public:
      Player();
 

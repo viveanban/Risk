@@ -96,6 +96,8 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, const Hand &c);
 
+    int getAmountOfCardsOfType(Card::CardType type);
+
     int getCardNbr() const;
 
     void setCardNbr(int cardNbr);

@@ -6,6 +6,7 @@ using namespace std;
 
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 
+// TODO: Check if we need a Order ctor that will also take a player as param [needed for some execution]
 Order::Order(string description) : description(description) {}
 
 std::ostream &operator<<(std::ostream &stream, Order &order) {
@@ -29,19 +30,29 @@ DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
 
 bool DeployOrder::validate() {
     cout << "Validating deploy order." << endl;
+    //TODO: Check that the targetTerr is owned by the player that issued the order
     return true;
 }
 
 void DeployOrder::execute() {
     if (validate()) {
+        targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToDeploy);
+        //TODO: Output effect of the deployOrder
         cout << "Executing deploy order." << endl;
+        cout << numberOfArmiesToDeploy << " number of armies have been deployed to "
+             << targetTerritory->getTerritoryName() << endl;
+        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+             << " army units." << endl;
     }
 }
 
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
-AdvanceOrder::AdvanceOrder() : Order("Advance!") {}
+AdvanceOrder::AdvanceOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAdvance)
+        : sourceTerritory(sourceTerritory), targetTerritory(targetTerritory),
+          numberOfArmiesToAdvance(numberOfArmiesToAdvance), Order("Advance!") {}
 
-AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
+//TODO: create copy cstor comme du monde
+//AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
 
 AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &order) { return *this; }
 
