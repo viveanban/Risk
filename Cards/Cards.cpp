@@ -135,20 +135,18 @@ void Deck::addCard(Card *card) {
 /**
  * Hand class
  */
-Hand::Hand() : cardNbr(), cards() {}
+Hand::Hand() : cards() {}
 
-Hand::Hand(vector<Card *> cards) : cards(cards), cardNbr(cards.size()) {}
+Hand::Hand(vector<Card *> cards) : cards(cards) {}
 
 Hand::Hand(const Hand &original) {
     cards = vector<Card *>(original.getCards().size());
-    cardNbr = original.cardNbr;
     for (int i = 0; i < cards.size(); i++)
         cards[i] = new Card(*original.getCards().at(i));
 }
 
 Hand &Hand::operator=(const Hand &otherHand) {
     cards = vector<Card *>(otherHand.getCards().size());
-    cardNbr = otherHand.cardNbr;
     for (int i = 0; i < cards.size(); i++)
         cards[i] = new Card(*otherHand.getCards().at(i));
     return *this;
@@ -174,14 +172,6 @@ void Hand::setCards(const vector<Card *> &cards) {
     Hand::cards = cards;
 }
 
-int Hand::getCardNbr() const {
-    return cardNbr;
-}
-
-void Hand::setCardNbr(int cardNbr) {
-    Hand::cardNbr = cardNbr;
-}
-
 void Hand::addCard(Card *card) {
     cout << "Adding card to hand" << endl;
     cards.push_back(card);
@@ -190,4 +180,12 @@ void Hand::addCard(Card *card) {
 void Hand::removeCard(int index) {
     cout << "Removing card from hand" << endl;
     cards.erase(cards.begin() + index);
+}
+
+int Hand::getAmountOfCardsOfType(Card::CardType type) {
+    int counter = 0;
+    for (Card *card: cards)
+        if (card->getType() == type) counter++;
+
+    return counter;
 }

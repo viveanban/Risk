@@ -83,7 +83,6 @@ public:
 class Hand {
 private:
     vector<Card *> cards;
-    int cardNbr;
 public:
     Hand();
 
