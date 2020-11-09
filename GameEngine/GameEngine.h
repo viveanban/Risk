@@ -34,6 +34,7 @@ private:
     void executeOrdersPhase();
 
     bool winnerExists();
+    void removePlayersWithoutTerritoriesOwned();
 
 public:
     GameEngine();
