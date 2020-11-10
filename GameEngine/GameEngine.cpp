@@ -42,23 +42,52 @@ void GameEngine::reinforcementPhase() {
 
 void GameEngine::issueOrdersPhase() {
     vector<Player*> playersWithNoMoreOrderstoIssue;
-    bool playerStillIssuingOrders;
-
     while(playersWithNoMoreOrderstoIssue.size() != players.size()) {
         for(Player* player: players) {
             if(find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) == playersWithNoMoreOrderstoIssue.end()) {
-                playerStillIssuingOrders = player->issueOrder();
-
-                if(!playerStillIssuingOrders)
+                if(!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
             }
         }
     }
 }
 
-// TODO: implement
 void GameEngine::executeOrdersPhase() {
+    // Prioritize the orders
+    for (Player *player: players) {
+        player->getOrders()->sortOrderListByPriority();
+    }
 
+    //Execute all deploy orders
+    vector<Player *> playersWithNoMoreDeployOrderstoExecute;
+    while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
+        for (Player *player: players) {
+            vector<Order *> &orderList = player->getOrders()->getOrderList();
+            if (!orderList.empty()) {
+                auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
+                if (deployOrder) {
+                    deployOrder->execute();
+                    player->getOrders()->remove(deployOrder);
+                } else {
+                    playersWithNoMoreDeployOrderstoExecute.push_back(player);
+                }
+            }
+        }
+    }
+
+    //Execute the rest of the orders
+    vector<Player *> playersWithNoMoreOrdersToExecute;
+    while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
+        for (Player *player: players) {
+            vector<Order *> &orderList = player->getOrders()->getOrderList();
+            if (!orderList.empty()) {
+                orderList[0]->execute();
+                player->getOrders()->remove(orderList[0]);
+            } else {
+                playersWithNoMoreOrdersToExecute.push_back(player);
+            }
+        }
+    }
 }
 
 // TODO: implement

@@ -14,8 +14,11 @@ using namespace std;
 class Order {
 private:
     string description;
+
+    int priority;
+
 public:
-    Order(string description);
+    Order(string description, int priority);
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
@@ -33,6 +36,8 @@ public:
 
     const string &getDescription() const;
 
+    int getPriority() const;
+
     virtual ~Order();
 };
 
@@ -41,18 +46,20 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    DeployOrder(Territory* targetTerritory, int numberOfArmiesToDeploy);
+    DeployOrder(Territory *targetTerritory, int numberOfArmiesToDeploy);
 
     DeployOrder(const DeployOrder &original);
 
-    DeployOrder &operator=(const DeployOrder &order) ;
+    DeployOrder &operator=(const DeployOrder &order);
+
+    void execute() override;
 
 private:
-    Territory* targetTerritory;
+    Territory *targetTerritory;
+
     int numberOfArmiesToDeploy;
 
     bool validate() override;
-    void execute() override;
 };
 
 /**
@@ -68,9 +75,10 @@ public:
     AdvanceOrder(const AdvanceOrder &original);
 
     AdvanceOrder &operator=(const AdvanceOrder &order);
+
 private:
-    Territory* sourceTerritory;
-    Territory* targetTerritory;
+    Territory *sourceTerritory;
+    Territory *targetTerritory;
     int numberOfArmiesToAdvance;
 
     bool validate() override;
@@ -107,7 +115,8 @@ public:
 
     BlockadeOrder(const BlockadeOrder &original);
 
-    BlockadeOrder &operator=(const BlockadeOrder &order) ;
+    BlockadeOrder &operator=(const BlockadeOrder &order);
+
 private:
     bool validate() override;
 
@@ -125,6 +134,7 @@ public:
     AirliftOrder(const AirliftOrder &original);
 
     AirliftOrder &operator=(const AirliftOrder &order);
+
 private:
     bool validate() override;
 
@@ -155,13 +165,14 @@ public:
 
     ReinforcementOrder(const ReinforcementOrder &original);
 
-    ReinforcementOrder &operator=(const ReinforcementOrder &order) ;
+    ReinforcementOrder &operator=(const ReinforcementOrder &order);
 
 private:
     bool validate() override;
 
     void execute() override;
 };
+
 /**
  * This class represents a list of orders for the Risk game
  * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate, Reinforce.
@@ -211,9 +222,9 @@ public:
      */
     bool move(Order *order, int destination);
 
-    void executeAll();
-
     vector<Order *> &getOrderList();
+
+    void sortOrderListByPriority();
 };
 
 #endif //RISK_ORDERS_H
