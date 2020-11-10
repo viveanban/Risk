@@ -92,9 +92,10 @@ void BombOrder::execute() {
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
-BlockadeOrder::BlockadeOrder() : Order("Blockade!", 3) {}
+BlockadeOrder::BlockadeOrder(Territory* targetTerritory) : targetTerritory(targetTerritory), Order("Blockade!", 3) {}
 
-BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
+//TODO: create copy cstor comme du monde
+//BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
 
 BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &order) { return *this; }
 
@@ -111,13 +112,17 @@ void BlockadeOrder::execute() {
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
-AirliftOrder::AirliftOrder() : Order("Airlift!", 2) {}
+AirliftOrder::AirliftOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAirlift)
+        : sourceTerritory(sourceTerritory), targetTerritory(targetTerritory),
+          numberOfArmiesToAirlift(numberOfArmiesToAirlift), Order("Airlift!", 2) {}
 
-AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
+//TODO: create copy cstor comme du monde
+//AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
 
 AirliftOrder &AirliftOrder::operator=(const AirliftOrder &order) { return *this; }
 
 bool AirliftOrder::validate() {
+    // TODO: check if src and target are different
     cout << "Validating airlift order." << endl;
     return true;
 
@@ -183,26 +188,26 @@ OrdersList &OrdersList::operator=(const OrdersList &original) {
 }
 
 void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector) {
-    for (auto order : originalVector) {
-        if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
-            //TODO: Uncomment once the copy ctors are implemented
+    //TODO: Uncomment once the copy ctors are implemented
+//    for (auto order : originalVector) {
+//        if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
 //            destinationVector.push_back(new DeployOrder(*deployOrder));
-        } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
+//        } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
 //            destinationVector.push_back(new AdvanceOrder(*advanceOrder));
-        } else if (auto *bombOrder = dynamic_cast<BombOrder *>(order)) {
-            destinationVector.push_back(new BombOrder(*bombOrder));
-        } else if (auto *blockadeOrder = dynamic_cast<BlockadeOrder *>(order)) {
-            destinationVector.push_back(new BlockadeOrder(*blockadeOrder));
-        } else if (auto *airliftOrder = dynamic_cast<AirliftOrder *>(order)) {
-            destinationVector.push_back(new AirliftOrder(*airliftOrder));
-        } else if (auto *negotiateOrder = dynamic_cast<NegotiateOrder *>(order)) {
-            destinationVector.push_back(new NegotiateOrder(*negotiateOrder));
-        } else if (auto *reinforceOrder = dynamic_cast<ReinforcementOrder *>(order)) {
-            destinationVector.push_back(new ReinforcementOrder(*reinforceOrder));
-        } else {
-            cout << "WARNING: Order of unknown type" << endl;
-        }
-    }
+//        } else if (auto *bombOrder = dynamic_cast<BombOrder *>(order)) {
+//            destinationVector.push_back(new BombOrder(*bombOrder));
+//        } else if (auto *blockadeOrder = dynamic_cast<BlockadeOrder *>(order)) {
+//            destinationVector.push_back(new BlockadeOrder(*blockadeOrder));
+//        } else if (auto *airliftOrder = dynamic_cast<AirliftOrder *>(order)) {
+//            destinationVector.push_back(new AirliftOrder(*airliftOrder));
+//        } else if (auto *negotiateOrder = dynamic_cast<NegotiateOrder *>(order)) {
+//            destinationVector.push_back(new NegotiateOrder(*negotiateOrder));
+//        } else if (auto *reinforceOrder = dynamic_cast<ReinforcementOrder *>(order)) {
+//            destinationVector.push_back(new ReinforcementOrder(*reinforceOrder));
+//        } else {
+//            cout << "WARNING: Order of unknown type" << endl;
+//        }
+//    }
 }
 
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {

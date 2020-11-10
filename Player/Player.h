@@ -25,10 +25,20 @@ private:
 
     void issueAdvanceOrder();
 
-    void printOrderOptions();
+    void issueAirliftOrder();
+
+    void issueBlockadeOrder();
+
+    void issueReinforcementOrder();
+
+    void issueNegotiateOrder();
+
+    Card::CardType getRandomCard();
 
 public:
     Player();
+
+    Player(string playerName);
 
     ~Player();
 

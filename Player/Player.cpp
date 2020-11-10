@@ -8,6 +8,8 @@
  */
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
+Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
+
 Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
@@ -70,82 +72,58 @@ vector<Territory *> Player::toAttack() {
 }
 
 bool Player::issueOrder() {
-    // Deploy orders
-    if (this->getNumberofArmies() > 0) {
+    if (this->getNumberofArmies() > 0) { // Deploy orders
         issueDeployOrder();
         return true;
-    } else {
-        char yesOrNo;
-        do {
-            cout << "Do you want to issue an order? (Y/N)" << endl;
-            cin >> yesOrNo;
-        } while (yesOrNo != 'Y' && yesOrNo != 'N');
+    } else { // Other orders
+        bool continueIssuingOrders = rand() % 2;
 
-        if (yesOrNo == 'Y') {
-            printOrderOptions();
-            cout << "Which order would you like to issue?" << endl;
-            cout << "Enter the order option: ";
-            string selectedOrder;
-            cin >> selectedOrder;
-
-            if(selectedOrder == "Advance") {
-               issueAdvanceOrder();
-            }else if(selectedOrder == "Bomb"){
-
+        if (continueIssuingOrders) {
+            // Choose advance or hand?
+            bool advance = rand() % 2;
+            if (advance) {
+                issueAdvanceOrder();
             }
+            else
+            {
+                Card* card = handOfCards->getRandomCard();
 
-            // TODO: Print Advance Order + All Cards in Hand. Numerote
+                switch(card->getType()) {
+                    case Card::CardType::diplomacy:
+                        break;
 
+                    case Card::CardType::reinforcement:
+                        break;
 
-        } else {
-            return false;
+                    case Card::CardType::blockade:
+                        issueBlockadeOrder();
+                        break;
+
+                    case Card::CardType::bomb:
+                        break;
+
+                    case Card::CardType::airlift:
+                        issueAirliftOrder();
+                        break;
+
+                    default:
+                        break;
+                }
+            }
         }
+
+        return continueIssuingOrders;
     }
 }
 
-void Player::printOrderOptions() {
-    cout << "Here are your order options: \n" << endl;
-
-    cout << "Advance - " << "unlimited" << endl;
-    set<Card::CardType> cardTypesInHand;
-    for (Card *card: this->handOfCards->getCards()) {
-        Card::CardType cardType = card->getType();
-        if (cardTypesInHand.find(cardType) == cardTypesInHand.end()) {
-            cardTypesInHand.insert(cardType);
-            cout << cardType << " - " << handOfCards->getAmountOfCardsOfType(cardType) << endl;
-        }
-    }
-}
-
-
-
+// TODO: move all theses to Order and have a virtual issue() method that each class implements. Also, send the Player object.
 void Player::issueDeployOrder() {
-    string territoryName;
-    Territory *targetTerritory = nullptr;
-    int numberOfArmiesToDeploy = -1;
+    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
+    int numberOfArmiesToDeploy = (rand() % numberOfArmies) + 1;
 
-    cout << "Here is a list of territories where you can deploy your armies: " << endl;
-    // TODO: print la liste avec les armies
+    Territory *targetTerritory = territories.at(rand() % territories.size());
 
-    // Determine Territory to Deploy On
-    do {
-        cout << "Enter the target territory: ";
-        cin >> territoryName;
-
-        for (Territory *t: territories) {
-            if (t->getTerritoryName() == territoryName)
-                targetTerritory = t;
-        }
-
-    } while (!targetTerritory);
-
-    // Determine Number of Armies
-    do {
-        cout << "Enter the amount of armies you want to deploy in that territory: " << endl;
-        cin >> numberOfArmiesToDeploy;
-    } while (numberOfArmiesToDeploy == -1 || numberOfArmiesToDeploy > numberOfArmies);
-
-    // Update number of Armies
+    // Update number of armies
     numberOfArmies -= numberOfArmiesToDeploy;
 
     // Update order list
@@ -153,84 +131,57 @@ void Player::issueDeployOrder() {
 }
 
 void Player::issueAdvanceOrder() {
-    string territoryName;
-    Territory *targetTerritory = nullptr;
-    Territory *srcTerritory = nullptr;
-    int numberOfArmiesToAdvance = -1;
-
-    cout << "Here is a list of territories that you own: " << endl;
-    // TODO: print list territories [TerritoryName - Unit]
-
-    //Determine source territory
-    do {
-        cout << "Enter the source territory: ";
-        cin >> territoryName;
-
-        // Name Check
-        for (Territory *t: territories) {
-            if (t->getTerritoryName() == territoryName)
-                srcTerritory = t;
-        }
-
-    } while (!srcTerritory);
-
-    cout << "Here is a list of territories that you can attack from your chosen source territory: " << endl;
-    // TODO: print list toAttack(src) [TerritoryName - Unit]
-
-    cout << "Here is a list of territories that you can defend from your chosen source territory: " << endl;
-    // TODO: print list toDefend(src) [TerritoryName - Unit]
+    // Determine src territory
+    Territory *srcTerritory = territories.at(rand() % territories.size());
 
     // Determine target territory
-    do {
-        cout << "Enter the target territory: ";
-        cin >> territoryName;
+    bool attack = rand() % 2;
+    vector<Territory*> territoriesToChooseFrom = attack ? toAttack() : toDefend();
+    Territory *targetTerritory = territoriesToChooseFrom.at(rand() % territoriesToChooseFrom.size());
 
-        // Name Check
-        for (Territory *t: toDefend()) {
-            if (t->getTerritoryName() == territoryName)
-                targetTerritory = t;
-        }
-
-        if (!targetTerritory) {
-            for (Territory *t: toAttack()) {
-                if (t->getTerritoryName() == territoryName)
-                    targetTerritory = t;
-            }
-        }
-
-    } while (!targetTerritory);
-
-    // Determine Number of Armies
-    do {
-        cout << "Enter the amount of armies you want to advance in the target territory: " << endl;
-        cin >> numberOfArmiesToAdvance;
-    } while (numberOfArmiesToAdvance == -1 || numberOfArmiesToAdvance > srcTerritory->getUnitNbr());
+    // Determine number of armies to advance
+    int numberOfArmiesToAdvance = (rand() % srcTerritory->getUnitNbr()) + 1;
 
     // Update order list
     orders->add(new AdvanceOrder(srcTerritory, targetTerritory, numberOfArmiesToAdvance));
 }
 
-
-//TODO: Continue from here
+// TODO: implement
 void Player::issueBombOrder() {
-    string territoryName;
-    Territory *targetTerritory = nullptr;
+    Territory *targetTerritory;
+}
 
-    //TODO: Show map so that the player can make an informed decision
+void Player::issueAirliftOrder() {
+    // Determine src territory
+    Territory *srcTerritory = territories.at(rand() % territories.size());
 
-    //Determine target territory
-    do {
-        cout << "Enter the target territory: ";
-        cin >> territoryName;
+    // Determine target territory
+    Territory *targetTerritory = territories.at(rand() % territories.size());
 
-        // Name Check
-        //TODO: decide what is the territory options based on TA response
-        for (Territory *t: listofAllTerritories) {
-            if (t->getTerritoryName() == territoryName)
-                targetTerritory = t;
-        }
+    // Determine number of armies to advance
+    int numberOfArmiesToAirlift = (rand() % srcTerritory->getUnitNbr()) + 1;
 
-    } while (!targetTerritory);
+    // Update order list
+    orders->add(new AirliftOrder(srcTerritory, targetTerritory, numberOfArmiesToAirlift));
+}
+
+void Player::issueBlockadeOrder() {
+    // Determine target territory
+    Territory *targetTerritory = territories.at(rand() % territories.size());
+
+    // Update order list
+    orders->add(new BlockadeOrder(targetTerritory));
+}
+
+// TODO: implement
+void Player::issueReinforcementOrder() {
+
+}
+
+// TODO: implement
+void Player::issueNegotiateOrder() {
+    // Target player
+
 }
 
 // Getters

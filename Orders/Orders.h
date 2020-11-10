@@ -111,13 +111,15 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    BlockadeOrder();
+    BlockadeOrder(Territory* targetTerritory);
 
     BlockadeOrder(const BlockadeOrder &original);
 
     BlockadeOrder &operator=(const BlockadeOrder &order);
 
 private:
+    Territory* targetTerritory;
+
     bool validate() override;
 
     void execute() override;
@@ -129,13 +131,17 @@ private:
  */
 class AirliftOrder : public Order {
 public:
-    AirliftOrder();
+    AirliftOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAirlift);
 
     AirliftOrder(const AirliftOrder &original);
 
     AirliftOrder &operator=(const AirliftOrder &order);
 
 private:
+    Territory *sourceTerritory;
+    Territory *targetTerritory;
+    int numberOfArmiesToAirlift;
+
     bool validate() override;
 
     void execute() override;
