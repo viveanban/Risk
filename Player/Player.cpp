@@ -69,8 +69,6 @@ vector<Territory *> Player::toAttack() {
     return territoriesToAttack;
 }
 
-// TODO: display stuff where it is relevant for the user so that they can make a good choice
-// TODO: create help guide?
 bool Player::issueOrder() {
     // Deploy orders
     if (this->getNumberofArmies() > 0) {
@@ -112,7 +110,7 @@ void Player::printOrderOptions() {
     set<Card::CardType> cardTypesInHand;
     for (Card *card: this->handOfCards->getCards()) {
         Card::CardType cardType = card->getType();
-        if (find(cardTypesInHand.begin(), cardTypesInHand.end(), cardType) == cardTypesInHand.end()) {
+        if (cardTypesInHand.find(cardType) == cardTypesInHand.end()) {
             cardTypesInHand.insert(cardType);
             cout << cardType << " - " << handOfCards->getAmountOfCardsOfType(cardType) << endl;
         }

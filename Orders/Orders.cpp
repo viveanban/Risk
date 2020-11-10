@@ -220,6 +220,8 @@ bool OrdersList::remove(Order *order) {
     auto position = find(orderList.begin(), orderList.end(), order);
     if (position != orderList.end()) {
         orderList.erase(position);
+        delete order;
+        order = nullptr;
         return true;
     }
     cout << "Error deleting order." << endl;
