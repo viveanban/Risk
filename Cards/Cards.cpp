@@ -164,6 +164,11 @@ Hand::~Hand() {
     }
 }
 
+Card * Hand::getRandomCard() {
+    int randomCardIndex = rand() % cards.size();
+    return cards.at(randomCardIndex);
+}
+
 const vector<Card *> &Hand::getCards() const {
     return cards;
 }
@@ -182,6 +187,7 @@ void Hand::removeCard(int index) {
     cards.erase(cards.begin() + index);
 }
 
+// TODO: remove maybe
 int Hand::getAmountOfCardsOfType(Card::CardType type) {
     int counter = 0;
     for (Card *card: cards)
