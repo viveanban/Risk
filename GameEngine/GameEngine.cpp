@@ -1,10 +1,14 @@
 #include "GameEngine.h"
 #include <set>
 #include <algorithm>
+#include <ctime>
+
+Player* GameEngine::neutralPlayer = new Player("Neutral Player"); // TODO: maybe should move to Player class as static class member?
 
 void GameEngine::mainGameLoop() {
+    srand(time(0)); // TODO: remove and put in driver
 
-    while(!winnerExists()) {
+    while (!winnerExists()) {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
@@ -15,21 +19,21 @@ void GameEngine::mainGameLoop() {
 }
 
 void GameEngine::reinforcementPhase() {
-    for(Player* player: players) {
+    for (Player *player: players) {
 
         int numberOfTerritoriesOwned = player->getTerritories().size();
-        int numberOfArmiesToGive = numberOfTerritoriesOwned/3; // TODO: does it round down (floor) always?
-        if(numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
+        int numberOfArmiesToGive = numberOfTerritoriesOwned / 3; // TODO: does it round down (floor) always?
+        if (numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
             numberOfArmiesToGive = 3;
 
         int controlValueBonus = 0;
         set<Continent *> continentsWherePlayerOwnsTerritories;
-        for(Territory* territory: player->getTerritories()) {
+        for (Territory *territory: player->getTerritories()) {
             int continentId = territory->getContinentId();
             continentsWherePlayerOwnsTerritories.insert(map->getContinentList().at(continentId - 1));
         }
 
-        for(Continent* continent: continentsWherePlayerOwnsTerritories) {
+        for (Continent *continent: continentsWherePlayerOwnsTerritories) {
             if (continent->getOwner() == player)
                 controlValueBonus += continent->getBonus();
         }
@@ -41,24 +45,26 @@ void GameEngine::reinforcementPhase() {
 }
 
 void GameEngine::issueOrdersPhase() {
-    vector<Player*> playersWithNoMoreOrderstoIssue;
-    while(playersWithNoMoreOrderstoIssue.size() != players.size()) {
-        for(Player* player: players) {
-            if(find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) == playersWithNoMoreOrderstoIssue.end()) {
-                if(!player->issueOrder())
+    vector<Player *> playersWithNoMoreOrderstoIssue;
+    while (playersWithNoMoreOrderstoIssue.size() != players.size()) {
+        for (Player *player: players) {
+            if (find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
+                playersWithNoMoreOrderstoIssue.end()) {
+                if (!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
             }
         }
     }
 }
 
+// TODO: gameEngine asks for NEXT order to the player
 void GameEngine::executeOrdersPhase() {
     // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
     }
 
-    //Execute all deploy orders
+    // Execute all deploy orders
     vector<Player *> playersWithNoMoreDeployOrderstoExecute;
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
@@ -75,7 +81,7 @@ void GameEngine::executeOrdersPhase() {
         }
     }
 
-    //Execute the rest of the orders
+    // Execute the rest of the orders
     vector<Player *> playersWithNoMoreOrdersToExecute;
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
@@ -90,14 +96,20 @@ void GameEngine::executeOrdersPhase() {
     }
 }
 
-// TODO: implement
+// TODO: to complete
 bool GameEngine::winnerExists() {
-    // keep state in player
-    // or check territories of each player
-    return false;
+    return players.size() == 1; // && neutralPlayer.getTerritoeis().isEmpty()
 }
 
-// TODO: implement
 void GameEngine::removePlayersWithoutTerritoriesOwned() {
-
+    for (Player *player: players) {
+        if(player->getTerritories().empty()) {
+            auto position = find(players.begin(), players.end(), player);
+            if (position != players.end()) {
+                players.erase(position);
+                delete player;
+                player = nullptr;
+            }
+        }
+    }
 }

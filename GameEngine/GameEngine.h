@@ -37,6 +37,8 @@ private:
     void removePlayersWithoutTerritoriesOwned();
 
 public:
+    static Player* neutralPlayer;
+
     GameEngine();
     ~GameEngine();
     void startupPhase();
