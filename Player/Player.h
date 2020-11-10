@@ -16,52 +16,56 @@ private:
     string playerName;
     int numberOfArmies;
     vector<Territory *> territories;
-    OrdersList* orders;
-    Hand* handOfCards;
+    OrdersList *orders;
+    Hand *handOfCards;
 
     void issueBombOrder();
+
     void issueDeployOrder();
+
     void issueAdvanceOrder();
+
     void printOrderOptions();
+
 public:
-     Player();
+    Player();
 
-     ~Player();
+    ~Player();
 
-     Player(const Player &original);
+    Player(const Player &original);
 
-     Player& operator=(const Player& otherPlayer);
+    Player &operator=(const Player &otherPlayer);
 
-     friend std::ostream &operator<<(std::ostream &stream, Player &player);
+    friend std::ostream &operator<<(std::ostream &stream, Player &player);
 
-     // Getters
-     string getPlayerName();
+    // Getters
+    string getPlayerName();
 
-     vector<Territory *> &getTerritories();
+    vector<Territory *> &getTerritories();
 
-     Hand* getHandofCards();
+    Hand *getHandofCards();
 
-     OrdersList* getOrders();
+    OrdersList *getOrders();
 
-     int getNumberofArmies();
+    int getNumberofArmies();
 
-     // Setters
-     void setPlayerName(string playerName);
+    // Setters
+    void setPlayerName(string playerName);
 
-     void setTerritories(vector<Territory *> &territories);
+    void setTerritories(vector<Territory *> &territories);
 
-     void setHandOfCards(Hand *handOfCards);
+    void setHandOfCards(Hand *handOfCards);
 
-     void setOrders(OrdersList* orders);
+    void setOrders(OrdersList *orders);
 
-     void setNumberOfArmies(int numberOfArmies);
+    void setNumberOfArmies(int numberOfArmies);
 
-     /**
-     * This method returns a list of territories that need to be defended.
-     *
-     * @return Vector list of Territory pointers
-     */
-     vector<Territory *> toDefend();
+    /**
+    * This method returns a list of territories that need to be defended.
+    *
+    * @return Vector list of Territory pointers
+    */
+    vector<Territory *> toDefend();
 
     /**
     * This method returns a list of territories that need to be attacked.
@@ -73,7 +77,8 @@ public:
     /**
     * This method allows the Player to issue an order.
     *
-    * @return boolean
+    * @return true when player wants to continue issuing order
+    * @return false when player is done issuing order
     */
     bool issueOrder();
 

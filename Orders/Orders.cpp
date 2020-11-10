@@ -7,21 +7,25 @@ using namespace std;
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 
 // TODO: Check if we need a Order ctor that will also take a player as param [needed for some execution]
-Order::Order(string description) : description(description) {}
+Order::Order(string description, int priority) : description(description), priority(priority) {}
 
 std::ostream &operator<<(std::ostream &stream, Order &order) {
-    return stream << order.description << endl;
+    return stream << order.description << " => " << order.priority << endl;
 }
 
 const string &Order::getDescription() const {
     return description;
 }
 
+int Order::getPriority() const {
+    return priority;
+}
+
 Order::~Order() = default;
 
 // DeployOrder ---------------------------------------------------------------------------------------------------------
 DeployOrder::DeployOrder(Territory *targetTerritory, int numberOfArmiesToDeploy) : targetTerritory(
-        targetTerritory), numberOfArmiesToDeploy(numberOfArmiesToDeploy), Order("Deploy!") {}
+        targetTerritory), numberOfArmiesToDeploy(numberOfArmiesToDeploy), Order("Deploy!", 1) {}
 
 // TODO: create copy cstor comme du monde
 //DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}
@@ -49,7 +53,7 @@ void DeployOrder::execute() {
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
 AdvanceOrder::AdvanceOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAdvance)
         : sourceTerritory(sourceTerritory), targetTerritory(targetTerritory),
-          numberOfArmiesToAdvance(numberOfArmiesToAdvance), Order("Advance!") {}
+          numberOfArmiesToAdvance(numberOfArmiesToAdvance), Order("Advance!", 4) {}
 
 //TODO: create copy cstor comme du monde
 //AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
@@ -69,7 +73,7 @@ void AdvanceOrder::execute() {
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
-BombOrder::BombOrder() : Order("Bomb!") {}
+BombOrder::BombOrder() : Order("Bomb!", 4) {}
 
 BombOrder::BombOrder(const BombOrder &original) : BombOrder() {}
 
@@ -88,7 +92,7 @@ void BombOrder::execute() {
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
-BlockadeOrder::BlockadeOrder() : Order("Blockade!") {}
+BlockadeOrder::BlockadeOrder() : Order("Blockade!", 3) {}
 
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
 
@@ -107,7 +111,7 @@ void BlockadeOrder::execute() {
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
-AirliftOrder::AirliftOrder() : Order("Airlift!") {}
+AirliftOrder::AirliftOrder() : Order("Airlift!", 2) {}
 
 AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
 
@@ -126,7 +130,7 @@ void AirliftOrder::execute() {
 }
 
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
-NegotiateOrder::NegotiateOrder() : Order("Negotiate!") {}
+NegotiateOrder::NegotiateOrder() : Order("Negotiate!", 4) {}
 
 NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : NegotiateOrder() {}
 
@@ -145,7 +149,7 @@ void NegotiateOrder::execute() {
 
 // ReinforcementOrder --------------------------------------------------------------------------------------------------
 
-ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!") {}
+ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!", 4) {}
 
 ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder() {}
 
@@ -181,9 +185,10 @@ OrdersList &OrdersList::operator=(const OrdersList &original) {
 void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector) {
     for (auto order : originalVector) {
         if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
-            destinationVector.push_back(new DeployOrder(*deployOrder));
+            //TODO: Uncomment once the copy ctors are implemented
+//            destinationVector.push_back(new DeployOrder(*deployOrder));
         } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
-            destinationVector.push_back(new AdvanceOrder(*advanceOrder));
+//            destinationVector.push_back(new AdvanceOrder(*advanceOrder));
         } else if (auto *bombOrder = dynamic_cast<BombOrder *>(order)) {
             destinationVector.push_back(new BombOrder(*bombOrder));
         } else if (auto *blockadeOrder = dynamic_cast<BlockadeOrder *>(order)) {
@@ -237,12 +242,6 @@ bool OrdersList::move(Order *order, int destination) {
     return false;
 }
 
-void OrdersList::executeAll() {
-    for (Order *odr: orderList) {
-        odr->execute();
-    }
-}
-
 vector<Order *> &OrdersList::getOrderList() {
     return this->orderList;
 }
@@ -253,4 +252,10 @@ OrdersList::~OrdersList() {
         o = nullptr;
     }
     orderList.clear();
+}
+
+void OrdersList::sortOrderListByPriority() {
+    sort(orderList.begin(), orderList.end(), [](Order *lhs, Order *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
 }
