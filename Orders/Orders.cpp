@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "Orders.h"
+#include "./../Player/Player.h"
 
 using namespace std;
 
@@ -24,8 +25,7 @@ int Order::getPriority() const {
 Order::~Order() = default;
 
 // DeployOrder ---------------------------------------------------------------------------------------------------------
-DeployOrder::DeployOrder(Territory *targetTerritory, int numberOfArmiesToDeploy) : targetTerritory(
-        targetTerritory), numberOfArmiesToDeploy(numberOfArmiesToDeploy), Order("Deploy!", 1) {}
+DeployOrder::DeployOrder() : targetTerritory(nullptr), numberOfArmiesToDeploy(0), Order("Deploy!", 1) {}
 
 // TODO: create copy cstor comme du monde
 //DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}
@@ -50,10 +50,21 @@ void DeployOrder::execute() {
     }
 }
 
+void DeployOrder::issue(Player* player) {
+    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
+    numberOfArmiesToDeploy = (rand() % player->getNumberofArmies()) + 1;
+
+    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+
+    // Update number of armies
+    player->setNumberOfArmies(player->getNumberofArmies() - numberOfArmiesToDeploy);
+
+    // Update order list
+    player->getOrders()->add(this);
+}
+
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
-AdvanceOrder::AdvanceOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAdvance)
-        : sourceTerritory(sourceTerritory), targetTerritory(targetTerritory),
-          numberOfArmiesToAdvance(numberOfArmiesToAdvance), Order("Advance!", 4) {}
+AdvanceOrder::AdvanceOrder() : sourceTerritory(nullptr), targetTerritory(nullptr), numberOfArmiesToAdvance(0), Order("Advance!", 4) {}
 
 //TODO: create copy cstor comme du monde
 //AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
@@ -70,6 +81,22 @@ void AdvanceOrder::execute() {
     if (validate()) {
         cout << "Executing advance order." << endl;
     }
+}
+
+void AdvanceOrder::issue(Player* player) {
+    // Determine src territory
+    sourceTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+
+    // Determine target territory
+    bool attack = rand() % 2;
+    vector<Territory*> territoriesToChooseFrom = attack ? player->toAttack() : player->toDefend();
+    targetTerritory = territoriesToChooseFrom.at(rand() % territoriesToChooseFrom.size());
+
+    // Determine number of armies to advance
+    numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
+
+    // Update order list
+    player->getOrders()->add(this);
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
@@ -89,6 +116,10 @@ void BombOrder::execute() {
     if (validate()) {
         cout << "Executing bomb order." << endl;
     }
+}
+
+void BombOrder::issue(Player *player) {
+
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
@@ -111,10 +142,12 @@ void BlockadeOrder::execute() {
     }
 }
 
+void BlockadeOrder::issue(Player *player) {
+
+}
+
 // AirliftOrder --------------------------------------------------------------------------------------------------------
-AirliftOrder::AirliftOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAirlift)
-        : sourceTerritory(sourceTerritory), targetTerritory(targetTerritory),
-          numberOfArmiesToAirlift(numberOfArmiesToAirlift), Order("Airlift!", 2) {}
+AirliftOrder::AirliftOrder() : sourceTerritory(nullptr), targetTerritory(nullptr), numberOfArmiesToAirlift(0), Order("Airlift!", 2) {}
 
 //TODO: create copy cstor comme du monde
 //AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
@@ -132,6 +165,20 @@ void AirliftOrder::execute() {
     if (validate()) {
         cout << "Executing airlift order." << endl;
     }
+}
+
+void AirliftOrder::issue(Player* player) {
+    // Determine src territory
+    sourceTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+
+    // Determine target territory
+    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+
+    // Determine number of armies to advance
+    numberOfArmiesToAirlift = (rand() % sourceTerritory->getUnitNbr()) + 1;
+
+    // Update order list
+    player->getOrders()->add(this);
 }
 
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
@@ -152,6 +199,10 @@ void NegotiateOrder::execute() {
     }
 }
 
+void NegotiateOrder::issue(Player *player) {
+
+}
+
 // ReinforcementOrder --------------------------------------------------------------------------------------------------
 
 ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!", 4) {}
@@ -169,6 +220,10 @@ void ReinforcementOrder::execute() {
     if (validate()) {
         cout << "Executing reinforce order." << endl;
     }
+}
+
+void ReinforcementOrder::issue(Player *player) {
+
 }
 
 //--------------------- ORDERS LIST-------------------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 #include "Player.h"
 #include <algorithm>
 #include <set>
+#include "./../Orders/Orders.h"
 
 /**
  * Player Class implementation
@@ -73,7 +74,7 @@ vector<Territory *> Player::toAttack() {
 
 bool Player::issueOrder() {
     if (this->getNumberofArmies() > 0) { // Deploy orders
-        issueDeployOrder();
+        (new DeployOrder())->issue(this);
         return true;
     } else { // Other orders
         bool continueIssuingOrders = rand() % 2;
@@ -82,33 +83,15 @@ bool Player::issueOrder() {
             // Choose advance or hand?
             bool advance = rand() % 2;
             if (advance) {
-                issueAdvanceOrder();
+                (new AdvanceOrder())->issue(this);
             }
             else
             {
                 Card* card = handOfCards->getRandomCard();
-
-                switch(card->getType()) {
-                    case Card::CardType::diplomacy:
-                        break;
-
-                    case Card::CardType::reinforcement:
-                        break;
-
-                    case Card::CardType::blockade:
-                        issueBlockadeOrder();
-                        break;
-
-                    case Card::CardType::bomb:
-                        break;
-
-                    case Card::CardType::airlift:
-                        issueAirliftOrder();
-                        break;
-
-                    default:
-                        break;
-                }
+                Order* order = card->play();
+                order->issue(this);
+                orders->add(order);
+                handOfCards->removeCard(card);
             }
         }
 
@@ -116,53 +99,9 @@ bool Player::issueOrder() {
     }
 }
 
-// TODO: move all theses to Order and have a virtual issue() method that each class implements. Also, send the Player object.
-void Player::issueDeployOrder() {
-    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
-    int numberOfArmiesToDeploy = (rand() % numberOfArmies) + 1;
-
-    Territory *targetTerritory = territories.at(rand() % territories.size());
-
-    // Update number of armies
-    numberOfArmies -= numberOfArmiesToDeploy;
-
-    // Update order list
-    orders->add(new DeployOrder(targetTerritory, numberOfArmiesToDeploy));
-}
-
-void Player::issueAdvanceOrder() {
-    // Determine src territory
-    Territory *srcTerritory = territories.at(rand() % territories.size());
-
-    // Determine target territory
-    bool attack = rand() % 2;
-    vector<Territory*> territoriesToChooseFrom = attack ? toAttack() : toDefend();
-    Territory *targetTerritory = territoriesToChooseFrom.at(rand() % territoriesToChooseFrom.size());
-
-    // Determine number of armies to advance
-    int numberOfArmiesToAdvance = (rand() % srcTerritory->getUnitNbr()) + 1;
-
-    // Update order list
-    orders->add(new AdvanceOrder(srcTerritory, targetTerritory, numberOfArmiesToAdvance));
-}
-
 // TODO: implement
 void Player::issueBombOrder() {
     Territory *targetTerritory;
-}
-
-void Player::issueAirliftOrder() {
-    // Determine src territory
-    Territory *srcTerritory = territories.at(rand() % territories.size());
-
-    // Determine target territory
-    Territory *targetTerritory = territories.at(rand() % territories.size());
-
-    // Determine number of armies to advance
-    int numberOfArmiesToAirlift = (rand() % srcTerritory->getUnitNbr()) + 1;
-
-    // Update order list
-    orders->add(new AirliftOrder(srcTerritory, targetTerritory, numberOfArmiesToAirlift));
 }
 
 void Player::issueBlockadeOrder() {

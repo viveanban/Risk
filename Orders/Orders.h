@@ -34,6 +34,8 @@ public:
      */
     virtual void execute() = 0;
 
+    virtual void issue(Player* player) = 0;
+
     const string &getDescription() const;
 
     int getPriority() const;
@@ -46,13 +48,15 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    DeployOrder(Territory *targetTerritory, int numberOfArmiesToDeploy);
+    DeployOrder();
 
     DeployOrder(const DeployOrder &original);
 
     DeployOrder &operator=(const DeployOrder &order);
 
     void execute() override;
+
+    void issue(Player* player) override;
 
 private:
     Territory *targetTerritory;
@@ -70,11 +74,15 @@ private:
  */
 class AdvanceOrder : public Order {
 public:
-    AdvanceOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAdvance);
+    AdvanceOrder();
 
     AdvanceOrder(const AdvanceOrder &original);
 
     AdvanceOrder &operator=(const AdvanceOrder &order);
+
+    void execute() override;
+
+    void issue(Player* player) override;
 
 private:
     Territory *sourceTerritory;
@@ -82,8 +90,6 @@ private:
     int numberOfArmiesToAdvance;
 
     bool validate() override;
-
-    void execute() override;
 };
 
 /**
@@ -98,12 +104,13 @@ public:
 
     BombOrder &operator=(const BombOrder &order);
 
+    void execute() override;
+
+    void issue(Player* player) override;
 
 private:
 
     bool validate() override;
-
-    void execute() override;
 };
 
 /**
@@ -111,18 +118,21 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    BlockadeOrder(Territory* targetTerritory);
+    BlockadeOrder(Territory *targetTerritory);
 
     BlockadeOrder(const BlockadeOrder &original);
 
     BlockadeOrder &operator=(const BlockadeOrder &order);
 
+    void execute() override;
+
+    void issue(Player* player) override;
+
 private:
-    Territory* targetTerritory;
+
+    Territory *targetTerritory;
 
     bool validate() override;
-
-    void execute() override;
 
 };
 
@@ -131,20 +141,23 @@ private:
  */
 class AirliftOrder : public Order {
 public:
-    AirliftOrder(Territory *sourceTerritory, Territory *targetTerritory, int numberOfArmiesToAirlift);
+    AirliftOrder();
 
     AirliftOrder(const AirliftOrder &original);
 
     AirliftOrder &operator=(const AirliftOrder &order);
 
+    void execute() override;
+
+    void issue(Player* player) override;
+
 private:
     Territory *sourceTerritory;
     Territory *targetTerritory;
+
     int numberOfArmiesToAirlift;
 
     bool validate() override;
-
-    void execute() override;
 
 };
 
@@ -159,10 +172,13 @@ public:
 
     NegotiateOrder &operator=(const NegotiateOrder &order);
 
-private:
-    bool validate() override;
-
     void execute() override;
+
+    void issue(Player* player) override;
+
+private:
+
+    bool validate() override;
 };
 
 class ReinforcementOrder : public Order {
@@ -173,10 +189,13 @@ public:
 
     ReinforcementOrder &operator=(const ReinforcementOrder &order);
 
-private:
-    bool validate() override;
-
     void execute() override;
+
+    void issue(Player* player) override;
+
+private:
+
+    bool validate() override;
 };
 
 /**
