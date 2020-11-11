@@ -143,7 +143,11 @@ void BlockadeOrder::execute() {
 }
 
 void BlockadeOrder::issue(Player *player) {
+    // Determine target territory
+    targetTerritory = player.getTerritories.at(rand() % player.getTerritories.size());
 
+    // Update order list
+    player->getOrders()->add(this);
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------

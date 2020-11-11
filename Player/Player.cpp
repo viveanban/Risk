@@ -99,30 +99,6 @@ bool Player::issueOrder() {
     }
 }
 
-// TODO: implement
-void Player::issueBombOrder() {
-    Territory *targetTerritory;
-}
-
-void Player::issueBlockadeOrder() {
-    // Determine target territory
-    Territory *targetTerritory = territories.at(rand() % territories.size());
-
-    // Update order list
-    orders->add(new BlockadeOrder(targetTerritory));
-}
-
-// TODO: implement
-void Player::issueReinforcementOrder() {
-
-}
-
-// TODO: implement
-void Player::issueNegotiateOrder() {
-    // Target player
-
-}
-
 // Getters
 string Player::getPlayerName() {
     return this->playerName;
