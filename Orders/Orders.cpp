@@ -63,7 +63,7 @@ void DeployOrder::issue(Player* player) {
 }
 
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
-AdvanceOrder::AdvanceOrder() : sourceTerritory(nullptr), targetTerritory(nullptr), numberOfArmiesToAdvance(0), Order("Advance!", 4) {}
+AdvanceOrder::AdvanceOrder() : sourceTerritory(nullptr), targetTerritory(nullptr), numberOfArmiesToAdvance(0), Order("Advance!", 5) {}
 
 //TODO: create copy cstor comme du monde
 //AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
@@ -99,7 +99,7 @@ void AdvanceOrder::issue(Player* player) {
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
-BombOrder::BombOrder() : Order("Bomb!", 4) {}
+BombOrder::BombOrder() : Order("Bomb!", 5) {}
 
 BombOrder::BombOrder(const BombOrder &original) : BombOrder() {}
 
@@ -138,6 +138,7 @@ bool BlockadeOrder::validate() {
 
 }
 
+// TODO: double the armi unit on the target territory
 void BlockadeOrder::execute() {
     if (validate()) {
         cout << "Executing blockade order." << endl;
@@ -161,7 +162,7 @@ AirliftOrder::AirliftOrder() : sourceTerritory(nullptr), targetTerritory(nullptr
 AirliftOrder &AirliftOrder::operator=(const AirliftOrder &order) { return *this; }
 
 bool AirliftOrder::validate() {
-    // TODO: check if src and target are different
+    // TODO: check if src and target are different and src & target are both from player issuing order
     cout << "Validating airlift order." << endl;
     return true;
 
@@ -215,8 +216,8 @@ void NegotiateOrder::issue(Player *player) {
 }
 
 // ReinforcementOrder --------------------------------------------------------------------------------------------------
-
-ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!", 4) {}
+// TODO: reinforce order to remove
+ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!", 1) {}
 
 ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder() {}
 

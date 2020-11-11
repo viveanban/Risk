@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// TODO: create dummy variables + make methods that are testable
 int main() {
     GameEngine gameEngine;
     gameEngine.mainGameLoop();

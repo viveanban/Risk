@@ -73,9 +73,14 @@ vector<Territory *> Player::toAttack() {
     return territoriesToAttack;
 }
 
+// TODO: sprinkle move/remove()
 bool Player::issueOrder() {
+
     if (this->getNumberofArmies() > 0) { // Deploy orders
         (new DeployOrder())->issue(this);
+        // TODO: Check if has reinforcement card
+        // TODO : If yes, ask if wants to play it
+        // TODO: if yes, then reinforce before deploy
         return true;
     } else { // Other orders
         bool continueIssuingOrders = rand() % 2;
@@ -88,7 +93,7 @@ bool Player::issueOrder() {
             }
             else
             {
-                Card* card = handOfCards->getRandomCard();
+                Card* card = handOfCards->getRandomCard(); // TODO: check that it's not a reinforcement card
                 Order* order = card->play();
                 order->issue(this);
                 orders->add(order);
