@@ -25,11 +25,7 @@ std::ostream &operator<<(std::ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
-// TODO: tweak
 Order *Card::play() {
-    // creates an order
-    // adds it to the player’s list of orders
-    // returns the card to the deck.
     Order *order;
     switch (type) {
         case CardType::bomb:

@@ -25,7 +25,7 @@ Section currentSection;
 vector<Continent *> continentsList;
 vector<Territory *> territoriesList;
 
-// TODO: create data structure that won't depend on index for continent list
+// TODO: create data structure that won't depend on index for continent list (enhancement)
 
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 

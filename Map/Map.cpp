@@ -12,7 +12,7 @@ using namespace std;
  * Territory Class implementation
  */
 
-// TODO: continent object instead of continent ID?
+// TODO: continent object instead of continent ID? (enhancement)
 Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList() {}
 
 Territory::~Territory() {
