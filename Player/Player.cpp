@@ -1,12 +1,13 @@
 #include <iostream>
 #include "Player.h"
 #include <algorithm>
-#include <set>
-#include "./../Orders/Orders.h"
 
 /**
  * Player Class implementation
  */
+
+Player* Player::neutralPlayer = new Player("Neutral Player");
+
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
 Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
@@ -120,6 +121,10 @@ int Player::getNumberofArmies() {
     return this->numberOfArmies;
 }
 
+const vector<Player *> &Player::getPlayersNotToAttack() const {
+    return playersNotToAttack;
+}
+
 // Setters
 void Player::setPlayerName(string playerName) {
     this->playerName = playerName;
@@ -139,5 +144,9 @@ void Player::setOrders(OrdersList *orders) {
 
 void Player::setNumberOfArmies(int numberOfArmies) {
     this->numberOfArmies = numberOfArmies;
+}
+
+void Player::setPlayersNotToAttack(const vector<Player *> &playersNotToAttack) {
+    Player::playersNotToAttack = playersNotToAttack;
 }
 

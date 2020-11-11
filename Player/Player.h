@@ -18,6 +18,15 @@ private:
     vector<Territory *> territories;
     OrdersList *orders;
     Hand *handOfCards;
+    vector<Player*> playersNotToAttack;
+public:
+    static Player* neutralPlayer;
+
+    const vector<Player *> &getPlayersNotToAttack() const;
+
+    void setPlayersNotToAttack(const vector<Player *> &playersNotToAttack);
+
+private:
 
     void issueBombOrder();
 
