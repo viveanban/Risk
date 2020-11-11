@@ -109,6 +109,7 @@ public:
     void issue(Player* player) override;
 
 private:
+    Territory* targetTerritory;
 
     bool validate() override;
 };
@@ -118,7 +119,7 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    BlockadeOrder(Territory *targetTerritory);
+    BlockadeOrder();
 
     BlockadeOrder(const BlockadeOrder &original);
 
@@ -177,6 +178,7 @@ public:
     void issue(Player* player) override;
 
 private:
+    Player* targetPlayer;
 
     bool validate() override;
 };

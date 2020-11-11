@@ -7,7 +7,6 @@ using namespace std;
 
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 
-// TODO: Check if we need a Order ctor that will also take a player as param [needed for some execution]
 Order::Order(string description, int priority) : description(description), priority(priority) {}
 
 std::ostream &operator<<(std::ostream &stream, Order &order) {
@@ -119,11 +118,14 @@ void BombOrder::execute() {
 }
 
 void BombOrder::issue(Player *player) {
+    // targetTerritory = random territory that you don't own and that is not neutral
 
+    // Update order list
+    player->getOrders()->add(this);
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
-BlockadeOrder::BlockadeOrder(Territory* targetTerritory) : targetTerritory(targetTerritory), Order("Blockade!", 3) {}
+BlockadeOrder::BlockadeOrder() : targetTerritory(nullptr), Order("Blockade!", 3) {}
 
 //TODO: create copy cstor comme du monde
 //BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
@@ -144,7 +146,7 @@ void BlockadeOrder::execute() {
 
 void BlockadeOrder::issue(Player *player) {
     // Determine target territory
-    targetTerritory = player.getTerritories.at(rand() % player.getTerritories.size());
+    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
 
     // Update order list
     player->getOrders()->add(this);
@@ -199,12 +201,17 @@ bool NegotiateOrder::validate() {
 
 void NegotiateOrder::execute() {
     if (validate()) {
+        // set random player in your cannot attack list
+        // set yourself in their cannot attack list
         cout << "Executing negotiate order." << endl;
     }
 }
 
 void NegotiateOrder::issue(Player *player) {
+    // targetPlayer = random player that is not you
 
+    // Update order list
+    player->getOrders()->add(this);
 }
 
 // ReinforcementOrder --------------------------------------------------------------------------------------------------
@@ -227,7 +234,8 @@ void ReinforcementOrder::execute() {
 }
 
 void ReinforcementOrder::issue(Player *player) {
-
+    // Update order list
+    player->getOrders()->add(this);
 }
 
 //--------------------- ORDERS LIST-------------------------------------------------------------------------------------
