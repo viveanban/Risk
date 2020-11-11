@@ -48,6 +48,7 @@ private:
  * The Deck class represents the set of card available to be used during a game
  * It randomly picks cards from different type and add them to the stack of card to be used
  */
+ // TODO: singleton pattern
 class Deck {
 private:
     vector<Card *> cards;
@@ -118,7 +119,9 @@ public:
      * remove card from the Hand
      * @param index representing the index of the card to be removed
      */
-    void removeCard(int index);
+    void removeCard(int index); // TODO: remove maybe or return bool?
+
+    bool removeCard(Card* card);
 };
 
 #endif //RISK_CARDS_H

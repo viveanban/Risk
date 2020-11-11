@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <ctime>
+#include <algorithm>
 
 using namespace std;
 
@@ -24,7 +25,11 @@ std::ostream &operator<<(std::ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
+// TODO: tweak
 Order *Card::play() {
+    // creates an order
+    // adds it to the player’s list of orders
+    // returns the card to the deck.
     Order *order;
     switch (type) {
         case CardType::bomb:
@@ -187,7 +192,18 @@ void Hand::removeCard(int index) {
     cards.erase(cards.begin() + index);
 }
 
-// TODO: remove maybe
+bool Hand::removeCard(Card* card) {
+    auto position = find(cards.begin(), cards.end(), card);
+    if (position != cards.end()) {
+        cards.erase(position);
+        // TODO: put back to singleton Deck
+        return true;
+    }
+    cout << "Error deleting order." << endl;
+    return false;
+}
+
+
 int Hand::getAmountOfCardsOfType(Card::CardType type) {
     int counter = 0;
     for (Card *card: cards)
