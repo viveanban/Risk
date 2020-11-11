@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <ctime>
 
-Player* GameEngine::neutralPlayer = new Player("Neutral Player"); // TODO: maybe should move to Player class as static class member?
-
 void GameEngine::mainGameLoop() {
     srand(time(0)); // TODO: remove and put in driver
 
@@ -20,28 +18,29 @@ void GameEngine::mainGameLoop() {
 
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
-
-        int numberOfTerritoriesOwned = player->getTerritories().size();
-        int numberOfArmiesToGive = numberOfTerritoriesOwned / 3;
-        if (numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
-            numberOfArmiesToGive = 3;
-
-        int controlValueBonus = 0;
-        set<Continent *> continentsWherePlayerOwnsTerritories;
-        for (Territory *territory: player->getTerritories()) {
-            int continentId = territory->getContinentId();
-            continentsWherePlayerOwnsTerritories.insert(map->getContinentList().at(continentId - 1));
-        }
-
-        for (Continent *continent: continentsWherePlayerOwnsTerritories) {
-            if (continent->getOwner() == player)
-                controlValueBonus += continent->getBonus();
-        }
-
-        numberOfArmiesToGive += controlValueBonus;
-
+        int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
         player->setNumberOfArmies(numberOfArmiesToGive);
     }
+}
+
+int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
+    int numberOfArmiesToGive = player->getTerritories().size() / 3;
+    if (numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
+        numberOfArmiesToGive = 3;
+
+    set<Continent *> continentsWherePlayerOwnsTerritories;
+    for (Territory *territory: player->getTerritories()) {
+        int continentId = territory->getContinentId();
+        continentsWherePlayerOwnsTerritories.insert(map->getContinentList().at(continentId - 1));
+    }
+
+    int controlValueBonus = 0;
+    for (Continent *continent: continentsWherePlayerOwnsTerritories) {
+        if (continent->getOwner() == player)
+            controlValueBonus += continent->getBonus();
+    }
+
+    return numberOfArmiesToGive + controlValueBonus;
 }
 
 void GameEngine::issueOrdersPhase() {
@@ -96,7 +95,7 @@ void GameEngine::executeOrdersPhase() {
 }
 
 bool GameEngine::winnerExists() {
-    return players.size() == 1 && neutralPlayer->getTerritories().empty();
+    return players.size() == 1 && Player::neutralPlayer->getTerritories().empty();
 }
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {
