@@ -22,7 +22,7 @@ void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
 
         int numberOfTerritoriesOwned = player->getTerritories().size();
-        int numberOfArmiesToGive = numberOfTerritoriesOwned / 3; // TODO: does it round down (floor) always?
+        int numberOfArmiesToGive = numberOfTerritoriesOwned / 3;
         if (numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
             numberOfArmiesToGive = 3;
 
@@ -57,7 +57,6 @@ void GameEngine::issueOrdersPhase() {
     }
 }
 
-// TODO: gameEngine asks for NEXT order to the player
 void GameEngine::executeOrdersPhase() {
     // Prioritize the orders
     for (Player *player: players) {
@@ -70,7 +69,7 @@ void GameEngine::executeOrdersPhase() {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
-                auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
+                auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]); // TODO: what happens with dynamic cast
                 if (deployOrder) {
                     deployOrder->execute();
                     player->getOrders()->remove(deployOrder);
@@ -83,7 +82,7 @@ void GameEngine::executeOrdersPhase() {
 
     // Execute the rest of the orders
     vector<Player *> playersWithNoMoreOrdersToExecute;
-    while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
+    while (playersWithNoMoreOrdersToExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
@@ -96,9 +95,8 @@ void GameEngine::executeOrdersPhase() {
     }
 }
 
-// TODO: to complete
 bool GameEngine::winnerExists() {
-    return players.size() == 1; // && neutralPlayer.getTerritoeis().isEmpty()
+    return players.size() == 1 && neutralPlayer->getTerritories().empty();
 }
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {
