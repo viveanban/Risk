@@ -93,6 +93,7 @@ bool Player::issueOrder() {
                 bool playReinforcementCard = rand() % 2;
                 if(playReinforcementCard) {
                     numberOfArmies += numberOfArmies + 5;
+                    handOfCards->removeCard(card);
                 }
                 break; // TODO: check if breaks from for loop
             }
@@ -106,13 +107,13 @@ bool Player::issueOrder() {
         bool continueIssuingOrders = rand() % 2;
 
         if (continueIssuingOrders) {
-            // Choose advance or hand?
             bool advance = rand() % 2;
             if (advance) {
                 (new AdvanceOrder())->issue(this);
             }
             else
             {
+                // Pick a card
                 Card* cardChosen = nullptr;
                 for(Card* card: handOfCards->getCards()) {
                     if(card->getType() != Card::CardType::reinforcement)
@@ -121,6 +122,7 @@ bool Player::issueOrder() {
 
                 if(!cardChosen) return continueIssuingOrders;
 
+                // Play card
                 Order* order = cardChosen->play();
                 order->issue(this);
                 orders->add(order);

@@ -217,30 +217,6 @@ void NegotiateOrder::issue(Player *player) {
     player->getOrders()->add(this);
 }
 
-// ReinforcementOrder --------------------------------------------------------------------------------------------------
-
-ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!", 1) {}
-
-ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder() {}
-
-ReinforcementOrder &ReinforcementOrder::operator=(const ReinforcementOrder &order) { return *this; }
-
-bool ReinforcementOrder::validate() {
-    cout << "Validating reinforce order." << endl;
-    return true;
-}
-
-void ReinforcementOrder::execute() {
-    if (validate()) {
-        //numberOfArmies += numberOfArmies + 5;
-        cout << "Executing reinforce order." << endl;
-    }
-}
-
-void ReinforcementOrder::issue(Player *player) {
-    execute();
-}
-
 //--------------------- ORDERS LIST-------------------------------------------------------------------------------------
 OrdersList::OrdersList() : orderList() {}
 

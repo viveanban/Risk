@@ -33,7 +33,7 @@ Order *Card::play() {
             cout << "played bomb " << endl;
             break;
         case CardType::reinforcement:
-            order = new ReinforcementOrder(); // TODO: return nullptr
+            order = nullptr;
             cout << "played reinforcement " << endl;
             break;
         case CardType::blockade:

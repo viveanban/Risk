@@ -184,23 +184,6 @@ private:
     bool validate() override;
 };
 
-class ReinforcementOrder : public Order {
-public:
-    ReinforcementOrder();
-
-    ReinforcementOrder(const ReinforcementOrder &original);
-
-    ReinforcementOrder &operator=(const ReinforcementOrder &order);
-
-    void execute() override;
-
-    void issue(Player* player) override;
-
-private:
-
-    bool validate() override;
-};
-
 /**
  * This class represents a list of orders for the Risk game
  * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate, Reinforce.
