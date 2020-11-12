@@ -161,28 +161,6 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //GAME STARTUP PHASE
 
 GameSetup::GameSetup(vector<Player *> players, Map *map) {
