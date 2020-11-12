@@ -18,9 +18,12 @@ private:
     vector<Territory *> territories;
     OrdersList *orders;
     Hand *handOfCards;
-    vector<Player*> playersNotToAttack;
+    vector<Player *> playersNotToAttack;
+
+    void sortTerritoryList(vector<Territory *> &territoryList);
+
 public:
-    static Player* neutralPlayer;
+    static Player *neutralPlayer;
 
     Player();
 
@@ -61,18 +64,34 @@ public:
     void setPlayersNotToAttack(const vector<Player *> &playersNotToAttack);
 
     /**
-    * This method returns a list of territories that need to be defended.
+    * This method returns a list of territories that can be defended.
     *
-    * @return Vector list of Territory pointers
+    * @return List of all territories that can be defended
     */
     vector<Territory *> toDefend();
 
     /**
-    * This method returns a list of territories that need to be attacked.
+     * Returns the territories that can be defended from a source territory
+     *
+     * @param srcTerritory from which to defend
+     * @return List of territories that can be defended from a srcTerritory
+     */
+    vector<Territory *> toDefend(Territory *srcTerritory);
+
+    /**
+    * This method returns a list of territories that can be attacked.
     *
-    * @return Vector list of Territory pinters
+    * @return List of enemy territories
     */
     vector<Territory *> toAttack();
+
+    /**
+     * This method returns a list of territories that can be attacked from a source territory.
+     *
+     * @param srcTerritory from which to attack
+     * @return List of territories that can be attacked from a srcTerritory
+     */
+    vector<Territory *> toAttack(Territory *srcTerritory);
 
     /**
     * This method allows the Player to issue an order.

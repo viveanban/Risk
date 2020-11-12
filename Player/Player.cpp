@@ -6,11 +6,12 @@
  * Player Class implementation
  */
 
-Player* Player::neutralPlayer = new Player("Neutral Player");
+Player *Player::neutralPlayer = new Player("Neutral Player");
 
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
-Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
+Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
+                                    territories() {}
 
 Player::~Player() {
     delete handOfCards;
@@ -53,34 +54,52 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
-// TODO: toDefend(): returns all territories owned by player but it is prioritized by number of armit units that territory has
-
-// TODO: toDefend(srcTerritory): returns all adjacent territories from srcTerritory that it can defend + prioritized by number of armit units
-
-// TODO: toAttack(): returns all enemy territories + prioritized by number of armit units
-
-// TODO: toAttack(srcTerritory): returns all adjacent territories from srcTerritory that it can attack + prioritized by number of armit units
-
-
-
-//TODO: Change method to take a srcTerritory as param
 vector<Territory *> Player::toDefend() {
+    sortTerritoryList(territories);
     return territories;
 }
 
-//TODO: Change method to take a srcTerritory as param
+vector<Territory *> Player::toDefend(Territory* srcTerritory) {
+    vector<Territory *> territoriesToDefend;
+    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+        if (adjacentTerritory->getOwner() == this)
+            territoriesToDefend.push_back(adjacentTerritory);
+    }
+    sortTerritoryList(territoriesToDefend);
+    return territoriesToDefend;
+}
+
 vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
-    for (Territory *territory: territories) {
-        for (Territory *adjTerritory: territory->getAdjList()) {
-            if (find(territories.begin(), territories.end(), adjTerritory) == territories.end() &&
-                find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritory) == territoriesToAttack.end())
-                territoriesToAttack.push_back(adjTerritory);
-        }
-    }
+    //TODO: Find a way to access the territory list from the map
+//    for (Territory *territory: GameEngine::map.getTerritoryList()) {
+//        if(territory->getOwner() != this)
+//            territoriesToAttack.push_back(territory);
+//    }
+
+    sortTerritoryList(territoriesToAttack);
 
     return territoriesToAttack;
+}
+
+vector<Territory *> Player::toAttack(Territory* srcTerritory) {
+    vector<Territory *> territoriesToAttack;
+
+    for (Territory *territory: srcTerritory->getAdjList()) {
+        if(territory->getOwner() != this)
+            territoriesToAttack.push_back(territory);
+    }
+
+    sortTerritoryList(territoriesToAttack);
+
+    return territoriesToAttack;
+}
+
+void Player::sortTerritoryList(vector<Territory*> &territoryList) {
+    sort(territoryList.begin(), territoryList.end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
 }
 
 // TODO: sprinkle move/remove()
@@ -91,7 +110,7 @@ bool Player::issueOrder() {
         for (Card *card: handOfCards->getCards()) {
             if (card->getType() == Card::CardType::reinforcement) {
                 bool playReinforcementCard = rand() % 2;
-                if(playReinforcementCard) {
+                if (playReinforcementCard) {
                     numberOfArmies += numberOfArmies + 5;
                     handOfCards->removeCard(card);
                 }
@@ -110,20 +129,18 @@ bool Player::issueOrder() {
             bool advance = rand() % 2;
             if (advance) {
                 (new AdvanceOrder())->issue(this);
-            }
-            else
-            {
+            } else {
                 // Pick a card
-                Card* cardChosen = nullptr;
-                for(Card* card: handOfCards->getCards()) {
-                    if(card->getType() != Card::CardType::reinforcement)
+                Card *cardChosen = nullptr;
+                for (Card *card: handOfCards->getCards()) {
+                    if (card->getType() != Card::CardType::reinforcement)
                         cardChosen = card;
                 }
 
-                if(!cardChosen) return continueIssuingOrders;
+                if (!cardChosen) return continueIssuingOrders;
 
                 // Play card
-                Order* order = cardChosen->play();
+                Order *order = cardChosen->play();
                 order->issue(this);
                 orders->add(order);
                 handOfCards->removeCard(cardChosen);
