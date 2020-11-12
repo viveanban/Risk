@@ -165,12 +165,6 @@ Hand::~Hand() {
     }
 }
 
-// TODO: remove maybe ?
-Card * Hand::getRandomCard() {
-    int randomCardIndex = rand() % cards.size();
-    return cards.at(randomCardIndex);
-}
-
 const vector<Card *> &Hand::getCards() const {
     return cards;
 }

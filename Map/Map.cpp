@@ -15,16 +15,10 @@ using namespace std;
 // TODO: continent object instead of continent ID? (enhancement)
 Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList() {}
 
-Territory::~Territory() {
-    cout << "Deleting Territory" << endl;
-    delete owner;
-    owner = nullptr;
-}
-
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
     if(original.owner != nullptr)
-        owner = new Player(*original.owner);
+        owner = original.owner;
     else
         owner = nullptr;
     continentId = original.continentId;
@@ -38,7 +32,7 @@ Territory::Territory(const Territory &original) {
 Territory &Territory::operator=(const Territory &otherTerritory) {
     territoryName = otherTerritory.territoryName;
     if(otherTerritory.owner != nullptr)
-        owner = new Player(*otherTerritory.owner);
+        owner = otherTerritory.owner;
     else
         owner = nullptr;
     continentId = otherTerritory.continentId;
@@ -64,7 +58,6 @@ std::ostream &operator<<(std::ostream &stream, Territory &t) {
 
 string Territory::getTerritoryName() {
     return this->territoryName;
-
 }
 
 void Territory::setTerritoryName(string territoryName) {
@@ -115,8 +108,7 @@ void Territory::setAdjList(vector<Territory *> &adjList) {
 /**
  * Continent Class implementation
  */
-Continent::Continent() : continentId(), continentName(),
-                         territories(), bonus() {}
+Continent::Continent() : continentId(), continentName(), territories(), bonus() {}
 
 Continent::~Continent() {
     cout << "Deleting Territories of Continent" << endl;
@@ -125,7 +117,7 @@ Continent::~Continent() {
         territory = nullptr;
     }
     territories.clear();
-}                         
+}
 
 Continent::Continent(const Continent &original) {
     continentId = original.continentId;
@@ -137,7 +129,6 @@ Continent::Continent(const Continent &original) {
 }
 
 Continent &Continent::operator=(const Continent &otherContinent) {
-
     continentName = otherContinent.continentName;
     continentId = otherContinent.continentId;
     bonus = otherContinent.bonus;
@@ -206,7 +197,7 @@ void Continent::setTerritories(vector<Territory *> territories) {
 /**
  * Map Class implementation
  */
-Map::Map() : territoryList() {}
+Map::Map() : territoryList(), continentList() {}
 
 Map::Map(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
                                                                                        continentList(continentList) {}
@@ -223,7 +214,7 @@ Map::~Map() {
 Map::Map(const Map &original) {
     territoryList = vector<Territory *>(original.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
-        territoryList[i] = new Territory(*original.territoryList[i]);
+        territoryList[i] = original.territoryList[i];
     continentList = vector<Continent *>(original.continentList.size());
     for (int i = 0; i < continentList.size(); i++)
         continentList[i] = new Continent(*original.continentList[i]);
@@ -232,7 +223,7 @@ Map::Map(const Map &original) {
 Map &Map::operator=(const Map &otherMap) {
     territoryList = vector<Territory *>(otherMap.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
-        territoryList[i] = new Territory(*otherMap.territoryList[i]);
+        territoryList[i] = otherMap.territoryList[i];
     continentList = vector<Continent *>(otherMap.continentList.size());
     for (int i = 0; i < continentList.size(); i++)
         continentList[i] = new Continent(*otherMap.continentList[i]);

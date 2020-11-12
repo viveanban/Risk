@@ -25,8 +25,6 @@ private:
 public:
     Territory();
 
-    ~Territory();
-
     Territory(const Territory &original);
 
     Territory &operator=(const Territory &otherTerritory);

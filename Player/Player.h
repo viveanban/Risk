@@ -22,29 +22,6 @@ private:
 public:
     static Player* neutralPlayer;
 
-    const vector<Player *> &getPlayersNotToAttack() const;
-
-    void setPlayersNotToAttack(const vector<Player *> &playersNotToAttack);
-
-private:
-
-    void issueBombOrder();
-
-    void issueDeployOrder();
-
-    void issueAdvanceOrder();
-
-    void issueAirliftOrder();
-
-    void issueBlockadeOrder();
-
-    void issueReinforcementOrder();
-
-    void issueNegotiateOrder();
-
-    Card::CardType getRandomCard();
-
-public:
     Player();
 
     Player(string playerName);
@@ -68,6 +45,8 @@ public:
 
     int getNumberofArmies();
 
+    const vector<Player *> &getPlayersNotToAttack() const;
+
     // Setters
     void setPlayerName(string playerName);
 
@@ -78,6 +57,8 @@ public:
     void setOrders(OrdersList *orders);
 
     void setNumberOfArmies(int numberOfArmies);
+
+    void setPlayersNotToAttack(const vector<Player *> &playersNotToAttack);
 
     /**
     * This method returns a list of territories that need to be defended.

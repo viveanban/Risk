@@ -26,8 +26,7 @@ Order::~Order() = default;
 // DeployOrder ---------------------------------------------------------------------------------------------------------
 DeployOrder::DeployOrder() : targetTerritory(nullptr), numberOfArmiesToDeploy(0), Order("Deploy!", 1) {}
 
-// TODO: create copy cstor comme du monde
-//DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}
+DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder() {}
 
 DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
 
@@ -65,8 +64,7 @@ void DeployOrder::issue(Player* player) {
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
 AdvanceOrder::AdvanceOrder() : sourceTerritory(nullptr), targetTerritory(nullptr), numberOfArmiesToAdvance(0), Order("Advance!", 5) {}
 
-//TODO: create copy cstor comme du monde
-//AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
+AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder() {}
 
 AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &order) { return *this; }
 
@@ -127,8 +125,7 @@ void BombOrder::issue(Player *player) {
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
 BlockadeOrder::BlockadeOrder() : targetTerritory(nullptr), Order("Blockade!", 3) {}
 
-//TODO: create copy cstor comme du monde
-//BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
+BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
 
 BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &order) { return *this; }
 
@@ -137,10 +134,10 @@ bool BlockadeOrder::validate() {
     return true;
 
 }
+
 // you give up territory but it's stronger. It can be attacked. Creating a wall.
 // you can win the game even tho there's neutral territories
-
-// TODO: double the armi unit on the target territory
+// double the armi unit on the target territory
 void BlockadeOrder::execute() {
     if (validate()) {
         cout << "Executing blockade order." << endl;
@@ -158,8 +155,7 @@ void BlockadeOrder::issue(Player *player) {
 // AirliftOrder --------------------------------------------------------------------------------------------------------
 AirliftOrder::AirliftOrder() : sourceTerritory(nullptr), targetTerritory(nullptr), numberOfArmiesToAirlift(0), Order("Airlift!", 2) {}
 
-//TODO: create copy cstor comme du monde
-//AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
+AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder() {}
 
 AirliftOrder &AirliftOrder::operator=(const AirliftOrder &order) { return *this; }
 
@@ -226,13 +222,6 @@ OrdersList::OrdersList(const OrdersList &original) {
     orderList = newOrderList;
 }
 
-OrdersList &OrdersList::operator=(const OrdersList &original) {
-    auto newOrderList = vector<Order *>();
-    copyOrderList(original.orderList, newOrderList);
-    orderList = newOrderList;
-    return *this;
-}
-
 void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector) {
     //TODO: Uncomment once the copy ctors are implemented
 //    for (auto order : originalVector) {
@@ -254,6 +243,13 @@ void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Ord
 //            cout << "WARNING: Order of unknown type" << endl;
 //        }
 //    }
+}
+
+OrdersList &OrdersList::operator=(const OrdersList &original) {
+    auto newOrderList = vector<Order *>();
+    copyOrderList(original.orderList, newOrderList);
+    orderList = newOrderList;
+    return *this;
 }
 
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {
@@ -299,16 +295,16 @@ vector<Order *> &OrdersList::getOrderList() {
     return this->orderList;
 }
 
+void OrdersList::sortOrderListByPriority() {
+    sort(orderList.begin(), orderList.end(), [](Order *lhs, Order *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
+}
+
 OrdersList::~OrdersList() {
     for (auto o: orderList) {
         delete o;
         o = nullptr;
     }
     orderList.clear();
-}
-
-void OrdersList::sortOrderListByPriority() {
-    sort(orderList.begin(), orderList.end(), [](Order *lhs, Order *rhs) {
-        return lhs->getPriority() < rhs->getPriority();
-    });
 }

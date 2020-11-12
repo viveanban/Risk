@@ -21,6 +21,7 @@ enum Section {
     other, continents, countries, borders
 };
 
+// TODO: move them to .h file. Make them static data members. Will have to change cstors then.
 Section currentSection;
 vector<Continent *> continentsList;
 vector<Territory *> territoriesList;

@@ -19,7 +19,12 @@ private:
     int priority;
 
 public:
+    // TODO: implement copy cstor and default cstor. Also implement correctly the copy cstor of ALL orders
+    Order();
+
     Order(string description, int priority);
+
+    Order(const Order &original);
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
@@ -131,7 +136,6 @@ public:
     void issue(Player* player) override;
 
 private:
-
     Territory *targetTerritory;
 
     bool validate() override;
