@@ -20,54 +20,44 @@ void GameInitialization::selectMap() {
     int chosenMap;
     ifstream inputFile;
     do {
-        cout << "Please choose a game Map from the following list:" << endl;
+        cout << "Please enter the number of the game Map you wish to play from the following list:" << endl;
         auto path = "../maps/";
         setAvailableMaps(path);
         for (int i = 1; i <= availableMaps.size(); i++) {
             cout << i << " - " << availableMaps.at(i - 1) << endl;
         }
-        cin >> chosenMap;
-        if (cin.fail()) {
-            cin.clear();
-            chosenMap = -1;
-            // discard 'bad' character(s)
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-        if (chosenMap > 0 and chosenMap < availableMaps.size()) {
-            inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
-        }
+        chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         while (!inputFile.is_open()) {
             inputFile.close();
             cout << "Hey you made a mistake, " << chosenMap << " is not one of the choices." << endl;
             cout << "Please pick another map now: " << endl;
-            cin >> chosenMap;
-            if (cin.fail()) {
-                cin.clear();
-                chosenMap = -1;
-                // discard 'bad' character(s)
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            }
-            if (chosenMap > 0 and chosenMap < availableMaps.size()) {
-                inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
-            }
+            chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (!map->validate());
     inputFile.close();
 }
 
-int isRegularFile(const char *path) {
-    struct stat path_stat;
-    stat(path, &path_stat);
-    return S_ISREG(path_stat.st_mode);
+int GameInitialization::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const {
+    cin >> chosenMap;
+    if (cin.fail()) {
+        cin.clear();
+        chosenMap = -1;
+        // discard 'bad' character(s)
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    if (chosenMap > 0 and chosenMap < availableMaps.size()) {
+        inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
+    }
+    return chosenMap;
 }
 
 void GameInitialization::setAvailableMaps(const char *path) {
     DIR *dir = opendir(path);
     struct dirent *current;
-    if (dir != NULL) {
+    if (dir != nullptr) {
         string parent(path);
-        while ((current = readdir(dir)) != NULL) {
+        while ((current = readdir(dir)) != nullptr) {
             string filePath = parent + current->d_name;
             const char *entry = filePath.c_str();
             if (isRegularFile(entry)) {
@@ -78,11 +68,27 @@ void GameInitialization::setAvailableMaps(const char *path) {
     }
 }
 
+int GameInitialization::isRegularFile(const char *path) {
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
 
 void GameInitialization::selectPlayerNumber() {
     int numPlayerTmp = -1;
     cout << "The game supports up to 5 players with a minimum of 2."
             " Please input the desired number of players" << endl;
+    numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
+    while (numPlayerTmp < 2 or numPlayerTmp > 5) {
+        cout << "This does not look like a number between 2 to 5."
+                "The game supports up to 5 players with a minimum of 2." << endl <<
+             "Please input the desired number of players" << endl;
+        numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
+    }
+    this->numPlayer = numPlayerTmp;
+}
+
+int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) const {
     cin >> numPlayerTmp;
     if (cin.fail()) {
         cin.clear();
@@ -90,19 +96,7 @@ void GameInitialization::selectPlayerNumber() {
         // discard 'bad' character(s)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-    while (numPlayerTmp < 2 or numPlayerTmp > 5) {
-        cout << "This does not look like a number between 2 to 5."
-                "The game supports up to 5 players with a minimum of 2."
-                " Please input the desired number of players" << endl;
-        cin >> numPlayerTmp;
-        if (cin.fail()) {
-            cin.clear();
-            numPlayerTmp = 0;
-            // discard 'bad' character(s)
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-    }
-    this->numPlayer = numPlayerTmp;
+    return numPlayerTmp;
 }
 
 void GameInitialization::setupObservers() {
@@ -216,8 +210,8 @@ void GameInitialization::assignCards() {
 
 //GAME STARTUP PHASE
 
-GameSetup::GameSetup(vector<Player *> oderOfPlayer, Map *map) {
-    this->orderedPlayerList = oderOfPlayer;
+GameSetup::GameSetup(vector<Player *> players, Map *map) {
+    this->listOfPlayers = players;
     this->map = map;
 }
 
@@ -231,13 +225,14 @@ void GameSetup::startupPhase() {
 void GameSetup::randomlySetOrder() {
 
     cout << "Before shuffling, this is the order of players" << endl;
-    for (auto &it : orderedPlayerList)
+    for (auto &it : listOfPlayers)
         std::cout << ' ' << it;
 
-    shuffle(orderedPlayerList.begin(), orderedPlayerList.end(), std::mt19937(std::random_device()()));
+//  Randomize (shuffle) the order of the players.
+    shuffle(listOfPlayers.begin(), listOfPlayers.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
-    for (auto &it : orderedPlayerList)
+    for (auto &it : listOfPlayers)
         std::cout << ' ' << it;
 }
 
@@ -252,9 +247,9 @@ void GameSetup::assignCountriesToPlayers() {
         // remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // assign using Round Robin Method
-        orderedPlayerList.at(territoriesAssigned % orderedPlayerList.size())->addTerritory(territory);
+        listOfPlayers.at(territoriesAssigned % listOfPlayers.size())->addTerritory(territory);
         cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << orderedPlayerList.at(territoriesAssigned % orderedPlayerList.size()) << endl;
+             << listOfPlayers.at(territoriesAssigned % listOfPlayers.size()) << endl;
         territoriesAssigned++;
     }
     if (territoriesAssigned == map->getTerritoryList().size()) {
@@ -266,14 +261,14 @@ void GameSetup::assignCountriesToPlayers() {
 
 void GameSetup::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
-    for (auto p : this->orderedPlayerList) {
+    for (auto p : this->listOfPlayers) {
         p->setNumberOfArmies(nmbArmy);
         cout << "Player " << p << "got assigned A = " << p->getNumberOfArmies() << endl;
     }
 }
 
 int GameSetup::getInitialArmyNumber() {
-    switch (this->orderedPlayerList.size()) {
+    switch (this->listOfPlayers.size()) {
         case 2:
             return 40;
         case 3:
@@ -281,8 +276,9 @@ int GameSetup::getInitialArmyNumber() {
         case 4:
             return 30;
         case 5:
+        default:
             return 25;
-    }
+    };
 }
 
 

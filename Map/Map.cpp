@@ -354,8 +354,10 @@ bool Map::validate() {
     bool isValid = connectedTerritories &&
                    connectedContinents &&
                    uniqueTerritories;
-    if (!isValid) {
-        cout << "The Map is therefore not valid!" << endl;
+    if (isValid) {
+        cout << "The Map is valid!" << endl;
+    } else {
+        cout << "The Map is not valid!" << endl;
     }
     return isValid;
 }

@@ -60,18 +60,25 @@ public:
     void setupOrders();
 
     void assignCards();
+
+    int openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const;
+
+    int isRegularFile(const char *path);
+
+    int validateNumberPlayerInput(int numPlayerTmp) const;
 };
 
 class GameSetup {
 private:
-    vector<Player *> orderedPlayerList;
+    vector<Player *> listOfPlayers;
     Map *map;
     void randomlySetOrder();
     void assignCountriesToPlayers();
     void assignArmiesToPlayers();
 
 public:
-    GameSetup(vector<Player *> orderOfPlayer, Map* map);
+    GameSetup(vector<Player *> players, Map *map);
+
     void startupPhase();
     int getInitialArmyNumber();
 };
