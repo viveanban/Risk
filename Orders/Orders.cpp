@@ -52,7 +52,12 @@ void DeployOrder::issue(Player* player) {
     // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
     numberOfArmiesToDeploy = (rand() % player->getNumberofArmies()) + 1;
 
-    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: toDefend(), not randomized anymore
+    //Set the target territory to be player's territory with the least amount of unit armies
+    vector<Territory *> territoriesToDefend = player->toDefend(); //TODO: Handle error when list is empty?
+    targetTerritory = territoriesToDefend.at(0);
+
+    //Update the priority of the target territory so that it is not at the top of the list for the next deploy order
+    targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToDeploy);
 
     // Update number of armies
     player->setNumberOfArmies(player->getNumberofArmies() - numberOfArmiesToDeploy);
@@ -86,11 +91,17 @@ void AdvanceOrder::issue(Player* player) {
 
     // Determine target territory
     bool attack = rand() % 2;
-    vector<Territory*> territoriesToChooseFrom = attack ? player->toAttack() : player->toDefend(); // TODO: toAttack(src), toDefend(src)
+    //TODO: Handle error when list is empty?
+    vector<Territory*> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(sourceTerritory);
     targetTerritory = territoriesToChooseFrom.at(rand() % territoriesToChooseFrom.size());
 
     // Determine number of armies to advance
     numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
+
+    //TODO: Should we update the priority of the targetTerritory (to help the player make an educated guess in next turns)?
+//    targetTerritory->setPriority(targetTerritory->getOwner() == player ?
+//                                 targetTerritory->getPriority() + numberOfArmiesToAdvance :
+//                                 targetTerritory->getPriority() - numberOfArmiesToAdvance);
 
     // Update order list
     player->getOrders()->add(this);
@@ -116,7 +127,9 @@ void BombOrder::execute() {
 }
 
 void BombOrder::issue(Player *player) {
-    // targetTerritory = random territory that you don't own and that is not neutral TODO: attack()
+    // Randomly determine a target territory to bomb
+    vector<Territory *> territoriesToAttack = player->toAttack(); //TODO: Handle error when list is empty?
+    targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
 
     // Update order list
     player->getOrders()->add(this);
@@ -145,8 +158,11 @@ void BlockadeOrder::execute() {
 }
 
 void BlockadeOrder::issue(Player *player) {
-    // Determine target territory
-    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: use toDefend() but pick last one
+    // Determine target territory to be the player's territory with the most army units
+    vector<Territory *> territoriesToDefend = player->toDefend(); //TODO: Handle error when list is empty?
+    targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
+
+    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
 
     // Update order list
     player->getOrders()->add(this);
@@ -173,14 +189,20 @@ void AirliftOrder::execute() {
 }
 
 void AirliftOrder::issue(Player* player) {
+    vector<Territory *> territoriesToDefend = player->toDefend(); //TODO: Handle error when list is empty?
+
     // Determine src territory
-    sourceTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: toDefend()
+    sourceTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
     // Determine target territory
-    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: toDefend()
+    targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size()); // TODO: toDefend()
 
     // Determine number of armies to advance
     numberOfArmiesToAirlift = (rand() % sourceTerritory->getUnitNbr()) + 1;
+
+    //TODO: Update territory priorities?
+//    sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAirlift);
+//    targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToAirlift);
 
     // Update order list
     player->getOrders()->add(this);
@@ -207,7 +229,8 @@ void NegotiateOrder::execute() {
 }
 
 void NegotiateOrder::issue(Player *player) {
-    // targetPlayer = random player that is not you
+    // TODO: Determine a random enemy player
+//    targetPlayer = enemies.at(rand() % enemies.size());
 
     // Update order list
     player->getOrders()->add(this);
