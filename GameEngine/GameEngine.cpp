@@ -178,14 +178,14 @@ void GameSetup::randomlySetOrder() {
 
     cout << "Before shuffling, this is the order of players" << endl;
     for (auto &it : listOfPlayers)
-        std::cout << ' ' << it;
+        std::cout << ' ' << it->getPlayerName();
 
 //  Randomize (shuffle) the order of the players.
     shuffle(listOfPlayers.begin(), listOfPlayers.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
     for (auto &it : listOfPlayers)
-        std::cout << ' ' << it;
+        std::cout << ' ' << it->getPlayerName();
 }
 
 void GameSetup::assignCountriesToPlayers() {

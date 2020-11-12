@@ -120,8 +120,10 @@ void Deck::setCards(const vector<Card *> &cards) {
 }
 
 Card *Deck::draw() {
+    if (cards.empty())
+        return nullptr;
     int randomIndex = rand() % cards.size();
-    Card *card = cards.at(randomIndex);
+        Card *card = cards.at(randomIndex);
     cout << *card;
     cards.erase(cards.begin() + randomIndex);
     return card;
