@@ -13,7 +13,7 @@ using namespace std;
  */
 
 // TODO: continent object instead of continent ID? (enhancement)
-Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList() {}
+Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList(), priority() {}
 
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
@@ -78,6 +78,7 @@ int Territory::getUnitNbr() {
 
 void Territory::setUnitNbr(int unitNbr) {
     this->unitNbr = unitNbr;
+    this->priority = unitNbr;
 }
 
 int Territory::getContinentId() {
@@ -103,6 +104,14 @@ vector<Territory *> &Territory::getAdjList() {
 void Territory::setAdjList(vector<Territory *> &adjList) {
     this->adjList = adjList;
 
+}
+
+int Territory::getPriority() const {
+    return priority;
+}
+
+void Territory::setPriority(int priority) {
+    Territory::priority = priority;
 }
 
 /**

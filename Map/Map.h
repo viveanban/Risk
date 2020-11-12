@@ -22,6 +22,8 @@ private:
     int territoryId;
     int unitNbr;
     vector<Territory *> adjList;
+    int priority;
+
 public:
     Territory();
 
@@ -44,6 +46,8 @@ public:
 
     int getContinentId();
 
+    int getPriority() const;
+
     // Setters
     void setTerritoryName(string territoryName);
 
@@ -56,6 +60,8 @@ public:
     void setContinentId(int continentId);
 
     void setAdjList(vector<Territory *> &adjList);
+
+    void setPriority(int priority);
 };
 
 /**
