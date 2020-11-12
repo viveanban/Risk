@@ -53,6 +53,16 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
+// TODO: toDefend(): returns all territories owned by player but it is prioritized by number of armit units that territory has
+
+// TODO: toDefend(srcTerritory): returns all adjacent territories from srcTerritory that it can defend + prioritized by number of armit units
+
+// TODO: toAttack(): returns all enemy territories + prioritized by number of armit units
+
+// TODO: toAttack(srcTerritory): returns all adjacent territories from srcTerritory that it can attack + prioritized by number of armit units
+
+
+
 //TODO: Change method to take a srcTerritory as param
 vector<Territory *> Player::toDefend() {
     return territories;
@@ -76,11 +86,21 @@ vector<Territory *> Player::toAttack() {
 // TODO: sprinkle move/remove()
 bool Player::issueOrder() {
 
-    if (this->getNumberofArmies() > 0) { // Deploy orders
+    if (numberOfArmies > 0) {
+        // Reinforcement card
+        for (Card *card: handOfCards->getCards()) {
+            if (card->getType() == Card::CardType::reinforcement) {
+                bool playReinforcementCard = rand() % 2;
+                if(playReinforcementCard) {
+                    numberOfArmies += numberOfArmies + 5;
+                }
+                break; // TODO: check if breaks from for loop
+            }
+        }
+
+        // Deploy order
         (new DeployOrder())->issue(this);
-        // TODO: Check if has reinforcement card
-        // TODO : If yes, ask if wants to play it
-        // TODO: if yes, then reinforce before deploy
+
         return true;
     } else { // Other orders
         bool continueIssuingOrders = rand() % 2;
@@ -93,11 +113,18 @@ bool Player::issueOrder() {
             }
             else
             {
-                Card* card = handOfCards->getRandomCard(); // TODO: check that it's not a reinforcement card
-                Order* order = card->play();
+                Card* cardChosen = nullptr;
+                for(Card* card: handOfCards->getCards()) {
+                    if(card->getType() != Card::CardType::reinforcement)
+                        cardChosen = card;
+                }
+
+                if(!cardChosen) return continueIssuingOrders;
+
+                Order* order = cardChosen->play();
                 order->issue(this);
                 orders->add(order);
-                handOfCards->removeCard(card);
+                handOfCards->removeCard(cardChosen);
             }
         }
 

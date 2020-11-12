@@ -95,7 +95,7 @@ void GameEngine::executeOrdersPhase() {
 }
 
 bool GameEngine::winnerExists() {
-    return players.size() == 1 && Player::neutralPlayer->getTerritories().empty();
+    return players.size() == 1;
 }
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {

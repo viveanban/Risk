@@ -53,7 +53,7 @@ void DeployOrder::issue(Player* player) {
     // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
     numberOfArmiesToDeploy = (rand() % player->getNumberofArmies()) + 1;
 
-    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: toDefend(), not randomized anymore
 
     // Update number of armies
     player->setNumberOfArmies(player->getNumberofArmies() - numberOfArmiesToDeploy);
@@ -88,7 +88,7 @@ void AdvanceOrder::issue(Player* player) {
 
     // Determine target territory
     bool attack = rand() % 2;
-    vector<Territory*> territoriesToChooseFrom = attack ? player->toAttack() : player->toDefend();
+    vector<Territory*> territoriesToChooseFrom = attack ? player->toAttack() : player->toDefend(); // TODO: toAttack(src), toDefend(src)
     targetTerritory = territoriesToChooseFrom.at(rand() % territoriesToChooseFrom.size());
 
     // Determine number of armies to advance
@@ -118,7 +118,7 @@ void BombOrder::execute() {
 }
 
 void BombOrder::issue(Player *player) {
-    // targetTerritory = random territory that you don't own and that is not neutral
+    // targetTerritory = random territory that you don't own and that is not neutral TODO: attack()
 
     // Update order list
     player->getOrders()->add(this);
@@ -137,6 +137,8 @@ bool BlockadeOrder::validate() {
     return true;
 
 }
+// you give up territory but it's stronger. It can be attacked. Creating a wall.
+// you can win the game even tho there's neutral territories
 
 // TODO: double the armi unit on the target territory
 void BlockadeOrder::execute() {
@@ -147,7 +149,7 @@ void BlockadeOrder::execute() {
 
 void BlockadeOrder::issue(Player *player) {
     // Determine target territory
-    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: use toDefend() but pick last one
 
     // Update order list
     player->getOrders()->add(this);
@@ -176,10 +178,10 @@ void AirliftOrder::execute() {
 
 void AirliftOrder::issue(Player* player) {
     // Determine src territory
-    sourceTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+    sourceTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: toDefend()
 
     // Determine target territory
-    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size()); // TODO: toDefend()
 
     // Determine number of armies to advance
     numberOfArmiesToAirlift = (rand() % sourceTerritory->getUnitNbr()) + 1;
@@ -216,7 +218,7 @@ void NegotiateOrder::issue(Player *player) {
 }
 
 // ReinforcementOrder --------------------------------------------------------------------------------------------------
-// TODO: reinforce order to remove
+
 ReinforcementOrder::ReinforcementOrder() : Order("Reinforce!", 1) {}
 
 ReinforcementOrder::ReinforcementOrder(const ReinforcementOrder &original) : ReinforcementOrder() {}
@@ -230,13 +232,13 @@ bool ReinforcementOrder::validate() {
 
 void ReinforcementOrder::execute() {
     if (validate()) {
+        //numberOfArmies += numberOfArmies + 5;
         cout << "Executing reinforce order." << endl;
     }
 }
 
 void ReinforcementOrder::issue(Player *player) {
-    // Update order list
-    player->getOrders()->add(this);
+    execute();
 }
 
 //--------------------- ORDERS LIST-------------------------------------------------------------------------------------

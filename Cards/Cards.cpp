@@ -33,7 +33,7 @@ Order *Card::play() {
             cout << "played bomb " << endl;
             break;
         case CardType::reinforcement:
-            order = new ReinforcementOrder();
+            order = new ReinforcementOrder(); // TODO: return nullptr
             cout << "played reinforcement " << endl;
             break;
         case CardType::blockade:
@@ -165,6 +165,7 @@ Hand::~Hand() {
     }
 }
 
+// TODO: remove maybe ?
 Card * Hand::getRandomCard() {
     int randomCardIndex = rand() % cards.size();
     return cards.at(randomCardIndex);

@@ -11,6 +11,7 @@ using namespace std;
  * This class represents an Order that a player can give for the Risk Game
  * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
  */
+ // TODO: add Player field
 class Order {
 private:
     string description;
