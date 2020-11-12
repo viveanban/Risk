@@ -14,6 +14,14 @@
 using namespace std;
 
 //GAME INITIALIZATION PHASE
+void GameInitialization::gameStart() {
+    selectMap();
+    selectPlayerNumber();
+    setupObservers();
+
+    setupPlayers();
+    this->deck = new Deck(50);
+}
 
 void GameInitialization::selectMap() {
     const string MAP_DIRECTORY = "../maps/";
@@ -88,7 +96,7 @@ void GameInitialization::selectPlayerNumber() {
     this->numPlayer = numPlayerTmp;
 }
 
-int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) const {
+int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) {
     cin >> numPlayerTmp;
     if (cin.fail()) {
         cin.clear();
@@ -100,113 +108,80 @@ int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) const {
 }
 
 void GameInitialization::setupObservers() {
+    statisticsObserver = getTrueFalseInputFromUser("phase");
+    statisticsObserver = getTrueFalseInputFromUser("statistics");
+}
 
-    //  3) turn on/off any of the observers as described in Part 5
+bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
+    bool result = false;
     do {
+        cout << "do you want to turn on the " << resultName << " observer [true/false]" << endl;
         cin.clear();
-        phaseObserver = false;
-        // discard 'bad' character(s)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ok almost done, do you want to turn on the phase observer [true/false]?" << endl;
-        cin >> boolalpha >> phaseObserver;
+        cin >> boolalpha >> result;
     } while (cin.fail());
-
-    do {
-        cin.clear();
-        statisticsObserver = false;
-        // discard 'bad' character(s)
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ok last step, do you want to turn on the statistics observer [true/false]?" << endl;
-        cin >> boolalpha >> statisticsObserver;
-    } while (cin.fail());
-}
-
-void GameInitialization::gameStart() {
-    selectMap();
-    selectPlayerNumber();
-    setupObservers();
-
-    setupPlayers();
-    setupOrders();
-    assignCards();
-
-}
-
-Map *GameInitialization::getMap() const {
-    return map;
-}
-
-void GameInitialization::setMap(Map *map) {
-    GameInitialization::map = map;
-}
-
-Deck *GameInitialization::getDeck() const {
-    return deck;
-}
-
-void GameInitialization::setDeck(Deck *deck) {
-    GameInitialization::deck = deck;
-}
-
-const vector<Player *> &GameInitialization::getPlayers() const {
-    return players;
-}
-
-void GameInitialization::setPlayers(const vector<Player *> &players) {
-    GameInitialization::players = players;
-}
-
-const vector<string> &GameInitialization::getAvailableMaps() const {
-    return availableMaps;
-}
-
-void GameInitialization::setAvailableMaps1(const vector<string> &availableMaps) {
-    GameInitialization::availableMaps = availableMaps;
-}
-
-bool GameInitialization::isPhaseObserver() const {
-    return phaseObserver;
-}
-
-void GameInitialization::setPhaseObserver(bool phaseObserver) {
-    GameInitialization::phaseObserver = phaseObserver;
-}
-
-bool GameInitialization::isStatisticsObserver() const {
-    return statisticsObserver;
-}
-
-void GameInitialization::setStatisticsObserver(bool statisticsObserver) {
-    GameInitialization::statisticsObserver = statisticsObserver;
-}
-
-int GameInitialization::getNumPlayer() const {
-    return numPlayer;
-}
-
-void GameInitialization::setNumPlayer(int numPlayer) {
-    GameInitialization::numPlayer = numPlayer;
+    return result;
 }
 
 void GameInitialization::setupPlayers() {
 
     for (int i = 0; i < this->getNumPlayer(); i++) {
         this->players.push_back(new Player());
+        //Adding a Player Name, based on its index
+        string playerName = "Player " + to_string(i + 1);
+        players.at(i)->setPlayerName(playerName);
     }
 }
 
-void GameInitialization::setupOrders() {
-    for (auto player : players) {
-        player->setOrders(new OrdersList());
-    }
+Map *GameInitialization::getMap() const {
+    return map;
 }
-// TODO: check how many cards the deck should start with, is 50 the right number?
-void GameInitialization::assignCards() {
-    this->deck = new Deck(50);
-    for (auto player : players) {
-        player->setHandOfCards(new Hand());
-    }
+
+Deck *GameInitialization::getDeck() const {
+    return deck;
 }
+
+const vector<Player *> &GameInitialization::getPlayers() const {
+    return players;
+}
+
+const vector<string> &GameInitialization::getAvailableMaps() const {
+    return availableMaps;
+}
+
+bool GameInitialization::isPhaseObserver() const {
+    return phaseObserver;
+}
+
+bool GameInitialization::isStatisticsObserver() const {
+    return statisticsObserver;
+}
+
+int GameInitialization::getNumPlayer() const {
+    return numPlayer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //GAME STARTUP PHASE
 
@@ -221,7 +196,6 @@ void GameSetup::startupPhase() {
     assignArmiesToPlayers();
 }
 
-// TODO: should we add a static playerNumber variable to the Player class to set Player.playerName as player{1,2,3..} and increment everytime we make a player.
 void GameSetup::randomlySetOrder() {
 
     cout << "Before shuffling, this is the order of players" << endl;
@@ -252,11 +226,7 @@ void GameSetup::assignCountriesToPlayers() {
              << listOfPlayers.at(territoriesAssigned % listOfPlayers.size()) << endl;
         territoriesAssigned++;
     }
-    if (territoriesAssigned == map->getTerritoryList().size()) {
-        cout << "All territories Assigned." << endl;
-    } else {
-        cout << "Error during territory assignment, not all territories assigned." << endl;
-    }
+    cout << "All territories Assigned." << endl;
 }
 
 void GameSetup::assignArmiesToPlayers() {

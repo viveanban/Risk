@@ -23,49 +23,33 @@ private:
 
     void setupObservers();
 
+    static bool getTrueFalseInputFromUser(string resultName);
+
 public:
 
     Map *getMap() const;
 
-    void setMap(Map *map);
-
     Deck *getDeck() const;
-
-    void setDeck(Deck *deck);
 
     const vector<Player *> &getPlayers() const;
 
-    void setPlayers(const vector<Player *> &players);
-
     const vector<string> &getAvailableMaps() const;
-
-    void setAvailableMaps1(const vector<string> &availableMaps);
 
     bool isPhaseObserver() const;
 
-    void setPhaseObserver(bool phaseObserver);
-
     bool isStatisticsObserver() const;
 
-    void setStatisticsObserver(bool statisticsObserver);
-
     int getNumPlayer() const;
-
-    void setNumPlayer(int numPlayer);
 
     void gameStart();
 
     void setupPlayers();
 
-    void setupOrders();
-
-    void assignCards();
-
     int openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const;
 
-    int isRegularFile(const char *path);
+    static int isRegularFile(const char *path);
 
-    int validateNumberPlayerInput(int numPlayerTmp) const;
+    static int validateNumberPlayerInput(int numPlayerTmp) ;
 };
 
 class GameSetup {
