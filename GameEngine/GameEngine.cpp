@@ -41,6 +41,7 @@ void GameInitialization::selectMap() {
             cout << "Please pick another map now: " << endl;
             chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
+        //TODO: Pass the input file as a parameter directly instead of passing a string
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (!map->validate());
     inputFile.close();
@@ -190,7 +191,7 @@ void GameSetup::randomlySetOrder() {
 
 void GameSetup::assignCountriesToPlayers() {
     int territoriesAssigned = 0;
-    vector<Territory *> territoriesAvailable = map->getTerritoryList(); //TODO: check if modifying this list modifies the map's list
+    vector<Territory *> territoriesAvailable = map->getTerritoryList();
 
     while (!territoriesAvailable.empty()) {
         // pick a random territory
