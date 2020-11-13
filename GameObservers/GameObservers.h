@@ -7,6 +7,11 @@
 
 #include <iostream>;
 #include "../Player/Player.h"
+
+enum Phase {
+    reinforcement, issuing_orders, orders_execution
+};
+
 class GameState {
 private:
     Player *currentPlayer;
@@ -25,7 +30,7 @@ public:
     virtual void update();
 };
 
-class StatisticsObserver {
+class StatisticsObserver : Observer {
 
 public:
     StatisticsObserver();
@@ -42,11 +47,7 @@ private:
 
 };
 
-enum Phase {
-    reinforcement, issuing_orders, orders_execution
-};
-
-class PhaseObserver {
+class PhaseObserver : Observer {
 public:
     PhaseObserver();
 
@@ -59,10 +60,11 @@ public:
     void update();
 
 private:
-    GameState* currGameState;
+    GameState *currGameState;
 
     void displayPhaseUpdates();
 
     string getPhaseText();
 };
+
 #endif //RISK_GAMEOBSERVERS_H
