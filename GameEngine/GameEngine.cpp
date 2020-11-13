@@ -169,33 +169,33 @@ int GameInitialization::getNumPlayer() const {
 
 //GAME STARTUP PHASE
 
-GameSetup::GameSetup(vector<Player *> players, Map *map, Deck *deck) {
-    this->listOfPlayers = players;
+GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck) {
+    this->players = players;
     this->map = map;
     this->deck = deck;
 }
 
-void GameSetup::startupPhase() {
+void GameEngine::startupPhase() {
     randomlySetOrder();
     assignCountriesToPlayers();
     assignArmiesToPlayers();
 }
 
-void GameSetup::randomlySetOrder() {
+void GameEngine::randomlySetOrder() {
 
     cout << "Before shuffling, this is the order of players" << endl;
-    for (auto &it : listOfPlayers)
+    for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 
 //  Randomize (shuffle) the order of the players.
-    shuffle(listOfPlayers.begin(), listOfPlayers.end(), std::mt19937(std::random_device()()));
+    shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
-    for (auto &it : listOfPlayers)
+    for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 }
 
-void GameSetup::assignCountriesToPlayers() {
+void GameEngine::assignCountriesToPlayers() {
     int territoriesAssigned = 0;
     vector<Territory *> territoriesAvailable = map->getTerritoryList();
 
@@ -206,24 +206,24 @@ void GameSetup::assignCountriesToPlayers() {
         // remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // assign using Round Robin Method
-        listOfPlayers.at(territoriesAssigned % listOfPlayers.size())->addTerritory(territory);
+        players.at(territoriesAssigned % players.size())->addTerritory(territory);
         cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << listOfPlayers.at(territoriesAssigned % listOfPlayers.size()) << endl;
+             << players.at(territoriesAssigned % players.size()) << endl;
         territoriesAssigned++;
     }
     cout << "All territories Assigned." << endl;
 }
 
-void GameSetup::assignArmiesToPlayers() {
+void GameEngine::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
-    for (auto p : this->listOfPlayers) {
+    for (auto p : players) {
         p->setNumberOfArmies(nmbArmy);
-        cout << "Player " << p << "got assigned A = " << p->getNumberOfArmies() << endl;
+        cout << "Player " << p << "got assigned A = " << p->getNumberofArmies() << endl;
     }
 }
 
-int GameSetup::getInitialArmyNumber() {
-    switch (this->listOfPlayers.size()) {
+int GameEngine::getInitialArmyNumber() {
+    switch (players.size()) {
         case 2:
             return 40;
         case 3:

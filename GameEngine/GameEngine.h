@@ -53,9 +53,9 @@ public:
     static int validateNumberPlayerInput(int numPlayerTmp);
 };
 
-class GameSetup {
+class GameEngine {
 private:
-    vector<Player *> listOfPlayers;
+    vector<Player *> players;
     Map *map;
     Deck *deck;
 
@@ -64,18 +64,6 @@ private:
     void assignCountriesToPlayers();
 
     void assignArmiesToPlayers();
-
-public:
-    GameSetup(vector<Player *> players, Map *map, Deck *deck);
-
-    void startupPhase();
-
-    int getInitialArmyNumber();
-};
-
-//TODO: Merge GameEngine with GameSetup
-class GameEngine {
-private:
     /**
  * The reinforcementPhase method determines how many armies to give to a player
  * @param player: a pointer to a Player object
@@ -102,9 +90,13 @@ private:
     void removePlayersWithoutTerritoriesOwned();
 
 public:
-    GameEngine();
+    GameEngine(vector<Player *> players, Map *map, Deck *deck);
 
     ~GameEngine();
+
+    void startupPhase();
+
+    int getInitialArmyNumber();
 
     void mainGameLoop();
 
