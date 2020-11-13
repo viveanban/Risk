@@ -130,6 +130,7 @@ void GameInitialization::setupPlayers() {
         //Adding a Player Name, based on its index
         string playerName = "Player " + to_string(i + 1);
         players.at(i)->setPlayerName(playerName);
+        //TODO: In upcoming PR, use player constructor taking a name param
     }
 }
 
@@ -163,9 +164,10 @@ int GameInitialization::getNumPlayer() const {
 
 //GAME STARTUP PHASE
 
-GameSetup::GameSetup(vector<Player *> players, Map *map) {
+GameSetup::GameSetup(vector<Player *> players, Map *map, Deck *deck) {
     this->listOfPlayers = players;
     this->map = map;
+    this->deck = deck;
 }
 
 void GameSetup::startupPhase() {

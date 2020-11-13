@@ -21,7 +21,7 @@ int main() {
     cout << gameInitialization.isPhaseObserver() << endl;
     cout << gameInitialization.isStatisticsObserver() << endl;
 
-    GameSetup gameSetup(gameInitialization.getPlayers(), gameInitialization.getMap());
+    GameSetup gameSetup(gameInitialization.getPlayers(), gameInitialization.getMap(), gameInitialization.getDeck());
     gameSetup.startupPhase();
 //    cout << "Validate outcome for known valid map:\n" << boolalpha << (*mapValid).validate() << endl;
 //    cout << "Validate outcome for unconnected map:\n" << boolalpha << (*mapUnconnected).validate() << endl;
