@@ -28,6 +28,7 @@ int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
     if (numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
         numberOfArmiesToGive = 3;
 
+    // Bonus
     set<Continent *> continentsWherePlayerOwnsTerritories;
     for (Territory *territory: player->getTerritories()) {
         int continentId = territory->getContinentId();
@@ -95,7 +96,7 @@ void GameEngine::executeOrdersPhase() {
 }
 
 bool GameEngine::winnerExists() {
-    return players.size() == 1;
+    return players.size() == 1; // TODO: is that enough?
 }
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {

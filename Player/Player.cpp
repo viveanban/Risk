@@ -114,7 +114,7 @@ bool Player::issueOrder() {
                     numberOfArmies += numberOfArmies + 5;
                     handOfCards->removeCard(card);
                 }
-                break; // TODO: check if breaks from for loop
+                break;
             }
         }
 
@@ -130,20 +130,18 @@ bool Player::issueOrder() {
             if (advance) {
                 (new AdvanceOrder())->issue(this);
             } else {
-                // Pick a card
-                Card *cardChosen = nullptr;
-                for (Card *card: handOfCards->getCards()) {
-                    if (card->getType() != Card::CardType::reinforcement)
-                        cardChosen = card;
-                }
 
+                // Pick a card
+                Card *cardChosen = handOfCards->getNextCard();
                 if (!cardChosen) return continueIssuingOrders;
 
                 // Play card
                 Order *order = cardChosen->play();
-                order->issue(this);
-                orders->add(order);
-                handOfCards->removeCard(cardChosen);
+                if(!order) {
+                    order->issue(this);
+                    orders->add(order);
+                    handOfCards->removeCard(cardChosen);
+                }
             }
         }
 
