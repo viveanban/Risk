@@ -41,6 +41,9 @@ void GameInitialization::selectMap() {
             cout << "Please pick another map now: " << endl;
             chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
+//        TODO:  do you think we could pass the input file as a parameter directly instead of passing a string?
+//         The inputFile is opened successfully when we get to the loadMap method but because we pass a string as parameter,
+//         another file is opened in the scope of the loadMap ...
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (!map->validate());
     inputFile.close();
@@ -192,7 +195,7 @@ void GameSetup::randomlySetOrder() {
 
 void GameSetup::assignCountriesToPlayers() {
     int territoriesAssigned = 0;
-    vector<Territory *> territoriesAvailable = map->getTerritoryList(); //TODO: check if modifying this list modifies the map's list
+    vector<Territory *> territoriesAvailable = map->getTerritoryList();
 
     while (!territoriesAvailable.empty()) {
         // pick a random territory
