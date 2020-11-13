@@ -14,44 +14,51 @@ using namespace std;
 class Player {
 private:
     string playerName;
+    int numberOfArmies;
     vector<Territory *> territories;
-    OrdersList* orders;
-    Hand* handOfCards;
+    OrdersList *orders;
+    Hand *handOfCards;
 public:
-     Player();
+    Player();
 
-     ~Player();
+    ~Player();
 
-     Player(const Player &original);
+    Player(const Player &original);
 
-     Player& operator=(const Player& otherPlayer);
+    Player &operator=(const Player &otherPlayer);
 
-     friend std::ostream &operator<<(std::ostream &stream, Player &player);
+    friend std::ostream &operator<<(std::ostream &stream, Player &player);
 
-     // Getters
-     string getPlayerName();
+    // Getters
+    string getPlayerName();
 
-     vector<Territory *> &getTerritories();
+    vector<Territory *> &getTerritories();
 
-     Hand* getHandofCards();
+    Hand *getHandOfCards();
 
-     OrdersList* getOrders();
+    OrdersList *getOrders();
 
-     // Setters
-     void setPlayerName(string playerName);
+    int getNumberOfArmies() const;
 
-     void setTerritories(vector<Territory *> &territories);
+    // Setters
+    void setNumberOfArmies(int numberOfArmies);
 
-     void setHandOfCards(Hand *handOfCards);
+    void setPlayerName(string playerName);
 
-     void setOrders(OrdersList* orders);
+    void setTerritories(vector<Territory *> &territories);
 
-     /**
-     * This method returns a list of territories that need to be defended.
-     *
-     * @return Vector list of Territory pointers
-     */
-     vector<Territory *> toDefend();
+    void setHandOfCards(Hand *handOfCards);
+
+    void setOrders(OrdersList *orders);
+
+    void addTerritory(Territory *territory);
+
+    /**
+    * This method returns a list of territories that need to be defended.
+    *
+    * @return Vector list of Territory pointers
+    */
+    vector<Territory *> toDefend();
 
     /**
     * This method returns a list of territories that need to be attacked.

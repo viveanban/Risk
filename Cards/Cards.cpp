@@ -2,6 +2,8 @@
 #include <vector>
 #include <iostream>
 #include <ctime>
+#include <random>
+#include <algorithm>
 
 using namespace std;
 
@@ -63,27 +65,28 @@ void Card::setType(Card::CardType type) {
  * Deck class
  */
 Deck::Deck(int size) {
-    int counter = 0;
-    while (counter < size) {
-        switch (rand() % 5) {
-            case 0:
-                cards.push_back(new Card(Card::bomb));
-                break;
-            case 1:
-                cards.push_back(new Card(Card::reinforcement));
-                break;
-            case 2:
-                cards.push_back(new Card(Card::blockade));
-                break;
-            case 3:
-                cards.push_back(new Card(Card::airlift));
-                break;
-            case 4:
-                cards.push_back(new Card(Card::diplomacy));
-                break;
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < (size/5); j++) {
+            switch (i) {
+                case 0:
+                    cards.push_back(new Card(Card::bomb));
+                    break;
+                case 1:
+                    cards.push_back(new Card(Card::reinforcement));
+                    break;
+                case 2:
+                    cards.push_back(new Card(Card::blockade));
+                    break;
+                case 3:
+                    cards.push_back(new Card(Card::airlift));
+                    break;
+                case 4:
+                    cards.push_back(new Card(Card::diplomacy));
+                    break;
+            }
         }
-        counter++;
     }
+    shuffle(cards.begin(), cards.end(), std::mt19937(std::random_device()()));
 }
 
 Deck::Deck(const Deck &original) {
@@ -120,6 +123,8 @@ void Deck::setCards(const vector<Card *> &cards) {
 }
 
 Card *Deck::draw() {
+    if (cards.empty())
+        return nullptr;
     int randomIndex = rand() % cards.size();
     Card *card = cards.at(randomIndex);
     cout << *card;
