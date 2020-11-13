@@ -20,25 +20,22 @@ void PhaseObserver::operator=(const PhaseObserver &otherObserver) {
 //TODO: implement operator
 }
 
-void PhaseObserver::update(Player *player, Phase phase) {
+void PhaseObserver::update() {
 
-    if (player == nullptr || phase == NULL) {
+    if (currGameState->getCurrentPlayer() == nullptr || currGameState->getCurrentPhase() == NULL) {
         cout << "ERROR OCCURED WHILE TRYING TO UPDATE PHASE OBSERVER. NULL VALUE PASSED" << endl;
         return;
     }
-    this->currentPlayer = player;
-    this->currentPhase = phase;
-
     displayPhaseUpdates();
 }
 
 void PhaseObserver::displayPhaseUpdates() {
-    cout << currentPlayer->getPlayerName() << " " << getPhaseText() << endl;
-    //TODO: display important information related to what is happening in this phase
+    cout << currGameState->getCurrentPlayer()->getPlayerName() << " " << getPhaseText() << endl;
+    cout << currGameState->getPhaseInfo() << endl;
 }
 
 string PhaseObserver::getPhaseText() {
-    switch (currentPhase) {
+    switch (currGameState->getCurrentPhase()) {
         case reinforcement:
             return "Reinforcement";
         case issuing_orders:
@@ -49,3 +46,14 @@ string PhaseObserver::getPhaseText() {
 }
 
 
+Player *GameState::getCurrentPlayer() const {
+    return currentPlayer;
+}
+
+Phase GameState::getCurrentPhase() const {
+    return currentPhase;
+}
+
+const string &GameState::getPhaseInfo() const {
+    return phaseInfo;
+}

@@ -4,8 +4,26 @@
 
 #ifndef RISK_GAMEOBSERVERS_H
 #define RISK_GAMEOBSERVERS_H
+
 #include <iostream>;
 #include "../Player/Player.h"
+class GameState {
+private:
+    Player *currentPlayer;
+    Phase currentPhase;
+    string phaseInfo;
+public:
+    Player *getCurrentPlayer() const;
+
+    Phase getCurrentPhase() const;
+
+    const string &getPhaseInfo() const;
+};
+
+class Observer {
+public:
+    virtual void update();
+};
 
 class StatisticsObserver {
 
@@ -18,10 +36,16 @@ public:
 
     void operator=(const StatisticsObserver &otherObserver);
 
+    void update();
+
 private:
 
 };
-enum Phase { reinforcement, issuing_orders, orders_execution };
+
+enum Phase {
+    reinforcement, issuing_orders, orders_execution
+};
+
 class PhaseObserver {
 public:
     PhaseObserver();
@@ -32,13 +56,13 @@ public:
 
     void operator=(const PhaseObserver &otherObserver);
 
-    void update(Player* player, Phase phase);
+    void update();
+
 private:
-    Player* currentPlayer;
-    Phase currentPhase;
+    GameState* currGameState;
+
     void displayPhaseUpdates();
+
     string getPhaseText();
 };
-
-
 #endif //RISK_GAMEOBSERVERS_H
