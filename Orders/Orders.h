@@ -18,11 +18,13 @@ private:
 
     int priority;
 
+protected:
+    Player * player;
 public:
     // TODO: implement copy cstor and default cstor. Also implement correctly the copy cstor of ALL orders
     Order();
 
-    Order(string description, int priority);
+    Order(string description, int priority, Player * player);
 
     Order(const Order &original);
 
@@ -40,7 +42,7 @@ public:
      */
     virtual void execute() = 0;
 
-    virtual void issue(Player* player) = 0;
+    virtual void issue() = 0;
 
     const string &getDescription() const;
 
@@ -54,7 +56,7 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    DeployOrder();
+    DeployOrder(Player * player);
 
     DeployOrder(const DeployOrder &original);
 
@@ -62,7 +64,7 @@ public:
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *targetTerritory;
@@ -80,7 +82,7 @@ private:
  */
 class AdvanceOrder : public Order {
 public:
-    AdvanceOrder();
+    AdvanceOrder(Player * player);
 
     AdvanceOrder(const AdvanceOrder &original);
 
@@ -88,7 +90,7 @@ public:
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *sourceTerritory;
@@ -104,7 +106,7 @@ private:
  */
 class BombOrder : public Order {
 public:
-    BombOrder();
+    BombOrder(Player * player);
 
     BombOrder(const BombOrder &original);
 
@@ -112,7 +114,7 @@ public:
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory* targetTerritory;
@@ -125,7 +127,7 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    BlockadeOrder();
+    BlockadeOrder(Player * player);
 
     BlockadeOrder(const BlockadeOrder &original);
 
@@ -133,7 +135,7 @@ public:
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *targetTerritory;
@@ -147,7 +149,7 @@ private:
  */
 class AirliftOrder : public Order {
 public:
-    AirliftOrder();
+    AirliftOrder(Player * player);
 
     AirliftOrder(const AirliftOrder &original);
 
@@ -155,7 +157,7 @@ public:
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *sourceTerritory;
@@ -172,7 +174,7 @@ private:
  */
 class NegotiateOrder : public Order {
 public:
-    NegotiateOrder();
+    NegotiateOrder(Player * player);
 
     NegotiateOrder(const NegotiateOrder &original);
 
@@ -180,7 +182,7 @@ public:
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Player* targetPlayer;

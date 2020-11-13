@@ -123,7 +123,7 @@ bool Player::issueOrder() {
         }
 
         // Deploy order
-        (new DeployOrder())->issue(this);
+        (new DeployOrder())->issue();
 
         return true;
     } else { // Other orders
@@ -132,7 +132,7 @@ bool Player::issueOrder() {
         if (continueIssuingOrders) {
             bool advance = rand() % 2;
             if (advance) {
-                (new AdvanceOrder())->issue(this);
+                (new AdvanceOrder())->issue();
             } else {
 
                 // Pick a card
@@ -142,7 +142,7 @@ bool Player::issueOrder() {
                 // Play card
                 Order *order = cardChosen->play();
                 if(!order) {
-                    order->issue(this);
+                    order->issue();
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);
                 }
