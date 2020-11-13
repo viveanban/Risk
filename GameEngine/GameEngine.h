@@ -89,6 +89,7 @@ class GameSetup {
 private:
     vector<Player *> listOfPlayers;
     Map *map;
+    Deck* deck;
 
     void randomlySetOrder();
 
@@ -97,7 +98,7 @@ private:
     void assignArmiesToPlayers();
 
 public:
-    GameSetup(vector<Player *> players, Map *map);
+    GameSetup(vector<Player *> players, Map *map, Deck* deck);
 
     void startupPhase();
 
