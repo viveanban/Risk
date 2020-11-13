@@ -178,11 +178,6 @@ void Hand::addCard(Card *card) {
     cards.push_back(card);
 }
 
-void Hand::removeCard(int index) {
-    cout << "Removing card from hand" << endl;
-    cards.erase(cards.begin() + index);
-}
-
 bool Hand::removeCard(Card* card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
@@ -201,4 +196,14 @@ int Hand::getAmountOfCardsOfType(Card::CardType type) {
         if (card->getType() == type) counter++;
 
     return counter;
+}
+
+Card *Hand::getNextCard() {
+    Card *cardChosen = nullptr;
+    for (Card *card: cards) {
+        if (card->getType() != Card::CardType::reinforcement)
+            cardChosen = card;
+    }
+
+    return cardChosen;
 }

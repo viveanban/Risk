@@ -48,7 +48,6 @@ private:
  * The Deck class represents the set of card available to be used during a game
  * It randomly picks cards from different type and add them to the stack of card to be used
  */
- // TODO: singleton pattern
 class Deck {
 private:
     vector<Card *> cards;
@@ -97,13 +96,9 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, const Hand &c);
 
-    Card * getRandomCard();
+    Card* getNextCard();
 
     int getAmountOfCardsOfType(Card::CardType type);
-
-    int getCardNbr() const;
-
-    void setCardNbr(int cardNbr);
 
     const vector<Card *> &getCards() const;
 
@@ -117,10 +112,8 @@ public:
 
     /**
      * remove card from the Hand
-     * @param index representing the index of the card to be removed
+     * @param Pointer to the Card to be removed from the Hand
      */
-    void removeCard(int index); // TODO: remove maybe or return bool?
-
     bool removeCard(Card* card);
 };
 

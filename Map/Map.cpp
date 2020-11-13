@@ -12,15 +12,11 @@ using namespace std;
  * Territory Class implementation
  */
 
-// TODO: continent object instead of continent ID? (enhancement)
 Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList(), priority() {}
 
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
-    if(original.owner != nullptr)
-        owner = original.owner;
-    else
-        owner = nullptr;
+    owner = original.owner;
     continentId = original.continentId;
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
@@ -31,10 +27,7 @@ Territory::Territory(const Territory &original) {
 
 Territory &Territory::operator=(const Territory &otherTerritory) {
     territoryName = otherTerritory.territoryName;
-    if(otherTerritory.owner != nullptr)
-        owner = otherTerritory.owner;
-    else
-        owner = nullptr;
+    owner = otherTerritory.owner;
     continentId = otherTerritory.continentId;
     territoryId = otherTerritory.territoryId;
     unitNbr = otherTerritory.unitNbr;

@@ -11,30 +11,23 @@ using namespace std;
 /**
  * MapLoader Class implementation
  */
-const string MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
-const string MAP_DIRECTORY = "../maps/";
-const string CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
-const string COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
-const string BORDER_REGEX = "(\\d+\\s+)+\\d+";
+const string MapLoader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
+const string MapLoader::MAP_DIRECTORY = "../maps/";
+const string MapLoader::CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
+const string MapLoader::COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
+const string MapLoader::BORDER_REGEX = "(\\d+\\s+)+\\d+";
 
-enum Section {
-    other, continents, countries, borders
-};
-
-// TODO: move them to .h file. Make them static data members. Will have to change cstors then.
-Section currentSection;
-vector<Continent *> continentsList;
-vector<Territory *> territoriesList;
-
-// TODO: create data structure that won't depend on index for continent list (enhancement)
+MapLoader::Section MapLoader::currentSection;
+vector<Continent *> MapLoader::continentsList;
+vector<Territory *> MapLoader::territoriesList;
 
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 
 MapLoader &MapLoader::operator=(const MapLoader &original) { return *this; }
 
 std::ostream &operator<<(ostream &stream, MapLoader &mapLoader) {
-    return stream << "MapLoader: [continentList size =" << continentsList.size()
-                  << ", territoriesList size = " << continentsList.size() << "]" << endl;
+    return stream << "MapLoader: [continentList size =" << MapLoader::continentsList.size()
+                  << ", territoriesList size = " << MapLoader::territoriesList.size() << "]" << endl;
 }
 
 Map *MapLoader::loadMap(const string &mapName) {

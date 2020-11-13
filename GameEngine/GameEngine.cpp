@@ -69,7 +69,7 @@ void GameEngine::executeOrdersPhase() {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
-                auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]); // TODO: what happens with dynamic cast
+                auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
                     deployOrder->execute();
                     player->getOrders()->remove(deployOrder);
@@ -96,7 +96,7 @@ void GameEngine::executeOrdersPhase() {
 }
 
 bool GameEngine::winnerExists() {
-    return players.size() == 1; // TODO: is that enough?
+    return players.size() == 1;
 }
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {

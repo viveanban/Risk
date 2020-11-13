@@ -52,11 +52,16 @@ void DeployOrder::issue(Player* player) {
     // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
     numberOfArmiesToDeploy = (rand() % player->getNumberofArmies()) + 1;
 
-    //Set the target territory to be player's territory with the least amount of unit armies
-    vector<Territory *> territoriesToDefend = player->toDefend(); //TODO: Handle error when list is empty?
+    // Set the target territory to be player's territory with the least amount of unit armies
+    vector<Territory *> territoriesToDefend = player->toDefend();
+    if(territoriesToDefend.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        return;
+    }
+
     targetTerritory = territoriesToDefend.at(0);
 
-    //Update the priority of the target territory so that it is not at the top of the list for the next deploy order
+    // Update the priority of the target territory so that it is not at the top of the list for the next deploy order
     targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToDeploy);
 
     // Update number of armies
@@ -91,17 +96,21 @@ void AdvanceOrder::issue(Player* player) {
 
     // Determine target territory
     bool attack = rand() % 2;
-    //TODO: Handle error when list is empty?
     vector<Territory*> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(sourceTerritory);
-    targetTerritory = territoriesToChooseFrom.at(rand() % territoriesToChooseFrom.size());
+    if(territoriesToChooseFrom.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        return;
+    }
+
+    targetTerritory = territoriesToChooseFrom.at(0);
 
     // Determine number of armies to advance
     numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
 
-    //TODO: Should we update the priority of the targetTerritory (to help the player make an educated guess in next turns)?
-//    targetTerritory->setPriority(targetTerritory->getOwner() == player ?
-//                                 targetTerritory->getPriority() + numberOfArmiesToAdvance :
-//                                 targetTerritory->getPriority() - numberOfArmiesToAdvance);
+    // Update priority
+    targetTerritory->setPriority(attack ?
+                                 targetTerritory->getPriority() - numberOfArmiesToAdvance :
+                                 targetTerritory->getPriority() + numberOfArmiesToAdvance);
 
     // Update order list
     player->getOrders()->add(this);
@@ -128,7 +137,12 @@ void BombOrder::execute() {
 
 void BombOrder::issue(Player *player) {
     // Randomly determine a target territory to bomb
-    vector<Territory *> territoriesToAttack = player->toAttack(); //TODO: Handle error when list is empty?
+    vector<Territory *> territoriesToAttack = player->toAttack();
+    if(territoriesToAttack.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        return;
+    }
+
     targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
 
     // Update order list
@@ -159,10 +173,13 @@ void BlockadeOrder::execute() {
 
 void BlockadeOrder::issue(Player *player) {
     // Determine target territory to be the player's territory with the most army units
-    vector<Territory *> territoriesToDefend = player->toDefend(); //TODO: Handle error when list is empty?
-    targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
+    vector<Territory *> territoriesToDefend = player->toDefend();
+    if(territoriesToDefend.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        return;
+    }
 
-    targetTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+    targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
 
     // Update order list
     player->getOrders()->add(this);
@@ -189,20 +206,24 @@ void AirliftOrder::execute() {
 }
 
 void AirliftOrder::issue(Player* player) {
-    vector<Territory *> territoriesToDefend = player->toDefend(); //TODO: Handle error when list is empty?
+    vector<Territory *> territoriesToDefend = player->toDefend();
+    if(territoriesToDefend.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        return;
+    }
 
     // Determine src territory
     sourceTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
     // Determine target territory
-    targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size()); // TODO: toDefend()
+    targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
     // Determine number of armies to advance
     numberOfArmiesToAirlift = (rand() % sourceTerritory->getUnitNbr()) + 1;
 
-    //TODO: Update territory priorities?
-//    sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAirlift);
-//    targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToAirlift);
+    // Update priority
+    sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAirlift);
+    targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToAirlift);
 
     // Update order list
     player->getOrders()->add(this);
@@ -260,8 +281,6 @@ void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Ord
 //            destinationVector.push_back(new AirliftOrder(*airliftOrder));
 //        } else if (auto *negotiateOrder = dynamic_cast<NegotiateOrder *>(order)) {
 //            destinationVector.push_back(new NegotiateOrder(*negotiateOrder));
-//        } else if (auto *reinforceOrder = dynamic_cast<ReinforcementOrder *>(order)) {
-//            destinationVector.push_back(new ReinforcementOrder(*reinforceOrder));
 //        } else {
 //            cout << "WARNING: Order of unknown type" << endl;
 //        }
