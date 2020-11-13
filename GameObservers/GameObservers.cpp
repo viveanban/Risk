@@ -57,3 +57,23 @@ Phase GameState::getCurrentPhase() const {
 const string &GameState::getPhaseInfo() const {
     return phaseInfo;
 }
+
+void StatisticsObserver::update() {
+    Observer::update();
+}
+
+void StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
+
+}
+
+StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {
+
+}
+
+StatisticsObserver::~StatisticsObserver() {
+
+}
+
+StatisticsObserver::StatisticsObserver() {
+
+}

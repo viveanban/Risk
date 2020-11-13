@@ -39,9 +39,9 @@ public:
 
     StatisticsObserver(const StatisticsObserver &original);
 
-    void operator=(const StatisticsObserver &otherObserver);
+    StatisticsObserver& operator=(const StatisticsObserver &otherObserver);
 
-    void update();
+    void update() override;
 
 private:
 
@@ -55,9 +55,9 @@ public:
 
     PhaseObserver(const PhaseObserver &original);
 
-    void operator=(const PhaseObserver &otherObserver);
+    PhaseObserver& operator=(const PhaseObserver &otherObserver);
 
-    void update();
+    void update() override;
 
 private:
     GameState *currGameState;
