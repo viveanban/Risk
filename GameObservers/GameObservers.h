@@ -33,29 +33,30 @@ public:
 class StatisticsObserver : Observer {
 
 public:
-    StatisticsObserver();
+    explicit StatisticsObserver(GameState *currGameState);
 
     ~StatisticsObserver();
 
     StatisticsObserver(const StatisticsObserver &original);
 
-    StatisticsObserver& operator=(const StatisticsObserver &otherObserver);
+    StatisticsObserver &operator=(const StatisticsObserver &otherObserver);
 
     void update() override;
 
 private:
+    GameState *currGameState;
 
 };
 
 class PhaseObserver : Observer {
 public:
-    PhaseObserver();
+    explicit PhaseObserver(GameState *currGameState);
 
     ~PhaseObserver();
 
     PhaseObserver(const PhaseObserver &original);
 
-    PhaseObserver& operator=(const PhaseObserver &otherObserver);
+    PhaseObserver &operator=(const PhaseObserver &otherObserver);
 
     void update() override;
 

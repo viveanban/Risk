@@ -4,9 +4,9 @@
 
 #include "GameObservers.h"
 
-PhaseObserver::PhaseObserver() {
-//TODO: implement constructor
-}
+//PHASE OBSERVER
+
+PhaseObserver::PhaseObserver(GameState *currGameState) : currGameState(currGameState) {}
 
 PhaseObserver::~PhaseObserver() {
 //TODO: implement destructor}
@@ -16,7 +16,7 @@ PhaseObserver::PhaseObserver(const PhaseObserver &original) {
 //TODO: implement copy constructor
 }
 
-void PhaseObserver::operator=(const PhaseObserver &otherObserver) {
+PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
 //TODO: implement operator
 }
 
@@ -58,22 +58,20 @@ const string &GameState::getPhaseInfo() const {
     return phaseInfo;
 }
 
+//STATISTICS OBSERVER
+
 void StatisticsObserver::update() {
     Observer::update();
 }
 
-void StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
+StatisticsObserver::StatisticsObserver(GameState *currGameState) : currGameState(currGameState) {}
+
+StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {}
+
+StatisticsObserver::~StatisticsObserver() {}
+
+StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
 
 }
 
-StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {
 
-}
-
-StatisticsObserver::~StatisticsObserver() {
-
-}
-
-StatisticsObserver::StatisticsObserver() {
-
-}
