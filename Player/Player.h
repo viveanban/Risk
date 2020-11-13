@@ -37,12 +37,14 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, Player &player);
 
+    void addTerritory(Territory *territory);
+
     // Getters
     string getPlayerName();
 
     vector<Territory *> &getTerritories();
 
-    Hand *getHandofCards();
+    Hand *getHandOfCards();
 
     OrdersList *getOrders();
 

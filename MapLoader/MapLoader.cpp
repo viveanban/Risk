@@ -174,6 +174,6 @@ void MapLoader::checkPattern(const string &line, const string &pattern) {
 }
 
 void MapLoader::exitWithError() {
-    cout << "This map is invalid!" << endl;
+    cout << "Error loading map, this map format is invalid!" << endl;
     exit(EXIT_FAILURE);
 }

@@ -54,6 +54,10 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
+void Player::addTerritory(Territory *territory) {
+    territories.push_back(territory);
+}
+
 vector<Territory *> Player::toDefend() {
     sortTerritoryList(territories);
     return territories;
@@ -158,7 +162,7 @@ vector<Territory *> &Player::getTerritories() {
     return this->territories;
 }
 
-Hand *Player::getHandofCards() {
+Hand *Player::getHandOfCards() {
     return this->handOfCards;
 }
 
@@ -198,4 +202,3 @@ void Player::setNumberOfArmies(int numberOfArmies) {
 void Player::setPlayersNotToAttack(const vector<Player *> &playersNotToAttack) {
     Player::playersNotToAttack = playersNotToAttack;
 }
-
