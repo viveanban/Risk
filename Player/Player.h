@@ -25,8 +25,6 @@ private:
 public:
     static Player *neutralPlayer;
 
-    Player();
-
     Player(string playerName);
 
     ~Player();

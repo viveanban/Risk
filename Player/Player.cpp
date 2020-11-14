@@ -8,8 +8,6 @@
 
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
-Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
-
 Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
                                     territories() {}
 
@@ -49,7 +47,7 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Address: " << &player << endl
                   << "Player Name: " << player.getPlayerName() << endl
                   << "Number of Territories Owned: " << player.getTerritories().size() << endl
-                  << "Size of Hand: " << player.getHandofCards()->getCards().size() << endl
+                  << "Size of Hand: " << player.getHandOfCards()->getCards().size() << endl
                   << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
@@ -130,7 +128,7 @@ bool Player::issueOrder() {
         }
 
         // Deploy order
-        (new DeployOrder())->issue();
+        (new DeployOrder(this))->issue();
 
         return true;
     } else { // Other orders
@@ -139,7 +137,7 @@ bool Player::issueOrder() {
         if (continueIssuingOrders) {
             bool advance = rand() % 2;
             if (advance) {
-                (new AdvanceOrder())->issue();
+                (new AdvanceOrder(this))->issue();
             } else {
 
                 // Pick a card

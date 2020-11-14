@@ -21,12 +21,11 @@ protected:
     Player * player;
 
 public:
-    // TODO: implement copy cstor and default cstor. Also implement correctly the copy cstor of ALL orders
-    Order();
-
     Order(string description, int priority, Player * player);
 
     Order(const Order &original);
+
+    Order &operator=(const Order &otherOrder);
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
@@ -56,11 +55,11 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    DeployOrder(Player * player);
+    explicit DeployOrder(Player * player);
 
     DeployOrder(const DeployOrder &original);
 
-    DeployOrder &operator=(const DeployOrder &order);
+    DeployOrder &operator=(const DeployOrder &otherOrder);
 
     void execute() override;
 
@@ -82,11 +81,11 @@ private:
  */
 class AdvanceOrder : public Order {
 public:
-    AdvanceOrder(Player * player);
+    explicit AdvanceOrder(Player * player);
 
     AdvanceOrder(const AdvanceOrder &original);
 
-    AdvanceOrder &operator=(const AdvanceOrder &order);
+    AdvanceOrder &operator=(const AdvanceOrder &otherOrder);
 
     void execute() override;
 
@@ -108,11 +107,11 @@ private:
  */
 class BombOrder : public Order {
 public:
-    BombOrder(Player * player);
+    explicit BombOrder(Player * player);
 
     BombOrder(const BombOrder &original);
 
-    BombOrder &operator=(const BombOrder &order);
+    BombOrder &operator=(const BombOrder &otherOrder);
 
     void execute() override;
 
@@ -129,11 +128,11 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    BlockadeOrder(Player * player);
+    explicit BlockadeOrder(Player * player);
 
     BlockadeOrder(const BlockadeOrder &original);
 
-    BlockadeOrder &operator=(const BlockadeOrder &order);
+    BlockadeOrder &operator=(const BlockadeOrder &otherOrder);
 
     void execute() override;
 
@@ -151,11 +150,11 @@ private:
  */
 class AirliftOrder : public Order {
 public:
-    AirliftOrder(Player * player);
+    explicit AirliftOrder(Player * player);
 
     AirliftOrder(const AirliftOrder &original);
 
-    AirliftOrder &operator=(const AirliftOrder &order);
+    AirliftOrder &operator=(const AirliftOrder &otherOrder);
 
     void execute() override;
 
@@ -176,11 +175,11 @@ private:
  */
 class NegotiateOrder : public Order {
 public:
-    NegotiateOrder(Player * player);
+    explicit NegotiateOrder(Player * player);
 
     NegotiateOrder(const NegotiateOrder &original);
 
-    NegotiateOrder &operator=(const NegotiateOrder &order);
+    NegotiateOrder &operator=(const NegotiateOrder &otherOrder);
 
     void execute() override;
 
