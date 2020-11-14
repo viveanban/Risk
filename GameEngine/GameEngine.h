@@ -5,6 +5,7 @@
 #include "../Map/Map.h"
 #include "../Cards/Cards.h"
 #include "../Player/Player.h"
+#include "./../GameObservers/GameObservers.h"
 
 class GameInitialization {
 private:
@@ -91,6 +92,7 @@ private:
     vector<Player *> players;
     Map *map;
     Deck *deck;
+    GameState *gamestate;
 
     void randomlySetOrder();
 
@@ -136,6 +138,8 @@ public:
     void mainGameLoop();
 
     int calculateNumberOfArmiesToGive(Player *player);
+
+    void updateGameState(Player *pPlayer, Phase phase);
 };
 
 #endif //RISK_GAMEENGINE_H

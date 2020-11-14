@@ -2,6 +2,7 @@
 #include "GameEngine.h"
 #include <set>
 #include "../MapLoader/MapLoader.h"
+#include "./../GameObservers/GameObservers.h"
 #include <random>
 #include <string>
 #include <iostream>
@@ -166,6 +167,7 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck) {
     this->players = players;
     this->map = map;
     this->deck = deck;
+    gamestate = new GameState(map->getTerritoryList().size(), &players, nullptr, reinforcement, "");
 }
 
 void GameEngine::startupPhase() {
@@ -242,6 +244,7 @@ void GameEngine::mainGameLoop() {
 
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
+        updateGameState(player, reinforcement);
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
         player->setNumberOfArmies(numberOfArmiesToGive);
     }
@@ -276,6 +279,7 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
+                updateGameState(player, issuing_orders);
             }
         }
     }
@@ -292,6 +296,7 @@ void GameEngine::executeOrdersPhase() {
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
+            updateGameState(player, orders_execution);
             if (!orderList.empty()) {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
@@ -325,7 +330,7 @@ bool GameEngine::winnerExists() {
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {
     for (Player *player: players) {
-        if(player->getTerritories().empty()) {
+        if (player->getTerritories().empty()) {
             auto position = find(players.begin(), players.end(), player);
             if (position != players.end()) {
                 players.erase(position);
@@ -334,4 +339,17 @@ void GameEngine::removePlayersWithoutTerritoriesOwned() {
             }
         }
     }
+}
+
+void GameEngine::updateGameState(Player *pPlayer, Phase phase) {
+
+    gamestate->setCurrentPhase(phase);
+    gamestate->setCurrentPlayer(pPlayer);
+    gamestate->setPlayers(&players);
+    gamestate->notify();
+}
+
+GameEngine::~GameEngine() {
+
+    delete gamestate;
 }

@@ -246,6 +246,22 @@ int GameState::getTotalTerritories() const {
     return totalTerritories;
 }
 
+void GameState::setPlayers(vector<Player *> *players) {
+    GameState::players = players;
+}
+
+void GameState::setCurrentPlayer(Player *currentPlayer) {
+    GameState::currentPlayer = currentPlayer;
+}
+
+void GameState::setCurrentPhase(Phase currentPhase) {
+    GameState::currentPhase = currentPhase;
+}
+
+void GameState::setPhaseInfo(const string &phaseInfo) {
+    GameState::phaseInfo = phaseInfo;
+}
+
 //STATISTICS OBSERVER
 void StatisticsObserver::update() {
     this->displayStatsUpdate();
