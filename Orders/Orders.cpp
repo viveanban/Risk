@@ -29,10 +29,7 @@ Order::~Order() = default;
 DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArmiesToDeploy(0),
                                            Order("Deploy!", 1, player) {}
 
-<<<<<<< HEAD
-//TODO: Fix copy ctor comme du monde
-=======
->>>>>>> Execution
+
 DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder(original.player) {}
 
 DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
@@ -89,10 +86,6 @@ void DeployOrder::issue() {
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
 
-<<<<<<< HEAD
-//TODO: Fix copy ctor comme du monde
-=======
->>>>>>> Execution
 AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder(original.player) {}
 
 AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &order) { return *this; }
@@ -115,7 +108,6 @@ bool AdvanceOrder::validate() {
     return true;
 }
 
-//TODO: Clear doubts and implement with Ferdou
 void AdvanceOrder::execute() {
     if (validate()) {
         cout << "Executing advance order." << endl;
@@ -165,8 +157,8 @@ void AdvanceOrder::execute() {
                 targetTerritory->setOwner(player);
 
                 //TODO: Give new card to player (access deck)
-                // Card * drawnCard = GameEngine::deck->draw();
-                // player->getHandofCards()->addCard(drawnCard)
+//Card * drawnCard = GameEngine::deck->draw();
+//player->getHandofCards()->addCard(drawnCard)
 
                 //TODO: Output effect
             } else { // Target is not conquered
@@ -214,7 +206,6 @@ bool AdvanceOrder::kill(int probabilityToKill) {
 // BombOrder -----------------------------------------------------------------------------------------------------------
 BombOrder::BombOrder(Player *player) : Order("Bomb!", 5, player) {}
 
-//TODO: Fix copy ctor comme du monde
 BombOrder::BombOrder(const BombOrder &original) : BombOrder(original.player) {}
 
 BombOrder &BombOrder::operator=(const BombOrder &order) { return *this; }
@@ -248,7 +239,6 @@ void BombOrder::issue() {
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
 BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade!", 3, player) {}
 
-//TODO: Fix copy ctor comme du monde
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder(original.player) {}
 
 BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &order) { return *this; }
@@ -286,7 +276,6 @@ void BlockadeOrder::issue() {
 AirliftOrder::AirliftOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAirlift(0), Order("Airlift!", 2, player) {}
 
-//TODO: Fix copy ctor comme du monde
 AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder(original.player) {}
 
 AirliftOrder &AirliftOrder::operator=(const AirliftOrder &order) { return *this; }
@@ -356,7 +345,6 @@ void AirliftOrder::issue() {
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
 NegotiateOrder::NegotiateOrder(Player *player) : Order("Negotiate!", 4, player) {}
 
-//TODO: Fix copy ctor comme du monde
 NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : NegotiateOrder(original.player) {}
 
 NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &order) { return *this; }

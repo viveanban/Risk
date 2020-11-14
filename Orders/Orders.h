@@ -11,7 +11,6 @@ using namespace std;
  * This class represents an Order that a player can give for the Risk Game
  * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
  */
- // TODO: add Player field
 class Order {
 private:
     string description;
@@ -20,6 +19,7 @@ private:
 
 protected:
     Player * player;
+
 public:
     // TODO: implement copy cstor and default cstor. Also implement correctly the copy cstor of ALL orders
     Order();
