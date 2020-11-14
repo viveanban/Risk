@@ -43,7 +43,7 @@ void GameInitialization::selectMap() {
         }
         //TODO: Pass the input file as a parameter directly instead of passing a string
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
-    } while (!map->validate());
+    } while (map == NULL or !map->validate());
     inputFile.close();
 }
 
@@ -64,6 +64,7 @@ int GameInitialization::openMapFile(const string &MAP_DIRECTORY, int chosenMap, 
 void GameInitialization::setAvailableMaps(const char *path) {
     DIR *dir = opendir(path);
     struct dirent *current;
+    this->availableMaps.clear();
     if (dir != nullptr) {
         string parent(path);
         while ((current = readdir(dir)) != nullptr) {

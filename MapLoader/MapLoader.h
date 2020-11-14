@@ -71,12 +71,12 @@ private:
     static void checkPattern(const string& line, const string& pattern);
 
     /**
-     * This method exits the program with an error.
+     * This method throws an exception following a map validation failure.
      *
      * @return void.
      * @param None.
      */
-    static void exitWithError();
+    static void throwInvalidMapException();
 
 public:
     /**

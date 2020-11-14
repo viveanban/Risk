@@ -38,24 +38,27 @@ Map *MapLoader::loadMap(const string &mapName) {
     // Have a clear setup when loading a new map
     continentsList.clear();
     territoriesList.clear();
+    try {
+        // Read map
+        fstream mapFile;
+        checkPattern(mapName, MAP_FILENAME_FORMAT_REGEX);
 
-    // Read map
-    fstream mapFile;
-    checkPattern(mapName, MAP_FILENAME_FORMAT_REGEX);
+        mapFile.open(MAP_DIRECTORY + mapName, ios::in);
 
-    mapFile.open(MAP_DIRECTORY + mapName, ios::in);
+        if (mapFile.is_open()) {
+            parseFile(mapFile);
+            mapFile.close();
+        } else
+            throwInvalidMapException();
 
-    if (mapFile.is_open()) {
-        parseFile(mapFile);
-        mapFile.close();
+        // Construct Map object
+        auto *graph = new Map(territoriesList, continentsList);
+
+        return graph;
+    } catch (const invalid_argument e) {
+        cout << e.what() << endl;
+        return NULL;
     }
-    else
-        exitWithError();
-
-    // Construct Map object
-    auto *graph = new Map(territoriesList, continentsList);
-
-    return graph;
 }
 
 void MapLoader::parseFile(fstream &mapFile) {
@@ -121,7 +124,7 @@ Continent *MapLoader::createContinents(const string &line, int &continentId) {
 }
 
 Territory *MapLoader::createTerritories(const string &line) {
-    if (continentsList.empty()) exitWithError();
+    if (continentsList.empty()) throwInvalidMapException();
 
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
@@ -144,7 +147,7 @@ Territory *MapLoader::createTerritories(const string &line) {
 }
 
 void MapLoader::constructAdjencyList(const string &line) {
-    if (territoriesList.empty()) exitWithError();
+    if (territoriesList.empty()) throwInvalidMapException();
 
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
@@ -172,11 +175,10 @@ void MapLoader::constructAdjencyList(const string &line) {
 
 void MapLoader::checkPattern(const string &line, const string &pattern) {
     if (!regex_match(line, regex(pattern))) {
-        exitWithError();
+        throwInvalidMapException();
     }
 }
 
-void MapLoader::exitWithError() {
-    cout << "Error loading map, this map format is invalid!" << endl;
-    exit(EXIT_FAILURE);
+void MapLoader::throwInvalidMapException() {
+    throw invalid_argument("Error loading map, this map format is invalid!");
 }
