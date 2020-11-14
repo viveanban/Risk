@@ -55,7 +55,8 @@ void PhaseObserver::update() {
 
 void PhaseObserver::displayPhaseUpdates() {
     cout << currentGameState->getCurrentPlayer()->getPlayerName() << " " << getPhaseText() << endl;
-    cout << currentGameState->getPhaseInfo() << endl;
+    displaySpecialInformation();
+
 }
 
 string PhaseObserver::getPhaseText() {
@@ -71,6 +72,23 @@ string PhaseObserver::getPhaseText() {
     }
 }
 
+void PhaseObserver::displaySpecialInformation() {
+    switch (currentGameState->getCurrentPhase()) {
+        case reinforcement:
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " received "
+                 << currentGameState->getCurrentPlayer()->getNumberOfArmies() << " number of armies." << endl;
+            break;
+        case issuing_orders:
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an order of type: "
+                 << currentGameState->getCurrentPlayer()->getOrders()->getOrderList().back()->description << endl;
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " has "
+                 << currentGameState->getCurrentPlayer()->getNumberOfArmies() << " number of armies left to deploy." << endl;
+            break;
+        case orders_execution:
+            cout << currentGameState->getPhaseInfo() << endl;
+            break;
+    }
+}
 
 Player *GameState::getCurrentPlayer() const {
     return currentPlayer;

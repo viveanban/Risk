@@ -51,7 +51,6 @@ public:
 };
 
 class StatisticsObserver : Observer {
-
 public:
     explicit StatisticsObserver(GameState *currGameState);
 
@@ -86,6 +85,8 @@ private:
     void displayPhaseUpdates();
 
     string getPhaseText();
+
+    void displaySpecialInformation();
 };
 
 #endif //RISK_GAMEOBSERVERS_H
