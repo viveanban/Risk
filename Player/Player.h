@@ -39,6 +39,8 @@ public:
 
     void addTerritory(Territory *territory);
 
+    void removeTerritory(Territory *territory);
+
     // Getters
     string getPlayerName();
 
@@ -102,7 +104,6 @@ public:
     * @return false when player is done issuing order
     */
     bool issueOrder();
-
 };
 
 #endif //RISK_PLAYER_H

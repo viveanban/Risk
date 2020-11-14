@@ -58,6 +58,13 @@ void Player::addTerritory(Territory *territory) {
     territories.push_back(territory);
 }
 
+void Player::removeTerritory(Territory *territory) {
+    auto position = find(territories.begin(), territories.end(), territory);
+    if(position != territories.end()){
+        territories.erase(position);
+    }
+}
+
 vector<Territory *> Player::toDefend() {
     sortTerritoryList(territories);
     return territories;

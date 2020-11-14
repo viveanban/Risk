@@ -87,7 +87,12 @@ Player *Territory::getOwner() {
 }
 
 void Territory::setOwner(Player *owner) {
-    this->owner = owner;
+    if (this->owner == nullptr) {
+        this->owner = owner;
+        owner->addTerritory(this);
+    } else {
+        this->owner->removeTerritory(this);
+    }
 }
 
 vector<Territory *> &Territory::getAdjList() {
