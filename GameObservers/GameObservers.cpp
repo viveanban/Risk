@@ -134,14 +134,23 @@ StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &othe
 
 void StatisticsObserver::displayStatsUpdate() {
     cout << '|' << "Player" << setw(3) << '|' << "Territorial Control" << setw(3) << '|' << endl;
+    vector<float> playerDominationRatios{};
     for (Player *player: *currGameState->getPlayers()) {
-        cout << '|' << setw(10) << player->getPlayerName() << '|' << setw(10)
-             << calculateWorldDomination(player->getTerritories().size()) << '|' << endl;
+        float playerDomination = calculateWorldDomination(player->getTerritories().size());
+        playerDominationRatios.push_back(playerDomination);
+        cout << '|' << player->getPlayerName() << setw(3) << '|'
+             << string("% ").append(to_string(playerDomination)) << setw(3) << '|' << endl;
+    }
+    for (int i = 0; i < playerDominationRatios.size(); i++) {
+        if (playerDominationRatios[i] == 100.0) {
+            cout << "~ CONGRATULATIONS " << currGameState->getPlayers()->at(i)->getPlayerName()
+                 << " YOU WON THE GAME! VICCCTORY ~" << endl;
+        }
     }
 }
 
-string StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
-    return string("% ").append(to_string((float) numberOfTerritories / currGameState->getTotalTerritories()));
+float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
+    return (float) numberOfTerritories / (float) currGameState->getTotalTerritories();
 }
 
 

@@ -74,7 +74,7 @@ private:
 
     void displayStatsUpdate();
 
-    string calculateWorldDomination(int numberOfTerritories);
+    float calculateWorldDomination(int numberOfTerritories);
 };
 
 class PhaseObserver : Observer {
