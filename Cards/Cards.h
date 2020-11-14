@@ -83,7 +83,6 @@ public:
 class Hand {
 private:
     vector<Card *> cards;
-    int cardNbr;
 public:
     Hand();
 
@@ -97,9 +96,9 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, const Hand &c);
 
-    int getCardNbr() const;
+    Card* getNextCard();
 
-    void setCardNbr(int cardNbr);
+    int getAmountOfCardsOfType(Card::CardType type);
 
     const vector<Card *> &getCards() const;
 
@@ -113,9 +112,9 @@ public:
 
     /**
      * remove card from the Hand
-     * @param index representing the index of the card to be removed
+     * @param Pointer to the Card to be removed from the Hand
      */
-    void removeCard(int index);
+    bool removeCard(Card* card);
 };
 
 #endif //RISK_CARDS_H

@@ -5,10 +5,15 @@
 /**
  * Player Class implementation
  */
+
+Player *Player::neutralPlayer = new Player("Neutral Player");
+
 Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
-Player::~Player()
-{
+Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
+                                    territories() {}
+
+Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
     delete orders;
@@ -44,43 +49,108 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Address: " << &player << endl
                   << "Player Name: " << player.getPlayerName() << endl
                   << "Number of Territories Owned: " << player.getTerritories().size() << endl
-                  << "Size of Hand: " << player.getHandOfCards()->getCards().size() << endl
-                  << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl;
+                  << "Size of Hand: " << player.getHandofCards()->getCards().size() << endl
+                  << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl
+                  << "Number of Armies: " << player.numberOfArmies << endl;
+}
+
+void Player::addTerritory(Territory *territory) {
+    territories.push_back(territory);
 }
 
 vector<Territory *> Player::toDefend() {
-    vector<Territory *> territoriesToDefend;
-    for(Territory * territory: territories) {
-        territoriesToDefend.push_back(territory);
-    }
+    sortTerritoryList(territories);
+    return territories;
+}
 
+vector<Territory *> Player::toDefend(Territory* srcTerritory) {
+    vector<Territory *> territoriesToDefend;
+    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+        if (adjacentTerritory->getOwner() == this)
+            territoriesToDefend.push_back(adjacentTerritory);
+    }
+    sortTerritoryList(territoriesToDefend);
     return territoriesToDefend;
 }
 
 vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
-    for(Territory * territory: territories) {
-        for(Territory * adjTerritory: territory->getAdjList()) {
-            if(find(territories.begin(), territories.end(), adjTerritory) == territories.end() &&
-               find(territoriesToAttack.begin(), territoriesToAttack.end(), adjTerritory) == territoriesToAttack.end())
-                territoriesToAttack.push_back(adjTerritory);
-        }
-    }
+    //TODO: Find a way to access the territory list from the map
+//    for (Territory *territory: GameEngine::map.getTerritoryList()) {
+//        if(territory->getOwner() != this)
+//            territoriesToAttack.push_back(territory);
+//    }
+
+    sortTerritoryList(territoriesToAttack);
 
     return territoriesToAttack;
 }
 
-void Player::issueOrder() {
-    DeployOrder* deployOrder = new DeployOrder();
-    AdvanceOrder* advanceOrder = new AdvanceOrder();
+vector<Territory *> Player::toAttack(Territory* srcTerritory) {
+    vector<Territory *> territoriesToAttack;
 
-    orders->add(deployOrder);
-    cout << "Deploy order added to the list for " << this->getPlayerName() << endl;
-    orders->add(advanceOrder);
-    cout << "Advance order added to the list for " << this->getPlayerName() << endl;
+    for (Territory *territory: srcTerritory->getAdjList()) {
+        if(territory->getOwner() != this)
+            territoriesToAttack.push_back(territory);
+    }
 
-    cout << endl;
+    sortTerritoryList(territoriesToAttack);
+
+    return territoriesToAttack;
+}
+
+void Player::sortTerritoryList(vector<Territory*> &territoryList) {
+    sort(territoryList.begin(), territoryList.end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
+}
+
+// TODO: sprinkle move/remove()
+bool Player::issueOrder() {
+
+    if (numberOfArmies > 0) {
+        // Reinforcement card
+        for (Card *card: handOfCards->getCards()) {
+            if (card->getType() == Card::CardType::reinforcement) {
+                bool playReinforcementCard = rand() % 2;
+                if (playReinforcementCard) {
+                    numberOfArmies += numberOfArmies + 5;
+                    handOfCards->removeCard(card);
+                }
+                break;
+            }
+        }
+
+        // Deploy order
+        (new DeployOrder())->issue(this);
+
+        return true;
+    } else { // Other orders
+        bool continueIssuingOrders = rand() % 2;
+
+        if (continueIssuingOrders) {
+            bool advance = rand() % 2;
+            if (advance) {
+                (new AdvanceOrder())->issue(this);
+            } else {
+
+                // Pick a card
+                Card *cardChosen = handOfCards->getNextCard();
+                if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
+
+                // Play card
+                Order *order = cardChosen->play();
+                if(order) {
+                    order->issue(this);
+                    orders->add(order);
+                    handOfCards->removeCard(cardChosen);
+                }
+            }
+        }
+
+        return continueIssuingOrders;
+    }
 }
 
 // Getters
@@ -88,7 +158,7 @@ string Player::getPlayerName() {
     return this->playerName;
 }
 
-vector<Territory *>& Player::getTerritories() {
+vector<Territory *> &Player::getTerritories() {
     return this->territories;
 }
 
@@ -96,8 +166,16 @@ Hand *Player::getHandOfCards() {
     return this->handOfCards;
 }
 
-OrdersList* Player::getOrders() {
+OrdersList *Player::getOrders() {
     return this->orders;
+}
+
+int Player::getNumberofArmies() {
+    return this->numberOfArmies;
+}
+
+const vector<Player *> &Player::getPlayersNotToAttack() const {
+    return playersNotToAttack;
 }
 
 // Setters
@@ -113,18 +191,14 @@ void Player::setHandOfCards(Hand *handOfCards) {
     this->handOfCards = handOfCards;
 }
 
-void Player::setOrders(OrdersList* orders) {
+void Player::setOrders(OrdersList *orders) {
     this->orders = orders;
 }
 
-void Player::addTerritory(Territory *territory) {
-    territories.push_back(territory);
-}
-
-int Player::getNumberOfArmies() const {
-    return numberOfArmies;
-}
-
 void Player::setNumberOfArmies(int numberOfArmies) {
-    Player::numberOfArmies = numberOfArmies;
+    this->numberOfArmies = numberOfArmies;
+}
+
+void Player::setPlayersNotToAttack(const vector<Player *> &playersNotToAttack) {
+    Player::playersNotToAttack = playersNotToAttack;
 }
