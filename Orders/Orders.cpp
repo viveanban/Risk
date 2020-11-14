@@ -10,6 +10,17 @@ using namespace std;
 Order::Order(string description, int priority, Player *player) : description(description), priority(priority),
                                                                  player(player) {}
 
+Order::Order(const Order &original) : description(original.description), priority(original.priority),
+                                      player(original.player) {}
+
+Order &Order::operator=(const Order &otherOrder) {
+    description = otherOrder.description;
+    priority = otherOrder.priority;
+    player = otherOrder.player;
+
+    return *this;
+}
+
 std::ostream &operator<<(std::ostream &stream, Order &order) {
     return stream << order.description << " => " << order.priority << endl;
 }
@@ -30,9 +41,17 @@ DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArm
                                            Order("Deploy!", 1, player) {}
 
 
-DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder(original.player) {}
+DeployOrder::DeployOrder(const DeployOrder &original) : targetTerritory(original.targetTerritory),
+                                                        numberOfArmiesToDeploy(original.numberOfArmiesToDeploy),
+                                                        Order(original) {}
 
-DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
+DeployOrder &DeployOrder::operator=(const DeployOrder &otherOrder) {
+    Order::operator=(otherOrder);
+    targetTerritory = otherOrder.targetTerritory;
+    numberOfArmiesToDeploy = otherOrder.numberOfArmiesToDeploy;
+
+    return *this;
+}
 
 bool DeployOrder::validate() {
 //    If the target territory does not belong to the player that issued the order, the order is invalid.
@@ -86,9 +105,19 @@ void DeployOrder::issue() {
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
 
-AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder(original.player) {}
+AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : sourceTerritory(original.sourceTerritory),
+                                                           targetTerritory(original.targetTerritory),
+                                                           numberOfArmiesToAdvance(original.numberOfArmiesToAdvance),
+                                                           Order(original) {}
 
-AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &order) { return *this; }
+AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &otherOrder) {
+    Order::operator=(otherOrder);
+    sourceTerritory = otherOrder.sourceTerritory;
+    targetTerritory = otherOrder.targetTerritory;
+    numberOfArmiesToAdvance = otherOrder.numberOfArmiesToAdvance;
+
+    return *this;
+}
 
 bool AdvanceOrder::validate() {
 //    If the source territory does not belong to the player that issued the order, the order is invalid.
@@ -157,8 +186,8 @@ void AdvanceOrder::execute() {
                 targetTerritory->setOwner(player);
 
                 //TODO: Give new card to player (access deck)
-//Card * drawnCard = GameEngine::deck->draw();
-//player->getHandofCards()->addCard(drawnCard)
+                //Card * drawnCard = GameEngine::deck->draw();
+                //player->getHandofCards()->addCard(drawnCard)
 
                 //TODO: Output effect
             } else { // Target is not conquered
@@ -204,11 +233,16 @@ bool AdvanceOrder::kill(int probabilityToKill) {
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
-BombOrder::BombOrder(Player *player) : Order("Bomb!", 5, player) {}
+BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb!", 5, player) {}
 
-BombOrder::BombOrder(const BombOrder &original) : BombOrder(original.player) {}
+BombOrder::BombOrder(const BombOrder &original) : targetTerritory(original.targetTerritory), Order(original) {}
 
-BombOrder &BombOrder::operator=(const BombOrder &order) { return *this; }
+BombOrder &BombOrder::operator=(const BombOrder &otherOrder) {
+    Order::operator=(otherOrder);
+    targetTerritory = otherOrder.targetTerritory;
+
+    return *this;
+}
 
 bool BombOrder::validate() {
     cout << "Validating bomb order." << endl;
@@ -239,9 +273,15 @@ void BombOrder::issue() {
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
 BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade!", 3, player) {}
 
-BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder(original.player) {}
+BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : targetTerritory(original.targetTerritory),
+                                                              Order(original) {}
 
-BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &order) { return *this; }
+BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &otherOrder) {
+    Order::operator=(otherOrder);
+    targetTerritory = otherOrder.targetTerritory;
+
+    return *this;
+}
 
 bool BlockadeOrder::validate() {
     cout << "Validating blockade order." << endl;
@@ -276,9 +316,19 @@ void BlockadeOrder::issue() {
 AirliftOrder::AirliftOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAirlift(0), Order("Airlift!", 2, player) {}
 
-AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder(original.player) {}
+AirliftOrder::AirliftOrder(const AirliftOrder &original) : sourceTerritory(original.sourceTerritory),
+                                                           targetTerritory(original.targetTerritory),
+                                                           numberOfArmiesToAirlift(original.numberOfArmiesToAirlift),
+                                                           Order(original) {}
 
-AirliftOrder &AirliftOrder::operator=(const AirliftOrder &order) { return *this; }
+AirliftOrder &AirliftOrder::operator=(const AirliftOrder &otherOrder) {
+    Order::operator=(otherOrder);
+    sourceTerritory = otherOrder.sourceTerritory;
+    targetTerritory = otherOrder.targetTerritory;
+    numberOfArmiesToAirlift = otherOrder.numberOfArmiesToAirlift;
+
+    return *this;
+}
 
 bool AirliftOrder::validate() {
     if (sourceTerritory->getOwner() != player) {
@@ -343,11 +393,16 @@ void AirliftOrder::issue() {
 }
 
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
-NegotiateOrder::NegotiateOrder(Player *player) : Order("Negotiate!", 4, player) {}
+NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("Negotiate!", 4, player) {}
 
-NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : NegotiateOrder(original.player) {}
+NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : targetPlayer(original.targetPlayer), Order(original) {}
 
-NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &order) { return *this; }
+NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
+    Order::operator=(otherOrder);
+    targetPlayer = otherOrder.targetPlayer;
+
+    return *this;
+}
 
 bool NegotiateOrder::validate() {
     cout << "Validating negotiate order." << endl;
@@ -380,24 +435,23 @@ OrdersList::OrdersList(const OrdersList &original) {
 }
 
 void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Order *> &destinationVector) {
-    //TODO: Uncomment once the copy ctors are implemented
-//    for (auto order : originalVector) {
-//        if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
-//            destinationVector.push_back(new DeployOrder(*deployOrder));
-//        } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
-//            destinationVector.push_back(new AdvanceOrder(*advanceOrder));
-//        } else if (auto *bombOrder = dynamic_cast<BombOrder *>(order)) {
-//            destinationVector.push_back(new BombOrder(*bombOrder));
-//        } else if (auto *blockadeOrder = dynamic_cast<BlockadeOrder *>(order)) {
-//            destinationVector.push_back(new BlockadeOrder(*blockadeOrder));
-//        } else if (auto *airliftOrder = dynamic_cast<AirliftOrder *>(order)) {
-//            destinationVector.push_back(new AirliftOrder(*airliftOrder));
-//        } else if (auto *negotiateOrder = dynamic_cast<NegotiateOrder *>(order)) {
-//            destinationVector.push_back(new NegotiateOrder(*negotiateOrder));
-//        } else {
-//            cout << "WARNING: Order of unknown type" << endl;
-//        }
-//    }
+    for (auto order : originalVector) {
+        if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
+            destinationVector.push_back(new DeployOrder(*deployOrder));
+        } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
+            destinationVector.push_back(new AdvanceOrder(*advanceOrder));
+        } else if (auto *bombOrder = dynamic_cast<BombOrder *>(order)) {
+            destinationVector.push_back(new BombOrder(*bombOrder));
+        } else if (auto *blockadeOrder = dynamic_cast<BlockadeOrder *>(order)) {
+            destinationVector.push_back(new BlockadeOrder(*blockadeOrder));
+        } else if (auto *airliftOrder = dynamic_cast<AirliftOrder *>(order)) {
+            destinationVector.push_back(new AirliftOrder(*airliftOrder));
+        } else if (auto *negotiateOrder = dynamic_cast<NegotiateOrder *>(order)) {
+            destinationVector.push_back(new NegotiateOrder(*negotiateOrder));
+        } else {
+            cout << "WARNING: Order of unknown type" << endl;
+        }
+    }
 }
 
 OrdersList &OrdersList::operator=(const OrdersList &original) {
