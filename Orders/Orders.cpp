@@ -72,6 +72,14 @@ void DeployOrder::issue(Player* player) {
     player->getOrders()->add(this);
 }
 
+Territory *DeployOrder::getTargetTerritory() const {
+    return targetTerritory;
+}
+
+int DeployOrder::getNumberOfArmiesToDeploy() const {
+    return numberOfArmiesToDeploy;
+}
+
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
 AdvanceOrder::AdvanceOrder() : sourceTerritory(nullptr), targetTerritory(nullptr), numberOfArmiesToAdvance(0), Order("Advance!", 5) {}
 
@@ -117,6 +125,18 @@ void AdvanceOrder::issue(Player* player) {
     player->getOrders()->add(this);
 }
 
+Territory *AdvanceOrder::getSourceTerritory() const {
+    return sourceTerritory;
+}
+
+Territory *AdvanceOrder::getTargetTerritory() const {
+    return targetTerritory;
+}
+
+int AdvanceOrder::getNumberOfArmiesToAdvance() const {
+    return numberOfArmiesToAdvance;
+}
+
 // BombOrder -----------------------------------------------------------------------------------------------------------
 BombOrder::BombOrder() : Order("Bomb!", 5) {}
 
@@ -148,6 +168,10 @@ void BombOrder::issue(Player *player) {
 
     // Update order list
     player->getOrders()->add(this);
+}
+
+Territory *BombOrder::getTargetTerritory() const {
+    return targetTerritory;
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
@@ -184,6 +208,10 @@ void BlockadeOrder::issue(Player *player) {
 
     // Update order list
     player->getOrders()->add(this);
+}
+
+Territory *BlockadeOrder::getTargetTerritory() const {
+    return targetTerritory;
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
@@ -230,6 +258,18 @@ void AirliftOrder::issue(Player* player) {
     player->getOrders()->add(this);
 }
 
+Territory *AirliftOrder::getSourceTerritory() const {
+    return sourceTerritory;
+}
+
+Territory *AirliftOrder::getTargetTerritory() const {
+    return targetTerritory;
+}
+
+int AirliftOrder::getNumberOfArmiesToAirlift() const {
+    return numberOfArmiesToAirlift;
+}
+
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
 NegotiateOrder::NegotiateOrder() : Order("Negotiate!", 4) {}
 
@@ -256,6 +296,10 @@ void NegotiateOrder::issue(Player *player) {
 
     // Update order list
     player->getOrders()->add(this);
+}
+
+Player *NegotiateOrder::getTargetPlayer() const {
+    return targetPlayer;
 }
 
 //--------------------- ORDERS LIST-------------------------------------------------------------------------------------

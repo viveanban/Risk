@@ -87,6 +87,22 @@ private:
     string getPhaseText();
 
     void displaySpecialInformation();
+
+    void printOrderInfo(Order *order);
+
+    void printBombOrder(BombOrder *pOrder);
+
+    void printAdvanceOrder(AdvanceOrder *pOrder);
+
+    void printDeployOrderInfo(DeployOrder *pOrder);
+
+    void printBlockadeOrder(BlockadeOrder *pOrder);
+
+    void printAirliftOrder(AirliftOrder *pOrder);
+
+    void printNegotiateOrder(NegotiateOrder *pOrder);
+
+    void printReinforcementinfo() const;
 };
 
 #endif //RISK_GAMEOBSERVERS_H
