@@ -129,11 +129,7 @@ bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
 void GameInitialization::setupPlayers() {
 
     for (int i = 0; i < this->getNumPlayer(); i++) {
-        this->players.push_back(new Player());
-        //Adding a Player Name, based on its index
-        string playerName = "Player " + to_string(i + 1);
-        players.at(i)->setPlayerName(playerName);
-        //TODO: In upcoming PR, use player constructor taking a name param
+        this->players.push_back(new Player("Player " + to_string(i + 1)));
     }
 }
 
