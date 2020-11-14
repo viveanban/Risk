@@ -15,8 +15,8 @@ private:
     vector<string> availableMaps;
     bool phaseObserver = false;
     bool statisticsObserver = false;
+    GameState *gameState;
     int numPlayer;
-
     /**
      * SelectMap is responsible for displaying available maps from the ./maps folder
      * to the user and prompting him for a map
@@ -46,7 +46,7 @@ private:
 public:
 
     //GETTERS
-
+    GameInitialization();
     Map *getMap() const;
 
     Deck *getDeck() const;
@@ -92,7 +92,7 @@ private:
     vector<Player *> players;
     Map *map;
     Deck *deck;
-    GameState *gamestate;
+    GameState *gameState;
 
     void randomlySetOrder();
 
@@ -127,7 +127,7 @@ private:
     int getBonus(Player *player);
 
 public:
-    GameEngine(vector<Player *> players, Map *map, Deck *deck);
+    GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState);
 
     ~GameEngine();
 

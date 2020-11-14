@@ -111,8 +111,10 @@ int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) {
 }
 
 void GameInitialization::setupObservers() {
-    statisticsObserver = getTrueFalseInputFromUser("phase");
-    statisticsObserver = getTrueFalseInputFromUser("statistics");
+    if (getTrueFalseInputFromUser("phase"))
+        gameState->attach(new PhaseObserver(gameState));
+    if (getTrueFalseInputFromUser("statistics"))
+        gameState->attach(new StatisticsObserver(gameState));
 }
 
 bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
@@ -161,13 +163,19 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
+GameInitialization::GameInitialization() {
+    gameState = new GameState(map->getTerritoryList().size(), &players, nullptr, reinforcement, "");
+}
+
 //GAME STARTUP PHASE
 
-GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck) {
+GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState* gameState) {
     this->players = players;
     this->map = map;
     this->deck = deck;
-    gamestate = new GameState(map->getTerritoryList().size(), &players, nullptr, reinforcement, "");
+    this->gameState = gameState;
+    gameState->setPlayers(&players);
+
 }
 
 void GameEngine::startupPhase() {
@@ -343,13 +351,13 @@ void GameEngine::removePlayersWithoutTerritoriesOwned() {
 
 void GameEngine::updateGameState(Player *pPlayer, Phase phase) {
 
-    gamestate->setCurrentPhase(phase);
-    gamestate->setCurrentPlayer(pPlayer);
-    gamestate->setPlayers(&players);
-    gamestate->notify();
+    gameState->setCurrentPhase(phase);
+    gameState->setCurrentPlayer(pPlayer);
+    gameState->setPlayers(&players);
+    gameState->notify();
 }
 
 GameEngine::~GameEngine() {
 
-    delete gamestate;
+    delete gameState;
 }
