@@ -14,6 +14,7 @@ std::ostream &operator<<(std::ostream &stream, Order &order) {
     return stream << order.description << " => " << order.priority << endl;
 }
 
+//TODO: Add a more descriptive description + add a field order name
 const string &Order::getDescription() const {
     return description;
 }

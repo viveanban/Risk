@@ -89,6 +89,8 @@ private:
 
     void removePlayersWithoutTerritoriesOwned();
 
+    int getBonus(Player *player);
+
 public:
     GameEngine(vector<Player *> players, Map *map, Deck *deck);
 

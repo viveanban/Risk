@@ -189,7 +189,7 @@ bool Hand::removeCard(Card* card) {
         // TODO: put back to singleton Deck
         return true;
     }
-    cout << "Error deleting order." << endl;
+    cout << "Error removing card from hand." << endl;
     return false;
 }
 
