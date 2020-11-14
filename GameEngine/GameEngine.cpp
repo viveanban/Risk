@@ -1,9 +1,7 @@
 #include <fstream>
 #include "GameEngine.h"
 #include <set>
-#include <ctime>
 #include "../MapLoader/MapLoader.h"
-#include "../Player/Player.h"
 #include <random>
 #include <string>
 #include <iostream>
@@ -237,8 +235,6 @@ int GameEngine::getInitialArmyNumber() {
 }
 
 void GameEngine::mainGameLoop() {
-    srand(time(0)); // TODO: remove and put in driver
-
     while (!winnerExists()) {
         reinforcementPhase();
         issueOrdersPhase();
@@ -257,11 +253,12 @@ void GameEngine::reinforcementPhase() {
 }
 
 int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
-    int numberOfArmiesToGive = player->getTerritories().size() / 3;
-    if (numberOfArmiesToGive >= 0 && numberOfArmiesToGive <= 2)
-        numberOfArmiesToGive = 3;
+    const int calculatedArmyUnits = player->getTerritories().size() / 3;
+    int numberOfArmiesToGive = std::max(calculatedArmyUnits, 3);
+    return numberOfArmiesToGive + getBonus(player);
+}
 
-    // Bonus
+int GameEngine::getBonus(Player *player) {
     set<Continent *> continentsWherePlayerOwnsTerritories;
     for (Territory *territory: player->getTerritories()) {
         int continentId = territory->getContinentId();
@@ -273,8 +270,7 @@ int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
         if (continent->getOwner() == player)
             controlValueBonus += continent->getBonus();
     }
-
-    return numberOfArmiesToGive + controlValueBonus;
+    return controlValueBonus;
 }
 
 void GameEngine::issueOrdersPhase() {

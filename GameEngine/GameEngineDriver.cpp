@@ -1,7 +1,7 @@
 //#include "GameEngine.h"
 //#include "./../Map/Map.h"
 //#include "./../MapLoader/MapLoader.h"
-//
+//#include <ctime>
 //#include <iostream>
 //#include <fstream>
 //#include <limits>
@@ -11,6 +11,7 @@
 //const string MAP_DIRECTORY = "../maps/";
 //
 //int main() {
+//    srand(time(0));
 //
 //    GameInitialization gameInitialization;
 //
