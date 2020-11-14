@@ -1,7 +1,3 @@
-//
-// Created by tarek ait hamouda on 2020-11-12.
-//
-
 #ifndef RISK_GAMEOBSERVERS_H
 #define RISK_GAMEOBSERVERS_H
 
@@ -34,15 +30,26 @@ private:
 
 class GameState : public Subject {
 private:
+    int totalTerritories;
+    vector<Player *> *players;
     Player *currentPlayer;
     Phase currentPhase;
     string phaseInfo;
 public:
+    GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase,
+              const string &phaseInfo);
+
+    GameState();
+
     Player *getCurrentPlayer() const;
 
     Phase getCurrentPhase() const;
 
     const string &getPhaseInfo() const;
+
+    const vector<Player *> *getPlayers() const;
+
+    int getTotalTerritories() const;
 };
 
 class Observer {
@@ -65,6 +72,9 @@ public:
 private:
     GameState *currGameState;
 
+    void displayStatsUpdate();
+
+    float calculateWorldDomination(int numberOfTerritories);
 };
 
 class PhaseObserver : Observer {

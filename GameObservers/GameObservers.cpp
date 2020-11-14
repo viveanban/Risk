@@ -1,8 +1,5 @@
-//
-// Created by tarek ait hamouda on 2020-11-12.
-//
-
 #include "GameObservers.h"
+#include <iomanip>
 
 
 // SUBJECT
@@ -222,6 +219,13 @@ void PhaseObserver::printNegotiateOrder(NegotiateOrder *pOrder) {
     }
 }
 
+GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase,
+                     const string &phaseInfo) : totalTerritories(totalTerritories), players(players),
+                                                currentPlayer(currentPlayer), currentPhase(currentPhase),
+                                                phaseInfo(phaseInfo) {}
+
+GameState::GameState() {}
+
 Player *GameState::getCurrentPlayer() const {
     return currentPlayer;
 }
@@ -234,21 +238,50 @@ const string &GameState::getPhaseInfo() const {
     return phaseInfo;
 }
 
-//STATISTICS OBSERVER
+const vector<Player *> *GameState::getPlayers() const {
+    return players;
+}
 
+int GameState::getTotalTerritories() const {
+    return totalTerritories;
+}
+
+//STATISTICS OBSERVER
 void StatisticsObserver::update() {
-//    Observer::update();
+    this->displayStatsUpdate();
 }
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currGameState(currGameState) {}
 
 StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {}
 
-StatisticsObserver::~StatisticsObserver() {}
-
-StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
+StatisticsObserver::~StatisticsObserver() {
 
 }
 
+StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
+    this->currGameState = otherObserver.currGameState;
+}
+
+void StatisticsObserver::displayStatsUpdate() {
+    cout << '|' << "Player" << setw(3) << '|' << "Territorial Control" << setw(3) << '|' << endl;
+    vector<float> playerDominationRatios{};
+    for (Player *player: *currGameState->getPlayers()) {
+        float playerDomination = calculateWorldDomination(player->getTerritories().size());
+        playerDominationRatios.push_back(playerDomination);
+        cout << '|' << player->getPlayerName() << setw(3) << '|'
+             << string("% ").append(to_string(playerDomination)) << setw(3) << '|' << endl;
+    }
+    for (int i = 0; i < playerDominationRatios.size(); i++) {
+        if (playerDominationRatios[i] == 100.0) {
+            cout << "~ CONGRATULATIONS " << currGameState->getPlayers()->at(i)->getPlayerName()
+                 << " YOU WON THE GAME! VICCCTORY ~" << endl;
+        }
+    }
+}
+
+float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
+    return (float) numberOfTerritories / (float) currGameState->getTotalTerritories();
+}
 
 
