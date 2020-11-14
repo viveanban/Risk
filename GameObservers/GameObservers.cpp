@@ -1,8 +1,5 @@
-//
-// Created by tarek ait hamouda on 2020-11-12.
-//
-
 #include "GameObservers.h"
+#include <iomanip>
 
 
 // SUBJECT
@@ -82,13 +79,21 @@ void PhaseObserver::displaySpecialInformation() {
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an order of type: "
                  << currentGameState->getCurrentPlayer()->getOrders()->getOrderList().back()->description << endl;
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " has "
-                 << currentGameState->getCurrentPlayer()->getNumberOfArmies() << " number of armies left to deploy." << endl;
+                 << currentGameState->getCurrentPlayer()->getNumberOfArmies() << " number of armies left to deploy."
+                 << endl;
             break;
         case orders_execution:
             cout << currentGameState->getPhaseInfo() << endl;
             break;
     }
 }
+
+GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase,
+                     const string &phaseInfo) : totalTerritories(totalTerritories), players(players),
+                                                currentPlayer(currentPlayer), currentPhase(currentPhase),
+                                                phaseInfo(phaseInfo) {}
+
+GameState::GameState() {}
 
 Player *GameState::getCurrentPlayer() const {
     return currentPlayer;
@@ -102,21 +107,41 @@ const string &GameState::getPhaseInfo() const {
     return phaseInfo;
 }
 
-//STATISTICS OBSERVER
+const vector<Player *> *GameState::getPlayers() const {
+    return players;
+}
 
+int GameState::getTotalTerritories() const {
+    return totalTerritories;
+}
+
+//STATISTICS OBSERVER
 void StatisticsObserver::update() {
-//    Observer::update();
+    this->displayStatsUpdate();
 }
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currGameState(currGameState) {}
 
 StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {}
 
-StatisticsObserver::~StatisticsObserver() {}
-
-StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
+StatisticsObserver::~StatisticsObserver() {
 
 }
 
+StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
+    this->currGameState = otherObserver.currGameState;
+}
+
+void StatisticsObserver::displayStatsUpdate() {
+    cout << '|' << "Player" << setw(3) << '|' << "Territorial Control" << setw(3) << '|' << endl;
+    for (Player *player: *currGameState->getPlayers()) {
+        cout << '|' << setw(10) << player->getPlayerName() << '|' << setw(10)
+             << calculateWorldDomination(player->getTerritories().size()) << '|' << endl;
+    }
+}
+
+string StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
+    return string("% ").append(to_string((float) numberOfTerritories / currGameState->getTotalTerritories()));
+}
 
 
