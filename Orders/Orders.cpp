@@ -28,7 +28,10 @@ Order::~Order() = default;
 DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArmiesToDeploy(0),
                                            Order("Deploy!", 1, player) {}
 
+<<<<<<< HEAD
 //TODO: Fix copy ctor comme du monde
+=======
+>>>>>>> Execution
 DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder(original.player) {}
 
 DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
@@ -85,7 +88,10 @@ void DeployOrder::issue() {
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
 
+<<<<<<< HEAD
 //TODO: Fix copy ctor comme du monde
+=======
+>>>>>>> Execution
 AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder(original.player) {}
 
 AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &order) { return *this; }
@@ -103,10 +109,12 @@ bool AdvanceOrder::validate() {
              << "the source territory does not have " << numberOfArmiesToAdvance << " army units to advance." << endl;
         return false;
     }
+
     cout << "Advance order validation is successful!" << endl;
     return true;
 }
 
+//TODO: Clear doubts and implement with Ferdou
 void AdvanceOrder::execute() {
     if (validate()) {
         cout << "Executing advance order." << endl;
@@ -288,7 +296,6 @@ bool AirliftOrder::validate() {
              << "the source territory does not belong to the player that issued the order." << endl;
         return false;
     }
-
     if (targetTerritory->getOwner() != player) {
         cout << "Airlift order validation has failed:"
              << "the target territory does not belong to the player that issued the order." << endl;
@@ -300,7 +307,6 @@ bool AirliftOrder::validate() {
              << "the source territory does not have enough armies to airlift." << endl;
         return false;
     }
-
     cout << "Airlift order validation is successful!" << endl;
     return true;
 }
