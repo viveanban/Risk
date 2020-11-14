@@ -10,11 +10,8 @@ using namespace std;
 Order::Order(string description, int priority, Player *player) : description(description), priority(priority),
                                                                  player(player) {}
 
-Order::Order(const Order &original) {
-    description = original.description;
-    priority = original.priority;
-    player = original.player;
-}
+Order::Order(const Order &original) : description(original.description), priority(original.priority),
+                                      player(original.player) {}
 
 Order &Order::operator=(const Order &otherOrder) {
     description = otherOrder.description;
@@ -44,15 +41,12 @@ DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArm
                                            Order("Deploy!", 1, player) {}
 
 
-DeployOrder::DeployOrder(const DeployOrder &original) : Order(original) {
-    targetTerritory = original.targetTerritory;
-    numberOfArmiesToDeploy = original.numberOfArmiesToDeploy;
-}
-
+DeployOrder::DeployOrder(const DeployOrder &original) : targetTerritory(original.targetTerritory),
+                                                        numberOfArmiesToDeploy(original.numberOfArmiesToDeploy),
+                                                        Order(original) {}
 
 DeployOrder &DeployOrder::operator=(const DeployOrder &otherOrder) {
     Order::operator=(otherOrder);
-
     targetTerritory = otherOrder.targetTerritory;
     numberOfArmiesToDeploy = otherOrder.numberOfArmiesToDeploy;
 
@@ -111,15 +105,13 @@ void DeployOrder::issue() {
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
 
-AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : Order(original) {
-    sourceTerritory = original.sourceTerritory;
-    targetTerritory = original.targetTerritory;
-    numberOfArmiesToAdvance = original.numberOfArmiesToAdvance;
-}
+AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : sourceTerritory(original.sourceTerritory),
+                                                           targetTerritory(original.targetTerritory),
+                                                           numberOfArmiesToAdvance(original.numberOfArmiesToAdvance),
+                                                           Order(original) {}
 
 AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &otherOrder) {
     Order::operator=(otherOrder);
-
     sourceTerritory = otherOrder.sourceTerritory;
     targetTerritory = otherOrder.targetTerritory;
     numberOfArmiesToAdvance = otherOrder.numberOfArmiesToAdvance;
@@ -243,13 +235,10 @@ bool AdvanceOrder::kill(int probabilityToKill) {
 // BombOrder -----------------------------------------------------------------------------------------------------------
 BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb!", 5, player) {}
 
-BombOrder::BombOrder(const BombOrder &original) : Order(original) {
-    targetTerritory = original.targetTerritory;
-}
+BombOrder::BombOrder(const BombOrder &original) : targetTerritory(original.targetTerritory), Order(original) {}
 
 BombOrder &BombOrder::operator=(const BombOrder &otherOrder) {
     Order::operator=(otherOrder);
-
     targetTerritory = otherOrder.targetTerritory;
 
     return *this;
@@ -284,13 +273,11 @@ void BombOrder::issue() {
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
 BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade!", 3, player) {}
 
-BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : Order(original) {
-    targetTerritory = original.targetTerritory;
-}
+BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : targetTerritory(original.targetTerritory),
+                                                              Order(original) {}
 
 BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &otherOrder) {
     Order::operator=(otherOrder);
-
     targetTerritory = otherOrder.targetTerritory;
 
     return *this;
@@ -329,15 +316,13 @@ void BlockadeOrder::issue() {
 AirliftOrder::AirliftOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAirlift(0), Order("Airlift!", 2, player) {}
 
-AirliftOrder::AirliftOrder(const AirliftOrder &original) : Order(original) {
-    sourceTerritory = original.sourceTerritory;
-    targetTerritory = original.targetTerritory;
-    numberOfArmiesToAirlift = original.numberOfArmiesToAirlift;
-}
+AirliftOrder::AirliftOrder(const AirliftOrder &original) : sourceTerritory(original.sourceTerritory),
+                                                           targetTerritory(original.targetTerritory),
+                                                           numberOfArmiesToAirlift(original.numberOfArmiesToAirlift),
+                                                           Order(original) {}
 
 AirliftOrder &AirliftOrder::operator=(const AirliftOrder &otherOrder) {
     Order::operator=(otherOrder);
-
     sourceTerritory = otherOrder.sourceTerritory;
     targetTerritory = otherOrder.targetTerritory;
     numberOfArmiesToAirlift = otherOrder.numberOfArmiesToAirlift;
@@ -410,13 +395,10 @@ void AirliftOrder::issue() {
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
 NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("Negotiate!", 4, player) {}
 
-NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : Order(original) {
-    targetPlayer = original.targetPlayer;
-}
+NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : targetPlayer(original.targetPlayer), Order(original) {}
 
 NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
     Order::operator=(otherOrder);
-
     targetPlayer = otherOrder.targetPlayer;
 
     return *this;
