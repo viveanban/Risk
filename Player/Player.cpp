@@ -142,12 +142,12 @@ bool Player::issueOrder() {
 
                 // Pick a card
                 Card *cardChosen = handOfCards->getNextCard();
-                if (!cardChosen) return continueIssuingOrders;
+                if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
 
                 // Play card
                 Order *order = cardChosen->play();
-                if(!order) {
-                    order->issue();
+                if(order) {
+                    order->issue(this);
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);
                 }
