@@ -4,6 +4,7 @@
 
 #include "../Map/Map.h"
 #include "../Cards/Cards.h"
+#include "../Player/Player.h"
 
 class GameInitialization {
 private:
@@ -49,23 +50,59 @@ public:
 
     static int isRegularFile(const char *path);
 
-    static int validateNumberPlayerInput(int numPlayerTmp) ;
+    static int validateNumberPlayerInput(int numPlayerTmp);
 };
 
-class GameSetup {
+class GameEngine {
 private:
-    vector<Player *> listOfPlayers;
+    vector<Player *> players;
     Map *map;
-    Deck* deck;
+    Deck *deck;
+
     void randomlySetOrder();
+
     void assignCountriesToPlayers();
+
     void assignArmiesToPlayers();
+    /**
+ * The reinforcementPhase method determines how many armies to give to a player
+ * @param player: a pointer to a Player object
+ * @return void.
+ */
+    void reinforcementPhase();
+
+    /**
+     * The issueOrdersPhase method ____________
+     * @param
+     * @return
+     */
+    void issueOrdersPhase();
+
+    /**
+     * The executeOrdersPhase method _______________
+     * @param
+     * @return
+     */
+    void executeOrdersPhase();
+
+    bool winnerExists();
+
+    void removePlayersWithoutTerritoriesOwned();
+
+    int getBonus(Player *player);
 
 public:
-    GameSetup(vector<Player *> players, Map *map, Deck* deck);
+    GameEngine(vector<Player *> players, Map *map, Deck *deck);
+
+    ~GameEngine();
 
     void startupPhase();
+
     int getInitialArmyNumber();
+
+    void mainGameLoop();
+
+    int calculateNumberOfArmiesToGive(Player *player);
 };
 
 #endif //RISK_GAMEENGINE_H

@@ -12,20 +12,11 @@ using namespace std;
  * Territory Class implementation
  */
 
-Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList() {}
-
-Territory::~Territory() {
-    cout << "Deleting Territory" << endl;
-    delete owner;
-    owner = nullptr;
-}
+Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList(), priority() {}
 
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
-    if(original.owner != nullptr)
-        owner = new Player(*original.owner);
-    else
-        owner = nullptr;
+    owner = original.owner;
     continentId = original.continentId;
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
@@ -36,10 +27,7 @@ Territory::Territory(const Territory &original) {
 
 Territory &Territory::operator=(const Territory &otherTerritory) {
     territoryName = otherTerritory.territoryName;
-    if(otherTerritory.owner != nullptr)
-        owner = new Player(*otherTerritory.owner);
-    else
-        owner = nullptr;
+    owner = otherTerritory.owner;
     continentId = otherTerritory.continentId;
     territoryId = otherTerritory.territoryId;
     unitNbr = otherTerritory.unitNbr;
@@ -63,7 +51,6 @@ std::ostream &operator<<(std::ostream &stream, Territory &t) {
 
 string Territory::getTerritoryName() {
     return this->territoryName;
-
 }
 
 void Territory::setTerritoryName(string territoryName) {
@@ -84,6 +71,7 @@ int Territory::getUnitNbr() {
 
 void Territory::setUnitNbr(int unitNbr) {
     this->unitNbr = unitNbr;
+    this->priority = unitNbr;
 }
 
 int Territory::getContinentId() {
@@ -111,11 +99,18 @@ void Territory::setAdjList(vector<Territory *> &adjList) {
 
 }
 
+int Territory::getPriority() const {
+    return priority;
+}
+
+void Territory::setPriority(int priority) {
+    Territory::priority = priority;
+}
+
 /**
  * Continent Class implementation
  */
-Continent::Continent() : continentId(), continentName(),
-                         territories(), bonus() {}
+Continent::Continent() : continentId(), continentName(), territories(), bonus() {}
 
 Continent::~Continent() {
     cout << "Deleting Territories of Continent" << endl;
@@ -124,7 +119,7 @@ Continent::~Continent() {
         territory = nullptr;
     }
     territories.clear();
-}                         
+}
 
 Continent::Continent(const Continent &original) {
     continentId = original.continentId;
@@ -136,7 +131,6 @@ Continent::Continent(const Continent &original) {
 }
 
 Continent &Continent::operator=(const Continent &otherContinent) {
-
     continentName = otherContinent.continentName;
     continentId = otherContinent.continentId;
     bonus = otherContinent.bonus;
@@ -180,11 +174,14 @@ void Continent::setBonus(int bonus) {
 }
 
 bool Continent::isSameOwner() {
-    set<Territory *> setOfTerritoriesInContinent;
+    set<Player *> players;
     for (Territory *territory : getTerritories()) {
-        setOfTerritoriesInContinent.insert(territory);
+        if(territory->getOwner() == nullptr)
+            return false;
+        else
+            players.insert(territory->getOwner());
     }
-    return setOfTerritoriesInContinent.size() == 1;
+    return players.size() == 1;
 }
 
 Player *Continent::getOwner() {
@@ -202,7 +199,7 @@ void Continent::setTerritories(vector<Territory *> territories) {
 /**
  * Map Class implementation
  */
-Map::Map() : territoryList() {}
+Map::Map() : territoryList(), continentList() {}
 
 Map::Map(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
                                                                                        continentList(continentList) {}
@@ -219,7 +216,7 @@ Map::~Map() {
 Map::Map(const Map &original) {
     territoryList = vector<Territory *>(original.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
-        territoryList[i] = new Territory(*original.territoryList[i]);
+        territoryList[i] = original.territoryList[i];
     continentList = vector<Continent *>(original.continentList.size());
     for (int i = 0; i < continentList.size(); i++)
         continentList[i] = new Continent(*original.continentList[i]);
@@ -228,7 +225,7 @@ Map::Map(const Map &original) {
 Map &Map::operator=(const Map &otherMap) {
     territoryList = vector<Territory *>(otherMap.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
-        territoryList[i] = new Territory(*otherMap.territoryList[i]);
+        territoryList[i] = otherMap.territoryList[i];
     continentList = vector<Continent *>(otherMap.continentList.size());
     for (int i = 0; i < continentList.size(); i++)
         continentList[i] = new Continent(*otherMap.continentList[i]);

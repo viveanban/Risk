@@ -1,7 +1,7 @@
 #include <fstream>
 #include "GameEngine.h"
+#include <set>
 #include "../MapLoader/MapLoader.h"
-#include "../Player/Player.h"
 #include <random>
 #include <string>
 #include <iostream>
@@ -129,11 +129,7 @@ bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
 void GameInitialization::setupPlayers() {
 
     for (int i = 0; i < this->getNumPlayer(); i++) {
-        this->players.push_back(new Player());
-        //Adding a Player Name, based on its index
-        string playerName = "Player " + to_string(i + 1);
-        players.at(i)->setPlayerName(playerName);
-        //TODO: In upcoming PR, use player constructor taking a name param
+        this->players.push_back(new Player("Player " + to_string(i + 1)));
     }
 }
 
@@ -167,33 +163,33 @@ int GameInitialization::getNumPlayer() const {
 
 //GAME STARTUP PHASE
 
-GameSetup::GameSetup(vector<Player *> players, Map *map, Deck *deck) {
-    this->listOfPlayers = players;
+GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck) {
+    this->players = players;
     this->map = map;
     this->deck = deck;
 }
 
-void GameSetup::startupPhase() {
+void GameEngine::startupPhase() {
     randomlySetOrder();
     assignCountriesToPlayers();
     assignArmiesToPlayers();
 }
 
-void GameSetup::randomlySetOrder() {
+void GameEngine::randomlySetOrder() {
 
     cout << "Before shuffling, this is the order of players" << endl;
-    for (auto &it : listOfPlayers)
+    for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 
 //  Randomize (shuffle) the order of the players.
-    shuffle(listOfPlayers.begin(), listOfPlayers.end(), std::mt19937(std::random_device()()));
+    shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
-    for (auto &it : listOfPlayers)
+    for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 }
 
-void GameSetup::assignCountriesToPlayers() {
+void GameEngine::assignCountriesToPlayers() {
     int territoriesAssigned = 0;
     vector<Territory *> territoriesAvailable = map->getTerritoryList();
 
@@ -204,24 +200,24 @@ void GameSetup::assignCountriesToPlayers() {
         // remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // assign using Round Robin Method
-        listOfPlayers.at(territoriesAssigned % listOfPlayers.size())->addTerritory(territory);
+        players.at(territoriesAssigned % players.size())->addTerritory(territory);
         cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << listOfPlayers.at(territoriesAssigned % listOfPlayers.size()) << endl;
+             << players.at(territoriesAssigned % players.size()) << endl;
         territoriesAssigned++;
     }
     cout << "All territories Assigned." << endl;
 }
 
-void GameSetup::assignArmiesToPlayers() {
+void GameEngine::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
-    for (auto p : this->listOfPlayers) {
+    for (auto p : players) {
         p->setNumberOfArmies(nmbArmy);
-        cout << "Player " << p << "got assigned A = " << p->getNumberOfArmies() << endl;
+        cout << "Player " << p << "got assigned A = " << p->getNumberofArmies() << endl;
     }
 }
 
-int GameSetup::getInitialArmyNumber() {
-    switch (this->listOfPlayers.size()) {
+int GameEngine::getInitialArmyNumber() {
+    switch (players.size()) {
         case 2:
             return 40;
         case 3:
@@ -234,4 +230,109 @@ int GameSetup::getInitialArmyNumber() {
     };
 }
 
+void GameEngine::mainGameLoop() {
+    while (!winnerExists()) {
+        reinforcementPhase();
+        issueOrdersPhase();
+        executeOrdersPhase();
 
+        removePlayersWithoutTerritoriesOwned();
+    }
+
+}
+
+void GameEngine::reinforcementPhase() {
+    for (Player *player: players) {
+        int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
+        player->setNumberOfArmies(numberOfArmiesToGive);
+    }
+}
+
+int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
+    const int calculatedArmyUnits = player->getTerritories().size() / 3;
+    int numberOfArmiesToGive = std::max(calculatedArmyUnits, 3);
+    return numberOfArmiesToGive + getBonus(player);
+}
+
+int GameEngine::getBonus(Player *player) {
+    set<Continent *> continentsWherePlayerOwnsTerritories;
+    for (Territory *territory: player->getTerritories()) {
+        int continentId = territory->getContinentId();
+        continentsWherePlayerOwnsTerritories.insert(map->getContinentList().at(continentId - 1));
+    }
+
+    int controlValueBonus = 0;
+    for (Continent *continent: continentsWherePlayerOwnsTerritories) {
+        if (continent->getOwner() == player)
+            controlValueBonus += continent->getBonus();
+    }
+    return controlValueBonus;
+}
+
+void GameEngine::issueOrdersPhase() {
+    vector<Player *> playersWithNoMoreOrderstoIssue;
+    while (playersWithNoMoreOrderstoIssue.size() != players.size()) {
+        for (Player *player: players) {
+            if (find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
+                playersWithNoMoreOrderstoIssue.end()) {
+                if (!player->issueOrder())
+                    playersWithNoMoreOrderstoIssue.push_back(player);
+            }
+        }
+    }
+}
+
+void GameEngine::executeOrdersPhase() {
+    // Prioritize the orders
+    for (Player *player: players) {
+        player->getOrders()->sortOrderListByPriority();
+    }
+
+    // Execute all deploy orders
+    vector<Player *> playersWithNoMoreDeployOrderstoExecute;
+    while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
+        for (Player *player: players) {
+            vector<Order *> &orderList = player->getOrders()->getOrderList();
+            if (!orderList.empty()) {
+                auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
+                if (deployOrder) {
+                    deployOrder->execute();
+                    player->getOrders()->remove(deployOrder);
+                } else {
+                    playersWithNoMoreDeployOrderstoExecute.push_back(player);
+                }
+            }
+        }
+    }
+
+    // Execute the rest of the orders
+    vector<Player *> playersWithNoMoreOrdersToExecute;
+    while (playersWithNoMoreOrdersToExecute.size() != players.size()) {
+        for (Player *player: players) {
+            vector<Order *> &orderList = player->getOrders()->getOrderList();
+            if (!orderList.empty()) {
+                orderList[0]->execute();
+                player->getOrders()->remove(orderList[0]);
+            } else {
+                playersWithNoMoreOrdersToExecute.push_back(player);
+            }
+        }
+    }
+}
+
+bool GameEngine::winnerExists() {
+    return players.size() == 1;
+}
+
+void GameEngine::removePlayersWithoutTerritoriesOwned() {
+    for (Player *player: players) {
+        if(player->getTerritories().empty()) {
+            auto position = find(players.begin(), players.end(), player);
+            if (position != players.end()) {
+                players.erase(position);
+                delete player;
+                player = nullptr;
+            }
+        }
+    }
+}

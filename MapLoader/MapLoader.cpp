@@ -11,27 +11,23 @@ using namespace std;
 /**
  * MapLoader Class implementation
  */
-const string MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
-const string MAP_DIRECTORY = "../maps/";
-const string CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
-const string COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
-const string BORDER_REGEX = "(\\d+\\s+)+\\d+";
+const string MapLoader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
+const string MapLoader::MAP_DIRECTORY = "../maps/";
+const string MapLoader::CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
+const string MapLoader::COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
+const string MapLoader::BORDER_REGEX = "(\\d+\\s+)+\\d+";
 
-enum Section {
-    other, continents, countries, borders
-};
-
-Section currentSection;
-vector<Continent *> continentsList;
-vector<Territory *> territoriesList;
+MapLoader::Section MapLoader::currentSection;
+vector<Continent *> MapLoader::continentsList;
+vector<Territory *> MapLoader::territoriesList;
 
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 
 MapLoader &MapLoader::operator=(const MapLoader &original) { return *this; }
 
 std::ostream &operator<<(ostream &stream, MapLoader &mapLoader) {
-    return stream << "MapLoader: [continentList size =" << continentsList.size()
-                  << ", territoriesList size = " << continentsList.size() << "]" << endl;
+    return stream << "MapLoader: [continentList size =" << MapLoader::continentsList.size()
+                  << ", territoriesList size = " << MapLoader::territoriesList.size() << "]" << endl;
 }
 
 Map *MapLoader::loadMap(const string &mapName) {
@@ -73,6 +69,7 @@ void MapLoader::parseFile(fstream &mapFile) {
             if (currentSection == continents) {
                 checkPattern(line, CONTINENT_REGEX);
                 continentsList.push_back(createContinents(line, continentId));
+                continentId++;
             } else if (currentSection == countries) {
                 checkPattern(line, COUNTRY_REGEX);
                 territoriesList.push_back(createTerritories(line));
@@ -115,7 +112,7 @@ Continent *MapLoader::createContinents(const string &line, int &continentId) {
         counter++;
     }
 
-    continent->setContinentId(continentId++);
+    continent->setContinentId(continentId);
 
     return continent;
 }

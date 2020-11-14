@@ -22,10 +22,10 @@ private:
     int territoryId;
     int unitNbr;
     vector<Territory *> adjList;
+    int priority;
+
 public:
     Territory();
-
-    ~Territory();
 
     Territory(const Territory &original);
 
@@ -46,6 +46,8 @@ public:
 
     int getContinentId();
 
+    int getPriority() const;
+
     // Setters
     void setTerritoryName(string territoryName);
 
@@ -58,6 +60,8 @@ public:
     void setContinentId(int continentId);
 
     void setAdjList(vector<Territory *> &adjList);
+
+    void setPriority(int priority);
 };
 
 /**
@@ -72,6 +76,8 @@ private:
     string continentName;
     vector<Territory *> territories;
 
+    bool isSameOwner();
+
 public:
     Continent();
 
@@ -83,8 +89,6 @@ public:
 
     // output insertion stream operator override
     friend std::ostream &operator<<(std::ostream &stream, Continent &c);
-
-    bool isSameOwner();
 
     // Getters
     int getContinentId();
