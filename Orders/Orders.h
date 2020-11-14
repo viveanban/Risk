@@ -98,6 +98,8 @@ private:
     int numberOfArmiesToAdvance;
 
     bool validate() override;
+
+    bool kill(int probabilityToKill);
 };
 
 /**

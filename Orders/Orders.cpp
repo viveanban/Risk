@@ -28,6 +28,7 @@ Order::~Order() = default;
 DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArmiesToDeploy(0),
                                            Order("Deploy!", 1, player) {}
 
+//TODO: Fix copy ctor comme du monde
 DeployOrder::DeployOrder(const DeployOrder &original) : DeployOrder(original.player) {}
 
 DeployOrder &DeployOrder::operator=(const DeployOrder &order) { return *this; }
@@ -84,6 +85,7 @@ void DeployOrder::issue() {
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
 
+//TODO: Fix copy ctor comme du monde
 AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : AdvanceOrder(original.player) {}
 
 AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &order) { return *this; }
@@ -95,11 +97,16 @@ bool AdvanceOrder::validate() {
              << "the source territory does not belong to the player that issued the order." << endl;
         return false;
     }
+
+    if (numberOfArmiesToAdvance > sourceTerritory->getUnitNbr()) {
+        cout << "Advance order validation has failed:"
+             << "the source territory does not have " << numberOfArmiesToAdvance << " army units to advance." << endl;
+        return false;
+    }
     cout << "Advance order validation is successful!" << endl;
     return true;
 }
 
-//TODO: Clear doubts and implement with Ferdou
 void AdvanceOrder::execute() {
     if (validate()) {
         cout << "Executing advance order." << endl;
@@ -117,37 +124,48 @@ void AdvanceOrder::execute() {
             cout << targetTerritory->getTerritoryName() << " now has " << targetTerritory->getUnitNbr()
                  << " army units." << endl;;
         } else { // Attack target territory
-            int armiesKilledBySrc = numberOfArmiesToAdvance * 0.6;
-            int armiesKilledByTrg = numberOfArmiesToAdvance * 0.7;
-
-            int advancedArmiesLeftAfterAttack = numberOfArmiesToAdvance - armiesKilledByTrg;
-            int sourceArmyUnits = numberOfArmiesToAdvance - armiesKilledByTrg;
-            int targetArmyUnitsLeft = targetTerritory->getUnitNbr() - armiesKilledBySrc;
-
-            if (sourceArmyUnits <= 0 && targetArmyUnitsLeft <= 0) { // Both territory's have lost
-                // TODO: Both players have lost; add implementation based on TA's answer
-            } else if (sourceArmyUnits <= 0) {//Target army has won
-                // TODO: Transfer the right amount of armies from trg to src
-//                sourceTerritory->setUnitNbr(0);
-//                targetTerritory->setUnitNbr(targetArmyUnitsLeft);
-                //TODO: Source territory's ownership is transferred to the target territoy's owner
-            } else if (targetArmyUnitsLeft <= 0 && sourceTerritory->getUnitNbr() > 0) { // Source army has won
-                // Target territory conquered
-                targetTerritory->setOwner(player);
-                player->getTerritories().push_back(targetTerritory);
-
-                //Surviving attacker army units occupy the conquered territory.
-
-                sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - advancedArmiesLeftAfterAttack);
-                targetTerritory->setUnitNbr(advancedArmiesLeftAfterAttack);
-
-                //TODO: Player receives a random card from the deck
-//                Card * drawnCard = GameEngine::deck->draw();
-//                player->getHandofCards()->addCard(drawnCard)
-            } else {
+            int numberOfTargetUnitsKilled;
+            for (int unit = 1;
+                // Source cannot kill more than the number of armies in the target territory
+                 unit <= numberOfArmiesToAdvance && numberOfTargetUnitsKilled < targetTerritory->getUnitNbr();
+                 unit++) {
+                // Source has 60% chance of killing a target army unit
+                bool targetUnitKilled = kill(60);
+                if (targetUnitKilled) numberOfTargetUnitsKilled++;
             }
 
+            int numberOfSourceUnitsKilled;
+            for (int unit = 1;
+                // Target cannot kill more than the number of armies advanced by src
+                 unit <= targetTerritory->getUnitNbr() && numberOfSourceUnitsKilled < numberOfArmiesToAdvance;
+                 unit++) {
+                // Target has 70% chance of killing a source army unit
+                bool sourceUnitKilled = kill(70);
+                if (sourceUnitKilled) numberOfSourceUnitsKilled++;
+            }
 
+            int targetArmyUnitsLeft = targetTerritory->getUnitNbr() - numberOfTargetUnitsKilled;
+
+            //Source Territory has conquered the Target Territory
+            if (targetArmyUnitsLeft == 0) {
+                // Updating the army unit numbers for each territory
+                sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfArmiesToAdvance);
+                targetTerritory->setUnitNbr(numberOfArmiesToAdvance - numberOfSourceUnitsKilled);
+
+                //Transfer ownership
+                targetTerritory->setOwner(player);
+
+                //TODO: Give new card to player (access deck)
+                // Card * drawnCard = GameEngine::deck->draw();
+                // player->getHandofCards()->addCard(drawnCard)
+
+                //TODO: Output effect
+            } else { // Target is not conquered
+                // Updating the army unit numbers for each territory
+                sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfSourceUnitsKilled);
+                targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() - numberOfTargetUnitsKilled);
+                //TODO: Output effect
+            }
         }
     }
 }
@@ -179,9 +197,15 @@ void AdvanceOrder::issue() {
     player->getOrders()->add(this);
 }
 
+bool AdvanceOrder::kill(int probabilityToKill) {
+    int randomValue = (rand() % 100) + 1; // [1, 100]
+    return randomValue <= probabilityToKill;
+}
+
 // BombOrder -----------------------------------------------------------------------------------------------------------
 BombOrder::BombOrder(Player *player) : Order("Bomb!", 5, player) {}
 
+//TODO: Fix copy ctor comme du monde
 BombOrder::BombOrder(const BombOrder &original) : BombOrder(original.player) {}
 
 BombOrder &BombOrder::operator=(const BombOrder &order) { return *this; }
@@ -215,6 +239,7 @@ void BombOrder::issue() {
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
 BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade!", 3, player) {}
 
+//TODO: Fix copy ctor comme du monde
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder(original.player) {}
 
 BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &order) { return *this; }
@@ -252,6 +277,7 @@ void BlockadeOrder::issue() {
 AirliftOrder::AirliftOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAirlift(0), Order("Airlift!", 2, player) {}
 
+//TODO: Fix copy ctor comme du monde
 AirliftOrder::AirliftOrder(const AirliftOrder &original) : AirliftOrder(original.player) {}
 
 AirliftOrder &AirliftOrder::operator=(const AirliftOrder &order) { return *this; }
@@ -269,7 +295,7 @@ bool AirliftOrder::validate() {
         return false;
     }
 
-    if (sourceTerritory->getUnitNbr() < numberOfArmiesToAirlift) {
+    if (numberOfArmiesToAirlift > sourceTerritory->getUnitNbr()) {
         cout << "Airlift order validation has failed:"
              << "the source territory does not have enough armies to airlift." << endl;
         return false;
@@ -323,6 +349,7 @@ void AirliftOrder::issue() {
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
 NegotiateOrder::NegotiateOrder(Player *player) : Order("Negotiate!", 4, player) {}
 
+//TODO: Fix copy ctor comme du monde
 NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : NegotiateOrder(original.player) {}
 
 NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &order) { return *this; }
