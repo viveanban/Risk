@@ -5,14 +5,34 @@
 #ifndef RISK_GAMEOBSERVERS_H
 #define RISK_GAMEOBSERVERS_H
 
-#include <iostream>;
+#include <iostream>
+#include <list>
 #include "../Player/Player.h"
 
 enum Phase {
     reinforcement, issuing_orders, orders_execution
 };
 
-class GameState {
+// Forward reference
+class Observer;
+
+class Subject {
+public:
+    virtual void attach(Observer *o);
+
+    virtual void detach(Observer *o);
+
+    virtual void notify();
+
+    Subject();
+
+    ~Subject();
+
+private:
+    list<Observer *> *observers;
+};
+
+class GameState : public Subject {
 private:
     Player *currentPlayer;
     Phase currentPhase;
@@ -27,7 +47,7 @@ public:
 
 class Observer {
 public:
-    virtual void update();
+    virtual void update() = 0;
 };
 
 class StatisticsObserver : Observer {
@@ -61,7 +81,7 @@ public:
     void update() override;
 
 private:
-    GameState *currGameState;
+    GameState *currentGameState;
 
     void displayPhaseUpdates();
 

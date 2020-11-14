@@ -4,9 +4,33 @@
 
 #include "GameObservers.h"
 
-//PHASE OBSERVER
 
-PhaseObserver::PhaseObserver(GameState *currGameState) : currGameState(currGameState) {}
+// SUBJECT
+Subject::Subject() {
+    observers = new list<Observer *>;
+}
+
+Subject::~Subject() {
+    delete observers;
+}
+
+void Subject::attach(Observer *o) {
+    observers->push_back(o);
+};
+
+void Subject::detach(Observer *o) {
+    observers->remove(o);
+};
+
+void Subject::notify() {
+    list<Observer *>::iterator i = observers->begin();
+    for (; i != observers->end(); ++i)
+        (*i)->update();
+};
+
+//PHASE OBSERVER
+// TODO: add default constructor?
+PhaseObserver::PhaseObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
 PhaseObserver::~PhaseObserver() {
 //TODO: implement destructor}
@@ -22,7 +46,7 @@ PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
 
 void PhaseObserver::update() {
 
-    if (currGameState->getCurrentPlayer() == nullptr || currGameState->getCurrentPhase() == NULL) {
+    if (currentGameState->getCurrentPlayer() == nullptr || currentGameState->getCurrentPhase() == NULL) {
         cout << "ERROR OCCURED WHILE TRYING TO UPDATE PHASE OBSERVER. NULL VALUE PASSED" << endl;
         return;
     }
@@ -30,18 +54,20 @@ void PhaseObserver::update() {
 }
 
 void PhaseObserver::displayPhaseUpdates() {
-    cout << currGameState->getCurrentPlayer()->getPlayerName() << " " << getPhaseText() << endl;
-    cout << currGameState->getPhaseInfo() << endl;
+    cout << currentGameState->getCurrentPlayer()->getPlayerName() << " " << getPhaseText() << endl;
+    cout << currentGameState->getPhaseInfo() << endl;
 }
 
 string PhaseObserver::getPhaseText() {
-    switch (currGameState->getCurrentPhase()) {
+    switch (currentGameState->getCurrentPhase()) {
         case reinforcement:
             return "Reinforcement";
         case issuing_orders:
             return "Issue orders";
         case orders_execution:
             return "Orders execution";
+        default:
+            return "Unknown State";
     }
 }
 
@@ -61,7 +87,7 @@ const string &GameState::getPhaseInfo() const {
 //STATISTICS OBSERVER
 
 void StatisticsObserver::update() {
-    Observer::update();
+//    Observer::update();
 }
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currGameState(currGameState) {}
@@ -73,5 +99,6 @@ StatisticsObserver::~StatisticsObserver() {}
 StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
 
 }
+
 
 
