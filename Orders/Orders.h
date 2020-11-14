@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include "../Map/Map.h"
 
 using namespace std;
 
@@ -10,9 +11,20 @@ using namespace std;
  * This class represents an Order that a player can give for the Risk Game
  * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
  */
+ // TODO: add Player field
 class Order {
-public:
+private:
     string description;
+
+    int priority;
+
+public:
+    // TODO: implement copy cstor and default cstor. Also implement correctly the copy cstor of ALL orders
+    Order();
+
+    Order(string description, int priority);
+
+    Order(const Order &original);
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
@@ -28,6 +40,12 @@ public:
      */
     virtual void execute() = 0;
 
+    virtual void issue(Player* player) = 0;
+
+    const string &getDescription() const;
+
+    int getPriority() const;
+
     virtual ~Order();
 };
 
@@ -40,12 +58,18 @@ public:
 
     DeployOrder(const DeployOrder &original);
 
-    DeployOrder &operator=(const DeployOrder &order) ;
-
-private:
-    bool validate() override;
+    DeployOrder &operator=(const DeployOrder &order);
 
     void execute() override;
+
+    void issue(Player* player) override;
+
+private:
+    Territory *targetTerritory;
+
+    int numberOfArmiesToDeploy;
+
+    bool validate() override;
 };
 
 /**
@@ -61,10 +85,17 @@ public:
     AdvanceOrder(const AdvanceOrder &original);
 
     AdvanceOrder &operator=(const AdvanceOrder &order);
-private:
-    bool validate() override;
 
     void execute() override;
+
+    void issue(Player* player) override;
+
+private:
+    Territory *sourceTerritory;
+    Territory *targetTerritory;
+    int numberOfArmiesToAdvance;
+
+    bool validate() override;
 };
 
 /**
@@ -79,12 +110,14 @@ public:
 
     BombOrder &operator=(const BombOrder &order);
 
+    void execute() override;
+
+    void issue(Player* player) override;
 
 private:
+    Territory* targetTerritory;
 
     bool validate() override;
-
-    void execute() override;
 };
 
 /**
@@ -96,11 +129,16 @@ public:
 
     BlockadeOrder(const BlockadeOrder &original);
 
-    BlockadeOrder &operator=(const BlockadeOrder &order) ;
-private:
-    bool validate() override;
+    BlockadeOrder &operator=(const BlockadeOrder &order);
 
     void execute() override;
+
+    void issue(Player* player) override;
+
+private:
+    Territory *targetTerritory;
+
+    bool validate() override;
 
 };
 
@@ -114,10 +152,18 @@ public:
     AirliftOrder(const AirliftOrder &original);
 
     AirliftOrder &operator=(const AirliftOrder &order);
-private:
-    bool validate() override;
 
     void execute() override;
+
+    void issue(Player* player) override;
+
+private:
+    Territory *sourceTerritory;
+    Territory *targetTerritory;
+
+    int numberOfArmiesToAirlift;
+
+    bool validate() override;
 
 };
 
@@ -132,25 +178,16 @@ public:
 
     NegotiateOrder &operator=(const NegotiateOrder &order);
 
-private:
-    bool validate() override;
-
     void execute() override;
-};
 
-class ReinforcementOrder : public Order {
-public:
-    ReinforcementOrder();
-
-    ReinforcementOrder(const ReinforcementOrder &original);
-
-    ReinforcementOrder &operator=(const ReinforcementOrder &order) ;
+    void issue(Player* player) override;
 
 private:
-    bool validate() override;
+    Player* targetPlayer;
 
-    void execute() override;
+    bool validate() override;
 };
+
 /**
  * This class represents a list of orders for the Risk game
  * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate, Reinforce.
@@ -200,9 +237,9 @@ public:
      */
     bool move(Order *order, int destination);
 
-    void executeAll();
-
     vector<Order *> &getOrderList();
+
+    void sortOrderListByPriority();
 };
 
 #endif //RISK_ORDERS_H

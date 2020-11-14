@@ -6,7 +6,7 @@
 //    Order *overToMove = new DeployOrder();
 //    Order *orderToRemove = new BombOrder();
 //    list->add(overToMove);
-//    list->add(new AdvanceOrder());
+//    list->add(new AdvanceOrder(new Territory(), new Territory(), 10));
 //    list->add(orderToRemove);
 //    list->add(new BlockadeOrder());
 //    list->add(new AirliftOrder());
@@ -24,8 +24,7 @@
 //    cout << "-----------Test Remove Bomb Order-----------" << endl;
 //    list->remove(orderToRemove);
 //    cout << *list << endl;
-//    cout << "-----------Test Execute-----------" << endl;
-//    list->executeAll();
-//
-//    cout << "--------Execution of Orders Terminated--------" << endl;
+//    cout << "-----------Test Sorting-----------" << endl;
+//    list->sortOrderListByPriority();
+//    cout << *list << endl;
 //}

@@ -17,6 +17,26 @@ using namespace std;
  */
 class MapLoader {
 private:
+    enum Section {
+        other, continents, countries, borders
+    };
+
+    static const string MAP_FILENAME_FORMAT_REGEX;
+
+    static const string MAP_DIRECTORY;
+
+    static const string CONTINENT_REGEX;
+
+    static const string COUNTRY_REGEX;
+
+    static const string BORDER_REGEX;
+
+    static Section currentSection;
+
+    static vector<Continent *> continentsList;
+
+    static vector<Territory *> territoriesList;
+
     MapLoader() = default;
 
     MapLoader(const MapLoader &original);
