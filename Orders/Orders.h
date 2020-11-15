@@ -11,20 +11,21 @@ using namespace std;
  * This class represents an Order that a player can give for the Risk Game
  * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
  */
- // TODO: add Player field
 class Order {
 private:
     string description;
 
     int priority;
 
-public:
-    // TODO: implement copy cstor and default cstor. Also implement correctly the copy cstor of ALL orders
-    Order();
+protected:
+    Player * player;
 
-    Order(string description, int priority);
+public:
+    Order(string description, int priority, Player * player);
 
     Order(const Order &original);
+
+    Order &operator=(const Order &otherOrder);
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
@@ -40,7 +41,7 @@ public:
      */
     virtual void execute() = 0;
 
-    virtual void issue(Player* player) = 0;
+    virtual void issue() = 0;
 
     const string &getDescription() const;
 
@@ -54,15 +55,15 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    DeployOrder();
+    explicit DeployOrder(Player * player);
 
     DeployOrder(const DeployOrder &original);
 
-    DeployOrder &operator=(const DeployOrder &order);
+    DeployOrder &operator=(const DeployOrder &otherOrder);
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *targetTerritory;
@@ -80,15 +81,15 @@ private:
  */
 class AdvanceOrder : public Order {
 public:
-    AdvanceOrder();
+    explicit AdvanceOrder(Player * player);
 
     AdvanceOrder(const AdvanceOrder &original);
 
-    AdvanceOrder &operator=(const AdvanceOrder &order);
+    AdvanceOrder &operator=(const AdvanceOrder &otherOrder);
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *sourceTerritory;
@@ -96,6 +97,8 @@ private:
     int numberOfArmiesToAdvance;
 
     bool validate() override;
+
+    bool kill(int probabilityToKill);
 };
 
 /**
@@ -104,15 +107,15 @@ private:
  */
 class BombOrder : public Order {
 public:
-    BombOrder();
+    explicit BombOrder(Player * player);
 
     BombOrder(const BombOrder &original);
 
-    BombOrder &operator=(const BombOrder &order);
+    BombOrder &operator=(const BombOrder &otherOrder);
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory* targetTerritory;
@@ -125,15 +128,15 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    BlockadeOrder();
+    explicit BlockadeOrder(Player * player);
 
     BlockadeOrder(const BlockadeOrder &original);
 
-    BlockadeOrder &operator=(const BlockadeOrder &order);
+    BlockadeOrder &operator=(const BlockadeOrder &otherOrder);
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *targetTerritory;
@@ -147,15 +150,15 @@ private:
  */
 class AirliftOrder : public Order {
 public:
-    AirliftOrder();
+    explicit AirliftOrder(Player * player);
 
     AirliftOrder(const AirliftOrder &original);
 
-    AirliftOrder &operator=(const AirliftOrder &order);
+    AirliftOrder &operator=(const AirliftOrder &otherOrder);
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Territory *sourceTerritory;
@@ -172,15 +175,15 @@ private:
  */
 class NegotiateOrder : public Order {
 public:
-    NegotiateOrder();
+    explicit NegotiateOrder(Player * player);
 
     NegotiateOrder(const NegotiateOrder &original);
 
-    NegotiateOrder &operator=(const NegotiateOrder &order);
+    NegotiateOrder &operator=(const NegotiateOrder &otherOrder);
 
     void execute() override;
 
-    void issue(Player* player) override;
+    void issue() override;
 
 private:
     Player* targetPlayer;

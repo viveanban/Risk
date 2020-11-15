@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Player.h"
+#include "../GameEngine/GameEngine.h"
 #include <algorithm>
 
 /**
@@ -7,8 +8,6 @@
  */
 
 Player *Player::neutralPlayer = new Player("Neutral Player");
-
-Player::Player() : playerName(), handOfCards(new Hand()), orders(new OrdersList()), territories() {}
 
 Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
                                     territories() {}
@@ -49,13 +48,22 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Address: " << &player << endl
                   << "Player Name: " << player.getPlayerName() << endl
                   << "Number of Territories Owned: " << player.getTerritories().size() << endl
-                  << "Size of Hand: " << player.getHandofCards()->getCards().size() << endl
+                  << "Size of Hand: " << player.getHandOfCards()->getCards().size() << endl
                   << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
+//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
 void Player::addTerritory(Territory *territory) {
     territories.push_back(territory);
+}
+
+//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
+void Player::removeTerritory(Territory *territory) {
+    auto position = find(territories.begin(), territories.end(), territory);
+    if(position != territories.end()){
+        territories.erase(position);
+    }
 }
 
 vector<Territory *> Player::toDefend() {
@@ -76,11 +84,10 @@ vector<Territory *> Player::toDefend(Territory* srcTerritory) {
 vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
-    //TODO: Find a way to access the territory list from the map
-//    for (Territory *territory: GameEngine::map.getTerritoryList()) {
-//        if(territory->getOwner() != this)
-//            territoriesToAttack.push_back(territory);
-//    }
+    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+        if(territory->getOwner() != this)
+            territoriesToAttack.push_back(territory);
+    }
 
     sortTerritoryList(territoriesToAttack);
 
@@ -123,7 +130,7 @@ bool Player::issueOrder() {
         }
 
         // Deploy order
-        (new DeployOrder())->issue(this);
+        (new DeployOrder(this))->issue();
 
         return true;
     } else { // Other orders
@@ -132,7 +139,7 @@ bool Player::issueOrder() {
         if (continueIssuingOrders) {
             bool advance = rand() % 2;
             if (advance) {
-                (new AdvanceOrder())->issue(this);
+                (new AdvanceOrder(this))->issue();
             } else {
 
                 // Pick a card

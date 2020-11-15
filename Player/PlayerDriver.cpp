@@ -9,7 +9,6 @@
 //}
 //
 //int main() {
-//
 //    cout << "--------Setting Up--------" << endl;
 //
 //    // Create Territories and their Adjacent Territories
@@ -81,8 +80,7 @@
 //    handP2->addCard(deck->draw());
 //
 //    cout << "\nCreating Player 1..\n" << endl;
-//    Player* p1 = new Player();
-//    p1->setPlayerName("Player 1");
+//    Player* p1 = new Player("Player 1");
 //    p1->setTerritories(territoriesOwnedP1);
 //    t1->setOwner(p1);
 //    t3->setOwner(p1);
@@ -90,8 +88,7 @@
 //    cout << *p1 << endl;
 //
 //    cout << "Creating Player 2..\n" << endl;
-//    Player* p2 = new Player();
-//    p2->setPlayerName("Player 2");
+//    Player* p2 = new Player("Player 2");
 //    p2->setTerritories(territoriesOwnedP2);
 //    t4->setOwner(p2);
 //    t5->setOwner(p2);
