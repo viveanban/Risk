@@ -53,10 +53,12 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
+//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
 void Player::addTerritory(Territory *territory) {
     territories.push_back(territory);
 }
 
+//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
 void Player::removeTerritory(Territory *territory) {
     auto position = find(territories.begin(), territories.end(), territory);
     if(position != territories.end()){
