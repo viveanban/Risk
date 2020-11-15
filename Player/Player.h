@@ -18,7 +18,7 @@ private:
     vector<Territory *> territories;
     OrdersList *orders;
     Hand *handOfCards;
-    vector<Player *> playersNotToAttack; // TODO: wipe clean after every turn
+    vector<Player *> playersNotToAttack;
 
     void sortTerritoryList(vector<Territory *> &territoryList);
 
