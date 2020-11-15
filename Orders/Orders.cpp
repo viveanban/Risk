@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "Orders.h"
 #include "./../Player/Player.h"
+#include "../GameEngine/GameEngine.h"
 
 // TODO: evertime you negotiate with territory, you cannot bomb them, attack them, etc.
 
@@ -135,6 +136,13 @@ bool AdvanceOrder::validate() {
         return false;
     }
 
+    bool canAttackTargetTerritory = find(player->getPlayersNotToAttack().begin(), player->getPlayersNotToAttack().end(), targetTerritory->getOwner()) == player->getPlayersNotToAttack().end();
+    if(!canAttackTargetTerritory) {
+        cout << "Advance order validation has failed:"
+             << "the target territory cannot be attacked because you negotiated with its owner " << targetTerritory->getOwner()->getPlayerName() << endl;
+        return false;
+    }
+
     cout << "Advance order validation is successful!" << endl;
     return true;
 }
@@ -178,25 +186,23 @@ void AdvanceOrder::execute() {
 
             int targetArmyUnitsLeft = targetTerritory->getUnitNbr() - numberOfTargetUnitsKilled;
 
-            //Source Territory has conquered the Target Territory
+            // Source Territory has conquered the Target Territory
             if (targetArmyUnitsLeft == 0) {
                 // Updating the army unit numbers for each territory
                 sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfArmiesToAdvance);
                 targetTerritory->setUnitNbr(numberOfArmiesToAdvance - numberOfSourceUnitsKilled);
 
-                //Transfer ownership
+                // Transfer ownership
                 targetTerritory->setOwner(player);
 
-                //TODO: Give new card to player (access deck)
-                //Card * drawnCard = GameEngine::deck->draw();
-                //player->getHandofCards()->addCard(drawnCard)
+                // Pick a card
+                Card* drawnCard = GameEngine::getInstance()->getDeck()->draw();
+                player->getHandOfCards()->addCard(drawnCard);
 
-                //TODO: Output effect
             } else { // Target is not conquered
                 // Updating the army unit numbers for each territory
                 sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfSourceUnitsKilled);
                 targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() - numberOfTargetUnitsKilled);
-                //TODO: Output effect
             }
         }
     }

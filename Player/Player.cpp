@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Player.h"
+#include "../GameEngine/GameEngine.h"
 #include <algorithm>
 
 /**
@@ -81,11 +82,10 @@ vector<Territory *> Player::toDefend(Territory* srcTerritory) {
 vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
-    //TODO: Find a way to access the territory list from the map
-//    for (Territory *territory: GameEngine::map.getTerritoryList()) {
-//        if(territory->getOwner() != this)
-//            territoriesToAttack.push_back(territory);
-//    }
+    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+        if(territory->getOwner() != this)
+            territoriesToAttack.push_back(territory);
+    }
 
     sortTerritoryList(territoriesToAttack);
 
