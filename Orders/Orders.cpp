@@ -3,6 +3,8 @@
 #include "Orders.h"
 #include "./../Player/Player.h"
 
+// TODO: evertime you negotiate with territory, you cannot bomb them, attack them, etc.
+
 using namespace std;
 
 // Superclass: Order ---------------------------------------------------------------------------------------------------
