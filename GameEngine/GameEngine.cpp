@@ -193,16 +193,19 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
     this->deck = deck;
     this->gameState = gameState;
     gameState->setPlayers(&players);
+}
 
 GameEngine::~GameEngine() {
     delete map;
     delete deck;
+    delete gameState;
 
     for (auto player: players) {
         delete player;
         player = nullptr;
     }
     players.clear();
+
 }
 
 // Startup phase logic
@@ -379,16 +382,10 @@ void GameEngine::removePlayersWithoutTerritoriesOwned() {
 }
 
 void GameEngine::updateGameState(Player *pPlayer, Phase phase) {
-
     gameState->setCurrentPhase(phase);
     gameState->setCurrentPlayer(pPlayer);
     gameState->setPlayers(&players);
     gameState->notify();
-}
-
-GameEngine::~GameEngine() {
-
-    delete gameState;
 }
 
 // Getters

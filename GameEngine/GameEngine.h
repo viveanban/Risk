@@ -149,9 +149,8 @@ public:
      */
     void mainGameLoop();
 
-    int calculateNumberOfArmiesToGive(Player *player);
-
     void updateGameState(Player *pPlayer, Phase phase);
+
     const vector<Player *> &getPlayers() const;
 
     void setPlayers(const vector<Player *> &players);

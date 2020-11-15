@@ -49,7 +49,7 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Address: " << &player << endl
                   << "Player Name: " << player.getPlayerName() << endl
                   << "Number of Territories Owned: " << player.getTerritories().size() << endl
-                  << "Size of Hand: " << player.getHandofCards()->getCards().size() << endl
+                  << "Size of Hand: " << player.getHandOfCards()->getCards().size() << endl
                   << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
@@ -142,7 +142,7 @@ bool Player::issueOrder() {
                 // Play card
                 Order *order = cardChosen->play();
                 if(order) {
-                    order->issue();
+                    order->issue(this);
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);
                 }

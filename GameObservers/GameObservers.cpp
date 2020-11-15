@@ -39,6 +39,8 @@ PhaseObserver::PhaseObserver(const PhaseObserver &original) {
 
 PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
 //TODO: implement operator
+    currentGameState = otherObserver.currentGameState;
+    return *this;
 }
 
 void PhaseObserver::update() {
@@ -267,7 +269,7 @@ void StatisticsObserver::update() {
     this->displayStatsUpdate();
 }
 
-StatisticsObserver::StatisticsObserver(GameState *currGameState) : currGameState(currGameState) {}
+StatisticsObserver::StatisticsObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
 StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {}
 
@@ -276,13 +278,14 @@ StatisticsObserver::~StatisticsObserver() {
 }
 
 StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
-    this->currGameState = otherObserver.currGameState;
+    currentGameState = otherObserver.currentGameState;
+    return *this;
 }
 
 void StatisticsObserver::displayStatsUpdate() {
     cout << '|' << "Player" << setw(3) << '|' << "Territorial Control" << setw(3) << '|' << endl;
     vector<float> playerDominationRatios{};
-    for (Player *player: *currGameState->getPlayers()) {
+    for (Player *player: *currentGameState->getPlayers()) {
         float playerDomination = calculateWorldDomination(player->getTerritories().size());
         playerDominationRatios.push_back(playerDomination);
         cout << '|' << player->getPlayerName() << setw(3) << '|'
@@ -290,14 +293,14 @@ void StatisticsObserver::displayStatsUpdate() {
     }
     for (int i = 0; i < playerDominationRatios.size(); i++) {
         if (playerDominationRatios[i] == 100.0) {
-            cout << "~ CONGRATULATIONS " << currGameState->getPlayers()->at(i)->getPlayerName()
+            cout << "~ CONGRATULATIONS " << currentGameState->getPlayers()->at(i)->getPlayerName()
                  << " YOU WON THE GAME! VICCCTORY ~" << endl;
         }
     }
 }
 
 float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
-    return (float) numberOfTerritories / (float) currGameState->getTotalTerritories();
+    return (float) numberOfTerritories / (float) currentGameState->getTotalTerritories();
 }
 
 
