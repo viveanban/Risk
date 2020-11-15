@@ -275,8 +275,15 @@ BombOrder &BombOrder::operator=(const BombOrder &otherOrder) {
 bool BombOrder::validate() {
     // If the target belongs to the player that issued the order, the order is invalid.
     if (targetTerritory->getOwner() == player) {
-        cout << "Bomb order validation has failed:"
+        cout << "Bomb order validation has failed: "
              << "the target territory belongs to the player that issued the order." << endl;
+        return false;
+    }
+    bool canAttackTargetTerritory = find(player->getPlayersNotToAttack().begin(), player->getPlayersNotToAttack().end(),
+                                         targetTerritory->getOwner()) == player->getPlayersNotToAttack().end();
+    if (!canAttackTargetTerritory) {
+        cout << "Bomb order validation has failed: "
+             << "the target territory belongs to a player that is in negotiation with the attacking player." << endl;
         return false;
     }
     cout << "Bomb order validation is successful!" << endl;
