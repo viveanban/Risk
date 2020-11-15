@@ -147,14 +147,27 @@ BombOrder::BombOrder(const BombOrder &original) : BombOrder() {}
 BombOrder &BombOrder::operator=(const BombOrder &order) { return *this; }
 
 bool BombOrder::validate() {
-    cout << "Validating bomb order." << endl;
+    // If the target belongs to the player that issued the order, the order is invalid.
+    if (targetTerritory->getOwner() == player) {
+        cout << "Bomb order validation has failed:"
+             << "the target territory belongs to the player that issued the order." << endl;
+        return false;
+    }
+    cout << "Bomb order validation is successful!" << endl;
     return true;
 
 }
 
 void BombOrder::execute() {
     if (validate()) {
+        // If the target belongs to an enemy player, half of the armies are removed from this territory.
+        targetTerritory->setUnitNbr((int) (targetTerritory->getUnitNbr() / 2));
+        //Output effect of the Bomb Order
         cout << "Executing bomb order." << endl;
+        cout << "KABOOM! A bomb was dropped on "
+             << targetTerritory->getTerritoryName() << endl;
+        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+             << " army units." << endl;
     }
 }
 
@@ -184,7 +197,13 @@ BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : BlockadeOrder() {}
 BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &order) { return *this; }
 
 bool BlockadeOrder::validate() {
-    cout << "Validating blockade order." << endl;
+    // If the target territory belongs to an enemy player, the order is declared invalid
+    if (targetTerritory->getOwner() != player) {
+        cout << "Blockade order validation has failed:"
+             << "the target territory does not belong to the player that issued the order." << endl;
+        return false;
+    }
+    cout << "Blockade order validation is successful!" << endl;
     return true;
 
 }
@@ -194,7 +213,16 @@ bool BlockadeOrder::validate() {
 // double the armi unit on the target territory
 void BlockadeOrder::execute() {
     if (validate()) {
+        // If the target territory belongs to the player issuing the order, the number of armies on the territory is
+        // doubled and the ownership of the territory is transferred to the Neutral player.
+        targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
+//        targetTerritory->setOwner(TODO: neutral player)
+        //Output effect of the Blockade Order
         cout << "Executing blockade order." << endl;
+        cout << "A blockade was set up on "
+             << targetTerritory->getTerritoryName() << endl;
+        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+             << " army units, and belongs to " << targetTerritory->getOwner()->getPlayerName() << endl;
     }
 }
 
