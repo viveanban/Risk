@@ -149,7 +149,7 @@ bool Player::issueOrder() {
                 // Play card
                 Order *order = cardChosen->play();
                 if(order) {
-                    order->issue(this);
+                    order->issue();
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);
                 }
