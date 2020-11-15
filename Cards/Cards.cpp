@@ -1,5 +1,4 @@
 #include "Cards.h"
-#include "../GameEngine/GameEngine.h"
 #include <vector>
 #include <iostream>
 #include <ctime>
@@ -27,31 +26,30 @@ ostream &operator<<(ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
-// TODO: add default cstor for Orders
 Order *Card::play() {
     Order *order;
-//    switch (type) {
-//        case CardType::bomb:
-//            order = new BombOrder();
-//            cout << "played bomb " << endl;
-//            break;
-//        case CardType::reinforcement:
-//            order = nullptr;
-//            cout << "played reinforcement " << endl;
-//            break;
-//        case CardType::blockade:
-//            order = new BlockadeOrder();
-//            cout << "played blockade " << endl;
-//            break;
-//        case CardType::airlift:
-//            order = new AirliftOrder();
-//            cout << "played airlift " << endl;
-//            break;
-//        case CardType::diplomacy:
-//            order = new NegotiateOrder();
-//            cout << "played diplomacy " << endl;
-//            break;
-//    }
+    switch (type) {
+        case CardType::bomb:
+            order = new BombOrder();
+            cout << "played bomb " << endl;
+            break;
+        case CardType::reinforcement:
+            order = nullptr;
+            cout << "played reinforcement " << endl;
+            break;
+        case CardType::blockade:
+            order = new BlockadeOrder();
+            cout << "played blockade " << endl;
+            break;
+        case CardType::airlift:
+            order = new AirliftOrder();
+            cout << "played airlift " << endl;
+            break;
+        case CardType::diplomacy:
+            order = new NegotiateOrder();
+            cout << "played diplomacy " << endl;
+            break;
+    }
     return order;
 }
 
@@ -187,8 +185,8 @@ void Hand::addCard(Card *card) {
 bool Hand::removeCard(Card* card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
-        GameEngine::getInstance()->getDeck()->addCard(card);
         cards.erase(position);
+        // TODO: put back to singleton Deck
         return true;
     }
     cout << "Error removing card from hand." << endl;

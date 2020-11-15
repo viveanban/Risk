@@ -42,7 +42,7 @@ public:
 
     int getNumPlayer() const;
 
-    void initializeGame();
+    void gameStart();
 
     void setupPlayers();
 
@@ -53,37 +53,37 @@ public:
     static int validateNumberPlayerInput(int numPlayerTmp);
 };
 
-/**
- * The GameEngine class is a Singleton and it represents the entire game
- */
 class GameEngine {
 private:
     vector<Player *> players;
     Map *map;
     Deck *deck;
 
-    GameEngine();
+    void randomlySetOrder();
 
+    void assignCountriesToPlayers();
+
+    void assignArmiesToPlayers();
     /**
-     * The reinforcementPhase determines how many armies to give to a player
-     */
+ * The reinforcementPhase method determines how many armies to give to a player
+ * @param player: a pointer to a Player object
+ * @return void.
+ */
     void reinforcementPhase();
 
     /**
-     * The issueOrdersPhase allows players to issue their orders in a round-robin fashion
+     * The issueOrdersPhase method ____________
+     * @param
+     * @return
      */
     void issueOrdersPhase();
 
     /**
-     * The executeOrdersPhase executes each player's orders in a round-robin fashion
+     * The executeOrdersPhase method _______________
+     * @param
+     * @return
      */
     void executeOrdersPhase();
-
-    void randomlySetOrder();
-
-    void assignTerritoriesToPlayers();
-
-    void assignArmiesToPlayers();
 
     bool winnerExists();
 
@@ -91,39 +91,18 @@ private:
 
     int getBonus(Player *player);
 
-    int calculateNumberOfArmiesToGive(Player *player);
-
-    int getInitialArmyNumber();
-
 public:
-    static GameEngine* gameEngine;
-
-    GameEngine(GameEngine &other) = delete;
-
-    void operator=(const GameEngine &) = delete;
-
-    static GameEngine* getInstance();
+    GameEngine(vector<Player *> players, Map *map, Deck *deck);
 
     ~GameEngine();
 
     void startupPhase();
 
-    /**
-     * The mainGameLoop plays the game by going through the reinforcement phase, the issuing order phase and the executing order phase until there is a winner.
-     */
+    int getInitialArmyNumber();
+
     void mainGameLoop();
 
-    const vector<Player *> &getPlayers() const;
-
-    void setPlayers(const vector<Player *> &players);
-
-    Map *getMap() const;
-
-    void setMap(Map *map);
-
-    Deck *getDeck() const;
-
-    void setDeck(Deck *deck);
+    int calculateNumberOfArmiesToGive(Player *player);
 };
 
 #endif //RISK_GAMEENGINE_H
