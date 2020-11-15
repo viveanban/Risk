@@ -62,7 +62,7 @@ public:
     int getNumPlayer() const;
 
     // responsible for initialization of the game
-    void gameStart();
+    void initializeGame();
 
     // responsible to initialize the set of players
     void setupPlayers();
@@ -87,6 +87,9 @@ public:
     static int validateNumberPlayerInput(int numPlayerTmp);
 };
 
+/**
+ * The GameEngine class is a Singleton and it represents the entire game
+ */
 class GameEngine {
 private:
     vector<Player *> players;
@@ -94,31 +97,28 @@ private:
     Deck *deck;
     GameState *gameState;
 
-    void randomlySetOrder();
+    GameEngine();
 
-    void assignCountriesToPlayers();
-
-    void assignArmiesToPlayers();
     /**
- * The reinforcementPhase method determines how many armies to give to a player
- * @param player: a pointer to a Player object
- * @return void.
- */
+     * The reinforcementPhase determines how many armies to give to a player
+     */
     void reinforcementPhase();
 
     /**
-     * The issueOrdersPhase method ____________
-     * @param
-     * @return
+     * The issueOrdersPhase allows players to issue their orders in a round-robin fashion
      */
     void issueOrdersPhase();
 
     /**
-     * The executeOrdersPhase method _______________
-     * @param
-     * @return
+     * The executeOrdersPhase executes each player's orders in a round-robin fashion
      */
     void executeOrdersPhase();
+
+    void randomlySetOrder();
+
+    void assignTerritoriesToPlayers();
+
+    void assignArmiesToPlayers();
 
     bool winnerExists();
 
@@ -126,20 +126,43 @@ private:
 
     int getBonus(Player *player);
 
+    int calculateNumberOfArmiesToGive(Player *player);
+
+    int getInitialArmyNumber();
+
 public:
     GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState);
+    static GameEngine* gameEngine;
+
+    GameEngine(GameEngine &other) = delete;
+
+    void operator=(const GameEngine &) = delete;
+
+    static GameEngine* getInstance();
 
     ~GameEngine();
 
     void startupPhase();
 
-    int getInitialArmyNumber();
-
+    /**
+     * The mainGameLoop plays the game by going through the reinforcement phase, the issuing order phase and the executing order phase until there is a winner.
+     */
     void mainGameLoop();
 
     int calculateNumberOfArmiesToGive(Player *player);
 
     void updateGameState(Player *pPlayer, Phase phase);
+    const vector<Player *> &getPlayers() const;
+
+    void setPlayers(const vector<Player *> &players);
+
+    Map *getMap() const;
+
+    void setMap(Map *map);
+
+    Deck *getDeck() const;
+
+    void setDeck(Deck *deck);
 };
 
 #endif //RISK_GAMEENGINE_H
