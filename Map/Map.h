@@ -51,7 +51,7 @@ public:
     // Setters
     void setTerritoryName(string territoryName);
 
-    void setOwner(Player *owner);
+    void setOwner(Player *newOwner);
 
     void setTerritoryId(int territoryId);
 
