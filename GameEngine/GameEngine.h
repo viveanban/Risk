@@ -16,6 +16,12 @@ private:
     bool phaseObserver = false;
     bool statisticsObserver = false;
     GameState *gameState;
+public:
+    GameState *getGameState() const;
+
+    void setGameState(GameState *gameState);
+
+private:
     int numPlayer;
     /**
      * SelectMap is responsible for displaying available maps from the ./maps folder
@@ -96,6 +102,12 @@ private:
     Map *map;
     Deck *deck;
     GameState *gameState;
+public:
+    GameState *getGameState() const;
+
+    void setGameState(GameState *gameState);
+
+private:
 
     GameEngine();
 

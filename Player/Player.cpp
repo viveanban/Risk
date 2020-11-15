@@ -63,7 +63,7 @@ vector<Territory *> Player::toDefend() {
     return territories;
 }
 
-vector<Territory *> Player::toDefend(Territory* srcTerritory) {
+vector<Territory *> Player::toDefend(Territory *srcTerritory) {
     vector<Territory *> territoriesToDefend;
     for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
         if (adjacentTerritory->getOwner() == this)
@@ -87,11 +87,11 @@ vector<Territory *> Player::toAttack() {
     return territoriesToAttack;
 }
 
-vector<Territory *> Player::toAttack(Territory* srcTerritory) {
+vector<Territory *> Player::toAttack(Territory *srcTerritory) {
     vector<Territory *> territoriesToAttack;
 
     for (Territory *territory: srcTerritory->getAdjList()) {
-        if(territory->getOwner() != this)
+        if (territory->getOwner() != this)
             territoriesToAttack.push_back(territory);
     }
 
@@ -100,7 +100,7 @@ vector<Territory *> Player::toAttack(Territory* srcTerritory) {
     return territoriesToAttack;
 }
 
-void Player::sortTerritoryList(vector<Territory*> &territoryList) {
+void Player::sortTerritoryList(vector<Territory *> &territoryList) {
     sort(territoryList.begin(), territoryList.end(), [](Territory *lhs, Territory *rhs) {
         return lhs->getPriority() < rhs->getPriority();
     });
@@ -117,6 +117,8 @@ bool Player::issueOrder() {
                 if (playReinforcementCard) {
                     numberOfArmies += numberOfArmies + 5;
                     handOfCards->removeCard(card);
+                    cout << getPlayerName() << " played a reinforcement card and got +5 armies added to his army pool"
+                         << endl;
                 }
                 break;
             }
@@ -134,14 +136,13 @@ bool Player::issueOrder() {
             if (advance) {
                 (new AdvanceOrder())->issue(this);
             } else {
-
                 // Pick a card
                 Card *cardChosen = handOfCards->getNextCard();
                 if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
 
                 // Play card
                 Order *order = cardChosen->play();
-                if(order) {
+                if (order) {
                     order->issue(this);
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);

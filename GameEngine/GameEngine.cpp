@@ -166,6 +166,14 @@ GameInitialization::GameInitialization() {
     gameState = new GameState(map->getTerritoryList().size(), &players, nullptr, reinforcement, "");
 }
 
+GameState *GameInitialization::getGameState() const {
+    return gameState;
+}
+
+void GameInitialization::setGameState(GameState *gameState) {
+    GameInitialization::gameState = gameState;
+}
+
 //GAME STARTUP PHASE
 // ---------GAME ENGINE---------------
 GameEngine *GameEngine::gameEngine = nullptr;
@@ -316,7 +324,9 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                gameState->updateGameState(player, issuing_orders);
+                else {
+                    gameState->updateGameState(player, issuing_orders);
+                }
             }
         }
     }
@@ -333,10 +343,10 @@ void GameEngine::executeOrdersPhase() {
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
-            gameState->updateGameState(player, orders_execution);
             if (!orderList.empty()) {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
+                    gameState->updateGameState(player, orders_execution);
                     deployOrder->execute();
                     player->getOrders()->remove(deployOrder);
                 } else {
@@ -352,6 +362,7 @@ void GameEngine::executeOrdersPhase() {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
+                gameState->updateGameState(player, orders_execution);
                 orderList[0]->execute();
                 player->getOrders()->remove(orderList[0]);
             } else {
@@ -402,4 +413,12 @@ void GameEngine::setMap(Map *map) {
 
 void GameEngine::setDeck(Deck *deck) {
     GameEngine::deck = deck;
+}
+
+GameState *GameEngine::getGameState() const {
+    return gameState;
+}
+
+void GameEngine::setGameState(GameState *gameState) {
+    GameEngine::gameState = gameState;
 }
