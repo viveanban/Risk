@@ -25,8 +25,6 @@ private:
 public:
     static Player *neutralPlayer;
 
-    Player();
-
     Player(string playerName);
 
     ~Player();
@@ -38,6 +36,8 @@ public:
     friend std::ostream &operator<<(std::ostream &stream, Player &player);
 
     void addTerritory(Territory *territory);
+
+    void removeTerritory(Territory *territory);
 
     // Getters
     string getPlayerName();
@@ -102,7 +102,6 @@ public:
     * @return false when player is done issuing order
     */
     bool issueOrder();
-
 };
 
 #endif //RISK_PLAYER_H

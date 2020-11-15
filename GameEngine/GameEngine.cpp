@@ -245,7 +245,7 @@ void GameEngine::assignTerritoriesToPlayers() {
         // Remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // Assign using Round Robin Method
-        players.at(territoriesAssigned % players.size())->addTerritory(territory);
+        territory->setOwner(players.at(territoriesAssigned % players.size()));
         cout << "assigning territory " << territory->getTerritoryName() << " to "
              << players.at(territoriesAssigned % players.size()) << endl;
         territoriesAssigned++;
@@ -257,7 +257,7 @@ void GameEngine::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
     for (auto p : players) {
         p->setNumberOfArmies(nmbArmy);
-        cout << "Player " << p << "got assigned A = " << p->getNumberofArmies() << endl;
+        cout << p->getPlayerName() << " got assigned A = " << p->getNumberofArmies() << endl;
     }
 }
 
@@ -290,7 +290,8 @@ void GameEngine::mainGameLoop() {
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        player->setNumberOfArmies(numberOfArmiesToGive);
+        //TODO: is the armies in the reinformcement pool incremented each turn or is it calculated from scratch?
+        player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
         gameState->updateGameState(player, reinforcement);
     }
 }
