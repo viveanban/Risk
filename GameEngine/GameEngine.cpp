@@ -169,7 +169,7 @@ GameInitialization::GameInitialization() {
 
 //GAME STARTUP PHASE
 
-GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState* gameState) {
+GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState) {
     this->players = players;
     this->map = map;
     this->deck = deck;
@@ -252,9 +252,9 @@ void GameEngine::mainGameLoop() {
 
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
-        updateGameState(player, reinforcement);
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
         player->setNumberOfArmies(numberOfArmiesToGive);
+        gameState->updateGameState(player, reinforcement);
     }
 }
 
@@ -287,7 +287,7 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                updateGameState(player, issuing_orders);
+                gameState->updateGameState(player, issuing_orders);
             }
         }
     }
@@ -304,7 +304,7 @@ void GameEngine::executeOrdersPhase() {
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
-            updateGameState(player, orders_execution);
+            gameState->updateGameState(player, orders_execution);
             if (!orderList.empty()) {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
@@ -349,15 +349,6 @@ void GameEngine::removePlayersWithoutTerritoriesOwned() {
     }
 }
 
-void GameEngine::updateGameState(Player *pPlayer, Phase phase) {
-
-    gameState->setCurrentPhase(phase);
-    gameState->setCurrentPlayer(pPlayer);
-    gameState->setPlayers(&players);
-    gameState->notify();
-}
-
 GameEngine::~GameEngine() {
-
     delete gameState;
 }

@@ -111,15 +111,15 @@ void PhaseObserver::printOrderInfo(Order *order) {
 void PhaseObserver::printBombOrder(BombOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a Bomb order by playing a Bomb card on "
+            cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                 << " issued a Bomb order by playing a Bomb card on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
             break;
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed a Bomb order on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
             cout << pOrder->getTargetTerritory()->getTerritoryName() << " now has "
-                 << pOrder->getTargetTerritory()->getUnitNbr() << " unit number and is owned by "
-                 << pOrder->getTargetTerritory()->getOwner()->getPlayerName() << endl;
+                 << pOrder->getTargetTerritory()->getUnitNbr() << " unit number." << endl;
             break;
         default:
             break;
@@ -166,7 +166,8 @@ void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
 void PhaseObserver::printBlockadeOrder(BlockadeOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a blockade order by using a blockade card on "
+            cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                 << " issued a blockade order by using a blockade card on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
 
             break;
@@ -185,7 +186,8 @@ void PhaseObserver::printBlockadeOrder(BlockadeOrder *pOrder) {
 void PhaseObserver::printAirliftOrder(AirliftOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an Airlift order by using an Airlift card from "
+            cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                 << " issued an Airlift order by using an Airlift card from "
                  << pOrder->getSourceTerritory()->getTerritoryName() << " to "
                  << pOrder->getTargetTerritory()->getTerritoryName() << " with " << pOrder->getNumberOfArmiesToAirlift()
                  << " armies." << endl;
@@ -258,8 +260,10 @@ void GameState::setCurrentPhase(Phase currentPhase) {
     GameState::currentPhase = currentPhase;
 }
 
-void GameState::setPhaseInfo(const string &phaseInfo) {
-    GameState::phaseInfo = phaseInfo;
+void GameState::updateGameState(Player *player, Phase phase) {
+    setCurrentPhase(phase);
+    setCurrentPlayer(player);
+    notify();
 }
 
 //STATISTICS OBSERVER

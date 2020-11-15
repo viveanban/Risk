@@ -138,8 +138,6 @@ public:
     void mainGameLoop();
 
     int calculateNumberOfArmiesToGive(Player *player);
-
-    void updateGameState(Player *pPlayer, Phase phase);
 };
 
 #endif //RISK_GAMEENGINE_H

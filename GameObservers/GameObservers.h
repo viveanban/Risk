@@ -35,13 +35,13 @@ private:
     Player *currentPlayer;
     Phase currentPhase;
 public:
+    void updateGameState(Player *player, Phase phase);
+
     void setPlayers(vector<Player *> *players);
 
     void setCurrentPlayer(Player *currentPlayer);
 
     void setCurrentPhase(Phase currentPhase);
-
-    void setPhaseInfo(const string &phaseInfo);
 
 private:
     string phaseInfo;
