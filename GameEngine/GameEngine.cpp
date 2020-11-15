@@ -13,12 +13,11 @@
 
 using namespace std;
 
-//GAME INITIALIZATION PHASE
-void GameInitialization::gameStart() {
+// ---------GAME INITIALIZATION---------------
+void GameInitialization::initializeGame() {
     selectMap();
     selectPlayerNumber();
     setupObservers();
-
     setupPlayers();
     this->deck = new Deck(50);
 }
@@ -43,7 +42,7 @@ void GameInitialization::selectMap() {
         }
 //        TODO:  do you think we could pass the input file as a parameter directly instead of passing a string?
 //         The inputFile is opened successfully when we get to the loadMap method but because we pass a string as parameter,
-//         another file is opened in the scope of the loadMap ...
+//         another file is opened in the scope of the loadMap
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (!map->validate());
     inputFile.close();
@@ -161,17 +160,39 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-//GAME STARTUP PHASE
+// ---------GAME ENGINE---------------
+GameEngine* GameEngine::gameEngine = nullptr;
 
-GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck) {
-    this->players = players;
-    this->map = map;
-    this->deck = deck;
+GameEngine::GameEngine() : players(), map(nullptr), deck(nullptr) {}
+
+GameEngine *GameEngine::getInstance()
+{
+    if(gameEngine == nullptr) {
+        gameEngine = new GameEngine();
+        GameInitialization gameInitialization;
+        gameInitialization.initializeGame();
+        gameEngine->deck = gameInitialization.getDeck();
+        gameEngine->map = gameInitialization.getMap();
+        gameEngine->players = gameInitialization.getPlayers();
+    }
+    return gameEngine;
 }
 
+GameEngine::~GameEngine() {
+    delete map;
+    delete deck;
+
+    for (auto player: players) {
+        delete player;
+        player = nullptr;
+    }
+    players.clear();
+}
+
+// Startup phase logic
 void GameEngine::startupPhase() {
     randomlySetOrder();
-    assignCountriesToPlayers();
+    assignTerritoriesToPlayers();
     assignArmiesToPlayers();
 }
 
@@ -181,7 +202,7 @@ void GameEngine::randomlySetOrder() {
     for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 
-//  Randomize (shuffle) the order of the players.
+    // Randomize (shuffle) the order of the players
     shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
@@ -189,18 +210,18 @@ void GameEngine::randomlySetOrder() {
         std::cout << ' ' << it->getPlayerName();
 }
 
-void GameEngine::assignCountriesToPlayers() {
+void GameEngine::assignTerritoriesToPlayers() {
     int territoriesAssigned = 0;
     vector<Territory *> territoriesAvailable = map->getTerritoryList();
 
     while (!territoriesAvailable.empty()) {
-        // pick a random territory
+        // Pick a random territory
         int randomIndex = rand() % territoriesAvailable.size();
         Territory *territory = territoriesAvailable.at(randomIndex);
-        // remove it from available territories
+        // Remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
-        // assign using Round Robin Method
-        players.at(territoriesAssigned % players.size())->addTerritory(territory);
+        // Assign using Round Robin Method
+        territory->setOwner(players.at(territoriesAssigned % players.size()));
         cout << "assigning territory " << territory->getTerritoryName() << " to "
              << players.at(territoriesAssigned % players.size()) << endl;
         territoriesAssigned++;
@@ -212,7 +233,7 @@ void GameEngine::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
     for (auto p : players) {
         p->setNumberOfArmies(nmbArmy);
-        cout << "Player " << p << "got assigned A = " << p->getNumberofArmies() << endl;
+        cout << p->getPlayerName() << " got assigned A = " << p->getNumberofArmies() << endl;
     }
 }
 
@@ -230,6 +251,7 @@ int GameEngine::getInitialArmyNumber() {
     };
 }
 
+// Main game loop logic
 void GameEngine::mainGameLoop() {
     while (!winnerExists()) {
         reinforcementPhase();
@@ -244,7 +266,8 @@ void GameEngine::mainGameLoop() {
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        player->setNumberOfArmies(numberOfArmiesToGive);
+        //TODO: is the armies in the reinformcement pool incremented each turn or is it calculated from scratch?
+        player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
     }
 }
 
@@ -335,4 +358,30 @@ void GameEngine::removePlayersWithoutTerritoriesOwned() {
             }
         }
     }
+}
+
+// Getters
+const vector<Player *> &GameEngine::getPlayers() const {
+    return players;
+}
+
+Map *GameEngine::getMap() const {
+    return map;
+}
+
+Deck *GameEngine::getDeck() const {
+    return deck;
+}
+
+// Setters
+void GameEngine::setPlayers(const vector<Player *> &players) {
+    GameEngine::players = players;
+}
+
+void GameEngine::setMap(Map *map) {
+    GameEngine::map = map;
+}
+
+void GameEngine::setDeck(Deck *deck) {
+    GameEngine::deck = deck;
 }

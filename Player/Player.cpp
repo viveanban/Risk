@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Player.h"
+#include "../GameEngine/GameEngine.h"
 #include <algorithm>
 
 /**
@@ -52,10 +53,12 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
+//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
 void Player::addTerritory(Territory *territory) {
     territories.push_back(territory);
 }
 
+//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
 void Player::removeTerritory(Territory *territory) {
     auto position = find(territories.begin(), territories.end(), territory);
     if(position != territories.end()){
@@ -81,11 +84,10 @@ vector<Territory *> Player::toDefend(Territory* srcTerritory) {
 vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
-    //TODO: Find a way to access the territory list from the map
-//    for (Territory *territory: GameEngine::map.getTerritoryList()) {
-//        if(territory->getOwner() != this)
-//            territoriesToAttack.push_back(territory);
-//    }
+    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+        if(territory->getOwner() != this)
+            territoriesToAttack.push_back(territory);
+    }
 
     sortTerritoryList(territoriesToAttack);
 
@@ -147,7 +149,7 @@ bool Player::issueOrder() {
                 // Play card
                 Order *order = cardChosen->play();
                 if(order) {
-                    order->issue(this);
+                    order->issue();
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);
                 }
