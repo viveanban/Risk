@@ -11,15 +11,7 @@ const string MAP_DIRECTORY = "../maps/";
 int main() {
     srand(time(0));
 
-    GameInitialization gameInitialization;
-    gameInitialization.gameStart();
-
     GameEngine* gameEngine = GameEngine::getInstance();
-    // TODO: abstract setters into a method
-    gameEngine->setDeck(gameInitialization.getDeck());
-    gameEngine->setMap(gameInitialization.getMap());
-    gameEngine->setPlayers(gameInitialization.getPlayers());
-
     gameEngine->startupPhase();
     gameEngine->mainGameLoop();
 

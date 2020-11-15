@@ -14,11 +14,10 @@
 using namespace std;
 
 // ---------GAME INITIALIZATION---------------
-void GameInitialization::gameStart() {
+void GameInitialization::initializeGame() {
     selectMap();
     selectPlayerNumber();
     setupObservers();
-
     setupPlayers();
     this->deck = new Deck(50);
 }
@@ -170,6 +169,11 @@ GameEngine *GameEngine::getInstance()
 {
     if(gameEngine == nullptr) {
         gameEngine = new GameEngine();
+        GameInitialization gameInitialization;
+        gameInitialization.initializeGame();
+        gameEngine->deck = gameInitialization.getDeck();
+        gameEngine->map = gameInitialization.getMap();
+        gameEngine->players = gameInitialization.getPlayers();
     }
     return gameEngine;
 }
@@ -188,7 +192,7 @@ GameEngine::~GameEngine() {
 // Startup phase logic
 void GameEngine::startupPhase() {
     randomlySetOrder();
-    assignCountriesToPlayers();
+    assignTerritoriesToPlayers();
     assignArmiesToPlayers();
 }
 
@@ -206,7 +210,7 @@ void GameEngine::randomlySetOrder() {
         std::cout << ' ' << it->getPlayerName();
 }
 
-void GameEngine::assignCountriesToPlayers() {
+void GameEngine::assignTerritoriesToPlayers() {
     int territoriesAssigned = 0;
     vector<Territory *> territoriesAvailable = map->getTerritoryList();
 

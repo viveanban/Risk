@@ -42,7 +42,7 @@ public:
 
     int getNumPlayer() const;
 
-    void gameStart(); // TODO: rename
+    void initializeGame();
 
     void setupPlayers();
 
@@ -81,7 +81,7 @@ private:
 
     void randomlySetOrder();
 
-    void assignCountriesToPlayers();
+    void assignTerritoriesToPlayers();
 
     void assignArmiesToPlayers();
 
