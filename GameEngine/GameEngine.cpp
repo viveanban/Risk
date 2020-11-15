@@ -41,9 +41,7 @@ void GameInitialization::selectMap() {
             cout << "Please pick another map now: " << endl;
             chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
-//        TODO:  do you think we could pass the input file as a parameter directly instead of passing a string?
-//         The inputFile is opened successfully when we get to the loadMap method but because we pass a string as parameter,
-//         another file is opened in the scope of the loadMap
+        //TODO: Pass the input file as a parameter directly instead of passing a string
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (map == NULL or !map->validate());
     inputFile.close();
@@ -170,13 +168,12 @@ GameInitialization::GameInitialization() {
 
 //GAME STARTUP PHASE
 // ---------GAME ENGINE---------------
-GameEngine* GameEngine::gameEngine = nullptr;
+GameEngine *GameEngine::gameEngine = nullptr;
 
 GameEngine::GameEngine() : players(), map(nullptr), deck(nullptr) {}
 
-GameEngine *GameEngine::getInstance()
-{
-    if(gameEngine == nullptr) {
+GameEngine *GameEngine::getInstance() {
+    if (gameEngine == nullptr) {
         gameEngine = new GameEngine();
         GameInitialization gameInitialization;
         gameInitialization.initializeGame();
@@ -187,7 +184,7 @@ GameEngine *GameEngine::getInstance()
     return gameEngine;
 }
 
-GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState* gameState) {
+GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState) {
     this->players = players;
     this->map = map;
     this->deck = deck;
@@ -284,9 +281,9 @@ void GameEngine::mainGameLoop() {
 
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
-        updateGameState(player, reinforcement);
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
         player->setNumberOfArmies(numberOfArmiesToGive);
+        gameState->updateGameState(player, reinforcement);
     }
 }
 
@@ -319,7 +316,7 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                updateGameState(player, issuing_orders);
+                gameState->updateGameState(player, issuing_orders);
             }
         }
     }
@@ -336,7 +333,7 @@ void GameEngine::executeOrdersPhase() {
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
-            updateGameState(player, orders_execution);
+            gameState->updateGameState(player, orders_execution);
             if (!orderList.empty()) {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
@@ -379,13 +376,6 @@ void GameEngine::removePlayersWithoutTerritoriesOwned() {
             }
         }
     }
-}
-
-void GameEngine::updateGameState(Player *pPlayer, Phase phase) {
-    gameState->setCurrentPhase(phase);
-    gameState->setCurrentPlayer(pPlayer);
-    gameState->setPlayers(&players);
-    gameState->notify();
 }
 
 // Getters
