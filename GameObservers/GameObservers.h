@@ -67,7 +67,7 @@ public:
     virtual void update() = 0;
 };
 
-class StatisticsObserver : Observer {
+class StatisticsObserver : public Observer {
 public:
     explicit StatisticsObserver(GameState *currGameState);
 
@@ -80,14 +80,14 @@ public:
     void update() override;
 
 private:
-    GameState *currGameState;
+    GameState *currentGameState;
 
     void displayStatsUpdate();
 
     float calculateWorldDomination(int numberOfTerritories);
 };
 
-class PhaseObserver : Observer {
+class PhaseObserver : public Observer {
 public:
     explicit PhaseObserver(GameState *currGameState);
 
