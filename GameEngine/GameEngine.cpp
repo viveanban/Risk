@@ -202,12 +202,16 @@ void GameEngine::randomlySetOrder() {
     for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 
+    cout << endl;
+
     // Randomize (shuffle) the order of the players
     shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
     for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
+
+    cout << endl;
 }
 
 void GameEngine::assignTerritoriesToPlayers() {
@@ -222,8 +226,8 @@ void GameEngine::assignTerritoriesToPlayers() {
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // Assign using Round Robin Method
         territory->setOwner(players.at(territoriesAssigned % players.size()));
-        cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << players.at(territoriesAssigned % players.size()) << endl;
+        cout << "Assigning territory " << territory->getTerritoryName() << " to "
+             << players.at(territoriesAssigned % players.size())->getPlayerName() << endl;
         territoriesAssigned++;
     }
     cout << "All territories Assigned." << endl;

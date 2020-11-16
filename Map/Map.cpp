@@ -91,7 +91,12 @@ void Territory::setOwner(Player *newOwner) {
         this->owner->removeTerritory(this);
 
     this->owner = newOwner;
-    newOwner->addTerritory(this);
+
+    auto position = find(owner->getTerritories().begin(), owner->getTerritories().end(), this);
+    if(position == owner->getTerritories().end()){ // If the territory is not already owned by the player
+        // Only add the territory if it wasn't already added (i.e method Territory::setOwner called from Player::addTerritory)
+        newOwner->addTerritory(this);
+    }
 }
 
 vector<Territory *> &Territory::getAdjList() {
