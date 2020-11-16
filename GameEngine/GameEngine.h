@@ -51,6 +51,15 @@ public:
 
     GameState *getGameState() const;
 
+    ~GameInitialization();
+
+    GameInitialization(GameInitialization &original);
+
+    GameInitialization &operator=(const GameInitialization &otherGameInitialization);
+
+    friend std::ostream &operator<<(std::ostream &stream, GameInitialization &gameInitialization);
+
+
     Map *getMap() const;
 
     Deck *getDeck() const;

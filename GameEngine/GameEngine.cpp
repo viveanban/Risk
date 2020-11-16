@@ -168,7 +168,7 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-GameInitialization::GameInitialization(): map(nullptr), deck(nullptr), numPlayer(0) {
+GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0) {
     gameState = new GameState(0, nullptr, nullptr, reinforcement);
 }
 
@@ -178,6 +178,50 @@ GameState *GameInitialization::getGameState() const {
 
 void GameInitialization::setGameState(GameState *gameState) {
     GameInitialization::gameState = gameState;
+}
+
+GameInitialization::~GameInitialization() {
+    delete map;
+    delete deck;
+    delete gameState;
+
+    for (auto player: players) {
+        delete player;
+        player = nullptr;
+    }
+    map = nullptr;
+    deck = nullptr;
+    gameState = nullptr;
+}
+
+GameInitialization &GameInitialization::operator=(const GameInitialization &otherGameInitialization) {
+    map = otherGameInitialization.getMap();
+    players = otherGameInitialization.getPlayers();
+    deck = otherGameInitialization.getDeck();
+    gameState = otherGameInitialization.getGameState();
+    phaseObserver = otherGameInitialization.isPhaseObserver();
+    statisticsObserver = otherGameInitialization.isStatisticsObserver();
+    numPlayer = otherGameInitialization.getNumPlayer();
+    return *this;
+}
+
+GameInitialization::GameInitialization(GameInitialization &original) {
+    map = original.getMap();
+    players = original.getPlayers();
+    deck = original.getDeck();
+    gameState = original.getGameState();
+    phaseObserver = original.isPhaseObserver();
+    statisticsObserver = original.isStatisticsObserver();
+    numPlayer = original.getNumPlayer();
+}
+
+std::ostream &operator<<(ostream &stream, GameInitialization &gameInitialization) {
+    return stream << "Information on GameInitialization object:" << endl
+                  << "map: " << gameInitialization.map << endl
+                  << "Number of players: " << gameInitialization.players.size() << endl
+                  << "Statistic Observer on: " << boolalpha << gameInitialization.isStatisticsObserver() << endl
+                  << "Phase Observer on: " << boolalpha << gameInitialization.isPhaseObserver() << endl
+                  << "Deck: " << gameInitialization.getDeck() << endl
 }
 
 //GAME STARTUP PHASE
@@ -207,14 +251,6 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
 }
 
 GameEngine::~GameEngine() {
-    delete map;
-    delete deck;
-    delete gameState;
-
-    for (auto player: players) {
-        delete player;
-        player = nullptr;
-    }
     players.clear();
 
 }
