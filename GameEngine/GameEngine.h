@@ -102,6 +102,12 @@ private:
     Map *map;
     Deck *deck;
     GameState *gameState;
+    bool phaseObserverActive;
+public:
+    bool isPhaseObserverActive() const;
+
+    void setPhaseObserverActive(bool phaseObserverActive);
+
 public:
     GameState *getGameState() const;
 
@@ -174,6 +180,8 @@ public:
     Deck *getDeck() const;
 
     void setDeck(Deck *deck);
+
+    void resetDiplomacy();
 };
 
 #endif //RISK_GAMEENGINE_H

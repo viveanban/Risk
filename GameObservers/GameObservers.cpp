@@ -133,12 +133,15 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
         case issuing_orders:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an advance order from "
                  << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
-                 << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies" << endl;
+                 << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             break;
         case orders_execution:
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed an advance order from"
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed an advance order from "
                  << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
-                 << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies" << endl;
+                 << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
+            cout << pOrder->getTargetTerritory()->getTerritoryName() << " is now owned by " <<
+                 pOrder->getTargetTerritory()->getOwner()->getPlayerName() << " and has "
+                 << pOrder->getTargetTerritory()->getUnitNbr() << " armies in it." << endl;
             break;
         default:
             break;
@@ -148,17 +151,16 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
 void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of"
-                 << pOrder->getNumberOfArmiesToDeploy() << " armies targeting "
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of "
+                 << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
             break;
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of"
-                 << pOrder->getNumberOfArmiesToDeploy() << " armies targeting "
-                 << pOrder->getTargetTerritory()->getTerritoryName() << endl;
-            cout << pOrder->getTargetTerritory()->getTerritoryName() << " is now owned by " <<
-                 pOrder->getTargetTerritory()->getOwner()->getPlayerName() << " and has "
-                 << pOrder->getTargetTerritory()->getUnitNbr() << " armies in it." << endl;
+                 << pOrder->getNumberOfArmiesToDeploy() << " armies on "
+                 << pOrder->getTargetTerritory()->getTerritoryName()
+                 << ". " << currentGameState->getCurrentPlayer()->getPlayerName() << " now has "
+                 << pOrder->getTargetTerritory()->getUnitNbr() << " armies on this territory." << endl;
             break;
         default:
             break;

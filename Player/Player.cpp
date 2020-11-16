@@ -61,7 +61,7 @@ void Player::addTerritory(Territory *territory) {
 //TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
 void Player::removeTerritory(Territory *territory) {
     auto position = find(territories.begin(), territories.end(), territory);
-    if(position != territories.end()){
+    if (position != territories.end()) {
         territories.erase(position);
     }
 }
@@ -85,7 +85,7 @@ vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
     for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
-        if(territory->getOwner() != this)
+        if (territory->getOwner() != this)
             territoriesToAttack.push_back(territory);
     }
 
@@ -124,8 +124,10 @@ bool Player::issueOrder() {
                 if (playReinforcementCard) {
                     numberOfArmies += numberOfArmies + 5;
                     handOfCards->removeCard(card);
-                    cout << getPlayerName() << " played a reinforcement card and got +5 armies added to his army pool"
-                         << endl;
+                    if (GameEngine::getInstance()->isPhaseObserverActive())
+                        cout << getPlayerName()
+                             << " played a reinforcement card and got +5 armies added to his army pool"
+                             << endl;
                 }
                 break;
             }
@@ -149,7 +151,7 @@ bool Player::issueOrder() {
 
                 // Play card
                 Order *order = cardChosen->play();
-                if(order) {
+                if (order) {
                     order->issue();
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);
@@ -182,7 +184,7 @@ int Player::getNumberofArmies() {
     return this->numberOfArmies;
 }
 
-const vector<Player *> &Player::getPlayersNotToAttack() const {
+vector<Player *> &Player::getPlayersNotToAttack() {
     return playersNotToAttack;
 }
 

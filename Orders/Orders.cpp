@@ -144,10 +144,12 @@ bool AdvanceOrder::validate() {
         return false;
     }
 
-    bool canAttackTargetTerritory = find(player->getPlayersNotToAttack().begin(), player->getPlayersNotToAttack().end(), targetTerritory->getOwner()) == player->getPlayersNotToAttack().end();
-    if(!canAttackTargetTerritory) {
+    bool canAttackTargetTerritory = find(player->getPlayersNotToAttack().begin(), player->getPlayersNotToAttack().end(),
+                                         targetTerritory->getOwner()) == player->getPlayersNotToAttack().end();
+    if (!canAttackTargetTerritory) {
         cout << "Advance order validation has failed:"
-             << "the target territory cannot be attacked because you negotiated with its owner " << targetTerritory->getOwner()->getPlayerName() << endl;
+             << "the target territory cannot be attacked because you negotiated with its owner "
+             << targetTerritory->getOwner()->getPlayerName() << endl;
         return false;
     }
 
@@ -204,7 +206,7 @@ void AdvanceOrder::execute() {
                 targetTerritory->setOwner(player);
 
                 // Pick a card
-                Card* drawnCard = GameEngine::getInstance()->getDeck()->draw();
+                Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
                 player->getHandOfCards()->addCard(drawnCard);
 
             } else { // Target is not conquered
@@ -501,9 +503,14 @@ void NegotiateOrder::execute() {
 }
 
 void NegotiateOrder::issue() {
-    // TODO: Determine a random enemy player
-//    targetPlayer = enemies.at(rand() % enemies.size());
+    //Determine a random enemy player
+    vector<Player*> players = GameEngine::getInstance()->getPlayers();
+    do {
+        targetPlayer = players.at(rand() % players.size());
+    } while(targetPlayer == player);
 
+    vector<Player*> playersNotToAttack = player->getPlayersNotToAttack();
+    playersNotToAttack.push_back(targetPlayer);
     // Update order list
     player->getOrders()->add(this);
 }

@@ -110,10 +110,16 @@ int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) {
 }
 
 void GameInitialization::setupObservers() {
-    if (getTrueFalseInputFromUser("phase"))
+    if (getTrueFalseInputFromUser("phase")) {
         gameState->attach(new PhaseObserver(gameState));
+        phaseObserver = true;
+    } else {
+        phaseObserver = false;
+    }
+
     if (getTrueFalseInputFromUser("statistics"))
         gameState->attach(new StatisticsObserver(gameState));
+
 }
 
 bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
@@ -283,6 +289,7 @@ void GameEngine::mainGameLoop() {
         executeOrdersPhase();
 
         removePlayersWithoutTerritoriesOwned();
+        resetDiplomacy();
     }
 
 }
@@ -422,4 +429,18 @@ GameState *GameEngine::getGameState() const {
 
 void GameEngine::setGameState(GameState *gameState) {
     GameEngine::gameState = gameState;
+}
+
+bool GameEngine::isPhaseObserverActive() const {
+    return phaseObserverActive;
+}
+
+void GameEngine::setPhaseObserverActive(bool phaseObserverActive) {
+    GameEngine::phaseObserverActive = phaseObserverActive;
+}
+
+void GameEngine::resetDiplomacy() {
+    for (auto player : players) {
+        player->getPlayersNotToAttack().clear();
+    }
 }
