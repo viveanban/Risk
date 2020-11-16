@@ -47,6 +47,8 @@ public:
 
     int getPriority() const;
 
+    void setPlayer(Player *player);
+
     virtual ~Order();
 };
 
@@ -55,7 +57,9 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    explicit DeployOrder(Player * player);
+    DeployOrder();
+
+    DeployOrder(Player * player);
 
     DeployOrder(const DeployOrder &original);
 
@@ -81,7 +85,9 @@ private:
  */
 class AdvanceOrder : public Order {
 public:
-    explicit AdvanceOrder(Player * player);
+    AdvanceOrder();
+
+    AdvanceOrder(Player * player);
 
     AdvanceOrder(const AdvanceOrder &original);
 
@@ -107,7 +113,9 @@ private:
  */
 class BombOrder : public Order {
 public:
-    explicit BombOrder(Player * player);
+    BombOrder();
+
+    BombOrder(Player * player);
 
     BombOrder(const BombOrder &original);
 
@@ -128,7 +136,9 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    explicit BlockadeOrder(Player * player);
+    BlockadeOrder();
+
+    BlockadeOrder(Player * player);
 
     BlockadeOrder(const BlockadeOrder &original);
 
@@ -150,7 +160,9 @@ private:
  */
 class AirliftOrder : public Order {
 public:
-    explicit AirliftOrder(Player * player);
+    AirliftOrder();
+
+    AirliftOrder(Player * player);
 
     AirliftOrder(const AirliftOrder &original);
 
@@ -175,7 +187,9 @@ private:
  */
 class NegotiateOrder : public Order {
 public:
-    explicit NegotiateOrder(Player * player);
+    NegotiateOrder();
+
+    NegotiateOrder(Player * player);
 
     NegotiateOrder(const NegotiateOrder &original);
 
