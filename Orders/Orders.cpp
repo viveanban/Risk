@@ -43,8 +43,7 @@ void Order::setPlayer(Player *player) {
 Order::~Order() = default;
 
 // DeployOrder ---------------------------------------------------------------------------------------------------------
-DeployOrder::DeployOrder() : targetTerritory(nullptr), numberOfArmiesToDeploy(0),
-                                           Order("Deploy!", 1, nullptr) {}
+DeployOrder::DeployOrder() : DeployOrder(nullptr) {}
 
 DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArmiesToDeploy(0),
                                            Order("Deploy!", 1, player) {}
@@ -111,8 +110,7 @@ void DeployOrder::issue() {
 }
 
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
-AdvanceOrder::AdvanceOrder() : sourceTerritory(nullptr), targetTerritory(nullptr),
-                                             numberOfArmiesToAdvance(0), Order("Advance!", 5, nullptr) {}
+AdvanceOrder::AdvanceOrder() : AdvanceOrder(nullptr) {}
 
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
@@ -250,7 +248,7 @@ bool AdvanceOrder::kill(int probabilityToKill) {
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
-BombOrder::BombOrder() : targetTerritory(nullptr), Order("Bomb!", 5, nullptr) {}
+BombOrder::BombOrder() : BombOrder(nullptr) {}
 
 BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb!", 5, player) {}
 
@@ -290,7 +288,7 @@ void BombOrder::issue() {
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
-BlockadeOrder::BlockadeOrder() : targetTerritory(nullptr), Order("Blockade!", 3, nullptr) {}
+BlockadeOrder::BlockadeOrder() : BlockadeOrder(nullptr) {}
 
 BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade!", 3, player) {}
 
@@ -334,8 +332,7 @@ void BlockadeOrder::issue() {
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
-AirliftOrder::AirliftOrder() : sourceTerritory(nullptr), targetTerritory(nullptr),
-                                             numberOfArmiesToAirlift(0), Order("Airlift!", 2, nullptr) {}
+AirliftOrder::AirliftOrder() : AirliftOrder(nullptr) {}
 
 AirliftOrder::AirliftOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
                                              numberOfArmiesToAirlift(0), Order("Airlift!", 2, player) {}
@@ -417,7 +414,7 @@ void AirliftOrder::issue() {
 }
 
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
-NegotiateOrder::NegotiateOrder() : targetPlayer(nullptr), Order("Negotiate!", 4, nullptr) {}
+NegotiateOrder::NegotiateOrder() : NegotiateOrder(nullptr) {}
 
 NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("Negotiate!", 4, player) {}
 
