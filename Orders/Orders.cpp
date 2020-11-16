@@ -234,7 +234,10 @@ void AdvanceOrder::issue() {
     targetTerritory = territoriesToChooseFrom.at(0);
 
     // Determine number of armies to advance
-    numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
+    if (sourceTerritory->getPriority() > 0 && sourceTerritory->getUnitNbr() > 0)
+        numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
+    else
+        numberOfArmiesToAdvance = 10;
 
     // Update priority
     targetTerritory->setPriority(attack ?
@@ -504,12 +507,12 @@ void NegotiateOrder::execute() {
 
 void NegotiateOrder::issue() {
     //Determine a random enemy player
-    vector<Player*> players = GameEngine::getInstance()->getPlayers();
+    vector<Player *> players = GameEngine::getInstance()->getPlayers();
     do {
         targetPlayer = players.at(rand() % players.size());
-    } while(targetPlayer == player);
+    } while (targetPlayer == player);
 
-    vector<Player*> playersNotToAttack = player->getPlayersNotToAttack();
+    vector<Player *> playersNotToAttack = player->getPlayersNotToAttack();
     playersNotToAttack.push_back(targetPlayer);
     // Update order list
     player->getOrders()->add(this);

@@ -399,7 +399,7 @@ void GameEngine::executeOrdersPhase() {
     }
 
     // Execute all deploy orders
-    vector<Player *> playersWithNoMoreDeployOrderstoExecute;
+    set<Player *> playersWithNoMoreDeployOrderstoExecute;
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
@@ -410,8 +410,10 @@ void GameEngine::executeOrdersPhase() {
                     gameState->updateGameState(player, orders_execution);
                     player->getOrders()->remove(deployOrder);
                 } else {
-                    playersWithNoMoreDeployOrderstoExecute.push_back(player);
+                    playersWithNoMoreDeployOrderstoExecute.insert(player);
                 }
+            } else {
+                playersWithNoMoreDeployOrderstoExecute.insert(player);
             }
         }
     }
