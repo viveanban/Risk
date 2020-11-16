@@ -228,16 +228,18 @@ std::ostream &operator<<(ostream &stream, GameInitialization &gameInitialization
 // ---------GAME ENGINE---------------
 GameEngine *GameEngine::gameEngine = nullptr;
 
-GameEngine::GameEngine() : players(), map(nullptr), deck(nullptr) {}
+GameEngine::GameEngine()
+        : players(), map(nullptr), deck(nullptr), gameState{nullptr}, gameInitialization(nullptr),
+          phaseObserverActive{} {}
 
 GameEngine *GameEngine::getInstance() {
     if (gameEngine == nullptr) {
         gameEngine = new GameEngine();
-        auto *gameInitialization = new GameInitialization();
-        gameInitialization->initializeGame();
-        gameEngine->deck = gameInitialization->getDeck();
-        gameEngine->map = gameInitialization->getMap();
-        gameEngine->players = gameInitialization->getPlayers();
+        gameEngine->gameInitialization = new GameInitialization();
+        gameEngine->gameInitialization->initializeGame();
+        gameEngine->deck = gameEngine->gameInitialization->getDeck();
+        gameEngine->map = gameEngine->gameInitialization->getMap();
+        gameEngine->players = gameEngine->gameInitialization->getPlayers();
     }
     return gameEngine;
 }
@@ -252,7 +254,19 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
 
 GameEngine::~GameEngine() {
     players.clear();
+    for (auto p: players) {
+        delete p;
+        p = nullptr;
+    }
+    delete map;
+    delete gameInitialization;
+    delete deck;
+    delete gameState;
 
+    map = nullptr;
+    gameInitialization = nullptr;
+    deck = nullptr;
+    gameState = nullptr;
 }
 
 // Startup phase logic
