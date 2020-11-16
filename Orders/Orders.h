@@ -13,15 +13,17 @@ using namespace std;
  */
 class Order {
 private:
-    string description;
+    string name;
 
     int priority;
 
 protected:
-    Player * player;
+    string description;
+
+    Player* player;
 
 public:
-    Order(string description, int priority, Player * player);
+    Order(string name, int priority, Player * player);
 
     Order(const Order &original);
 
@@ -42,6 +44,8 @@ public:
     virtual void execute() = 0;
 
     virtual void issue() = 0;
+
+    const string &getName() const;
 
     const string &getDescription() const;
 
