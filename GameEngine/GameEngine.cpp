@@ -233,11 +233,11 @@ GameEngine::GameEngine() : players(), map(nullptr), deck(nullptr) {}
 GameEngine *GameEngine::getInstance() {
     if (gameEngine == nullptr) {
         gameEngine = new GameEngine();
-        GameInitialization gameInitialization;
-        gameInitialization.initializeGame();
-        gameEngine->deck = gameInitialization.getDeck();
-        gameEngine->map = gameInitialization.getMap();
-        gameEngine->players = gameInitialization.getPlayers();
+        auto *gameInitialization = new GameInitialization();
+        gameInitialization->initializeGame();
+        gameEngine->deck = gameInitialization->getDeck();
+        gameEngine->map = gameInitialization->getMap();
+        gameEngine->players = gameInitialization->getPlayers();
     }
     return gameEngine;
 }
@@ -323,7 +323,6 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
     }
