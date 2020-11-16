@@ -390,8 +390,8 @@ void GameEngine::executeOrdersPhase() {
             if (!orderList.empty()) {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
-                    gameState->updateGameState(player, orders_execution);
                     deployOrder->execute();
+                    gameState->updateGameState(player, orders_execution);
                     player->getOrders()->remove(deployOrder);
                 } else {
                     playersWithNoMoreDeployOrderstoExecute.push_back(player);
