@@ -259,6 +259,10 @@ void GameState::setCurrentPhase(Phase currentPhase) {
     GameState::currentPhase = currentPhase;
 }
 
+void GameState::setTotalTerritories(int totalTerritories) {
+    GameState::totalTerritories = totalTerritories;
+}
+
 void GameState::updateGameState(Player *player, Phase phase) {
     setCurrentPhase(phase);
     setCurrentPlayer(player);
@@ -312,13 +316,13 @@ void StatisticsObserver::update() {
 }
 
 void StatisticsObserver::displayStatsUpdate() {
-    cout << '|' << "Player" << setw(3) << '|' << "Territorial Control" << setw(3) << '|' << endl;
+    cout << '|' << "Player" << setw(5) << '|' << "Territorial Control\t|" << endl;
     vector<float> playerDominationRatios{};
     for (Player *player: *currentGameState->getPlayers()) {
         float playerDomination = calculateWorldDomination(player->getTerritories().size());
         playerDominationRatios.push_back(playerDomination);
-        cout << '|' << player->getPlayerName() << setw(3) << '|'
-             << string("% ").append(to_string(playerDomination)) << setw(3) << '|' << endl;
+        cout << fixed << setprecision(2) << '|' << player->getPlayerName() << setw(3) << '|'
+             << " % " << playerDomination << "\t\t|" << endl;
     }
     for (int i = 0; i < playerDominationRatios.size(); i++) {
         if (playerDominationRatios[i] == 100.0) {
@@ -329,6 +333,6 @@ void StatisticsObserver::displayStatsUpdate() {
 }
 
 float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
-    return (float) numberOfTerritories / (float) currentGameState->getTotalTerritories();
+    return (float) numberOfTerritories / (float) currentGameState->getTotalTerritories() * 100;
 }
 

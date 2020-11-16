@@ -31,6 +31,10 @@ private:
 class GameState : public Subject {
 private:
     int totalTerritories;
+public:
+    void setTotalTerritories(int totalTerritories);
+
+private:
     vector<Player *> *players;
     Player *currentPlayer;
     Phase currentPhase;

@@ -22,6 +22,7 @@ void GameInitialization::initializeGame() {
     setupPlayers();
     this->deck = new Deck(50);
     gameState->setPlayers(&players);
+    gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
 void GameInitialization::selectMap() {
