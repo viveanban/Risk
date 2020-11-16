@@ -221,7 +221,7 @@ std::ostream &operator<<(ostream &stream, GameInitialization &gameInitialization
                   << "Number of players: " << gameInitialization.players.size() << endl
                   << "Statistic Observer on: " << boolalpha << gameInitialization.isStatisticsObserver() << endl
                   << "Phase Observer on: " << boolalpha << gameInitialization.isPhaseObserver() << endl
-                  << "Deck: " << gameInitialization.getDeck() << endl
+                  << "Deck: " << gameInitialization.getDeck() << endl;
 }
 
 //GAME STARTUP PHASE

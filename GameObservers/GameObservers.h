@@ -35,9 +35,15 @@ private:
     Player *currentPlayer;
     Phase currentPhase;
 public:
+    GameState();
+
     GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase);
 
-    GameState();
+    GameState(const GameState &original);
+
+    GameState &operator=(const GameState &original);
+
+    virtual ~GameState();
 
     void updateGameState(Player *player, Phase phase);
 
@@ -63,6 +69,8 @@ public:
 
 class StatisticsObserver : public Observer {
 public:
+    StatisticsObserver();
+
     explicit StatisticsObserver(GameState *currGameState);
 
     ~StatisticsObserver();
@@ -83,6 +91,8 @@ private:
 
 class PhaseObserver : public Observer {
 public:
+    PhaseObserver();
+
     explicit PhaseObserver(GameState *currGameState);
 
     ~PhaseObserver();

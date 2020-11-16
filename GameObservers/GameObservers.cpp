@@ -20,31 +20,31 @@ void Subject::detach(Observer *o) {
 };
 
 void Subject::notify() {
-    list<Observer *>::iterator i = observers->begin();
+    auto i = observers->begin();
     for (; i != observers->end(); ++i)
         (*i)->update();
 };
 
 //PHASE OBSERVER
-// TODO: add default constructor?
+PhaseObserver::PhaseObserver() : currentGameState{} {}
+
 PhaseObserver::PhaseObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
 PhaseObserver::~PhaseObserver() {
-//TODO: implement destructor}
+    delete currentGameState;
+    currentGameState = nullptr;
 }
 
 PhaseObserver::PhaseObserver(const PhaseObserver &original) {
-//TODO: implement copy constructor
+    currentGameState = new GameState(*original.currentGameState);
 }
 
 PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
-//TODO: implement operator
-    currentGameState = otherObserver.currentGameState;
+    currentGameState = new GameState(*otherObserver.currentGameState);
     return *this;
 }
 
 void PhaseObserver::update() {
-
     if (currentGameState->getCurrentPlayer() != nullptr) {
         displayPhaseUpdates();
     } else {
@@ -225,10 +225,11 @@ void PhaseObserver::printNegotiateOrder(NegotiateOrder *pOrder) {
     }
 }
 
-GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase) : totalTerritories(totalTerritories), players(players),
-                                          currentPlayer(currentPlayer), currentPhase(currentPhase){}
+GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase)
+        : totalTerritories(totalTerritories), players(players),
+          currentPlayer(currentPlayer), currentPhase(currentPhase) {}
 
-GameState::GameState() {}
+GameState::GameState() : currentPlayer{}, currentPhase{}, players{}, totalTerritories{} {};
 
 Player *GameState::getCurrentPlayer() const {
     return currentPlayer;
@@ -264,24 +265,50 @@ void GameState::updateGameState(Player *player, Phase phase) {
     notify();
 }
 
+GameState::GameState(const GameState &original) : Subject(original) {
+    totalTerritories = original.totalTerritories;
+    players = new vector<Player *>(*original.players);
+    currentPlayer = new Player(*original.currentPlayer);
+    currentPhase = original.currentPhase;
+}
+
+GameState &GameState::operator=(const GameState &original) {
+    totalTerritories = original.totalTerritories;
+    players = original.players;
+    currentPlayer = original.currentPlayer;
+    currentPhase = original.currentPhase;
+    return *this;
+}
+
+GameState::~GameState() {
+    delete players;
+    delete currentPlayer;
+    players = nullptr;
+    currentPlayer = nullptr;
+}
 
 
 //STATISTICS OBSERVER
-void StatisticsObserver::update() {
-    this->displayStatsUpdate();
-}
+StatisticsObserver::StatisticsObserver() : currentGameState{} {};
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
-StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {}
-
 StatisticsObserver::~StatisticsObserver() {
+    delete currentGameState;
+    currentGameState = nullptr;
+}
 
+StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {
+    currentGameState = new GameState(*original.currentGameState);
 }
 
 StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
-    currentGameState = otherObserver.currentGameState;
+    currentGameState = new GameState(*otherObserver.currentGameState);
     return *this;
+}
+
+void StatisticsObserver::update() {
+    this->displayStatsUpdate();
 }
 
 void StatisticsObserver::displayStatsUpdate() {
@@ -304,5 +331,4 @@ void StatisticsObserver::displayStatsUpdate() {
 float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
     return (float) numberOfTerritories / (float) currentGameState->getTotalTerritories();
 }
-
 
