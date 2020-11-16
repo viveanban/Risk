@@ -21,6 +21,7 @@ void GameInitialization::initializeGame() {
     setupObservers();
     setupPlayers();
     this->deck = new Deck(50);
+    gameState->setPlayers(&players);
 }
 
 void GameInitialization::selectMap() {
@@ -240,6 +241,7 @@ GameEngine *GameEngine::getInstance() {
         gameEngine->deck = gameEngine->gameInitialization->getDeck();
         gameEngine->map = gameEngine->gameInitialization->getMap();
         gameEngine->players = gameEngine->gameInitialization->getPlayers();
+        gameEngine->gameState= gameEngine->gameInitialization->getGameState();
     }
     return gameEngine;
 }
@@ -346,7 +348,7 @@ void GameEngine::mainGameLoop() {
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        //TODO: is the armies in the reinformcement pool incremented each turn or is it calculated from scratch?
+        //TODO: is the armies in the reinforcement pool incremented each turn or is it calculated from scratch?
         player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
         gameState->updateGameState(player, reinforcement);
     }
