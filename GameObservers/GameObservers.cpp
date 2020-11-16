@@ -45,7 +45,7 @@ PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
 
 void PhaseObserver::update() {
 
-    if (currentGameState->getCurrentPlayer() != nullptr && currentGameState->getCurrentPhase() != NULL) {
+    if (currentGameState->getCurrentPlayer() != nullptr) {
         displayPhaseUpdates();
     } else {
         cout << "ERROR OCCURED WHILE TRYING TO UPDATE PHASE OBSERVER. NULL VALUES FOUND" << endl;
@@ -225,10 +225,8 @@ void PhaseObserver::printNegotiateOrder(NegotiateOrder *pOrder) {
     }
 }
 
-GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase,
-                     const string &phaseInfo) : totalTerritories(totalTerritories), players(players),
-                                                currentPlayer(currentPlayer), currentPhase(currentPhase),
-                                                phaseInfo(phaseInfo) {}
+GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase) : totalTerritories(totalTerritories), players(players),
+                                          currentPlayer(currentPlayer), currentPhase(currentPhase){}
 
 GameState::GameState() {}
 
@@ -238,10 +236,6 @@ Player *GameState::getCurrentPlayer() const {
 
 Phase GameState::getCurrentPhase() const {
     return currentPhase;
-}
-
-const string &GameState::getPhaseInfo() const {
-    return phaseInfo;
 }
 
 const vector<Player *> *GameState::getPlayers() const {
@@ -269,6 +263,8 @@ void GameState::updateGameState(Player *player, Phase phase) {
     setCurrentPlayer(player);
     notify();
 }
+
+
 
 //STATISTICS OBSERVER
 void StatisticsObserver::update() {

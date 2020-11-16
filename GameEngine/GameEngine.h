@@ -9,20 +9,15 @@
 
 class GameInitialization {
 private:
-    Map *map;
-    Deck *deck;
+    Map *map{};
+    Deck *deck{};
     vector<Player *> players;
     vector<string> availableMaps;
     bool phaseObserver = false;
     bool statisticsObserver = false;
     GameState *gameState;
-public:
-    GameState *getGameState() const;
+    int numPlayer{};
 
-    void setGameState(GameState *gameState);
-
-private:
-    int numPlayer;
     /**
      * SelectMap is responsible for displaying available maps from the ./maps folder
      * to the user and prompting him for a map
@@ -50,9 +45,12 @@ private:
     static bool getTrueFalseInputFromUser(string resultName);
 
 public:
+    GameInitialization();
 
     //GETTERS
-    GameInitialization();
+
+    GameState *getGameState() const;
+
     Map *getMap() const;
 
     Deck *getDeck() const;
@@ -72,6 +70,8 @@ public:
 
     // responsible to initialize the set of players
     void setupPlayers();
+
+    void setGameState(GameState *gameState);
 
     /**
      * openMapFile responsible for opening up and returning a given mapFile from the user's choice
@@ -150,13 +150,14 @@ private:
 
 public:
     GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState);
-    static GameEngine* gameEngine;
+
+    static GameEngine *gameEngine;
 
     GameEngine(GameEngine &other) = delete;
 
     void operator=(const GameEngine &) = delete;
 
-    static GameEngine* getInstance();
+    static GameEngine *getInstance();
 
     ~GameEngine();
 

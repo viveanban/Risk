@@ -35,6 +35,10 @@ private:
     Player *currentPlayer;
     Phase currentPhase;
 public:
+    GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase);
+
+    GameState();
+
     void updateGameState(Player *player, Phase phase);
 
     void setPlayers(vector<Player *> *players);
@@ -43,19 +47,9 @@ public:
 
     void setCurrentPhase(Phase currentPhase);
 
-private:
-    string phaseInfo;
-public:
-    GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase,
-              const string &phaseInfo);
-
-    GameState();
-
     Player *getCurrentPlayer() const;
 
     Phase getCurrentPhase() const;
-
-    const string &getPhaseInfo() const;
 
     const vector<Player *> *getPlayers() const;
 

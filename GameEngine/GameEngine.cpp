@@ -168,8 +168,8 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-GameInitialization::GameInitialization() {
-    gameState = new GameState(map->getTerritoryList().size(), &players, nullptr, reinforcement, "");
+GameInitialization::GameInitialization(): map(nullptr), deck(nullptr), numPlayer(0) {
+    gameState = new GameState(0, nullptr, nullptr, reinforcement);
 }
 
 GameState *GameInitialization::getGameState() const {
