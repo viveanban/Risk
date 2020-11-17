@@ -84,7 +84,7 @@ void PhaseObserver::displaySpecialInformation() {
 }
 
 void PhaseObserver::printReinforcementinfo() const {
-    cout << currentGameState->getCurrentPlayer()->getPlayerName() << " received "
+    cout << currentGameState->getCurrentPlayer()->getPlayerName() << " has received new armies as part of reinforcement phase. He now owns "
          << currentGameState->getCurrentPlayer()->getNumberofArmies() << " number of armies." << endl;
 }
 
@@ -133,12 +133,12 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an advance order from "
-                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
+                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()->getTerritoryName()
                  << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             break;
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed an advance order from "
-                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
+                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()->getTerritoryName()
                  << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             cout << pOrder->getTargetTerritory()->getTerritoryName() << " is now owned by " <<
                  pOrder->getTargetTerritory()->getOwner()->getPlayerName() << " and has "

@@ -306,7 +306,7 @@ void GameEngine::assignTerritoriesToPlayers() {
         // Assign using Round Robin Method
         territory->setOwner(players.at(territoriesAssigned % players.size()));
         cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << players.at(territoriesAssigned % players.size()) << endl;
+             << players.at(territoriesAssigned % players.size())->getPlayerName() << endl;
         territoriesAssigned++;
     }
     cout << "All territories Assigned." << endl;
