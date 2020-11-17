@@ -53,9 +53,10 @@ void PhaseObserver::update() {
 }
 
 void PhaseObserver::displayPhaseUpdates() {
+    cout << "===================================================================================================" << endl;
     cout << currentGameState->getCurrentPlayer()->getPlayerName() << ": " << getPhaseText() << " Phase." << endl;
     displaySpecialInformation();
-
+    cout << "===================================================================================================" << endl;
 }
 
 string PhaseObserver::getPhaseText() {
@@ -155,12 +156,16 @@ void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of "
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
+            cout << currentGameState->getCurrentPlayer()->getNumberofArmies()
+                 << " armies remaining in reinforcement pool."
+                 << endl;
             break;
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed a deploy order of "
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName()
                  << ". " << currentGameState->getCurrentPlayer()->getPlayerName() << " now has "
+                 //TODO: WHy is getUnitNbr back to 0 ???
                  << pOrder->getTargetTerritory()->getUnitNbr() << " armies on this territory." << endl;
             break;
         default:

@@ -129,13 +129,11 @@ Card *Deck::draw() {
         return nullptr;
     int randomIndex = rand() % cards.size();
     Card *card = cards.at(randomIndex);
-    cout << *card;
     cards.erase(cards.begin() + randomIndex);
     return card;
 }
 
 void Deck::addCard(Card *card) {
-    cout << "Adding card to deck" << endl;
     cards.push_back(card);
 }
 
