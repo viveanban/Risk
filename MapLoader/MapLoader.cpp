@@ -11,6 +11,8 @@ using namespace std;
 /**
  * MapLoader Class implementation
  */
+
+//TODO: change regex so that it supports numbers in the continent name and terr name
 const string MapLoader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
 const string MapLoader::MAP_DIRECTORY = "../maps/";
 const string MapLoader::CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
