@@ -355,7 +355,6 @@ void GameEngine::mainGameLoop() {
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        //TODO: is the armies in the reinforcement pool incremented each turn or is it calculated from scratch?
         player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
         gameState->updateGameState(player, reinforcement, nullptr, nullptr);
     }
@@ -392,7 +391,7 @@ void GameEngine::issueOrdersPhase() {
                     playersWithNoMoreOrderstoIssue.push_back(player);
                     cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: phase observer should do this
                 } else {
-                    gameState->updateGameState(player, issuing_orders);
+                    gameState->updateGameState(player, issuing_orders, nullptr, nullptr);
                 }
             }
         }
