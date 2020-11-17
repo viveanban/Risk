@@ -10,7 +10,7 @@
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
 Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
-                                    territories() {}
+                                    numberOfArmies(0), territories() {}
 
 Player::~Player() {
     delete handOfCards;
@@ -140,7 +140,7 @@ bool Player::issueOrder() {
         bool continueIssuingOrders = rand() % 2;
 
         if (continueIssuingOrders) {
-            bool advance = rand() % 2;
+            bool advance = handOfCards->getCards().empty() || rand() % 2;
             if (advance) {
                 AdvanceOrder *advanceOrder = new AdvanceOrder(this);
                 advanceOrder->issue();
