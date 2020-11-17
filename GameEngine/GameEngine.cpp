@@ -242,7 +242,7 @@ GameEngine *GameEngine::getInstance() {
         gameEngine->deck = gameEngine->gameInitialization->getDeck();
         gameEngine->map = gameEngine->gameInitialization->getMap();
         gameEngine->players = gameEngine->gameInitialization->getPlayers();
-        gameEngine->gameState= gameEngine->gameInitialization->getGameState();
+        gameEngine->gameState = gameEngine->gameInitialization->getGameState();
     }
     return gameEngine;
 }
@@ -351,7 +351,7 @@ void GameEngine::reinforcementPhase() {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
         //TODO: is the armies in the reinforcement pool incremented each turn or is it calculated from scratch?
         player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
-        gameState->updateGameState(player, reinforcement);
+        gameState->updateGameState(player, reinforcement, nullptr, nullptr);
     }
 }
 
@@ -384,9 +384,6 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                else {
-                    gameState->updateGameState(player, issuing_orders);
-                }
             }
         }
     }
@@ -407,7 +404,7 @@ void GameEngine::executeOrdersPhase() {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
                     deployOrder->execute();
-                    gameState->updateGameState(player, orders_execution);
+                    gameState->updateGameState(player, orders_execution, deployOrder,nullptr);
                     player->getOrders()->remove(deployOrder);
                 } else {
                     playersWithNoMoreDeployOrderstoExecute.insert(player);
@@ -424,8 +421,8 @@ void GameEngine::executeOrdersPhase() {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
-                gameState->updateGameState(player, orders_execution);
                 orderList[0]->execute();
+                gameState->updateGameState(player, orders_execution, orderList[0],nullptr);
                 player->getOrders()->remove(orderList[0]);
             } else {
                 playersWithNoMoreOrdersToExecute.push_back(player);
