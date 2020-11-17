@@ -1,6 +1,6 @@
 #include "GameObservers.h"
 #include <iomanip>
-
+#include "./../Cards/Cards.h"
 
 // SUBJECT
 Subject::Subject() {
@@ -79,22 +79,23 @@ void PhaseObserver::displaySpecialInformation() {
             break;
         case issuing_orders:
         case orders_execution:
-            //TODO: VERIFY IF NEW ORDER IS always AT THE BACK!!
-            printOrderInfo(currentGameState->getCurrentPlayer()->getOrders()->getOrderList().back());
+            printOrderInfo(currentGameState->getCurrentOrder(), currentGameState->getCurrentCard());
             break;
     }
 }
 
 void PhaseObserver::printReinforcementinfo() const {
-    cout << currentGameState->getCurrentPlayer()->getPlayerName() << " received "
+    cout << currentGameState->getCurrentPlayer()->getPlayerName() << " has received new armies as part of reinforcement phase. He now owns "
          << currentGameState->getCurrentPlayer()->getNumberofArmies() << " number of armies." << endl;
 }
 
-void PhaseObserver::printOrderInfo(Order *order) {
-
-    if (order == nullptr)
+void PhaseObserver::printOrderInfo(Order *order, Card *card) {
+    if (card != nullptr && card->getType() == Card::CardType::reinforcement) {
+        printReinforcementCardInfo();
         return;
-    if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
+    } else if (order == nullptr) {
+        return;
+    } else if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
         printDeployOrderInfo(deployOrder);
     } else if (auto *advanceOrder = dynamic_cast<AdvanceOrder *>(order)) {
         printAdvanceOrder(advanceOrder);
@@ -133,12 +134,12 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an advance order from "
-                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
+                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()->getTerritoryName()
                  << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             break;
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed an advance order from "
-                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
+                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()->getTerritoryName()
                  << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             cout << pOrder->getTargetTerritory()->getTerritoryName() << " is now owned by " <<
                  pOrder->getTargetTerritory()->getOwner()->getPlayerName() << " and has "
@@ -230,6 +231,11 @@ void PhaseObserver::printNegotiateOrder(NegotiateOrder *pOrder) {
     }
 }
 
+void PhaseObserver::printReinforcementCardInfo() {
+    cout << currentGameState->getCurrentPlayer()->getPlayerName() << " played a reinforcement card and has +5 armies. "
+         << endl;
+}
+
 GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase)
         : totalTerritories(totalTerritories), players(players),
           currentPlayer(currentPlayer), currentPhase(currentPhase) {}
@@ -268,9 +274,11 @@ void GameState::setTotalTerritories(int totalTerritories) {
     GameState::totalTerritories = totalTerritories;
 }
 
-void GameState::updateGameState(Player *player, Phase phase) {
+void GameState::updateGameState(Player *player, Phase phase, Order *order, Card *card) {
     setCurrentPhase(phase);
     setCurrentPlayer(player);
+    setCurrentOrder(order);
+    setCurrentCard(card);
     notify();
 }
 
@@ -294,6 +302,22 @@ GameState::~GameState() {
     delete currentPlayer;
     players = nullptr;
     currentPlayer = nullptr;
+}
+
+Order *GameState::getCurrentOrder() const {
+    return currentOrder;
+}
+
+void GameState::setCurrentOrder(Order *currentOrder) {
+    GameState::currentOrder = currentOrder;
+}
+
+Card *GameState::getCurrentCard() const {
+    return currentCard;
+}
+
+void GameState::setCurrentCard(Card *currentCard) {
+    GameState::currentCard = currentCard;
 }
 
 
