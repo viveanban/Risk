@@ -168,17 +168,8 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0) {
-    gameState = new GameState(0, nullptr, nullptr, reinforcement);
-}
-
-GameState *GameInitialization::getGameState() const {
-    return gameState;
-}
-
-void GameInitialization::setGameState(GameState *gameState) {
-    GameInitialization::gameState = gameState;
-}
+GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0),
+                                           gameState(new GameState(0, nullptr, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
     delete map;
@@ -189,6 +180,7 @@ GameInitialization::~GameInitialization() {
         delete player;
         player = nullptr;
     }
+    players.clear();
     map = nullptr;
     deck = nullptr;
     gameState = nullptr;
@@ -222,6 +214,10 @@ std::ostream &operator<<(ostream &stream, GameInitialization &gameInitialization
                   << "Statistic Observer on: " << boolalpha << gameInitialization.isStatisticsObserver() << endl
                   << "Phase Observer on: " << boolalpha << gameInitialization.isPhaseObserver() << endl
                   << "Deck: " << gameInitialization.getDeck() << endl;
+}
+
+GameState *GameInitialization::getGameState() const {
+    return gameState;
 }
 
 //GAME STARTUP PHASE
@@ -314,7 +310,7 @@ int GameEngine::getInitialArmyNumber() {
         case 5:
         default:
             return 25;
-    };
+    }
 }
 
 // Main game loop logic
@@ -406,8 +402,8 @@ void GameEngine::executeOrdersPhase() {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
-                gameState->updateGameState(player, orders_execution);
                 orderList[0]->execute();
+                gameState->updateGameState(player, orders_execution);
                 player->getOrders()->remove(orderList[0]);
             } else {
                 playersWithNoMoreOrdersToExecute.push_back(player);

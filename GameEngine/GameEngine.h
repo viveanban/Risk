@@ -9,13 +9,13 @@
 
 class GameInitialization {
 private:
-    Map *map{};
-    Deck *deck{};
+    Map *map;
+    Deck *deck;
+    GameState *gameState;
     vector<Player *> players;
     vector<string> availableMaps;
     bool phaseObserver = false;
     bool statisticsObserver = false;
-    GameState *gameState;
     int numPlayer{};
 
     /**
@@ -47,10 +47,6 @@ private:
 public:
     GameInitialization();
 
-    //GETTERS
-
-    GameState *getGameState() const;
-
     ~GameInitialization();
 
     GameInitialization(GameInitialization &original);
@@ -59,10 +55,13 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, GameInitialization &gameInitialization);
 
+    //GETTERS
 
     Map *getMap() const;
 
     Deck *getDeck() const;
+
+    GameState *getGameState() const;
 
     const vector<Player *> &getPlayers() const;
 
@@ -79,8 +78,6 @@ public:
 
     // responsible to initialize the set of players
     void setupPlayers();
-
-    void setGameState(GameState *gameState);
 
     /**
      * openMapFile responsible for opening up and returning a given mapFile from the user's choice
@@ -112,17 +109,6 @@ private:
     Deck *deck;
     GameState *gameState;
     bool phaseObserverActive;
-public:
-    bool isPhaseObserverActive() const;
-
-    void setPhaseObserverActive(bool phaseObserverActive);
-
-public:
-    GameState *getGameState() const;
-
-    void setGameState(GameState *gameState);
-
-private:
 
     GameEngine();
 
@@ -158,6 +144,9 @@ private:
     int getInitialArmyNumber();
 
 public:
+
+    static GameEngine *getInstance();
+
     GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState);
 
     static GameEngine *gameEngine;
@@ -165,8 +154,6 @@ public:
     GameEngine(GameEngine &other) = delete;
 
     void operator=(const GameEngine &) = delete;
-
-    static GameEngine *getInstance();
 
     ~GameEngine();
 
@@ -177,21 +164,28 @@ public:
      */
     void mainGameLoop();
 
-    void updateGameState(Player *pPlayer, Phase phase);
+    void resetDiplomacy();
 
-    const vector<Player *> &getPlayers() const;
-
-    void setPlayers(const vector<Player *> &players);
-
-    Map *getMap() const;
-
-    void setMap(Map *map);
+    bool isPhaseObserverActive() const;
 
     Deck *getDeck() const;
 
-    void setDeck(Deck *deck);
+    Map *getMap() const;
 
-    void resetDiplomacy();
+    GameState *getGameState() const;
+
+    const vector<Player *> &getPlayers() const;
+
+    void setPhaseObserverActive(bool phaseObserverActive);
+
+    void setGameState(GameState *gameState);
+
+    void setPlayers(const vector<Player *> &players);
+
+    void setMap(Map *map);
+
+
+    void setDeck(Deck *deck);
 };
 
 #endif //RISK_GAMEENGINE_H

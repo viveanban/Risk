@@ -184,7 +184,7 @@ int Player::getNumberofArmies() {
     return this->numberOfArmies;
 }
 
-vector<Player *> &Player::getPlayersNotToAttack() {
+set<Player *> &Player::getPlayersNotToAttack() {
     return playersNotToAttack;
 }
 
@@ -209,6 +209,6 @@ void Player::setNumberOfArmies(int numberOfArmies) {
     this->numberOfArmies = numberOfArmies;
 }
 
-void Player::setPlayersNotToAttack(const vector<Player *> &playersNotToAttack) {
+void Player::setPlayersNotToAttack(const set<Player *> &playersNotToAttack) {
     Player::playersNotToAttack = playersNotToAttack;
 }

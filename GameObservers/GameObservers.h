@@ -71,7 +71,7 @@ class StatisticsObserver : public Observer {
 public:
     StatisticsObserver();
 
-    explicit StatisticsObserver(GameState *currGameState);
+    StatisticsObserver(GameState *currGameState);
 
     ~StatisticsObserver();
 
@@ -93,7 +93,7 @@ class PhaseObserver : public Observer {
 public:
     PhaseObserver();
 
-    explicit PhaseObserver(GameState *currGameState);
+    PhaseObserver(GameState *currGameState);
 
     ~PhaseObserver();
 
