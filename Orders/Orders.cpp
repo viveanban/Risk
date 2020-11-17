@@ -63,7 +63,7 @@ bool DeployOrder::validate() {
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
-    cout << "Deploy order validation is successful!" << endl;
+//    cout << "Deploy order validation is successful!" << endl;
     return true;
 }
 
@@ -71,13 +71,6 @@ void DeployOrder::execute() {
     if (validate()) {
         // If the target territory belongs to the player that issued the deploy order (validation successful), the selected number of armies is added to the number of armies on that territory.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToDeploy);
-
-        //Output effect of the deployOrder
-        cout << "Executing deploy order." << endl;
-        cout << numberOfArmiesToDeploy << " number of armies have been deployed to "
-             << targetTerritory->getTerritoryName() << endl;
-        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
-             << " army units." << endl;
     }
 }
 
@@ -139,7 +132,7 @@ bool AdvanceOrder::validate() {
     }
 
     if (numberOfArmiesToAdvance > sourceTerritory->getUnitNbr()) {
-        cout << "Advance order validation has failed:"
+        cout << "Advance order validation has failed: "
              << "the source territory does not have " << numberOfArmiesToAdvance << " army units to advance." << endl;
         return false;
     }
@@ -153,7 +146,7 @@ bool AdvanceOrder::validate() {
         return false;
     }
 
-    cout << "Advance order validation is successful!" << endl;
+//    cout << "Advance order validation is successful!" << endl;
     return true;
 }
 
@@ -291,7 +284,7 @@ bool BombOrder::validate() {
              << "the target territory belongs to a player that is in negotiation with the attacking player." << endl;
         return false;
     }
-    cout << "Bomb order validation is successful!" << endl;
+//    cout << "Bomb order validation is successful!" << endl;
     return true;
 
 }
@@ -301,11 +294,11 @@ void BombOrder::execute() {
         // If the target belongs to an enemy player, half of the armies are removed from this territory.
         targetTerritory->setUnitNbr((int) (targetTerritory->getUnitNbr() / 2));
         //Output effect of the Bomb Order
-        cout << "Executing bomb order." << endl;
-        cout << "KABOOM! A bomb was dropped on "
-             << targetTerritory->getTerritoryName() << endl;
-        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
-             << " army units." << endl;
+//        cout << "Executing bomb order." << endl;
+//        cout << "KABOOM! A bomb was dropped on "
+//             << targetTerritory->getTerritoryName() << endl;
+//        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+//             << " army units." << endl;
     }
 }
 
@@ -347,26 +340,24 @@ bool BlockadeOrder::validate() {
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
-    cout << "Blockade order validation is successful!" << endl;
+//    cout << "Blockade order validation is successful!" << endl;
     return true;
 
 }
 
-// you give up territory but it's stronger. It can be attacked. Creating a wall.
-// you can win the game even tho there's neutral territories
-// double the armi unit on the target territory
 void BlockadeOrder::execute() {
     if (validate()) {
         // If the target territory belongs to the player issuing the order, the number of armies on the territory is
         // doubled and the ownership of the territory is transferred to the Neutral player.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
 //        targetTerritory->setOwner(TODO: neutral player)
+
         //Output effect of the Blockade Order
-        cout << "Executing blockade order." << endl;
-        cout << "A blockade was set up on "
-             << targetTerritory->getTerritoryName() << endl;
-        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
-             << " army units, and belongs to " << targetTerritory->getOwner()->getPlayerName() << endl;
+//        cout << "Executing blockade order." << endl;
+//        cout << "A blockade was set up on "
+//             << targetTerritory->getTerritoryName() << endl;
+//        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+//             << " army units, and belongs to " << targetTerritory->getOwner()->getPlayerName() << endl;
     }
 }
 
@@ -423,7 +414,7 @@ bool AirliftOrder::validate() {
              << "the source territory does not have enough armies to airlift." << endl;
         return false;
     }
-    cout << "Airlift order validation is successful!" << endl;
+//    cout << "Airlift order validation is successful!" << endl;
     return true;
 }
 
@@ -434,13 +425,13 @@ void AirliftOrder::execute() {
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToAirlift);
 
         //Output effect of the airlift order
-        cout << "Executing airlift order." << endl;
-        cout << numberOfArmiesToAirlift << " number of armies have been airlifted to "
-             << targetTerritory->getTerritoryName() << " from " << sourceTerritory->getTerritoryName() << endl;
-        cout << sourceTerritory->getTerritoryName() << " territory now has " << sourceTerritory->getUnitNbr()
-             << " army units." << endl;
-        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
-             << " army units." << endl;
+//        cout << "Executing airlift order." << endl;
+//        cout << numberOfArmiesToAirlift << " number of armies have been airlifted to "
+//             << targetTerritory->getTerritoryName() << " from " << sourceTerritory->getTerritoryName() << endl;
+//        cout << sourceTerritory->getTerritoryName() << " territory now has " << sourceTerritory->getUnitNbr()
+//             << " army units." << endl;
+//        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+//             << " army units." << endl;
     }
 }
 
@@ -501,7 +492,9 @@ void NegotiateOrder::execute() {
     if (validate()) {
         // set random player in your cannot attack list
         // set yourself in their cannot attack list
-        cout << "Executing negotiate order." << endl;
+//        cout << "Executing negotiate order." << endl;
+        vector<Player *> playersNotToAttack = player->getPlayersNotToAttack();
+        playersNotToAttack.push_back(targetPlayer);
     }
 }
 
@@ -512,8 +505,6 @@ void NegotiateOrder::issue() {
         targetPlayer = players.at(rand() % players.size());
     } while (targetPlayer == player);
 
-    vector<Player *> playersNotToAttack = player->getPlayersNotToAttack();
-    playersNotToAttack.push_back(targetPlayer);
     // Update order list
     player->getOrders()->add(this);
 }
