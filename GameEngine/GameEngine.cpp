@@ -285,12 +285,16 @@ void GameEngine::randomlySetOrder() {
     for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 
+    cout << endl;
+
     // Randomize (shuffle) the order of the players
     shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
     for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
+
+    cout << endl;
 }
 
 void GameEngine::assignTerritoriesToPlayers() {
@@ -304,12 +308,14 @@ void GameEngine::assignTerritoriesToPlayers() {
         // Remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // Assign using Round Robin Method
+        //TODO: Are the territories suupposed to be assigned in RR or is it the players ...
         territory->setOwner(players.at(territoriesAssigned % players.size()));
-        cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << players.at(territoriesAssigned % players.size()) << endl;
+        cout << "Assigning territory " << territory->getTerritoryName() << " to "
+             << players.at(territoriesAssigned % players.size())->getPlayerName() << endl;
         territoriesAssigned++;
     }
     cout << "All territories Assigned." << endl;
+    cout << "==========================================" << endl;
 }
 
 void GameEngine::assignArmiesToPlayers() {
@@ -331,7 +337,7 @@ int GameEngine::getInitialArmyNumber() {
         case 5:
         default:
             return 25;
-    };
+    }
 }
 
 // Main game loop logic
@@ -382,9 +388,10 @@ void GameEngine::issueOrdersPhase() {
         for (Player *player: players) {
             if (find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
                 playersWithNoMoreOrderstoIssue.end()) {
-                if (!player->issueOrder())
+                if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                else {
+                    cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: phase observer should do this
+                } else {
                     gameState->updateGameState(player, issuing_orders);
                 }
             }
@@ -424,8 +431,8 @@ void GameEngine::executeOrdersPhase() {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
-                gameState->updateGameState(player, orders_execution);
                 orderList[0]->execute();
+                gameState->updateGameState(player, orders_execution);
                 player->getOrders()->remove(orderList[0]);
             } else {
                 playersWithNoMoreOrdersToExecute.push_back(player);
