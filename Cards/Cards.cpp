@@ -162,6 +162,7 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 Hand::~Hand() {
     for (Card* card : cards) {
         removeCard(card);
+        cout << "Put back card in Deck" << endl;
     }
 }
 

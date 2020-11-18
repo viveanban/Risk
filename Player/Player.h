@@ -15,10 +15,15 @@ using namespace std;
 class Player {
 private:
     string playerName;
+
     int numberOfArmies;
+
     vector<Territory *> territories;
+
     OrdersList *orders;
+
     Hand *handOfCards;
+
     set<Player *> playersNotToAttack;
 
     void sortTerritoryList(vector<Territory *> &territoryList);
@@ -26,7 +31,7 @@ private:
 public:
     static Player *neutralPlayer;
 
-    Player(string playerName);
+    explicit Player(string playerName);
 
     ~Player();
 
@@ -54,17 +59,7 @@ public:
     set<Player *> &getPlayersNotToAttack();
 
     // Setters
-    void setPlayerName(string playerName);
-
-    void setTerritories(vector<Territory *> &territories);
-
-    void setHandOfCards(Hand *handOfCards);
-
-    void setOrders(OrdersList *orders);
-
     void setNumberOfArmies(int numberOfArmies);
-
-    void setPlayersNotToAttack(const set<Player *> &playersNotToAttack);
 
     /**
     * This method returns a list of territories that can be defended.

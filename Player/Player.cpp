@@ -15,11 +15,11 @@ Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand
 Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
-    cout << "deleted hand of cards" << endl;
+    cout << "Deleted Hand" << endl;
 
     delete orders;
     orders = nullptr;
-    cout << "deleted orders" << endl;
+    cout << "Deleted orders" << endl;
 }
 
 Player::Player(const Player &original) {
@@ -118,6 +118,7 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
 
 // TODO: sprinkle move/remove()
 // TODO: if unsuccessful, should we let the player try issuing another order
+// TODO: maybe refactor?
 bool Player::issueOrder() {
 
     if (numberOfArmies > 0) {
@@ -210,26 +211,6 @@ set<Player *> &Player::getPlayersNotToAttack() {
 }
 
 // Setters
-void Player::setPlayerName(string playerName) {
-    this->playerName = playerName;
-}
-
-void Player::setTerritories(vector<Territory *> &territories) {
-    this->territories = territories;
-}
-
-void Player::setHandOfCards(Hand *handOfCards) {
-    this->handOfCards = handOfCards;
-}
-
-void Player::setOrders(OrdersList *orders) {
-    this->orders = orders;
-}
-
 void Player::setNumberOfArmies(int numberOfArmies) {
     this->numberOfArmies = numberOfArmies;
-}
-
-void Player::setPlayersNotToAttack(const set<Player *> &playersNotToAttack) {
-    Player::playersNotToAttack = playersNotToAttack;
 }
