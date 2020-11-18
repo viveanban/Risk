@@ -52,8 +52,6 @@ public:
     int getPriority() const;
 
     void setPlayer(Player *player);
-
-    virtual ~Order();
 };
 
 /**
@@ -118,8 +116,11 @@ public:
 
 private:
     Territory *sourceTerritory;
+
     Territory *targetTerritory;
+
     AdvanceOrderType advanceOrderType;
+
     int numberOfArmiesToAdvance;
 
     bool validate() override;
@@ -145,12 +146,9 @@ public:
 
     bool issue() override;
 
+    Territory *getTargetTerritory() const;
 private:
     Territory* targetTerritory;
-public:
-    Territory *getTargetTerritory() const;
-
-private:
 
     bool validate() override;
 };
@@ -172,12 +170,9 @@ public:
 
     bool issue() override;
 
+    Territory *getTargetTerritory() const;
 private:
     Territory *targetTerritory;
-public:
-    Territory *getTargetTerritory() const;
-
-private:
 
     bool validate() override;
 
@@ -200,10 +195,6 @@ public:
 
     bool issue() override;
 
-private:
-    Territory *sourceTerritory;
-    Territory *targetTerritory;
-public:
     Territory *getSourceTerritory() const;
 
     Territory *getTargetTerritory() const;
@@ -211,6 +202,9 @@ public:
     int getNumberOfArmiesToAirlift() const;
 
 private:
+    Territory *sourceTerritory;
+
+    Territory *targetTerritory;
 
     int numberOfArmiesToAirlift;
 
@@ -235,12 +229,9 @@ public:
 
     bool issue() override;
 
+    Player *getTargetPlayer() const;
 private:
     Player* targetPlayer;
-public:
-    Player *getTargetPlayer() const;
-
-private:
 
     bool validate() override;
 };

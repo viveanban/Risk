@@ -174,17 +174,22 @@ GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlaye
 
 GameInitialization::~GameInitialization() {
     delete map;
+    cout << "deleted map" << endl;
     delete deck;
+    cout << "deleted deck" << endl;
     delete gameState;
+    cout << "deleted gamestate" << endl;
 
     for (auto player: players) {
         delete player;
         player = nullptr;
     }
     players.clear();
+    cout << "deleted players" << endl;
 
     delete Player::neutralPlayer;
     Player::neutralPlayer = nullptr;
+    cout << "deleted neutral player" << endl;
 
     map = nullptr;
     deck = nullptr;
@@ -254,7 +259,6 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
 }
 
 GameEngine::~GameEngine() {
-    players.clear();
     delete gameInitialization;
 }
 

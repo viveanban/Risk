@@ -14,8 +14,10 @@ Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand
 
 Player::~Player() {
     delete handOfCards;
+    cout << "deleted handofcards" << endl;
     handOfCards = nullptr;
     delete orders;
+    cout << "deleted orders" << endl;
     orders = nullptr;
 }
 

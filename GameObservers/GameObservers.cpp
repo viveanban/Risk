@@ -323,10 +323,6 @@ GameState &GameState::operator=(const GameState &original) {
     return *this;
 }
 
-GameState::~GameState() {
-    currentPlayer = nullptr;
-}
-
 Order *GameState::getCurrentOrder() const {
     return currentOrder;
 }

@@ -28,6 +28,7 @@ ostream &operator<<(ostream &stream, const Card &c) {
 }
 
 // TODO: remove cout
+// TODO: add comment to remember to delete order
 Order *Card::play() {
     Order *order;
     switch (type) {
@@ -100,6 +101,7 @@ Deck::Deck(const Deck &original) {
 Deck::~Deck() {
     for (auto p : cards) {
         delete p;
+        cout << "deleted card in deck" << endl;
         p = nullptr;
     }
 }
@@ -164,6 +166,7 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 
 Hand::~Hand() {
     for (auto p : cards) {
+        cout << "deleted card in hand" << endl;
         delete p;
         p = nullptr;
     }

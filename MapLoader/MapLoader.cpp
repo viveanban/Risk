@@ -19,9 +19,9 @@ const string MapLoader::CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*
 const string MapLoader::COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
 const string MapLoader::BORDER_REGEX = "(\\d+\\s+)+\\d+";
 
-MapLoader::Section MapLoader::currentSection;
-vector<Continent *> MapLoader::continentsList;
-vector<Territory *> MapLoader::territoriesList;
+MapLoader::Section MapLoader::currentSection{};
+vector<Continent *> MapLoader::continentsList{};
+vector<Territory *> MapLoader::territoriesList{};
 
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 

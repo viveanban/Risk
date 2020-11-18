@@ -41,8 +41,6 @@ void Order::setPlayer(Player *player) {
     Order::player = player;
 }
 
-Order::~Order() = default;
-
 // DeployOrder ---------------------------------------------------------------------------------------------------------
 DeployOrder::DeployOrder() : DeployOrder(nullptr) {}
 
@@ -232,7 +230,7 @@ bool AdvanceOrder::issue() {
 
     targetTerritory = territoriesToChooseFrom.at(0);
 
-    // Determine number of armies to advance
+    // Determine number of armies to advance TODO: use priority, investiagte if corectly updated and why priority is < 0 sometimes
     if (sourceTerritory->getPriority() > 0 && sourceTerritory->getUnitNbr() > 0) {
         numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
     } else {
@@ -638,6 +636,7 @@ void OrdersList::sortOrderListByPriority() {
 OrdersList::~OrdersList() {
     for (auto o: orderList) {
         delete o;
+        cout << "deleted order" << endl;
         o = nullptr;
     }
     orderList.clear();

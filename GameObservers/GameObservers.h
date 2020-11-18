@@ -44,8 +44,6 @@ public:
 
     GameState &operator=(const GameState &original);
 
-    virtual ~GameState();
-
     void updateGameState(Player *player, Phase phase, Order *order, Card *card);
 
     void setCurrentPlayer(Player *currentPlayer);
