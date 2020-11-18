@@ -101,9 +101,10 @@ Deck::Deck(const Deck &original) {
 Deck::~Deck() {
     for (auto p : cards) {
         delete p;
-        cout << "deleted card in deck" << endl;
         p = nullptr;
+        cout << "deleted card in deck" << endl;
     }
+    cards.clear();
 }
 
 Deck &Deck::operator=(const Deck &otherDeck) {
@@ -165,10 +166,9 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 }
 
 Hand::~Hand() {
-    for (auto p : cards) {
-        cout << "deleted card in hand" << endl;
-        delete p;
-        p = nullptr;
+    for (Card* card : cards) {
+        removeCard(card);
+        cout << "put back card in hand back in deck" << endl;
     }
 }
 

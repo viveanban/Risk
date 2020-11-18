@@ -173,14 +173,7 @@ GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlaye
                                            gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
-    delete map;
-    cout << "deleted map" << endl;
-    delete deck;
-    cout << "deleted deck" << endl;
-    delete gameState;
-    cout << "deleted gamestate" << endl;
-
-    for (auto player: players) {
+    for (auto player: GameEngine::getInstance()->getPlayers()) { // TODO: maybe rethink our design b/c we got mixed up with the players list in GameInit and in GameEngine.. the updated list of players is the one in GameEngine
         delete player;
         player = nullptr;
     }
@@ -191,9 +184,17 @@ GameInitialization::~GameInitialization() {
     Player::neutralPlayer = nullptr;
     cout << "deleted neutral player" << endl;
 
-    map = nullptr;
-    deck = nullptr;
+    delete gameState;
     gameState = nullptr;
+    cout << "deleted gamestate" << endl;
+
+    delete deck;
+    deck = nullptr;
+    cout << "deleted deck" << endl;
+
+    delete map;
+    map = nullptr;
+    cout << "deleted map" << endl;
 }
 
 GameInitialization &GameInitialization::operator=(const GameInitialization &otherGameInitialization) {
@@ -337,7 +338,7 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-        removePlayersWithoutTerritoriesOwned(); // TODO: need to put cards back in deck before being removed?
+        removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
         counter++;
     }

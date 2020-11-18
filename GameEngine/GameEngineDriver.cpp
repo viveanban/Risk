@@ -16,4 +16,6 @@ int main() {
     gameEngine->mainGameLoop();
 
     delete gameEngine;
+
+    return 0;
 }
