@@ -48,7 +48,8 @@ void PhaseObserver::update() {
     if (currentGameState->getCurrentPlayer() != nullptr) {
         displayPhaseUpdates();
     } else {
-        cout << "ERROR OCCURED WHILE TRYING TO UPDATE PHASE OBSERVER. NULL VALUES FOUND" << endl;
+        cout << "Error occured while trying to update phase observer. Null value was found!" << endl;
+
     }
 }
 
@@ -219,12 +220,15 @@ void PhaseObserver::printAirliftOrder(AirliftOrder *pOrder) {
 void PhaseObserver::printNegotiateOrder(NegotiateOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a Negotiate order with " <<
+            cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                 << " issued a Negotiate order using a Diplomacy card with " <<
                  pOrder->getTargetPlayer()->getPlayerName() << endl;
             break;
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed a Negotiate order with " <<
                  pOrder->getTargetPlayer()->getPlayerName() << endl;
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " and "
+                 << pOrder->getTargetPlayer()->getPlayerName() << " cannot attack each other for this turn." << endl;
             break;
         default:
             break;
@@ -299,9 +303,7 @@ GameState &GameState::operator=(const GameState &original) {
 }
 
 GameState::~GameState() {
-    delete players;
-    delete currentPlayer;
-    players = nullptr;
+    players->clear();
     currentPlayer = nullptr;
 }
 

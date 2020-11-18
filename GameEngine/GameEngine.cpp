@@ -170,17 +170,8 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0) {
-    gameState = new GameState(0, nullptr, nullptr, reinforcement);
-}
-
-GameState *GameInitialization::getGameState() const {
-    return gameState;
-}
-
-void GameInitialization::setGameState(GameState *gameState) {
-    GameInitialization::gameState = gameState;
-}
+GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0),
+                                           gameState(new GameState(0, nullptr, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
     delete map;
@@ -191,6 +182,7 @@ GameInitialization::~GameInitialization() {
         delete player;
         player = nullptr;
     }
+    players.clear();
     map = nullptr;
     deck = nullptr;
     gameState = nullptr;
@@ -224,6 +216,10 @@ std::ostream &operator<<(ostream &stream, GameInitialization &gameInitialization
                   << "Statistic Observer on: " << boolalpha << gameInitialization.isStatisticsObserver() << endl
                   << "Phase Observer on: " << boolalpha << gameInitialization.isPhaseObserver() << endl
                   << "Deck: " << gameInitialization.getDeck() << endl;
+}
+
+GameState *GameInitialization::getGameState() const {
+    return gameState;
 }
 
 //GAME STARTUP PHASE

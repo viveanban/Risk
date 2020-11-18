@@ -385,8 +385,7 @@ void BlockadeOrder::execute() {
         // If the target territory belongs to the player issuing the order, the number of armies on the territory is
         // doubled and the ownership of the territory is transferred to the Neutral player.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
-//        targetTerritory->setOwner(TODO: neutral player)
-
+        targetTerritory->setOwner(Player::neutralPlayer);
         //Output effect of the Blockade Order
 //        cout << "Executing blockade order." << endl;
 //        cout << "A blockade was set up on "
@@ -546,17 +545,26 @@ void NegotiateOrder::execute() {
         // set random player in your cannot attack list
         // set yourself in their cannot attack list
 //        cout << "Executing negotiate order." << endl;
-        vector<Player *> playersNotToAttack = player->getPlayersNotToAttack();
-        playersNotToAttack.push_back(targetPlayer);
+        set<Player *> playersNotToAttack = player->getPlayersNotToAttack();
+        playersNotToAttack.insert(targetPlayer);
     }
 }
 
 bool NegotiateOrder::issue() {
     //Determine a random enemy player
     vector<Player *> players = GameEngine::getInstance()->getPlayers();
+    if (players.size() < 2) {
+        cout << "Cannot play a negotiate order with only one player!" << endl;
+        return false;
+    }
+
     do {
         targetPlayer = players.at(rand() % players.size());
     } while (targetPlayer == player);
+
+    set<Player *> playersNotToAttack = player->getPlayersNotToAttack();
+    playersNotToAttack.insert(targetPlayer);
+    targetPlayer->getPlayersNotToAttack().insert(player);
 
     // Update order list
     player->getOrders()->add(this);

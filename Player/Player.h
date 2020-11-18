@@ -5,6 +5,7 @@
 #include "../Orders/Orders.h"
 #include "../Cards/Cards.h"
 #include <string>
+#include <set>
 
 using namespace std;
 
@@ -18,7 +19,7 @@ private:
     vector<Territory *> territories;
     OrdersList *orders;
     Hand *handOfCards;
-    vector<Player *> playersNotToAttack;
+    set<Player *> playersNotToAttack;
 
     void sortTerritoryList(vector<Territory *> &territoryList);
 
@@ -50,7 +51,7 @@ public:
 
     int getNumberofArmies();
 
-    vector<Player *> &getPlayersNotToAttack();
+    set<Player *> &getPlayersNotToAttack();
 
     // Setters
     void setPlayerName(string playerName);
@@ -63,7 +64,7 @@ public:
 
     void setNumberOfArmies(int numberOfArmies);
 
-    void setPlayersNotToAttack(const vector<Player *> &playersNotToAttack);
+    void setPlayersNotToAttack(const set<Player *> &playersNotToAttack);
 
     /**
     * This method returns a list of territories that can be defended.
