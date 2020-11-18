@@ -106,7 +106,7 @@ public:
      * remove card from the Hand
      * @param Pointer to the Card to be removed from the Hand
      */
-    bool removeCard(Card* card);
+    void removeCard(Card* card);
 };
 
 #endif //RISK_CARDS_H

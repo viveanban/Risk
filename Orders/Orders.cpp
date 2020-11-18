@@ -76,6 +76,7 @@ void DeployOrder::execute() {
     if (validate()) {
         // If the target territory belongs to the player that issued the deploy order (validation successful), the selected number of armies is added to the number of armies on that territory.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToDeploy);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -204,7 +205,7 @@ void AdvanceOrder::execute() {
                 // Transfer ownership
                 targetTerritory->setOwner(player);
 
-                // Pick a card TODO: remove card logic here (Viveka + Ferdou)
+                // TODO: to remove (Viveka + Ferdou)
                 Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
                 player->getHandOfCards()->addCard(drawnCard);
 
@@ -214,6 +215,7 @@ void AdvanceOrder::execute() {
                 targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() - numberOfTargetUnitsKilled);
             }
         }
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -311,6 +313,7 @@ void BombOrder::execute() {
     if (validate()) {
         // If the target belongs to an enemy player, half of the armies are removed from this territory.
         targetTerritory->setUnitNbr((int) (targetTerritory->getUnitNbr() / 2));
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -371,6 +374,7 @@ void BlockadeOrder::execute() {
         // doubled and the ownership of the territory is transferred to the Neutral player.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
         targetTerritory->setOwner(Player::neutralPlayer);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -444,6 +448,7 @@ void AirliftOrder::execute() {
         // Transfer armies to target territory
         sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfArmiesToAirlift);
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToAirlift);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -518,6 +523,7 @@ void NegotiateOrder::execute() {
     if (validate()) {
         player->getPlayersNotToAttack().insert(targetPlayer);
         targetPlayer->getPlayersNotToAttack().insert(player);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -585,31 +591,28 @@ OrdersList &OrdersList::operator=(const OrdersList &original) {
 }
 
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {
-    string result = "Orders in list:\n";
+    string result;
     for (Order *o : ordersList.orderList)
         result += o->getName() + "\n";
-    return stream << result << endl;
+    return stream << result;
 }
 
 void OrdersList::add(Order *order) {
     orderList.push_back(order);
 }
 
-// TODO: why bool? + crash (Ferdou)
-bool OrdersList::remove(Order *order) {
+void OrdersList::remove(Order *order) {
     auto position = find(orderList.begin(), orderList.end(), order);
     if (position != orderList.end()) {
         orderList.erase(position);
         delete order;
         order = nullptr;
-        return true;
+    } else {
+        cerr << "Remove order operation failed: this order does not belong in the Player's order list." << endl;
     }
-    cout << "Error deleting order." << endl;
-    return false;
 }
 
-// TODO: why bool? + crash (Ferdou)
-bool OrdersList::move(Order *order, int destination) {
+void OrdersList::move(Order *order, int destination) {
     if (destination < orderList.size()) {
         auto oldPosition = find(orderList.begin(), orderList.end(), order);
         const int oldIndex = distance(orderList.begin(), oldPosition);
@@ -618,11 +621,10 @@ bool OrdersList::move(Order *order, int destination) {
             Order *copy = order;
             orderList.erase(orderList.begin() + oldIndex);
             orderList.insert(orderList.begin() + destination, copy);
-            return true;
         }
+    } else {
+        cerr << "Move order operation failed, please check indexes." << endl;
     }
-    cout << "Error moving order, please check indexes." << endl;
-    return false;
 }
 
 vector<Order *> &OrdersList::getOrderList() {

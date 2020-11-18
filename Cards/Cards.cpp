@@ -63,7 +63,7 @@ void Card::setType(Card::CardType type) {
  */
 Deck::Deck(int size) {
     for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < (size/5); j++) {
+        for (int j = 0; j < (size / 5); j++) {
             switch (i) {
                 case 0:
                     cards.push_back(new Card(Card::bomb));
@@ -84,6 +84,7 @@ Deck::Deck(int size) {
         }
     }
     shuffle(cards.begin(), cards.end(), std::mt19937(std::random_device()()));
+
 }
 
 Deck::Deck(const Deck &original) {
@@ -109,8 +110,20 @@ Deck &Deck::operator=(const Deck &otherDeck) {
 }
 
 std::ostream &operator<<(std::ostream &stream, const Deck &d) {
-    return stream << "Information on Deck object:" << endl
-                  << "Number of cards in deck: " << d.getCards().size() << endl;
+    map<Card::CardType, int> deckDictionary;
+    const char *cardTypeName[] = {"Bomb", "Reinforcement", "Blockade", "Airlift", "Diplomacy"};
+
+    stream << "-----------------------" << endl;
+    stream << "Information on Deck object:" << endl
+           << "Number of cards in the deck: " << d.getCards().size() << endl;
+    for (auto c: d.getCards()) {
+        deckDictionary[c->getType()]++;
+    }
+    for (auto elem : deckDictionary) {
+        stream << cardTypeName[elem.first] << ": " << elem.second << endl;
+    }
+    stream << "-----------------------" << endl;
+    return stream;
 }
 
 const vector<Card *> &Deck::getCards() const {
@@ -154,7 +167,7 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 }
 
 Hand::~Hand() {
-    for (Card* card : cards) {
+    for (Card *card : cards) {
         removeCard(card);
         cout << "Put back card in Deck" << endl;
     }
@@ -168,17 +181,14 @@ void Hand::addCard(Card *card) {
     cards.push_back(card);
 }
 
-// TODO: remove bool (Ferdou)
-bool Hand::removeCard(Card* card) {
+void Hand::removeCard(Card* card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
         GameEngine::getInstance()->getDeck()->addCard(card);
         cards.erase(position);
-        return true;
+    } else {
+        cerr << "Remove card operation failed: this card does not belong in the Player's hand." << endl;
     }
-    cout << "Error removing card from hand." << endl;
-    // TODO: crash (Ferdou)
-    return false;
 }
 
 Card *Hand::getNextCard() {

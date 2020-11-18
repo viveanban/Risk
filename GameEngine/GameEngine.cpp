@@ -22,8 +22,8 @@ void GameEngine::initializeGame() {
     selectPlayerNumber();
     setupObservers();
     setupPlayers();
-    this->deck = new Deck(
-            50); // TODO: print out that 50 cards are created and show that there's every type of card in the deck (Tarek)
+    this->deck = new Deck(50);
+    cout << *deck;
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
@@ -89,12 +89,13 @@ int GameEngine::isRegularFile(const char *path) {
 
 void GameEngine::selectPlayerNumber() {
     int numPlayerTmp = -1;
-    cout << "The game supports up to 5 players with a minimum of 2."
+    int maxPlayerNumber = std::min( (int)map->getTerritoryList().size(), 5);
+    cout << "The game supports up to "<< maxPlayerNumber <<" players with a minimum of 2."
             " Please input the desired number of players" << endl;
     numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
-    while (numPlayerTmp < 2 or numPlayerTmp > 5) {
-        cout << "This does not look like a number between 2 to 5. "
-                "The game supports up to 5 players with a minimum of 2." << endl <<
+    while (numPlayerTmp < 2 or numPlayerTmp > maxPlayerNumber) {
+        cout << "This does not look like a number between 2 to " << maxPlayerNumber <<
+                ". The game supports up to 5 players with a minimum of 2." << endl <<
              "Please input the desired number of players" << endl;
         numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     }
@@ -289,7 +290,12 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
+
         // TODO: give cards to those who conquered stuff (IMPORTANT) --> save a vector<Player*> with state before and after execution and compare the territories size befrore and after. If size increased = conquered something. Then, give card. (VivekA + FERODU)
+//        // Pick a card
+//        Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
+//        player->getHandOfCards()->addCard(drawnCard);
+//
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
         counter++;
@@ -335,8 +341,7 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                    if (phaseObserverActive)
-                        cout << player->getPlayerName() << " is done issuing orders!" << endl; // TODO: move this to the phase observer and remove if statement (Tarek)
+                    gameState->updateGameState(player, issuing_orders, nullptr, nullptr);
                 }
             }
         }
@@ -344,9 +349,11 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
-    // Prioritize the orders TODO: print that list not using phase observer? (Viveka)
+    // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
+        cout << endl;
+        cout << player->getPlayerName() << "\'s order list:\n"<<*player->getOrders() << endl;
     }
 
     // Execute all deploy orders
@@ -358,7 +365,6 @@ void GameEngine::executeOrdersPhase() {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
                     deployOrder->execute();
-                    gameState->updateGameState(player, orders_execution, deployOrder,nullptr);
                     player->getOrders()->remove(deployOrder);
                 } else {
                     playersWithNoMoreDeployOrderstoExecute.insert(player);
@@ -376,7 +382,6 @@ void GameEngine::executeOrdersPhase() {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
                 orderList[0]->execute();
-                gameState->updateGameState(player, orders_execution, orderList[0], nullptr);
                 player->getOrders()->remove(orderList[0]);
                 if (winnerExists())
                     return;
