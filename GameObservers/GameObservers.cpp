@@ -87,7 +87,6 @@ void PhaseObserver::displaySpecialInformation() {
             printReinforcementinfo();
             break;
         case issuing_orders:
-            printToDefendToAttack();
         case orders_execution:
             printOrderInfo(currentGameState->getCurrentOrder(), currentGameState->getCurrentCard());
             break;
@@ -148,6 +147,7 @@ void PhaseObserver::printBombOrder(BombOrder *pOrder) {
 void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
+            printToDefendToAttack();
             if (pOrder->getAdvanceOrderType() == AdvanceOrderType::attack)
                 cout << currentGameState->getCurrentPlayer()->getPlayerName()
                      << " issued an advance order, attacking armies in "
