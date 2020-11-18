@@ -41,7 +41,7 @@ public:
      */
     virtual void execute() = 0;
 
-    virtual void issue() = 0;
+    virtual bool issue() = 0;
 
     const string &getDescription() const;
 
@@ -63,7 +63,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
 private:
     Territory *targetTerritory;
@@ -95,7 +95,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
 private:
     Territory *sourceTerritory;
@@ -129,7 +129,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
 private:
     Territory* targetTerritory;
@@ -154,7 +154,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
 private:
     Territory *targetTerritory;
@@ -180,7 +180,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
 private:
     Territory *sourceTerritory;
@@ -213,7 +213,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
 private:
     Player* targetPlayer;

@@ -274,6 +274,7 @@ void GameState::setTotalTerritories(int totalTerritories) {
     GameState::totalTerritories = totalTerritories;
 }
 
+// TODO: Handle a nullptr order
 void GameState::updateGameState(Player *player, Phase phase, Order *order, Card *card) {
     setCurrentPhase(phase);
     setCurrentPlayer(player);

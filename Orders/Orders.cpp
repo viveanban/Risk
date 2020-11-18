@@ -74,15 +74,16 @@ void DeployOrder::execute() {
     }
 }
 
-void DeployOrder::issue() {
+bool DeployOrder::issue() {
     // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
     numberOfArmiesToDeploy = (rand() % player->getNumberofArmies()) + 1;
 
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
-        return;
+        cout << player->getPlayerName() << " could not issue order: " << getDescription()
+             << " because this player has no territories to defend." << endl;
+        return false;
     }
 
     targetTerritory = territoriesToDefend.at(0);
@@ -95,6 +96,8 @@ void DeployOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    return true;
 }
 
 Territory *DeployOrder::getTargetTerritory() const {
@@ -211,7 +214,7 @@ void AdvanceOrder::execute() {
     }
 }
 
-void AdvanceOrder::issue() {
+bool AdvanceOrder::issue() {
     // Determine src territory
     sourceTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
 
@@ -220,8 +223,9 @@ void AdvanceOrder::issue() {
     vector<Territory *> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(
             sourceTerritory);
     if (territoriesToChooseFrom.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
-        return;
+        cout << player->getPlayerName() << " could not issue order: " << getDescription()
+             << " because this player has no territories to " << (attack ? "attack" : "transfer") << endl;
+        return false;
     }
 
     targetTerritory = territoriesToChooseFrom.at(0);
@@ -239,6 +243,8 @@ void AdvanceOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    return true;
 }
 
 bool AdvanceOrder::kill(int probabilityToKill) {
@@ -302,18 +308,20 @@ void BombOrder::execute() {
     }
 }
 
-void BombOrder::issue() {
+bool BombOrder::issue() {
     // Randomly determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
     if (territoriesToAttack.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
-        return;
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << " because this player has no territories to attack." << endl;
+        return false;
     }
 
     targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
 
     // Update order list
     player->getOrders()->add(this);
+
+    return true;
 }
 
 Territory *BombOrder::getTargetTerritory() const {
@@ -361,18 +369,20 @@ void BlockadeOrder::execute() {
     }
 }
 
-void BlockadeOrder::issue() {
+bool BlockadeOrder::issue() {
     // Determine target territory to be the player's territory with the most army units
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
-        return;
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << " because this player has no territories to defend." << endl;
+        return false;
     }
 
     targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
 
     // Update order list
     player->getOrders()->add(this);
+
+    return true;
 }
 
 Territory *BlockadeOrder::getTargetTerritory() const {
@@ -435,11 +445,11 @@ void AirliftOrder::execute() {
     }
 }
 
-void AirliftOrder::issue() {
+bool AirliftOrder::issue() {
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
-        return;
+        cout << player->getPlayerName() << " could not issue order: " << getDescription() << " because this player has no territories to defend." << endl;
+        return false;
     }
 
     // Determine src territory
@@ -457,6 +467,8 @@ void AirliftOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    return true;
 }
 
 Territory *AirliftOrder::getSourceTerritory() const {
@@ -498,7 +510,7 @@ void NegotiateOrder::execute() {
     }
 }
 
-void NegotiateOrder::issue() {
+bool NegotiateOrder::issue() {
     //Determine a random enemy player
     vector<Player *> players = GameEngine::getInstance()->getPlayers();
     do {
@@ -507,6 +519,8 @@ void NegotiateOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    return true;
 }
 
 Player *NegotiateOrder::getTargetPlayer() const {

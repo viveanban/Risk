@@ -114,6 +114,7 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
 }
 
 // TODO: sprinkle move/remove()
+// TODO: if unsuccessful, should we let the player try issuing another order
 bool Player::issueOrder() {
 
     if (numberOfArmies > 0) {
@@ -132,8 +133,13 @@ bool Player::issueOrder() {
 
         // Deploy order
         Order *deployOrder = new DeployOrder(this);
-        deployOrder->issue();
-        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, deployOrder, nullptr);
+        bool successful = deployOrder->issue();
+        if(!successful) {
+            delete deployOrder;
+            deployOrder = nullptr;
+        } else {
+            GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, deployOrder, nullptr);
+        }
 
         return true;
     } else { // Other orders
@@ -143,8 +149,13 @@ bool Player::issueOrder() {
             bool advance = handOfCards->getCards().empty() || rand() % 2;
             if (advance) {
                 AdvanceOrder *advanceOrder = new AdvanceOrder(this);
-                advanceOrder->issue();
-                GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, advanceOrder, nullptr);
+                bool successful = advanceOrder->issue();
+                if(!successful) {
+                    delete advanceOrder;
+                    advanceOrder = nullptr;
+                } else {
+                    GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, advanceOrder, nullptr);
+                }
             } else {
                 // Pick a card
                 Card *cardChosen = handOfCards->getNextCard();
@@ -153,10 +164,15 @@ bool Player::issueOrder() {
                 // Play card
                 Order *order = cardChosen->play();
                 if (order) {
-                    order->issue();
-                    GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, order, cardChosen);
-                    orders->add(order);
-                    handOfCards->removeCard(cardChosen);
+                    bool successful = order->issue();
+                    if(!successful) {
+                        delete order;
+                        order = nullptr;
+                    } else {
+                        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, order, cardChosen);
+                        orders->add(order);
+                        handOfCards->removeCard(cardChosen);
+                    }
                 }
             }
         }
