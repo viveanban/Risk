@@ -4,8 +4,6 @@
 #include "./../Player/Player.h"
 #include "../GameEngine/GameEngine.h"
 
-// TODO: evertime you negotiate with territory, you cannot bomb them, attack them, etc.
-
 using namespace std;
 
 // Superclass: Order ---------------------------------------------------------------------------------------------------
@@ -167,8 +165,6 @@ bool AdvanceOrder::validate() {
 
 void AdvanceOrder::execute() {
     if (validate()) {
-        cout << "Executing advance order." << endl;
-
         //Transfer army units from src to trg territory if both are owned by issuing player
         if (sourceTerritory->getOwner() == player && targetTerritory->getOwner() == player) {
             sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfArmiesToAdvance);

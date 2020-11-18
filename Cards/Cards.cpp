@@ -178,7 +178,6 @@ void Hand::setCards(const vector<Card *> &cards) {
 }
 
 void Hand::addCard(Card *card) {
-    cout << "Adding card to hand" << endl;
     cards.push_back(card);
 }
 

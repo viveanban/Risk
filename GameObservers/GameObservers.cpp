@@ -166,7 +166,6 @@ void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName()
                  << ". " << currentGameState->getCurrentPlayer()->getPlayerName() << " now has "
-                 //TODO: WHy is getUnitNbr back to 0 ???
                  << pOrder->getTargetTerritory()->getUnitNbr() << " armies on this territory." << endl;
             break;
         default:
@@ -278,7 +277,7 @@ void GameState::setTotalTerritories(int totalTerritories) {
     GameState::totalTerritories = totalTerritories;
 }
 
-// TODO: Handle a nullptr order
+// TODO: Handle a nullptr order??
 void GameState::updateGameState(Player *player, Phase phase, Order *order, Card *card) {
     setCurrentPhase(phase);
     setCurrentPlayer(player);

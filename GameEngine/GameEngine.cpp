@@ -304,7 +304,6 @@ void GameEngine::assignTerritoriesToPlayers() {
         // Remove it from available territories
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // Assign using Round Robin Method
-        //TODO: Are the territories suupposed to be assigned in RR or is it the players ...
         territory->setOwner(players.at(territoriesAssigned % players.size()));
         cout << "Assigning territory " << territory->getTerritoryName() << " to "
              << players.at(territoriesAssigned % players.size())->getPlayerName() << endl;
@@ -340,7 +339,7 @@ int GameEngine::getInitialArmyNumber() {
 void GameEngine::mainGameLoop() {
     static int counter = 1;
     while (!winnerExists()) {
-        cout << "=================ROUND " << counter << "==================" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ROUND " << counter << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
