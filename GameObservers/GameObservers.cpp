@@ -103,7 +103,10 @@ void PhaseObserver::printOrderInfo(Order *order, Card *card) {
     if (card != nullptr && card->getType() == Card::CardType::reinforcement) {
         printReinforcementCardInfo();
         return;
-    } else if (order == nullptr) {
+    } else if (order == nullptr && card == nullptr && currentGameState->getCurrentPhase() == issuing_orders) {
+        cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
+        return;
+    } else if (order == nullptr){
         return;
     } else if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
         printDeployOrderInfo(deployOrder);
