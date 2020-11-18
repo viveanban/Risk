@@ -20,7 +20,8 @@ void GameInitialization::initializeGame() {
     selectPlayerNumber();
     setupObservers();
     setupPlayers();
-    this->deck = new Deck(50); // TODO: print out that 50 cards are created and show that there's every type of card in the deck (Tarek)
+    this->deck = new Deck(50);
+    cout << *deck;
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
@@ -173,8 +174,6 @@ GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlaye
                                            gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
-    // TODO: we need to delete observers (Tarek)
-
     for (auto player: GameEngine::getInstance()->getPlayers()) { // TODO: (merge everything together) (Abhijit)
         delete player;
         player = nullptr;
@@ -391,8 +390,7 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                    if (phaseObserverActive)
-                        cout << player->getPlayerName() << " is done issuing orders!" << endl; // TODO: move this to the phase observer and remove if statement (Tarek)
+                    gameState->updateGameState(player, issuing_orders, nullptr, nullptr);
                 }
             }
         }
@@ -426,7 +424,6 @@ void GameEngine::executeOrdersPhase() {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
                     deployOrder->execute();
-                    gameState->updateGameState(player, orders_execution, deployOrder,nullptr);
                     player->getOrders()->remove(deployOrder);
                 } else {
                     playersWithNoMoreDeployOrderstoExecute.insert(player);
@@ -444,7 +441,6 @@ void GameEngine::executeOrdersPhase() {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
                 orderList[0]->execute();
-                gameState->updateGameState(player, orders_execution, orderList[0], nullptr);
                 player->getOrders()->remove(orderList[0]);
                 if (winnerExists())
                     return;

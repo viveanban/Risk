@@ -76,6 +76,7 @@ void DeployOrder::execute() {
     if (validate()) {
         // If the target territory belongs to the player that issued the deploy order (validation successful), the selected number of armies is added to the number of armies on that territory.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToDeploy);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -209,6 +210,7 @@ void AdvanceOrder::execute() {
                 targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() - numberOfTargetUnitsKilled);
             }
         }
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -306,6 +308,7 @@ void BombOrder::execute() {
     if (validate()) {
         // If the target belongs to an enemy player, half of the armies are removed from this territory.
         targetTerritory->setUnitNbr((int) (targetTerritory->getUnitNbr() / 2));
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -366,6 +369,7 @@ void BlockadeOrder::execute() {
         // doubled and the ownership of the territory is transferred to the Neutral player.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
         targetTerritory->setOwner(Player::neutralPlayer);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -439,6 +443,7 @@ void AirliftOrder::execute() {
         // Transfer armies to target territory
         sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfArmiesToAirlift);
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToAirlift);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -508,6 +513,7 @@ void NegotiateOrder::execute() {
     if (validate()) {
         player->getPlayersNotToAttack().insert(targetPlayer);
         targetPlayer->getPlayersNotToAttack().insert(player);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
