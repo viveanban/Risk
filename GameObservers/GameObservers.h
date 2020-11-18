@@ -140,6 +140,8 @@ private:
 
     void printReinforcementinfo() const;
 
+    void printDrawCardAfterExecution();
+
     void printReinforcementCardInfo();
 
     void printToDefendToAttack();

@@ -32,6 +32,8 @@ public:
 
     CardType getType() const;
 
+    string getTypeName();
+
     void setType(CardType type);
 
     /**

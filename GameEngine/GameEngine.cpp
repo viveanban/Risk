@@ -415,6 +415,8 @@ void GameEngine::executeOrdersPhase() {
         territoryIdsPerPlayerBeforeExecution.push_back(territoryIdsOfPlayer);
     }
 
+    cout << "territories before execution are saved!" << territoryIdsPerPlayerBeforeExecution.size() << endl;
+
     // Execute all deploy orders
     set<Player *> playersWithNoMoreDeployOrderstoExecute;
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
@@ -457,7 +459,7 @@ void GameEngine::executeOrdersPhase() {
         vector<int> territoryIdsBeforeExecution = territoryIdsPerPlayerBeforeExecution.at(index);
 
         for(Territory* territory: player->getTerritories()) {
-            auto position = find(territoryIdsBeforeExecution.begin(), territoryIdsBeforeExecution.begin(), territory->getTerritoryId());
+            auto position = find(territoryIdsBeforeExecution.begin(), territoryIdsBeforeExecution.end(), territory->getTerritoryId());
             if (position == territoryIdsBeforeExecution.end()) {
                 hasConqueredAtLeastOneTerritory = true;
                 break;
@@ -466,9 +468,9 @@ void GameEngine::executeOrdersPhase() {
 
         if(hasConqueredAtLeastOneTerritory) {
             // Pick a card
-            cout << "CARD HAS BEEN GIVEN" << endl;
             Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
             player->getHandOfCards()->addCard(drawnCard);
+            gameState->updateGameState(player, orders_execution, nullptr, drawnCard);
         }
     }
 }

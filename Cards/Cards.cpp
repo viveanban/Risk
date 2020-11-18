@@ -54,6 +54,22 @@ Card::CardType Card::getType() const {
     return type;
 }
 
+string Card::getTypeName() {
+    switch (type) {
+        case reinforcement:
+            return "reinforcement";
+        case diplomacy:
+            return "diplomacy";
+        case bomb:
+            return "bomb";
+        case blockade:
+            return "blockade";
+        case airlift:
+            return "airlift";
+    }
+    return "unknown";
+}
+
 void Card::setType(Card::CardType type) {
     Card::type = type;
 }
