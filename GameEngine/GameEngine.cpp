@@ -395,9 +395,10 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
-    // Prioritize the orders TODO: print that list not using phase observer? (Viveka)
+    // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
+        cout << player->getPlayerName() << "\'s order list:\n"<<*player->getOrders() << endl;
     }
 
     // Execute all deploy orders

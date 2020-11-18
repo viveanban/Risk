@@ -580,10 +580,10 @@ OrdersList &OrdersList::operator=(const OrdersList &original) {
 }
 
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {
-    string result = "Orders in list:\n";
+    string result;
     for (Order *o : ordersList.orderList)
         result += o->getName() + "\n";
-    return stream << result << endl;
+    return stream << result;
 }
 
 void OrdersList::add(Order *order) {
