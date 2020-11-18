@@ -95,8 +95,6 @@ public:
 
     explicit StatisticsObserver(GameState *currGameState);
 
-    ~StatisticsObserver();
-
     StatisticsObserver(const StatisticsObserver &original);
 
     StatisticsObserver &operator=(const StatisticsObserver &otherObserver);
@@ -109,8 +107,6 @@ public:
     PhaseObserver();
 
     explicit PhaseObserver(GameState *currGameState);
-
-    ~PhaseObserver();
 
     PhaseObserver(const PhaseObserver &original);
 

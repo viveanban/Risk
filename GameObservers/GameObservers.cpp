@@ -31,22 +31,17 @@ list<Observer *> *Subject::getObservers() const {
     return observers;
 };
 
-//PHASE OBSERVER
+// PHASE OBSERVER
 PhaseObserver::PhaseObserver() : currentGameState{} {}
 
 PhaseObserver::PhaseObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
-PhaseObserver::~PhaseObserver() {
-    delete currentGameState;
-    currentGameState = nullptr;
-}
-
 PhaseObserver::PhaseObserver(const PhaseObserver &original) {
-    currentGameState = new GameState(*original.currentGameState);
+    currentGameState = original.currentGameState;
 }
 
 PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
-    currentGameState = new GameState(*otherObserver.currentGameState);
+    currentGameState = otherObserver.currentGameState;
     return *this;
 }
 
@@ -374,17 +369,12 @@ StatisticsObserver::StatisticsObserver() : currentGameState{} {};
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
-StatisticsObserver::~StatisticsObserver() {
-    delete currentGameState;
-    currentGameState = nullptr;
-}
-
 StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {
-    currentGameState = new GameState(*original.currentGameState);
+    currentGameState = original.currentGameState;
 }
 
 StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
-    currentGameState = new GameState(*otherObserver.currentGameState);
+    currentGameState = otherObserver.currentGameState;
     return *this;
 }
 
