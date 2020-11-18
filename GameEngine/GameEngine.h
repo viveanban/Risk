@@ -104,6 +104,7 @@ public:
  */
 class GameEngine {
 private:
+    GameInitialization *gameInitialization;
     vector<Player *> players;
     Map *map;
     Deck *deck;

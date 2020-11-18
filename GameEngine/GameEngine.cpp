@@ -21,6 +21,8 @@ void GameInitialization::initializeGame() {
     setupObservers();
     setupPlayers();
     this->deck = new Deck(50);
+    gameState->setPlayers(&players);
+    gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
 void GameInitialization::selectMap() {
@@ -224,16 +226,19 @@ GameState *GameInitialization::getGameState() const {
 // ---------GAME ENGINE---------------
 GameEngine *GameEngine::gameEngine = nullptr;
 
-GameEngine::GameEngine() : players(), map(nullptr), deck(nullptr) {}
+GameEngine::GameEngine()
+        : players(), map(nullptr), deck(nullptr), gameState{nullptr}, gameInitialization(nullptr),
+          phaseObserverActive{} {}
 
 GameEngine *GameEngine::getInstance() {
     if (gameEngine == nullptr) {
         gameEngine = new GameEngine();
-        GameInitialization gameInitialization;
-        gameInitialization.initializeGame();
-        gameEngine->deck = gameInitialization.getDeck();
-        gameEngine->map = gameInitialization.getMap();
-        gameEngine->players = gameInitialization.getPlayers();
+        gameEngine->gameInitialization = new GameInitialization();
+        gameEngine->gameInitialization->initializeGame();
+        gameEngine->deck = gameEngine->gameInitialization->getDeck();
+        gameEngine->map = gameEngine->gameInitialization->getMap();
+        gameEngine->players = gameEngine->gameInitialization->getPlayers();
+        gameEngine->gameState = gameEngine->gameInitialization->getGameState();
     }
     return gameEngine;
 }
@@ -248,7 +253,6 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
 
 GameEngine::~GameEngine() {
     players.clear();
-
 }
 
 // Startup phase logic
@@ -285,7 +289,7 @@ void GameEngine::assignTerritoriesToPlayers() {
         // Assign using Round Robin Method
         territory->setOwner(players.at(territoriesAssigned % players.size()));
         cout << "assigning territory " << territory->getTerritoryName() << " to "
-             << players.at(territoriesAssigned % players.size()) << endl;
+             << players.at(territoriesAssigned % players.size())->getPlayerName() << endl;
         territoriesAssigned++;
     }
     cout << "All territories Assigned." << endl;
@@ -319,7 +323,6 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
     }
@@ -329,9 +332,9 @@ void GameEngine::mainGameLoop() {
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        //TODO: is the armies in the reinformcement pool incremented each turn or is it calculated from scratch?
+        //TODO: is the armies in the reinforcement pool incremented each turn or is it calculated from scratch?
         player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
-        gameState->updateGameState(player, reinforcement);
+        gameState->updateGameState(player, reinforcement, nullptr, nullptr);
     }
 }
 
@@ -364,9 +367,6 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder())
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                else {
-                    gameState->updateGameState(player, issuing_orders);
-                }
             }
         }
     }
@@ -379,7 +379,7 @@ void GameEngine::executeOrdersPhase() {
     }
 
     // Execute all deploy orders
-    vector<Player *> playersWithNoMoreDeployOrderstoExecute;
+    set<Player *> playersWithNoMoreDeployOrderstoExecute;
     while (playersWithNoMoreDeployOrderstoExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
@@ -387,26 +387,28 @@ void GameEngine::executeOrdersPhase() {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
                     deployOrder->execute();
-                    gameState->updateGameState(player, orders_execution);
+                    gameState->updateGameState(player, orders_execution, deployOrder,nullptr);
                     player->getOrders()->remove(deployOrder);
                 } else {
-                    playersWithNoMoreDeployOrderstoExecute.push_back(player);
+                    playersWithNoMoreDeployOrderstoExecute.insert(player);
                 }
+            } else {
+                playersWithNoMoreDeployOrderstoExecute.insert(player);
             }
         }
     }
 
     // Execute the rest of the orders
-    vector<Player *> playersWithNoMoreOrdersToExecute;
+    set<Player *> playersWithNoMoreOrdersToExecute;
     while (playersWithNoMoreOrdersToExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
                 orderList[0]->execute();
-                gameState->updateGameState(player, orders_execution);
+                gameState->updateGameState(player, orders_execution, orderList[0],nullptr);
                 player->getOrders()->remove(orderList[0]);
             } else {
-                playersWithNoMoreOrdersToExecute.push_back(player);
+                playersWithNoMoreOrdersToExecute.insert(player);
             }
         }
     }

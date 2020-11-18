@@ -30,10 +30,12 @@ private:
 
 class GameState : public Subject {
 private:
-    int totalTerritories;
     vector<Player *> *players;
     Player *currentPlayer;
+    Order *currentOrder;
+    Card *currentCard;
     Phase currentPhase;
+    int totalTerritories;
 public:
     GameState();
 
@@ -45,7 +47,7 @@ public:
 
     virtual ~GameState();
 
-    void updateGameState(Player *player, Phase phase);
+    void updateGameState(Player *player, Phase phase, Order *order, Card *card);
 
     void setPlayers(vector<Player *> *players);
 
@@ -60,6 +62,16 @@ public:
     const vector<Player *> *getPlayers() const;
 
     int getTotalTerritories() const;
+
+    Order *getCurrentOrder() const;
+
+    void setCurrentOrder(Order *currentOrder);
+
+    Card *getCurrentCard() const;
+
+    void setCurrentCard(Card *currentCard);
+
+    void setTotalTerritories(int totalTerritories);
 };
 
 class Observer {
@@ -112,7 +124,7 @@ private:
 
     void displaySpecialInformation();
 
-    void printOrderInfo(Order *order);
+    void printOrderInfo(Order *order, Card *card);
 
     void printBombOrder(BombOrder *pOrder);
 
@@ -127,6 +139,8 @@ private:
     void printNegotiateOrder(NegotiateOrder *pOrder);
 
     void printReinforcementinfo() const;
+
+    void printReinforcementCardInfo();
 };
 
 #endif //RISK_GAMEOBSERVERS_H

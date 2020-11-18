@@ -124,17 +124,16 @@ bool Player::issueOrder() {
                 if (playReinforcementCard) {
                     numberOfArmies += numberOfArmies + 5;
                     handOfCards->removeCard(card);
-                    if (GameEngine::getInstance()->isPhaseObserverActive())
-                        cout << getPlayerName()
-                             << " played a reinforcement card and got +5 armies added to his army pool"
-                             << endl;
+                    GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, nullptr, card);
                 }
                 break;
             }
         }
 
         // Deploy order
-        (new DeployOrder(this))->issue();
+        Order *deployOrder = new DeployOrder(this);
+        deployOrder->issue();
+        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, deployOrder, nullptr);
 
         return true;
     } else { // Other orders
@@ -143,7 +142,9 @@ bool Player::issueOrder() {
         if (continueIssuingOrders) {
             bool advance = rand() % 2;
             if (advance) {
-                (new AdvanceOrder(this))->issue();
+                AdvanceOrder *advanceOrder = new AdvanceOrder(this);
+                advanceOrder->issue();
+                GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, advanceOrder, nullptr);
             } else {
                 // Pick a card
                 Card *cardChosen = handOfCards->getNextCard();
@@ -154,6 +155,7 @@ bool Player::issueOrder() {
                 if(order) {
                     order->setPlayer(this);
                     order->issue();
+                    GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, order, cardChosen);
                     orders->add(order);
                     handOfCards->removeCard(cardChosen);
                 }
