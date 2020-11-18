@@ -238,6 +238,7 @@ void AdvanceOrder::issue() {
 
     // Determine target territory
     bool attack = rand() % 2;
+    advanceOrderType = attack? AdvanceOrderType::attack : AdvanceOrderType::transfer;
     vector<Territory *> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(
             sourceTerritory);
     if (territoriesToChooseFrom.empty()) {
@@ -279,6 +280,10 @@ Territory *AdvanceOrder::getTargetTerritory() const {
 
 int AdvanceOrder::getNumberOfArmiesToAdvance() const {
     return numberOfArmiesToAdvance;
+}
+
+AdvanceOrderType AdvanceOrder::getAdvanceOrderType() const {
+    return advanceOrderType;
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
