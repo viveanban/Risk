@@ -1,7 +1,6 @@
 #include "GameObservers.h"
 #include <iomanip>
 #include <cmath>
-#include "./../Cards/Cards.h"
 #include "../GameEngine/GameEngine.h"
 
 // SUBJECT
@@ -339,7 +338,7 @@ void GameState::setCurrentCard(Card *currentCard) {
 }
 
 
-//STATISTICS OBSERVER
+// STATISTICS OBSERVER
 StatisticsObserver::StatisticsObserver() : currentGameState{} {};
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currentGameState(currGameState) {}

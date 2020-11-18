@@ -13,28 +13,33 @@ enum Phase {
 class Observer;
 
 class Subject {
+private:
+    list<Observer *> *observers;
+
 public:
     virtual void attach(Observer *o);
 
-    virtual void detach(Observer *o);
+    virtual void detach(Observer *o); // TODO: do we need to detach at some point?
 
     virtual void notify();
 
     Subject();
 
     ~Subject();
-
-private:
-    list<Observer *> *observers;
 };
 
 class GameState : public Subject {
 private:
     Player *currentPlayer;
+
     Order *currentOrder;
+
     Card *currentCard;
+
     Phase currentPhase;
+
     int totalTerritories;
+
 public:
     GameState();
 
@@ -73,10 +78,17 @@ public:
 };
 
 class StatisticsObserver : public Observer {
+private:
+    GameState *currentGameState;
+
+    void displayStatsUpdate();
+
+    float calculateWorldDomination(int numberOfTerritories);
+
 public:
     StatisticsObserver();
 
-    StatisticsObserver(GameState *currGameState);
+    explicit StatisticsObserver(GameState *currGameState);
 
     ~StatisticsObserver();
 
@@ -85,20 +97,13 @@ public:
     StatisticsObserver &operator=(const StatisticsObserver &otherObserver);
 
     void update() override;
-
-private:
-    GameState *currentGameState;
-
-    void displayStatsUpdate();
-
-    float calculateWorldDomination(int numberOfTerritories);
 };
 
 class PhaseObserver : public Observer {
 public:
     PhaseObserver();
 
-    PhaseObserver(GameState *currGameState);
+    explicit PhaseObserver(GameState *currGameState);
 
     ~PhaseObserver();
 
