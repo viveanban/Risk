@@ -86,7 +86,7 @@ private:
 
     bool validate() override;
 };
-
+enum AdvanceOrderType { attack, transfer };
 /**
  * Move some armies from one of the current player’s territories (source) to an adjacent territory
  * (target). If the target territory belongs to the current player, the armies are moved to the target
@@ -107,18 +107,20 @@ public:
 
     void issue() override;
 
-private:
-    Territory *sourceTerritory;
-    Territory *targetTerritory;
-    int numberOfArmiesToAdvance;
-public:
     Territory *getSourceTerritory() const;
 
     Territory *getTargetTerritory() const;
 
     int getNumberOfArmiesToAdvance() const;
 
+    AdvanceOrderType getAdvanceOrderType() const;
+
+
 private:
+    Territory *sourceTerritory;
+    Territory *targetTerritory;
+    AdvanceOrderType advanceOrderType;
+    int numberOfArmiesToAdvance;
 
     bool validate() override;
 
