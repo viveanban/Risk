@@ -400,11 +400,14 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
-    // Prioritize the orders
+    //Save territory list sizes before execution
+    vector<int> territorySizePerPlayerBeforeExecution;
+
+    // Prioritize the orders TODO: print that list not using phase observer? (Viveka)
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
-        cout << endl;
-        cout << player->getPlayerName() << "\'s order list:\n"<<*player->getOrders() << endl;
+
+        territorySizePerPlayerBeforeExecution.push_back(player->getTerritories().size()); // Push sizes in order (same order as players)
     }
 
     // Execute all deploy orders
@@ -441,6 +444,18 @@ void GameEngine::executeOrdersPhase() {
             } else {
                 playersWithNoMoreOrdersToExecute.insert(player);
             }
+        }
+    }
+
+    //Check if any territory has been conquered by player
+    for(int index = 0; index < players.size(); index++) {
+        Player* player = players.at(index);
+        if (player->getTerritories().size() > territorySizePerPlayerBeforeExecution.at(index)) {
+            cout << player->getPlayerName() << " has conquered at least 1 territory." << endl;
+
+            // Pick a card
+            Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
+            player->getHandOfCards()->addCard(drawnCard);
         }
     }
 }
