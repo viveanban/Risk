@@ -27,30 +27,24 @@ ostream &operator<<(ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
-// TODO: remove cout
 // Orders are deleted when players are deleted since they reside in the player's orders list
 Order *Card::play() {
     Order *order;
     switch (type) {
         case CardType::bomb:
             order = new BombOrder();
-            cout << "play(): played bomb " << endl;
             break;
         case CardType::reinforcement:
             order = nullptr;
-            cout << "play(): played reinforcement " << endl;
             break;
         case CardType::blockade:
             order = new BlockadeOrder();
-            cout << "play(): played blockade " << endl;
             break;
         case CardType::airlift:
             order = new AirliftOrder();
-            cout << "play(): played airlift " << endl;
             break;
         case CardType::diplomacy:
             order = new NegotiateOrder();
-            cout << "play(): played diplomacy " << endl;
             break;
     }
     return order;
@@ -174,7 +168,7 @@ void Hand::addCard(Card *card) {
     cards.push_back(card);
 }
 
-// TODO: why bool if never use this feature?
+// TODO: remove bool (Ferdou)
 bool Hand::removeCard(Card* card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
@@ -183,6 +177,7 @@ bool Hand::removeCard(Card* card) {
         return true;
     }
     cout << "Error removing card from hand." << endl;
+    // TODO: crash (Ferdou)
     return false;
 }
 

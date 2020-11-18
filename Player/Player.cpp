@@ -69,6 +69,7 @@ void Player::removeTerritory(Territory *territory) {
     }
 }
 
+// TODO: in issue phase, show those lists before actually issuing using phase observer (Tarek)
 vector<Territory *> Player::toDefend() {
     sortTerritoryList(territories);
     return territories;
@@ -116,9 +117,8 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
     });
 }
 
-// TODO: sprinkle move/remove()
-// TODO: if unsuccessful, should we let the player try issuing another order
-// TODO: maybe refactor?
+// TODO: if unsuccessful, should we let the player try issuing another order (Viveka) (LOW PRIORITY)
+// TODO: maybe refactor? extract deploy and other orders in two diff methods (Viveka)
 bool Player::issueOrder() {
 
     if (numberOfArmies > 0) {

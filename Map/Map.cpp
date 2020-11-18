@@ -329,6 +329,7 @@ bool Map::validate() {
     bool connectedContinents = isContinentSubgraphConnected();
     bool uniqueTerritories = isTerritoryContinentUnique();
 
+    // TODO: make this more descriptive (Abhijit)
     cout << "Validating Map..." << endl;
     cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
          << ", Unique Territories: " << uniqueTerritories << endl;

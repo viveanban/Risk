@@ -19,7 +19,7 @@ private:
 public:
     virtual void attach(Observer *o);
 
-    virtual void detach(Observer *o); // TODO: do we need to detach at some point?
+    virtual void detach(Observer *o); // TODO: add comment why we are nt using it (Ferdou)
 
     virtual void notify();
 
