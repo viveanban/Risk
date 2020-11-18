@@ -117,7 +117,6 @@ void PhaseObserver::printOrderInfo(Order *order, Card *card) {
     }
 }
 
-// TODO: check if Bomb is ever played (Ferdou)
 void PhaseObserver::printBombOrder(BombOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
