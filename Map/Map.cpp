@@ -196,10 +196,6 @@ vector<Territory *> &Continent::getTerritories() {
     return this->territories;
 }
 
-void Continent::setTerritories(vector<Territory *> territories) {
-    this->territories = territories;
-}
-
 /**
  * Map Class implementation
  */
@@ -246,24 +242,8 @@ std::ostream &operator<<(std::ostream &stream, Map &g) {
                   << "Number of Continents: " << g.getContinentList().size() << endl;
 }
 
-void Map::setTerritoryList(vector<Territory *> &territoryList) {
-    this->territoryList = territoryList;
-}
-
-void Map::addTerritory(Territory *territory) {
-    territoryList.push_back(territory);
-}
-
 vector<Continent *> &Map::getContinentList() {
     return this->continentList;
-}
-
-void Map::setContinentList(vector<Continent *> &continentList) {
-    this->continentList = continentList;
-}
-
-void Map::addContinent(Continent *continent) {
-    continentList.push_back(continent);
 }
 
 bool Map::isMapConnected() {
