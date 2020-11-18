@@ -385,6 +385,9 @@ void StatisticsObserver::displayStatsUpdate() {
         cout << fixed << setprecision(2) << '|' << player->getPlayerName() << setw(3) << '|'
              << " % " << playerDomination << "\t\t|" << endl;
     }
+    // Neutral Player
+    cout << fixed << setprecision(2) << '|' << "Neutral " << setw(3) << '|'
+         << " % " << calculateWorldDomination(Player::neutralPlayer->getTerritories().size()) << "\t\t|" << endl;
     for (int i = 0; i < playerDominationRatios.size(); i++) {
         if (playerDominationRatios[i] == 100.0) {
             cout << "~ CONGRATULATIONS " << currentGameState->getPlayers()->at(i)->getPlayerName()
