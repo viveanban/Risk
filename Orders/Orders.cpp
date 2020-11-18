@@ -171,7 +171,7 @@ void AdvanceOrder::execute() {
             targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToAdvance);
 
         } else { // Attack target territory
-            int numberOfTargetUnitsKilled;
+            int numberOfTargetUnitsKilled = 0;
             for (int unit = 1;
                 // Source cannot kill more than the number of armies in the target territory
                  unit <= numberOfArmiesToAdvance && numberOfTargetUnitsKilled < targetTerritory->getUnitNbr();
@@ -181,7 +181,7 @@ void AdvanceOrder::execute() {
                 if (targetUnitKilled) numberOfTargetUnitsKilled++;
             }
 
-            int numberOfSourceUnitsKilled;
+            int numberOfSourceUnitsKilled = 0;
             for (int unit = 1;
                 // Target cannot kill more than the number of armies advanced by src
                  unit <= targetTerritory->getUnitNbr() && numberOfSourceUnitsKilled < numberOfArmiesToAdvance;
@@ -234,7 +234,6 @@ bool AdvanceOrder::issue() {
 
     // Determine number of armies to advance
     if (sourceTerritory->getPriority() > 0 && sourceTerritory->getUnitNbr() > 0) {
-
         numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
     } else {
         // When issuing the advance orders, you might not have already executed your deploy orders
