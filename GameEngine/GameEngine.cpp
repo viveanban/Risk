@@ -398,6 +398,7 @@ void GameEngine::executeOrdersPhase() {
     // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
+        cout << endl;
         cout << player->getPlayerName() << "\'s order list:\n"<<*player->getOrders() << endl;
     }
 

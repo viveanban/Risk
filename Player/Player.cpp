@@ -143,7 +143,21 @@ bool Player::issueOrder() {
 }
 
 void Player::issueDeployOrder() {
-    // Reinforcement card
+    //Reinforcement card
+    playReinforcementCard();
+
+    // Deploy order
+    Order *deployOrder = new DeployOrder(this);
+    bool successful = deployOrder->issue();
+    if (!successful) {
+        delete deployOrder;
+        deployOrder = nullptr;
+    } else {
+        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, deployOrder, nullptr);
+    }
+}
+
+void Player::playReinforcementCard() {
     for (Card *card: handOfCards->getCards()) {
         if (card->getType() == Card::reinforcement) {
             bool playReinforcementCard = rand() % 2;
@@ -154,16 +168,6 @@ void Player::issueDeployOrder() {
             }
             break;
         }
-    }
-
-    // Deploy order
-    Order *deployOrder = new DeployOrder(this);
-    bool successful = deployOrder->issue();
-    if (!successful) {
-        delete deployOrder;
-        deployOrder = nullptr;
-    } else {
-        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, deployOrder, nullptr);
     }
 }
 
