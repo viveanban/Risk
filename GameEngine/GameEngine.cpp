@@ -317,7 +317,6 @@ int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
     return numberOfArmiesToGive + getBonus(player);
 }
 
-// TODO: cout when bonus is given by observers (Tarek + Abhijit)
 int GameEngine::getBonus(Player *player) {
     set<Continent *> continentsWherePlayerOwnsTerritories;
     for (Territory *territory: player->getTerritories()) {
@@ -329,6 +328,9 @@ int GameEngine::getBonus(Player *player) {
     for (Continent *continent: continentsWherePlayerOwnsTerritories) {
         if (continent->getOwner() == player)
             controlValueBonus += continent->getBonus();
+    }
+    if (controlValueBonus > 0 and this->getInstance()->isPhaseObserverActive()) {
+        cout << player->getPlayerName() << " has received a bonus of " << controlValueBonus << " units." << endl;
     }
     return controlValueBonus;
 }
