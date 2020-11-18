@@ -590,6 +590,7 @@ void OrdersList::add(Order *order) {
     orderList.push_back(order);
 }
 
+// TODO: why bool?
 bool OrdersList::remove(Order *order) {
     auto position = find(orderList.begin(), orderList.end(), order);
     if (position != orderList.end()) {
@@ -602,6 +603,7 @@ bool OrdersList::remove(Order *order) {
     return false;
 }
 
+// TODO: why bool?
 bool OrdersList::move(Order *order, int destination) {
     if (destination < orderList.size()) {
         auto oldPosition = find(orderList.begin(), orderList.end(), order);
@@ -631,8 +633,8 @@ void OrdersList::sortOrderListByPriority() {
 OrdersList::~OrdersList() {
     for (auto o: orderList) {
         delete o;
-        cout << "deleted order" << endl;
         o = nullptr;
+        cout << "Deleted order" << endl;
     }
     orderList.clear();
 }

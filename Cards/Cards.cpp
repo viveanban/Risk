@@ -102,7 +102,7 @@ Deck::~Deck() {
     for (auto p : cards) {
         delete p;
         p = nullptr;
-        cout << "deleted card in deck" << endl;
+        cout << "Deleted card from deck" << endl;
     }
     cards.clear();
 }
