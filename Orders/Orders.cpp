@@ -9,15 +9,14 @@
 using namespace std;
 
 // Superclass: Order ---------------------------------------------------------------------------------------------------
+Order::Order(string name, int priority, Player *player) : name(name), priority(priority),
+                                                          player(player) {}
 
-Order::Order(string description, int priority, Player *player) : description(description), priority(priority),
-                                                                 player(player) {}
-
-Order::Order(const Order &original) : description(original.description), priority(original.priority),
+Order::Order(const Order &original) : name(original.name), priority(original.priority),
                                       player(original.player) {}
 
 Order &Order::operator=(const Order &otherOrder) {
-    description = otherOrder.description;
+    name = otherOrder.name;
     priority = otherOrder.priority;
     player = otherOrder.player;
 
@@ -25,10 +24,13 @@ Order &Order::operator=(const Order &otherOrder) {
 }
 
 std::ostream &operator<<(std::ostream &stream, Order &order) {
-    return stream << order.description << " => " << order.priority << endl;
+    return stream << order.name << " => " << order.priority << endl;
 }
 
-//TODO: Add a more descriptive description + add a field order name
+const string &Order::getName() const {
+    return name;
+}
+
 const string &Order::getDescription() const {
     return description;
 }
@@ -37,11 +39,17 @@ int Order::getPriority() const {
     return priority;
 }
 
+void Order::setPlayer(Player *player) {
+    Order::player = player;
+}
+
 Order::~Order() = default;
 
 // DeployOrder ---------------------------------------------------------------------------------------------------------
+DeployOrder::DeployOrder() : DeployOrder(nullptr) {}
+
 DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArmiesToDeploy(0),
-                                           Order("Deploy!", 1, player) {}
+                                           Order("Deploy", 1, player) {}
 
 
 DeployOrder::DeployOrder(const DeployOrder &original) : targetTerritory(original.targetTerritory),
@@ -97,6 +105,10 @@ bool DeployOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
+    //Update the description
+    description = "Deploy Order issued:\n" + player->getPlayerName() + " wants to deploy " +
+                  to_string(numberOfArmiesToDeploy) + " army units to " + targetTerritory->getTerritoryName();
+
     return true;
 }
 
@@ -109,8 +121,10 @@ int DeployOrder::getNumberOfArmiesToDeploy() const {
 }
 
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
+AdvanceOrder::AdvanceOrder() : AdvanceOrder(nullptr) {}
+
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
-                                             numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
+                                             numberOfArmiesToAdvance(0), Order("Advance", 5, player) {}
 
 AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : sourceTerritory(original.sourceTerritory),
                                                            targetTerritory(original.targetTerritory),
@@ -244,6 +258,11 @@ bool AdvanceOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
+    //Update the description
+    description = "Advance Order issued:\n" + player->getPlayerName() + " wants to advance " +
+                  to_string(numberOfArmiesToAdvance) + " army units from " + sourceTerritory->getTerritoryName() +
+                  " to " + targetTerritory->getTerritoryName();
+
     return true;
 }
 
@@ -265,7 +284,9 @@ int AdvanceOrder::getNumberOfArmiesToAdvance() const {
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
-BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb!", 5, player) {}
+BombOrder::BombOrder() : BombOrder(nullptr) {}
+
+BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb", 5, player) {}
 
 BombOrder::BombOrder(const BombOrder &original) : targetTerritory(original.targetTerritory), Order(original) {}
 
@@ -321,6 +342,10 @@ bool BombOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
+    //Update the description
+    description = "Bomb Order issued:\n" +
+                  player->getPlayerName() + " wants to bomb " + targetTerritory->getTerritoryName();
+
     return true;
 }
 
@@ -329,7 +354,9 @@ Territory *BombOrder::getTargetTerritory() const {
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
-BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade!", 3, player) {}
+BlockadeOrder::BlockadeOrder() : BlockadeOrder(nullptr) {}
+
+BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade", 3, player) {}
 
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : targetTerritory(original.targetTerritory),
                                                               Order(original) {}
@@ -382,6 +409,11 @@ bool BlockadeOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
+    //Update the description
+    description = "Blockade Order issued:\n" +
+                  player->getPlayerName() + " wants to transform " + targetTerritory->getTerritoryName() +
+                  " into a blockade.";
+
     return true;
 }
 
@@ -390,8 +422,10 @@ Territory *BlockadeOrder::getTargetTerritory() const {
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
+AirliftOrder::AirliftOrder() : AirliftOrder(nullptr) {}
+
 AirliftOrder::AirliftOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
-                                             numberOfArmiesToAirlift(0), Order("Airlift!", 2, player) {}
+                                             numberOfArmiesToAirlift(0), Order("Airlift", 2, player) {}
 
 AirliftOrder::AirliftOrder(const AirliftOrder &original) : sourceTerritory(original.sourceTerritory),
                                                            targetTerritory(original.targetTerritory),
@@ -468,6 +502,11 @@ bool AirliftOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
+    //Update the description
+    description = "Airlift Order issued:\n" + player->getPlayerName() + " wants to airlift " +
+                  to_string(numberOfArmiesToAirlift) + " army units from " + sourceTerritory->getTerritoryName() +
+                  " to " + targetTerritory->getTerritoryName();
+
     return true;
 }
 
@@ -484,7 +523,9 @@ int AirliftOrder::getNumberOfArmiesToAirlift() const {
 }
 
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
-NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("Negotiate!", 4, player) {}
+NegotiateOrder::NegotiateOrder() : NegotiateOrder(nullptr) {}
+
+NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("Negotiate", 4, player) {}
 
 NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : targetPlayer(original.targetPlayer), Order(original) {}
 
@@ -519,6 +560,10 @@ bool NegotiateOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    //Update the description
+    description = "Negotiate Order issued:\n" +
+                  player->getPlayerName() + " wants to negotiate with " + targetPlayer->getPlayerName();
 
     return true;
 }
@@ -566,7 +611,7 @@ OrdersList &OrdersList::operator=(const OrdersList &original) {
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {
     string result = "Orders in list:\n";
     for (Order *o : ordersList.orderList)
-        result += o->getDescription() + "\n";
+        result += o->getName() + "\n";
     return stream << result << endl;
 }
 
