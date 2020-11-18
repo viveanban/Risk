@@ -407,7 +407,6 @@ void GameEngine::executeOrdersPhase() {
                 auto *deployOrder = dynamic_cast<DeployOrder *>(orderList[0]);
                 if (deployOrder) {
                     deployOrder->execute();
-                    gameState->updateGameState(player, orders_execution, deployOrder,nullptr);
                     player->getOrders()->remove(deployOrder);
                 } else {
                     playersWithNoMoreDeployOrderstoExecute.insert(player);
@@ -425,7 +424,6 @@ void GameEngine::executeOrdersPhase() {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
                 orderList[0]->execute();
-                gameState->updateGameState(player, orders_execution, orderList[0], nullptr);
                 player->getOrders()->remove(orderList[0]);
                 if (winnerExists())
                     return;
