@@ -400,14 +400,21 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
-    //Save territory list sizes before execution
-    vector<int> territorySizePerPlayerBeforeExecution;
+    // Save territory list sizes before execution
+    vector<vector<int>> territoryIdsPerPlayerBeforeExecution;
 
-    // Prioritize the orders TODO: print that list not using phase observer? (Viveka)
+    // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
 
-        territorySizePerPlayerBeforeExecution.push_back(player->getTerritories().size()); // Push sizes in order (same order as players)
+        // TODO: extract somewhere?
+        vector<int> territoryIdsOfPlayer;
+        for(Territory* territory: player->getTerritories())
+        {
+            territoryIdsOfPlayer.push_back(territory->getTerritoryId());
+        }
+
+        territoryIdsPerPlayerBeforeExecution.push_back(territoryIdsOfPlayer);
     }
 
     // Execute all deploy orders
@@ -447,13 +454,23 @@ void GameEngine::executeOrdersPhase() {
         }
     }
 
-    //Check if any territory has been conquered by player
+    // Check if any territory has been conquered by player
     for(int index = 0; index < players.size(); index++) {
+        bool hasConqueredAtLeastOneTerritory = false;
         Player* player = players.at(index);
-        if (player->getTerritories().size() > territorySizePerPlayerBeforeExecution.at(index)) {
-            cout << player->getPlayerName() << " has conquered at least 1 territory." << endl;
+        vector<int> territoryIdsBeforeExecution = territoryIdsPerPlayerBeforeExecution.at(index);
 
+        for(Territory* territory: player->getTerritories()) {
+            auto position = find(territoryIdsBeforeExecution.begin(), territoryIdsBeforeExecution.begin(), territory->getTerritoryId());
+            if (position == territoryIdsBeforeExecution.end()) {
+                hasConqueredAtLeastOneTerritory = true;
+                break;
+            }
+        }
+
+        if(hasConqueredAtLeastOneTerritory) {
             // Pick a card
+            cout << "CARD HAS BEEN GIVEN" << endl;
             Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
             player->getHandOfCards()->addCard(drawnCard);
         }
