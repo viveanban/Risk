@@ -118,70 +118,82 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
 }
 
 // TODO: if unsuccessful, should we let the player try issuing another order (Viveka) (LOW PRIORITY)
-// TODO: maybe refactor? extract deploy and other orders in two diff methods (Viveka)
 bool Player::issueOrder() {
-
+    // Issue deploy orders as long as player's reinforcement pool is not empty
     if (numberOfArmies > 0) {
-        // Reinforcement card
-        for (Card *card: handOfCards->getCards()) {
-            if (card->getType() == Card::CardType::reinforcement) {
-                bool playReinforcementCard = rand() % 2;
-                if (playReinforcementCard) {
-                    numberOfArmies += numberOfArmies + 5;
-                    handOfCards->removeCard(card);
-                    GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, nullptr, card);
-                }
-                break;
-            }
-        }
-
-        // Deploy order
-        Order *deployOrder = new DeployOrder(this);
-        bool successful = deployOrder->issue();
-        if(!successful) {
-            delete deployOrder;
-            deployOrder = nullptr;
-        } else {
-            GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, deployOrder, nullptr);
-        }
-
+        issueDeployOrder();
         return true;
     } else { // Other orders
         bool continueIssuingOrders = rand() % 2;
-
         if (continueIssuingOrders) {
             bool advance = handOfCards->getCards().empty() || rand() % 2;
-            if (advance) {
-                AdvanceOrder *advanceOrder = new AdvanceOrder(this);
-                bool successful = advanceOrder->issue();
-                if(!successful) {
-                    delete advanceOrder;
-                    advanceOrder = nullptr;
-                } else {
-                    GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, advanceOrder, nullptr);
-                }
+            if (advance) { //Always issue an Advance order if player has an empty hand
+                issueAdvanceOrder();
             } else {
                 // Pick a card
                 Card *cardChosen = handOfCards->getNextCard();
                 if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
 
                 // Play card
-                Order *order = cardChosen->play();
-                order->setPlayer(this);
-                if (order) {
-                    bool successful = order->issue();
-                    if(!successful) {
-                        delete order;
-                        order = nullptr;
-                    } else {
-                        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, order, cardChosen);
-                        handOfCards->removeCard(cardChosen);
-                    }
-                }
+                issueOrderFromCard(cardChosen);
             }
         }
-
         return continueIssuingOrders;
+    }
+}
+
+void Player::issueDeployOrder() {
+    //Reinforcement card
+    playReinforcementCard();
+
+    // Deploy order
+    Order *deployOrder = new DeployOrder(this);
+    bool successful = deployOrder->issue();
+    if (!successful) {
+        delete deployOrder;
+        deployOrder = nullptr;
+    } else {
+        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, deployOrder, nullptr);
+    }
+}
+
+void Player::playReinforcementCard() {
+    for (Card *card: handOfCards->getCards()) {
+        if (card->getType() == Card::reinforcement) {
+            bool playReinforcementCard = rand() % 2;
+            if (playReinforcementCard) {
+                numberOfArmies += numberOfArmies + 5;
+                handOfCards->removeCard(card);
+                GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, nullptr, card);
+            }
+            break;
+        }
+    }
+}
+
+void Player::issueAdvanceOrder() {
+    auto *advanceOrder = new AdvanceOrder(this);
+    bool successful = advanceOrder->issue();
+    if (!successful) {
+        delete advanceOrder;
+        advanceOrder = nullptr;
+    } else {
+        GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, advanceOrder, nullptr);
+    }
+}
+
+void Player::issueOrderFromCard(Card *cardChosen) {
+    Order *order = cardChosen->play();
+    if (order) {
+        order->setPlayer(this);
+        bool successful = order->issue();
+        if (!successful) {
+            delete order;
+            order = nullptr;
+        } else {
+            GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, order, cardChosen);
+            handOfCards->removeCard(cardChosen);
+        }
     }
 }
 
