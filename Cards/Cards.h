@@ -64,8 +64,6 @@ public:
 
     const vector<Card *> &getCards() const;
 
-    void setCards(const vector<Card *> &cards);
-
     void addCard(Card *card);
 
     /**
@@ -88,8 +86,6 @@ public:
 
     ~Hand();
 
-    Hand(vector<Card *> cards);
-
     Hand(const Hand &original);
 
     Hand &operator=(const Hand &otherHand);
@@ -98,11 +94,7 @@ public:
 
     Card* getNextCard();
 
-    int getAmountOfCardsOfType(Card::CardType type);
-
     const vector<Card *> &getCards() const;
-
-    void setCards(const vector<Card *> &cards);
 
     /**
      * addCard() adds a given card to the hand of cards

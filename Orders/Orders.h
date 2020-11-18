@@ -29,9 +29,10 @@ public:
 
     Order &operator=(const Order &otherOrder);
 
+    virtual ~Order();
+
     friend ostream &operator<<(ostream &stream, Order &order);
 
-    // The following methods are pure virtual functions (must be overridden)
     /**
      * Checks if the Order given is a valid order.
      * @return boolean
@@ -58,10 +59,17 @@ public:
  * Places some armies on one of the current player’s territories.
  */
 class DeployOrder : public Order {
+private:
+    Territory *targetTerritory;
+
+    int numberOfArmiesToDeploy;
+
+    bool validate() override;
+
 public:
     DeployOrder();
 
-    DeployOrder(Player * player);
+    explicit DeployOrder(Player * player);
 
     DeployOrder(const DeployOrder &original);
 
@@ -71,20 +79,13 @@ public:
 
     bool issue() override;
 
-private:
-    Territory *targetTerritory;
-public:
     Territory *getTargetTerritory() const;
 
     int getNumberOfArmiesToDeploy() const;
-
-private:
-
-    int numberOfArmiesToDeploy;
-
-    bool validate() override;
 };
+
 enum AdvanceOrderType { attack, transfer };
+
 /**
  * Move some armies from one of the current player’s territories (source) to an adjacent territory
  * (target). If the target territory belongs to the current player, the armies are moved to the target
@@ -92,10 +93,23 @@ enum AdvanceOrderType { attack, transfer };
  * territories.
  */
 class AdvanceOrder : public Order {
+private:
+    Territory *sourceTerritory;
+
+    Territory *targetTerritory;
+
+    AdvanceOrderType advanceOrderType;
+
+    int numberOfArmiesToAdvance;
+
+    bool validate() override;
+
+    bool kill(int probabilityToKill);
+
 public:
     AdvanceOrder();
 
-    AdvanceOrder(Player * player);
+    explicit AdvanceOrder(Player * player);
 
     AdvanceOrder(const AdvanceOrder &original);
 
@@ -112,20 +126,6 @@ public:
     int getNumberOfArmiesToAdvance() const;
 
     AdvanceOrderType getAdvanceOrderType() const;
-
-
-private:
-    Territory *sourceTerritory;
-
-    Territory *targetTerritory;
-
-    AdvanceOrderType advanceOrderType;
-
-    int numberOfArmiesToAdvance;
-
-    bool validate() override;
-
-    bool kill(int probabilityToKill);
 };
 
 /**
@@ -133,10 +133,15 @@ private:
  * player’s territories.
  */
 class BombOrder : public Order {
+private:
+    Territory* targetTerritory;
+
+    bool validate() override;
+
 public:
     BombOrder();
 
-    BombOrder(Player * player);
+    explicit BombOrder(Player * player);
 
     BombOrder(const BombOrder &original);
 
@@ -147,20 +152,21 @@ public:
     bool issue() override;
 
     Territory *getTargetTerritory() const;
-private:
-    Territory* targetTerritory;
-
-    bool validate() override;
 };
 
 /**
  * Triple the number of armies on one of the current player’s territories and make it a neutral territory
  */
 class BlockadeOrder : public Order {
+private:
+    Territory *targetTerritory;
+
+    bool validate() override;
+
 public:
     BlockadeOrder();
 
-    BlockadeOrder(Player * player);
+    explicit BlockadeOrder(Player * player);
 
     BlockadeOrder(const BlockadeOrder &original);
 
@@ -171,21 +177,25 @@ public:
     bool issue() override;
 
     Territory *getTargetTerritory() const;
-private:
-    Territory *targetTerritory;
-
-    bool validate() override;
-
 };
 
 /**
  * Advance some armies from one of the current player’s territories to any another territory.
  */
 class AirliftOrder : public Order {
+private:
+    Territory *sourceTerritory;
+
+    Territory *targetTerritory;
+
+    int numberOfArmiesToAirlift;
+
+    bool validate() override;
+
 public:
     AirliftOrder();
 
-    AirliftOrder(Player * player);
+    explicit AirliftOrder(Player * player);
 
     AirliftOrder(const AirliftOrder &original);
 
@@ -200,26 +210,21 @@ public:
     Territory *getTargetTerritory() const;
 
     int getNumberOfArmiesToAirlift() const;
-
-private:
-    Territory *sourceTerritory;
-
-    Territory *targetTerritory;
-
-    int numberOfArmiesToAirlift;
-
-    bool validate() override;
-
 };
 
 /**
  * Prevent attacks between the current player and another player until the end of the turn.
  */
 class NegotiateOrder : public Order {
+private:
+    Player* targetPlayer;
+
+    bool validate() override;
+
 public:
     NegotiateOrder();
 
-    NegotiateOrder(Player * player);
+    explicit NegotiateOrder(Player * player);
 
     NegotiateOrder(const NegotiateOrder &original);
 
@@ -230,10 +235,6 @@ public:
     bool issue() override;
 
     Player *getTargetPlayer() const;
-private:
-    Player* targetPlayer;
-
-    bool validate() override;
 };
 
 /**
@@ -241,7 +242,6 @@ private:
  * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate, Reinforce.
  */
 class OrdersList {
-
 private:
     vector<Order *> orderList;
 

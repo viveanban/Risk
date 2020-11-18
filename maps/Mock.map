@@ -4,14 +4,14 @@ map solar_map.gif
 crd solar.cards
 
 [continents]
-First 6 yellow
-Second 8 yellow
+1 6 yellow
+2 8 yellow
 
 [countries]
-1 TOne 1 523 359
-2 TTwo 1 534 333
-3 TThree 2 500 345
-4 TFour 2 500 345
+1 T1 1 523 359
+2 T2 1 534 333
+3 T3 2 500 345
+4 T4 2 500 345
 
 [borders]
 1 2

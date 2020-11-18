@@ -14,14 +14,14 @@
 
 using namespace std;
 
-// TODO: edge case where territores # < # of player
+// TODO: edge case where territores # < # of player (Viveka)
 // ---------GAME INITIALIZATION---------------
 void GameInitialization::initializeGame() {
     selectMap();
     selectPlayerNumber();
     setupObservers();
     setupPlayers();
-    this->deck = new Deck(50);
+    this->deck = new Deck(50); // TODO: print out that 50 cards are created and show that there's every type of card in the deck (Tarek)
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
@@ -126,7 +126,7 @@ void GameInitialization::setupObservers() {
 bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
     bool result = false;
     do {
-        cout << "do you want to turn on the " << resultName << " observer [true/false]" << endl;
+        cout << "Do you want to turn on the " << resultName << " observer [true/false]" << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> boolalpha >> result;
@@ -173,27 +173,30 @@ GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlaye
                                            gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
-    delete map;
-    cout << "deleted map" << endl;
-    delete deck;
-    cout << "deleted deck" << endl;
-    delete gameState;
-    cout << "deleted gamestate" << endl;
+    // TODO: we need to delete observers (Tarek)
 
-    for (auto player: players) {
+    for (auto player: GameEngine::getInstance()->getPlayers()) { // TODO: (merge everything together) (Abhijit)
         delete player;
         player = nullptr;
     }
     players.clear();
-    cout << "deleted players" << endl;
+    cout << "Deleted all remaining Players" << endl;
 
     delete Player::neutralPlayer;
     Player::neutralPlayer = nullptr;
-    cout << "deleted neutral player" << endl;
+    cout << "Deleted the Neutral Player" << endl;
 
-    map = nullptr;
-    deck = nullptr;
+    delete gameState;
     gameState = nullptr;
+    cout << "Deleted Gamestate" << endl;
+
+    delete deck;
+    deck = nullptr;
+    cout << "Deleted Deck" << endl;
+
+    delete map;
+    map = nullptr;
+    cout << "Deleted Map" << endl;
 }
 
 GameInitialization &GameInitialization::operator=(const GameInitialization &otherGameInitialization) {
@@ -337,12 +340,14 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
+        // TODO: give cards to those who conquered stuff (IMPORTANT) --> save a vector<Player*> with state before and after execution and compare the territories size befrore and after. If size increased = conquered something. Then, give card. (VivekA + FERODU)
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
         counter++;
     }
 }
 
+// TODO: cout how much they receive additional in each round by observer (Tarek + Abhijit)
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
@@ -357,6 +362,7 @@ int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
     return numberOfArmiesToGive + getBonus(player);
 }
 
+// TODO: cout when bonus is given by observers (Tarek + Abhijit)
 int GameEngine::getBonus(Player *player) {
     set<Continent *> continentsWherePlayerOwnsTerritories;
     for (Territory *territory: player->getTerritories()) {
@@ -380,7 +386,8 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                    cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: add active phase observer hack here
+                    if (phaseObserverActive)
+                        cout << player->getPlayerName() << " is done issuing orders!" << endl; // TODO: move this to the phase observer and remove if statement (Tarek)
                 }
             }
         }
@@ -388,7 +395,7 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
-    // Prioritize the orders
+    // Prioritize the orders TODO: print that list not using phase observer? (Viveka)
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
     }

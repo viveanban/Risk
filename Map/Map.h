@@ -17,11 +17,17 @@ class Player;
 class Territory {
 private:
     string territoryName;
+
     Player *owner;
+
     int continentId;
+
     int territoryId;
+
     int unitNbr;
+
     vector<Territory *> adjList;
+
     int priority;
 
 public:
@@ -72,8 +78,11 @@ public:
 class Continent {
 private:
     int continentId;
+
     int bonus;
+
     string continentName;
+
     vector<Territory *> territories;
 
     bool isSameOwner();
@@ -87,7 +96,6 @@ public:
 
     Continent &operator=(const Continent &otherContinent);
 
-    // output insertion stream operator override
     friend std::ostream &operator<<(std::ostream &stream, Continent &c);
 
     // Getters
@@ -107,8 +115,6 @@ public:
     void setContinentName(string continentName);
 
     void setBonus(int bonus);
-
-    void setTerritories(vector<Territory *> territories);
 };
 
 /**
@@ -152,16 +158,6 @@ public:
     Territory *getTerritoryById(int id);
 
     // Setters
-    void setTerritoryList(vector<Territory *> &territoryList);
-
-    void setContinentList(vector<Continent *> &continentList);
-
-    // Add continents individually
-    void addContinent(Continent *continent);
-
-    // Add territories individually
-    void addTerritory(Territory *territory);
-
     // Used to validate the graph using the 3 defined conditions for connectivity.
     bool validate();
 };

@@ -1,7 +1,6 @@
 #include "GameObservers.h"
 #include <iomanip>
 #include <cmath>
-#include "./../Cards/Cards.h"
 #include "../GameEngine/GameEngine.h"
 
 // SUBJECT
@@ -118,6 +117,7 @@ void PhaseObserver::printOrderInfo(Order *order, Card *card) {
     }
 }
 
+// TODO: check if Bomb is ever played (Ferdou)
 void PhaseObserver::printBombOrder(BombOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
@@ -165,7 +165,7 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
                          << pOrder->getTargetTerritory()->getUnitNbr() << " armies in it." << endl;
                 else
                     cout << pOrder->getTargetTerritory()->getTerritoryName() << " was not conquered by " <<
-                         pOrder->getTargetTerritory()->getOwner()->getPlayerName() << ". It now has "
+                         pOrder->getSourceTerritory()->getOwner()->getPlayerName() << ". It now has "
                          << pOrder->getTargetTerritory()->getUnitNbr() << " armies in it." << endl;
             } else {
                 cout << currentGameState->getCurrentPlayer()->getPlayerName()
@@ -339,7 +339,7 @@ void GameState::setCurrentCard(Card *currentCard) {
 }
 
 
-//STATISTICS OBSERVER
+// STATISTICS OBSERVER
 StatisticsObserver::StatisticsObserver() : currentGameState{} {};
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currentGameState(currGameState) {}

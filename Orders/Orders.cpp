@@ -5,7 +5,7 @@
 #include "../GameEngine/GameEngine.h"
 
 using namespace std;
-
+// TODO: add order validated cout for each validate() method (Abhijit + Tarek)
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 Order::Order(string name, int priority, Player *player) : name(name), priority(priority),
                                                           player(player) {}
@@ -20,6 +20,8 @@ Order &Order::operator=(const Order &otherOrder) {
 
     return *this;
 }
+
+Order::~Order() = default;
 
 std::ostream &operator<<(std::ostream &stream, Order &order) {
     return stream << order.name << " => " << order.priority << endl;
@@ -136,7 +138,7 @@ AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &otherOrder) {
 }
 
 bool AdvanceOrder::validate() {
-//    If the source territory does not belong to the player that issued the order, the order is invalid.
+    // If the source territory does not belong to the player that issued the order, the order is invalid.
     if (sourceTerritory->getOwner() != player) {
         cout << "Advance order validation has failed:"
              << "the source territory does not belong to the player that issued the order." << endl;
@@ -149,9 +151,10 @@ bool AdvanceOrder::validate() {
         return false;
     }
 
+    // Negotiation
     bool canAttackTargetTerritory = find(player->getPlayersNotToAttack().begin(), player->getPlayersNotToAttack().end(),
                                          targetTerritory->getOwner()) == player->getPlayersNotToAttack().end();
-    if (!canAttackTargetTerritory) {
+    if (!canAttackTargetTerritory) { // TODO: check if it works properly (Viveka + Ferdou)
         cout << "Advance order validation has failed:"
              << "the target territory cannot be attacked because you negotiated with its owner "
              << targetTerritory->getOwner()->getPlayerName() << endl;
@@ -161,6 +164,7 @@ bool AdvanceOrder::validate() {
     return true;
 }
 
+// TODO: refactor if possible (Viveka)
 void AdvanceOrder::execute() {
     if (validate()) {
         //Transfer army units from src to trg territory if both are owned by issuing player
@@ -200,7 +204,7 @@ void AdvanceOrder::execute() {
                 // Transfer ownership
                 targetTerritory->setOwner(player);
 
-                // Pick a card
+                // Pick a card TODO: remove card logic here (Viveka + Ferdou)
                 Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
                 player->getHandOfCards()->addCard(drawnCard);
 
@@ -230,7 +234,7 @@ bool AdvanceOrder::issue() {
 
     targetTerritory = territoriesToChooseFrom.at(0);
 
-    // Determine number of armies to advance TODO: use priority, investiagte if corectly updated and why priority is < 0 sometimes
+    // Determine number of armies to advance TODO: use priority, investiagte if corectly updated and why priority is < 0 sometimes (Viveka + Ferdou)
     numberOfArmiesToAdvance = (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
 
     // Update priority
@@ -432,7 +436,6 @@ bool AirliftOrder::validate() {
              << "the source territory does not have enough armies to airlift." << endl;
         return false;
     }
-
     return true;
 }
 
@@ -454,7 +457,7 @@ bool AirliftOrder::issue() {
     // Determine src territory
     sourceTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
-    // Determine target territory // TODO: check that target and src are different?
+    // Determine target territory
     targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
     // Determine number of armies to advance
@@ -467,7 +470,7 @@ bool AirliftOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
-    // Update the description // TODO: use descriptions for observers (add them in execute as well) (enhancement). If not used, then delete description.
+    // Update the description // TODO: use descriptions for observers (add them in execute as well) (enhancement). If not used, then delete description. (Tarek + Abhijit) (LOW PRIOIRTY)
     description = "Airlift Order issued:\n" + player->getPlayerName() + " wants to airlift " +
                   to_string(numberOfArmiesToAirlift) + " army units from " + sourceTerritory->getTerritoryName() +
                   " to " + targetTerritory->getTerritoryName();
@@ -502,14 +505,14 @@ NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
 }
 
 bool NegotiateOrder::validate() {
-    cout << "Validating negotiate order." << endl;
+    // TODO: check that target is not the source player (Abhijit)
     return true;
 }
 
 void NegotiateOrder::execute() {
     if (validate()) {
-        set<Player *> playersNotToAttack = player->getPlayersNotToAttack();
-        playersNotToAttack.insert(targetPlayer);
+        player->getPlayersNotToAttack().insert(targetPlayer);
+        targetPlayer->getPlayersNotToAttack().insert(player);
     }
 }
 
@@ -525,14 +528,11 @@ bool NegotiateOrder::issue() {
         targetPlayer = players.at(rand() % players.size());
     } while (targetPlayer == player);
 
-    set<Player *> playersNotToAttack = player->getPlayersNotToAttack();
-    playersNotToAttack.insert(targetPlayer);
-    targetPlayer->getPlayersNotToAttack().insert(player);
 
     // Update order list
     player->getOrders()->add(this);
 
-    //Update the description
+    // Update the description
     description = "Negotiate Order issued:\n" +
                   player->getPlayerName() + " wants to negotiate with " + targetPlayer->getPlayerName();
 
@@ -590,6 +590,7 @@ void OrdersList::add(Order *order) {
     orderList.push_back(order);
 }
 
+// TODO: why bool? + crash (Ferdou)
 bool OrdersList::remove(Order *order) {
     auto position = find(orderList.begin(), orderList.end(), order);
     if (position != orderList.end()) {
@@ -602,6 +603,7 @@ bool OrdersList::remove(Order *order) {
     return false;
 }
 
+// TODO: why bool? + crash (Ferdou)
 bool OrdersList::move(Order *order, int destination) {
     if (destination < orderList.size()) {
         auto oldPosition = find(orderList.begin(), orderList.end(), order);
@@ -631,8 +633,8 @@ void OrdersList::sortOrderListByPriority() {
 OrdersList::~OrdersList() {
     for (auto o: orderList) {
         delete o;
-        cout << "deleted order" << endl;
         o = nullptr;
+        cout << "Deleted order" << endl;
     }
     orderList.clear();
 }

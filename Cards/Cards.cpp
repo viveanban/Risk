@@ -27,30 +27,24 @@ ostream &operator<<(ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
-// TODO: remove cout
-// TODO: add comment to remember to delete order
+// Orders are deleted when players are deleted since they reside in the player's orders list
 Order *Card::play() {
     Order *order;
     switch (type) {
         case CardType::bomb:
             order = new BombOrder();
-            cout << "play(): played bomb " << endl;
             break;
         case CardType::reinforcement:
             order = nullptr;
-            cout << "play(): played reinforcement " << endl;
             break;
         case CardType::blockade:
             order = new BlockadeOrder();
-            cout << "play(): played blockade " << endl;
             break;
         case CardType::airlift:
             order = new AirliftOrder();
-            cout << "play(): played airlift " << endl;
             break;
         case CardType::diplomacy:
             order = new NegotiateOrder();
-            cout << "play(): played diplomacy " << endl;
             break;
     }
     return order;
@@ -101,9 +95,10 @@ Deck::Deck(const Deck &original) {
 Deck::~Deck() {
     for (auto p : cards) {
         delete p;
-        cout << "deleted card in deck" << endl;
         p = nullptr;
+        cout << "Deleted card from deck" << endl;
     }
+    cards.clear();
 }
 
 Deck &Deck::operator=(const Deck &otherDeck) {
@@ -120,10 +115,6 @@ std::ostream &operator<<(std::ostream &stream, const Deck &d) {
 
 const vector<Card *> &Deck::getCards() const {
     return cards;
-}
-
-void Deck::setCards(const vector<Card *> &cards) {
-    Deck::cards = cards;
 }
 
 Card *Deck::draw() {
@@ -144,8 +135,6 @@ void Deck::addCard(Card *card) {
  */
 Hand::Hand() : cards() {}
 
-Hand::Hand(vector<Card *> cards) : cards(cards) {}
-
 Hand::Hand(const Hand &original) {
     cards = vector<Card *>(original.getCards().size());
     for (int i = 0; i < cards.size(); i++)
@@ -165,10 +154,9 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 }
 
 Hand::~Hand() {
-    for (auto p : cards) {
-        cout << "deleted card in hand" << endl;
-        delete p;
-        p = nullptr;
+    for (Card* card : cards) {
+        removeCard(card);
+        cout << "Put back card in Deck" << endl;
     }
 }
 
@@ -176,14 +164,11 @@ const vector<Card *> &Hand::getCards() const {
     return cards;
 }
 
-void Hand::setCards(const vector<Card *> &cards) {
-    Hand::cards = cards;
-}
-
 void Hand::addCard(Card *card) {
     cards.push_back(card);
 }
 
+// TODO: remove bool (Ferdou)
 bool Hand::removeCard(Card* card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
@@ -192,16 +177,8 @@ bool Hand::removeCard(Card* card) {
         return true;
     }
     cout << "Error removing card from hand." << endl;
+    // TODO: crash (Ferdou)
     return false;
-}
-
-
-int Hand::getAmountOfCardsOfType(Card::CardType type) {
-    int counter = 0;
-    for (Card *card: cards)
-        if (card->getType() == type) counter++;
-
-    return counter;
 }
 
 Card *Hand::getNextCard() {
