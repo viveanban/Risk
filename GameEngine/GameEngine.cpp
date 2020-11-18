@@ -399,7 +399,7 @@ void GameEngine::executeOrdersPhase() {
     }
 
     // Execute the rest of the orders
-    vector<Player *> playersWithNoMoreOrdersToExecute;
+    set<Player *> playersWithNoMoreOrdersToExecute;
     while (playersWithNoMoreOrdersToExecute.size() != players.size()) {
         for (Player *player: players) {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
@@ -408,7 +408,7 @@ void GameEngine::executeOrdersPhase() {
                 gameState->updateGameState(player, orders_execution, orderList[0],nullptr);
                 player->getOrders()->remove(orderList[0]);
             } else {
-                playersWithNoMoreOrdersToExecute.push_back(player);
+                playersWithNoMoreOrdersToExecute.insert(player);
             }
         }
     }

@@ -248,12 +248,14 @@ void AdvanceOrder::issue() {
     targetTerritory = territoriesToChooseFrom.at(0);
 
     // Determine number of armies to advance
-    if (sourceTerritory->getPriority() > 0 && sourceTerritory->getUnitNbr() > 0)
-        numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
-    //TODO: there should not be an else.. fix this
-    else
-        numberOfArmiesToAdvance = 0;
+    if (sourceTerritory->getPriority() > 0 && sourceTerritory->getUnitNbr() > 0) {
 
+        numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
+    } else {
+        // When issuing the advance orders, you might not have already executed your deploy orders
+        // This means those values won't be updated in the issuing phase. However, in the execution phase, you would be able to advance your armies.
+        numberOfArmiesToAdvance = (rand() % 6) + 1;
+    }
     // Update priority
     targetTerritory->setPriority(attack ?
                                  targetTerritory->getPriority() - numberOfArmiesToAdvance :
