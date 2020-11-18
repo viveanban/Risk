@@ -392,8 +392,6 @@ void GameEngine::issueOrdersPhase() {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
                     cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: phase observer should do this
-                } else {
-                    gameState->updateGameState(player, issuing_orders, nullptr, nullptr);
                 }
             }
         }

@@ -27,28 +27,29 @@ ostream &operator<<(ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
+// TODO: remove cout
 Order *Card::play() {
     Order *order;
     switch (type) {
         case CardType::bomb:
             order = new BombOrder();
-            cout << "played bomb " << endl;
+            cout << "play(): played bomb " << endl;
             break;
         case CardType::reinforcement:
             order = nullptr;
-            cout << "played reinforcement " << endl;
+            cout << "play(): played reinforcement " << endl;
             break;
         case CardType::blockade:
             order = new BlockadeOrder();
-            cout << "played blockade " << endl;
+            cout << "play(): played blockade " << endl;
             break;
         case CardType::airlift:
             order = new AirliftOrder();
-            cout << "played airlift " << endl;
+            cout << "play(): played airlift " << endl;
             break;
         case CardType::diplomacy:
             order = new NegotiateOrder();
-            cout << "played diplomacy " << endl;
+            cout << "play(): played diplomacy " << endl;
             break;
     }
     return order;

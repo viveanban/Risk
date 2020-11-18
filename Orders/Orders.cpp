@@ -89,7 +89,7 @@ bool DeployOrder::issue() {
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription()
+        cout << player->getPlayerName() << " could not issue order: " << getName()
              << " because this player has no territories to defend." << endl;
         return false;
     }
@@ -237,7 +237,7 @@ bool AdvanceOrder::issue() {
     vector<Territory *> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(
             sourceTerritory);
     if (territoriesToChooseFrom.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription()
+        cout << player->getPlayerName() << " could not issue order: " << getName()
              << " because this player has no territories to " << (attack ? "attack" : "transfer") << endl;
         return false;
     }
@@ -333,7 +333,7 @@ bool BombOrder::issue() {
     // Randomly determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
     if (territoriesToAttack.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << " because this player has no territories to attack." << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << " because this player has no territories to attack." << endl;
         return false;
     }
 
@@ -400,7 +400,7 @@ bool BlockadeOrder::issue() {
     // Determine target territory to be the player's territory with the most army units
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << " because this player has no territories to defend." << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << " because this player has no territories to defend." << endl;
         return false;
     }
 
@@ -482,7 +482,7 @@ void AirliftOrder::execute() {
 bool AirliftOrder::issue() {
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << " because this player has no territories to defend." << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << " because this player has no territories to defend." << endl;
         return false;
     }
 

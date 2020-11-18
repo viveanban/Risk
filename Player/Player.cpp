@@ -163,6 +163,7 @@ bool Player::issueOrder() {
 
                 // Play card
                 Order *order = cardChosen->play();
+                order->setPlayer(this);
                 if (order) {
                     bool successful = order->issue();
                     if(!successful) {
