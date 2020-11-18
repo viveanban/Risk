@@ -597,7 +597,7 @@ void OrdersList::remove(Order *order) {
         delete order;
         order = nullptr;
     } else {
-        cout << "Remove order operation failed: this order does not belong in the Player's order list." << endl;
+        cerr << "Remove order operation failed: this order does not belong in the Player's order list." << endl;
     }
 }
 
@@ -612,7 +612,7 @@ void OrdersList::move(Order *order, int destination) {
             orderList.insert(orderList.begin() + destination, copy);
         }
     } else {
-        cout << "Move order operation failed, please check indexes." << endl;
+        cerr << "Move order operation failed, please check indexes." << endl;
     }
 }
 

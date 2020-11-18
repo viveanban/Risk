@@ -174,7 +174,7 @@ void Hand::removeCard(Card* card) {
         GameEngine::getInstance()->getDeck()->addCard(card);
         cards.erase(position);
     } else {
-        cout << "Remove card operation failed: this card does not belong in the Player's hand." << endl;
+        cerr << "Remove card operation failed: this card does not belong in the Player's hand." << endl;
     }
 }
 
