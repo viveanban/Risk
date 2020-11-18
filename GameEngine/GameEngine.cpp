@@ -178,23 +178,23 @@ GameInitialization::~GameInitialization() {
         player = nullptr;
     }
     players.clear();
-    cout << "deleted players" << endl;
+    cout << "Deleted all remaining Players" << endl;
 
     delete Player::neutralPlayer;
     Player::neutralPlayer = nullptr;
-    cout << "deleted neutral player" << endl;
+    cout << "Deleted the Neutral Player" << endl;
 
     delete gameState;
     gameState = nullptr;
-    cout << "deleted gamestate" << endl;
+    cout << "Deleted Gamestate" << endl;
 
     delete deck;
     deck = nullptr;
-    cout << "deleted deck" << endl;
+    cout << "Deleted Deck" << endl;
 
     delete map;
     map = nullptr;
-    cout << "deleted map" << endl;
+    cout << "Deleted Map" << endl;
 }
 
 GameInitialization &GameInitialization::operator=(const GameInitialization &otherGameInitialization) {
