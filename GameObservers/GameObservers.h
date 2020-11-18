@@ -144,6 +144,8 @@ private:
     void printReinforcementinfo() const;
 
     void printReinforcementCardInfo();
+
+    void printToDefendToAttack();
 };
 
 #endif //RISK_GAMEOBSERVERS_H

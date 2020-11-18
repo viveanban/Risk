@@ -87,6 +87,7 @@ void PhaseObserver::displaySpecialInformation() {
             printReinforcementinfo();
             break;
         case issuing_orders:
+            printToDefendToAttack();
         case orders_execution:
             printOrderInfo(currentGameState->getCurrentOrder(), currentGameState->getCurrentCard());
             break;
@@ -277,6 +278,22 @@ void PhaseObserver::printNegotiateOrder(NegotiateOrder *pOrder) {
 void PhaseObserver::printReinforcementCardInfo() {
     cout << currentGameState->getCurrentPlayer()->getPlayerName() << " played a reinforcement card and has +5 armies. "
          << endl;
+}
+
+void PhaseObserver::printToDefendToAttack() {
+    cout << currentGameState->getCurrentPlayer()->getPlayerName()
+         << " can attack the following territories: ";
+    for (auto t: currentGameState->getCurrentPlayer()->toAttack()) {
+        cout << t->getTerritoryName() << " ";
+    }
+    cout << endl;
+
+    cout << currentGameState->getCurrentPlayer()->getPlayerName()
+         << " can defend the following territories: ";
+    for (auto t: currentGameState->getCurrentPlayer()->toDefend()) {
+        cout << t->getTerritoryName() << " ";
+    }
+    cout << endl;
 }
 
 GameState::GameState(int totalTerritories, Player *currentPlayer, Phase currentPhase)
