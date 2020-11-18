@@ -69,7 +69,6 @@ void Player::removeTerritory(Territory *territory) {
     }
 }
 
-// TODO: in issue phase, show those lists before actually issuing using phase observer (Tarek)
 vector<Territory *> Player::toDefend() {
     sortTerritoryList(territories);
     return territories;

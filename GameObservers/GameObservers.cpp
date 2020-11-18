@@ -17,6 +17,7 @@ void Subject::attach(Observer *o) {
 };
 
 void Subject::detach(Observer *o) {
+    delete o;
     observers->remove(o);
 };
 
@@ -24,24 +25,23 @@ void Subject::notify() {
     auto i = observers->begin();
     for (; i != observers->end(); ++i)
         (*i)->update();
+}
+
+list<Observer *> *Subject::getObservers() const {
+    return observers;
 };
 
-//PHASE OBSERVER
+// PHASE OBSERVER
 PhaseObserver::PhaseObserver() : currentGameState{} {}
 
 PhaseObserver::PhaseObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
-PhaseObserver::~PhaseObserver() {
-    delete currentGameState;
-    currentGameState = nullptr;
-}
-
 PhaseObserver::PhaseObserver(const PhaseObserver &original) {
-    currentGameState = new GameState(*original.currentGameState);
+    currentGameState = original.currentGameState;
 }
 
 PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
-    currentGameState = new GameState(*otherObserver.currentGameState);
+    currentGameState = otherObserver.currentGameState;
     return *this;
 }
 
@@ -98,7 +98,10 @@ void PhaseObserver::printOrderInfo(Order *order, Card *card) {
     if (card != nullptr && card->getType() == Card::CardType::reinforcement) {
         printReinforcementCardInfo();
         return;
-    } else if (order == nullptr) {
+    } else if (order == nullptr && card == nullptr && currentGameState->getCurrentPhase() == issuing_orders) {
+        cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
+        return;
+    } else if (order == nullptr){
         return;
     } else if (auto *deployOrder = dynamic_cast<DeployOrder *>(order)) {
         printDeployOrderInfo(deployOrder);
@@ -138,6 +141,7 @@ void PhaseObserver::printBombOrder(BombOrder *pOrder) {
 void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
+            printToDefendToAttack();
             if (pOrder->getAdvanceOrderType() == AdvanceOrderType::attack)
                 cout << currentGameState->getCurrentPlayer()->getPlayerName()
                      << " issued an advance order, attacking armies in "
@@ -270,6 +274,22 @@ void PhaseObserver::printReinforcementCardInfo() {
          << endl;
 }
 
+void PhaseObserver::printToDefendToAttack() {
+    cout << currentGameState->getCurrentPlayer()->getPlayerName()
+         << " can attack the following territories: ";
+    for (auto t: currentGameState->getCurrentPlayer()->toAttack()) {
+        cout << t->getTerritoryName() << " ";
+    }
+    cout << endl;
+
+    cout << currentGameState->getCurrentPlayer()->getPlayerName()
+         << " can defend the following territories: ";
+    for (auto t: currentGameState->getCurrentPlayer()->toDefend()) {
+        cout << t->getTerritoryName() << " ";
+    }
+    cout << endl;
+}
+
 GameState::GameState(int totalTerritories, Player *currentPlayer, Phase currentPhase)
         : totalTerritories(totalTerritories),
           currentPlayer(currentPlayer), currentPhase(currentPhase) {}
@@ -337,23 +357,23 @@ void GameState::setCurrentCard(Card *currentCard) {
     GameState::currentCard = currentCard;
 }
 
+GameState::~GameState() {
+    for (auto o: *this->getObservers()) {
+        delete o;
+    }
+}
 
 // STATISTICS OBSERVER
 StatisticsObserver::StatisticsObserver() : currentGameState{} {};
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
-StatisticsObserver::~StatisticsObserver() {
-    delete currentGameState;
-    currentGameState = nullptr;
-}
-
 StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {
-    currentGameState = new GameState(*original.currentGameState);
+    currentGameState = original.currentGameState;
 }
 
 StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
-    currentGameState = new GameState(*otherObserver.currentGameState);
+    currentGameState = otherObserver.currentGameState;
     return *this;
 }
 
@@ -376,7 +396,7 @@ void StatisticsObserver::displayStatsUpdate() {
          << " % " << calculateWorldDomination(Player::neutralPlayer->getTerritories().size()) << "\t\t|" << endl;
 
     for (int i = 0; i < playerDominationRatios.size(); i++) {
-        if(round(playerDominationRatios[i]) == round((100.0 - neutralPlayerDomination))) {
+        if (round(playerDominationRatios[i]) == round((100.0 - neutralPlayerDomination))) {
             cout << "~ CONGRATULATIONS " << GameEngine::getInstance()->getPlayers().at(i)->getPlayerName()
                  << " YOU WON THE GAME! VICCCTORY ~" << endl;
         }
@@ -388,3 +408,4 @@ float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
 }
 
 
+Observer::~Observer() = default;

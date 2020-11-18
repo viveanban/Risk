@@ -26,6 +26,8 @@ public:
     Subject();
 
     ~Subject();
+
+    list<Observer *> *getObservers() const;
 };
 
 class GameState : public Subject {
@@ -42,6 +44,8 @@ private:
 
 public:
     GameState();
+
+    ~GameState();
 
     GameState(int totalTerritories, Player *currentPlayer, Phase currentPhase);
 
@@ -75,6 +79,8 @@ public:
 class Observer {
 public:
     virtual void update() = 0;
+
+    virtual ~Observer();
 };
 
 class StatisticsObserver : public Observer {
@@ -90,8 +96,6 @@ public:
 
     explicit StatisticsObserver(GameState *currGameState);
 
-    ~StatisticsObserver();
-
     StatisticsObserver(const StatisticsObserver &original);
 
     StatisticsObserver &operator=(const StatisticsObserver &otherObserver);
@@ -104,8 +108,6 @@ public:
     PhaseObserver();
 
     explicit PhaseObserver(GameState *currGameState);
-
-    ~PhaseObserver();
 
     PhaseObserver(const PhaseObserver &original);
 
@@ -139,6 +141,8 @@ private:
     void printReinforcementinfo() const;
 
     void printReinforcementCardInfo();
+
+    void printToDefendToAttack();
 };
 
 #endif //RISK_GAMEOBSERVERS_H
