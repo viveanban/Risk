@@ -14,6 +14,7 @@
 
 using namespace std;
 
+// TODO: edge case where territores # < # of player
 // ---------GAME INITIALIZATION---------------
 void GameInitialization::initializeGame() {
     selectMap();
@@ -42,7 +43,6 @@ void GameInitialization::selectMap() {
             cout << "Please pick another map now: " << endl;
             chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
-        //TODO: Pass the input file as a parameter directly instead of passing a string
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (map == NULL or !map->validate());
     inputFile.close();
@@ -380,7 +380,7 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                    cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: phase observer should do this
+                    cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: add active phase observer hack here
                 }
             }
         }

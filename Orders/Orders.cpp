@@ -231,13 +231,8 @@ bool AdvanceOrder::issue() {
     targetTerritory = territoriesToChooseFrom.at(0);
 
     // Determine number of armies to advance TODO: use priority, investiagte if corectly updated and why priority is < 0 sometimes
-    if (sourceTerritory->getPriority() > 0 && sourceTerritory->getUnitNbr() > 0) {
-        numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
-    } else {
-        // When issuing the advance orders, you might not have already executed your deploy orders
-        // This means those values won't be updated in the issuing phase. However, in the execution phase, you would be able to advance your armies.
-        numberOfArmiesToAdvance = (rand() % 6) + 1;
-    }
+    numberOfArmiesToAdvance = (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
+
     // Update priority
     targetTerritory->setPriority(attack ?
                                  targetTerritory->getPriority() - numberOfArmiesToAdvance :
@@ -463,7 +458,7 @@ bool AirliftOrder::issue() {
     targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
     // Determine number of armies to advance
-    numberOfArmiesToAirlift = (rand() % sourceTerritory->getUnitNbr()) + 1;
+    numberOfArmiesToAirlift = (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
 
     // Update priority
     sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAirlift);
@@ -472,7 +467,7 @@ bool AirliftOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
-    //Update the description
+    // Update the description // TODO: use descriptions for observers (add them in execute as well) (enhancement). If not used, then delete description.
     description = "Airlift Order issued:\n" + player->getPlayerName() + " wants to airlift " +
                   to_string(numberOfArmiesToAirlift) + " army units from " + sourceTerritory->getTerritoryName() +
                   " to " + targetTerritory->getTerritoryName();

@@ -301,7 +301,6 @@ void GameState::setTotalTerritories(int totalTerritories) {
     GameState::totalTerritories = totalTerritories;
 }
 
-// TODO: Handle a nullptr order??
 void GameState::updateGameState(Player *player, Phase phase, Order *order, Card *card) {
     setCurrentPhase(phase);
     setCurrentPlayer(player);
@@ -378,7 +377,7 @@ void StatisticsObserver::displayStatsUpdate() {
          << " % " << calculateWorldDomination(Player::neutralPlayer->getTerritories().size()) << "\t\t|" << endl;
 
     for (int i = 0; i < playerDominationRatios.size(); i++) {
-        if(round(playerDominationRatios[i]) == round((100 - (int)neutralPlayerDomination))) {
+        if(round(playerDominationRatios[i]) == round((100.0 - neutralPlayerDomination))) {
             cout << "~ CONGRATULATIONS " << GameEngine::getInstance()->getPlayers().at(i)->getPlayerName()
                  << " YOU WON THE GAME! VICCCTORY ~" << endl;
         }
