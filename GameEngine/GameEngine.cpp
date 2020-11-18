@@ -147,10 +147,6 @@ void GameEngine::setupPlayers() {
 }
 
 
-const vector<string> &GameEngine::getAvailableMaps() const {
-    return availableMaps;
-}
-
 bool GameEngine::isPhaseObserverActive() const {
     return phaseObserverActive;
 }
@@ -427,29 +423,8 @@ Deck *GameEngine::getDeck() const {
     return deck;
 }
 
-// Setters
-void GameEngine::setPlayers(const vector<Player *> &players) {
-    GameEngine::players = players;
-}
-
-void GameEngine::setMap(Map *map) {
-    GameEngine::map = map;
-}
-
-void GameEngine::setDeck(Deck *deck) {
-    GameEngine::deck = deck;
-}
-
 GameState *GameEngine::getGameState() const {
     return gameState;
-}
-
-void GameEngine::setGameState(GameState *gameState) {
-    GameEngine::gameState = gameState;
-}
-
-void GameEngine::setPhaseObserverActive(bool phaseObserverActive) {
-    GameEngine::phaseObserverActive = phaseObserverActive;
 }
 
 void GameEngine::resetDiplomacy() {

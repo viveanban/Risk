@@ -141,20 +141,7 @@ public:
     GameState *getGameState() const;
 
     const vector<Player *> &getPlayers() const;
-
-    void setPhaseObserverActive(bool phaseObserverActive);
-
-    void setGameState(GameState *gameState);
-
-    void setPlayers(const vector<Player *> &players);
-
-    void setMap(Map *map);
-
-
-    void setDeck(Deck *deck);
-
-    const vector<string> &getAvailableMaps() const;
-
+    
     bool isStatisticsObserverActive() const;
 };
 
