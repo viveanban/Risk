@@ -43,7 +43,7 @@ public:
      */
     virtual void execute() = 0;
 
-    virtual void issue() = 0;
+    virtual bool issue() = 0;
 
     const string &getName() const;
 
@@ -52,8 +52,6 @@ public:
     int getPriority() const;
 
     void setPlayer(Player *player);
-
-    virtual ~Order();
 };
 
 /**
@@ -71,7 +69,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
 private:
     Territory *targetTerritory;
@@ -105,7 +103,7 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
     Territory *getSourceTerritory() const;
 
@@ -118,8 +116,11 @@ public:
 
 private:
     Territory *sourceTerritory;
+
     Territory *targetTerritory;
+
     AdvanceOrderType advanceOrderType;
+
     int numberOfArmiesToAdvance;
 
     bool validate() override;
@@ -143,14 +144,11 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
+    Territory *getTargetTerritory() const;
 private:
     Territory* targetTerritory;
-public:
-    Territory *getTargetTerritory() const;
-
-private:
 
     bool validate() override;
 };
@@ -170,14 +168,11 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
+    Territory *getTargetTerritory() const;
 private:
     Territory *targetTerritory;
-public:
-    Territory *getTargetTerritory() const;
-
-private:
 
     bool validate() override;
 
@@ -198,12 +193,8 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
-private:
-    Territory *sourceTerritory;
-    Territory *targetTerritory;
-public:
     Territory *getSourceTerritory() const;
 
     Territory *getTargetTerritory() const;
@@ -211,6 +202,9 @@ public:
     int getNumberOfArmiesToAirlift() const;
 
 private:
+    Territory *sourceTerritory;
+
+    Territory *targetTerritory;
 
     int numberOfArmiesToAirlift;
 
@@ -233,14 +227,11 @@ public:
 
     void execute() override;
 
-    void issue() override;
+    bool issue() override;
 
+    Player *getTargetPlayer() const;
 private:
     Player* targetPlayer;
-public:
-    Player *getTargetPlayer() const;
-
-private:
 
     bool validate() override;
 };

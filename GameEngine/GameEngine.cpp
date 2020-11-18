@@ -14,6 +14,7 @@
 
 using namespace std;
 
+// TODO: edge case where territores # < # of player
 // ---------GAME INITIALIZATION---------------
 void GameInitialization::initializeGame() {
     selectMap();
@@ -21,7 +22,6 @@ void GameInitialization::initializeGame() {
     setupObservers();
     setupPlayers();
     this->deck = new Deck(50);
-    gameState->setPlayers(&players);
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
@@ -43,7 +43,6 @@ void GameInitialization::selectMap() {
             cout << "Please pick another map now: " << endl;
             chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
-        //TODO: Pass the input file as a parameter directly instead of passing a string
         this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
     } while (map == NULL or !map->validate());
     inputFile.close();
@@ -171,18 +170,27 @@ int GameInitialization::getNumPlayer() const {
 }
 
 GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0),
-                                           gameState(new GameState(0, nullptr, nullptr, reinforcement)) {}
+                                           gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
     delete map;
+    cout << "deleted map" << endl;
     delete deck;
+    cout << "deleted deck" << endl;
     delete gameState;
+    cout << "deleted gamestate" << endl;
 
     for (auto player: players) {
         delete player;
         player = nullptr;
     }
     players.clear();
+    cout << "deleted players" << endl;
+
+    delete Player::neutralPlayer;
+    Player::neutralPlayer = nullptr;
+    cout << "deleted neutral player" << endl;
+
     map = nullptr;
     deck = nullptr;
     gameState = nullptr;
@@ -248,11 +256,10 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
     this->map = map;
     this->deck = deck;
     this->gameState = gameState;
-    gameState->setPlayers(&players);
 }
 
 GameEngine::~GameEngine() {
-    players.clear();
+    delete gameInitialization;
 }
 
 // Startup phase logic
@@ -268,12 +275,16 @@ void GameEngine::randomlySetOrder() {
     for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
 
+    cout << endl;
+
     // Randomize (shuffle) the order of the players
     shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
 
     cout << "After shuffling, this is the order of players" << endl;
     for (auto &it : players)
         std::cout << ' ' << it->getPlayerName();
+
+    cout << endl;
 }
 
 void GameEngine::assignTerritoriesToPlayers() {
@@ -288,11 +299,12 @@ void GameEngine::assignTerritoriesToPlayers() {
         territoriesAvailable.erase(territoriesAvailable.begin() + randomIndex);
         // Assign using Round Robin Method
         territory->setOwner(players.at(territoriesAssigned % players.size()));
-        cout << "assigning territory " << territory->getTerritoryName() << " to "
+        cout << "Assigning territory " << territory->getTerritoryName() << " to "
              << players.at(territoriesAssigned % players.size())->getPlayerName() << endl;
         territoriesAssigned++;
     }
     cout << "All territories Assigned." << endl;
+    cout << "==========================================" << endl;
 }
 
 void GameEngine::assignArmiesToPlayers() {
@@ -319,20 +331,21 @@ int GameEngine::getInitialArmyNumber() {
 
 // Main game loop logic
 void GameEngine::mainGameLoop() {
-    while (!winnerExists()) {
+    static int counter = 1;
+    while (players.size() != 1) {
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ROUND " << counter << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
+        counter++;
     }
-
 }
 
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        //TODO: is the armies in the reinforcement pool incremented each turn or is it calculated from scratch?
         player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
         gameState->updateGameState(player, reinforcement, nullptr, nullptr);
     }
@@ -365,8 +378,10 @@ void GameEngine::issueOrdersPhase() {
         for (Player *player: players) {
             if (find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
                 playersWithNoMoreOrderstoIssue.end()) {
-                if (!player->issueOrder())
+                if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
+                    cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: add active phase observer hack here
+                }
             }
         }
     }
@@ -405,8 +420,10 @@ void GameEngine::executeOrdersPhase() {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
                 orderList[0]->execute();
-                gameState->updateGameState(player, orders_execution, orderList[0],nullptr);
+                gameState->updateGameState(player, orders_execution, orderList[0], nullptr);
                 player->getOrders()->remove(orderList[0]);
+                if (winnerExists())
+                    return;
             } else {
                 playersWithNoMoreOrdersToExecute.insert(player);
             }
@@ -415,7 +432,13 @@ void GameEngine::executeOrdersPhase() {
 }
 
 bool GameEngine::winnerExists() {
-    return players.size() == 1;
+    set<Player*> remainingPlayers;
+    for(Player* player: players) {
+        if(!player->getTerritories().empty())
+            remainingPlayers.insert(player);
+    }
+
+    return remainingPlayers.size() == 1;
 }
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {

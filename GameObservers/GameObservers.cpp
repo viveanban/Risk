@@ -1,6 +1,8 @@
 #include "GameObservers.h"
 #include <iomanip>
+#include <cmath>
 #include "./../Cards/Cards.h"
+#include "../GameEngine/GameEngine.h"
 
 // SUBJECT
 Subject::Subject() {
@@ -54,9 +56,12 @@ void PhaseObserver::update() {
 }
 
 void PhaseObserver::displayPhaseUpdates() {
+    cout << "==================================================================================================="
+         << endl;
     cout << currentGameState->getCurrentPlayer()->getPlayerName() << ": " << getPhaseText() << " Phase." << endl;
     displaySpecialInformation();
-
+    cout << "==================================================================================================="
+         << endl;
 }
 
 string PhaseObserver::getPhaseText() {
@@ -85,7 +90,8 @@ void PhaseObserver::displaySpecialInformation() {
 }
 
 void PhaseObserver::printReinforcementinfo() const {
-    cout << currentGameState->getCurrentPlayer()->getPlayerName() << " has received new armies as part of reinforcement phase. He now owns "
+    cout << currentGameState->getCurrentPlayer()->getPlayerName()
+         << " has received new armies as part of reinforcement phase. He now owns "
          << currentGameState->getCurrentPlayer()->getNumberofArmies() << " number of armies." << endl;
 }
 
@@ -136,19 +142,22 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
             if (pOrder->getAdvanceOrderType() == AdvanceOrderType::attack)
                 cout << currentGameState->getCurrentPlayer()->getPlayerName()
                      << " issued an advance order, attacking armies in "
-                     << pOrder->getTargetTerritory()->getTerritoryName() << " from " << pOrder->getSourceTerritory()
+                     << pOrder->getTargetTerritory()->getTerritoryName() << " from "
+                     << pOrder->getSourceTerritory()->getTerritoryName()
                      << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             else
                 cout << currentGameState->getCurrentPlayer()->getPlayerName()
                      << " issued an advance order, transferring armies from "
-                     << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
+                     << pOrder->getSourceTerritory()->getTerritoryName() << " to "
+                     << pOrder->getTargetTerritory()->getTerritoryName()
                      << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             break;
         case orders_execution:
             if (pOrder->getAdvanceOrderType() == AdvanceOrderType::attack) {
                 cout << currentGameState->getCurrentPlayer()->getPlayerName()
                      << " executed an advance order, attacking armies in "
-                     << pOrder->getTargetTerritory()->getTerritoryName() << " from " << pOrder->getSourceTerritory()
+                     << pOrder->getTargetTerritory()->getTerritoryName() << " from "
+                     << pOrder->getSourceTerritory()->getTerritoryName()
                      << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
                 if (pOrder->getTargetTerritory()->getOwner() == currentGameState->getCurrentPlayer())
                     cout << pOrder->getTargetTerritory()->getTerritoryName() << " was conquered by " <<
@@ -161,7 +170,8 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
             } else {
                 cout << currentGameState->getCurrentPlayer()->getPlayerName()
                      << " executed an advance order, transferring armies from "
-                     << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
+                     << pOrder->getSourceTerritory()->getTerritoryName() << " to "
+                     << pOrder->getTargetTerritory()->getTerritoryName()
                      << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
 
                 cout << pOrder->getTargetTerritory()->getTerritoryName() << " now has "
@@ -179,6 +189,9 @@ void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of "
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
+            cout << currentGameState->getCurrentPlayer()->getNumberofArmies()
+                 << " armies remaining in reinforcement pool."
+                 << endl;
             break;
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed a deploy order of "
@@ -258,11 +271,11 @@ void PhaseObserver::printReinforcementCardInfo() {
          << endl;
 }
 
-GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase)
-        : totalTerritories(totalTerritories), players(players),
+GameState::GameState(int totalTerritories, Player *currentPlayer, Phase currentPhase)
+        : totalTerritories(totalTerritories),
           currentPlayer(currentPlayer), currentPhase(currentPhase) {}
 
-GameState::GameState() : currentPlayer{}, currentPhase{}, players{}, totalTerritories{} {};
+GameState::GameState() : currentPlayer{}, currentPhase{}, totalTerritories{} {};
 
 Player *GameState::getCurrentPlayer() const {
     return currentPlayer;
@@ -272,16 +285,8 @@ Phase GameState::getCurrentPhase() const {
     return currentPhase;
 }
 
-const vector<Player *> *GameState::getPlayers() const {
-    return players;
-}
-
 int GameState::getTotalTerritories() const {
     return totalTerritories;
-}
-
-void GameState::setPlayers(vector<Player *> *players) {
-    GameState::players = players;
 }
 
 void GameState::setCurrentPlayer(Player *currentPlayer) {
@@ -306,22 +311,15 @@ void GameState::updateGameState(Player *player, Phase phase, Order *order, Card 
 
 GameState::GameState(const GameState &original) : Subject(original) {
     totalTerritories = original.totalTerritories;
-    players = new vector<Player *>(*original.players);
     currentPlayer = new Player(*original.currentPlayer);
     currentPhase = original.currentPhase;
 }
 
 GameState &GameState::operator=(const GameState &original) {
     totalTerritories = original.totalTerritories;
-    players = original.players;
     currentPlayer = original.currentPlayer;
     currentPhase = original.currentPhase;
     return *this;
-}
-
-GameState::~GameState() {
-    players->clear();
-    currentPlayer = nullptr;
 }
 
 Order *GameState::getCurrentOrder() const {
@@ -367,15 +365,20 @@ void StatisticsObserver::update() {
 void StatisticsObserver::displayStatsUpdate() {
     cout << '|' << "Player" << setw(5) << '|' << "Territorial Control\t|" << endl;
     vector<float> playerDominationRatios{};
-    for (Player *player: *currentGameState->getPlayers()) {
+    for (Player *player: GameEngine::getInstance()->getPlayers()) {
         float playerDomination = calculateWorldDomination(player->getTerritories().size());
         playerDominationRatios.push_back(playerDomination);
         cout << fixed << setprecision(2) << '|' << player->getPlayerName() << setw(3) << '|'
              << " % " << playerDomination << "\t\t|" << endl;
     }
+    // Neutral player
+    float neutralPlayerDomination = calculateWorldDomination(Player::neutralPlayer->getTerritories().size());
+    cout << fixed << setprecision(2) << '|' << "Neutral " << setw(3) << '|'
+         << " % " << calculateWorldDomination(Player::neutralPlayer->getTerritories().size()) << "\t\t|" << endl;
+
     for (int i = 0; i < playerDominationRatios.size(); i++) {
-        if (playerDominationRatios[i] == 100.0) {
-            cout << "~ CONGRATULATIONS " << currentGameState->getPlayers()->at(i)->getPlayerName()
+        if(round(playerDominationRatios[i]) == round((100.0 - neutralPlayerDomination))) {
+            cout << "~ CONGRATULATIONS " << GameEngine::getInstance()->getPlayers().at(i)->getPlayerName()
                  << " YOU WON THE GAME! VICCCTORY ~" << endl;
         }
     }
@@ -384,4 +387,5 @@ void StatisticsObserver::displayStatsUpdate() {
 float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
     return (float) numberOfTerritories / (float) currentGameState->getTotalTerritories() * 100;
 }
+
 

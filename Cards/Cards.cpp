@@ -27,28 +27,30 @@ ostream &operator<<(ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
+// TODO: remove cout
+// TODO: add comment to remember to delete order
 Order *Card::play() {
     Order *order;
     switch (type) {
         case CardType::bomb:
             order = new BombOrder();
-            cout << "played bomb " << endl;
+            cout << "play(): played bomb " << endl;
             break;
         case CardType::reinforcement:
             order = nullptr;
-            cout << "played reinforcement " << endl;
+            cout << "play(): played reinforcement " << endl;
             break;
         case CardType::blockade:
             order = new BlockadeOrder();
-            cout << "played blockade " << endl;
+            cout << "play(): played blockade " << endl;
             break;
         case CardType::airlift:
             order = new AirliftOrder();
-            cout << "played airlift " << endl;
+            cout << "play(): played airlift " << endl;
             break;
         case CardType::diplomacy:
             order = new NegotiateOrder();
-            cout << "played diplomacy " << endl;
+            cout << "play(): played diplomacy " << endl;
             break;
     }
     return order;
@@ -99,6 +101,7 @@ Deck::Deck(const Deck &original) {
 Deck::~Deck() {
     for (auto p : cards) {
         delete p;
+        cout << "deleted card in deck" << endl;
         p = nullptr;
     }
 }
@@ -128,13 +131,11 @@ Card *Deck::draw() {
         return nullptr;
     int randomIndex = rand() % cards.size();
     Card *card = cards.at(randomIndex);
-    cout << *card;
     cards.erase(cards.begin() + randomIndex);
     return card;
 }
 
 void Deck::addCard(Card *card) {
-    cout << "Adding card to deck" << endl;
     cards.push_back(card);
 }
 
@@ -165,6 +166,7 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 
 Hand::~Hand() {
     for (auto p : cards) {
+        cout << "deleted card in hand" << endl;
         delete p;
         p = nullptr;
     }
@@ -179,7 +181,6 @@ void Hand::setCards(const vector<Card *> &cards) {
 }
 
 void Hand::addCard(Card *card) {
-    cout << "Adding card to hand" << endl;
     cards.push_back(card);
 }
 
