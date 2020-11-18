@@ -163,8 +163,7 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
                      << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
                      << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
 
-                cout << pOrder->getTargetTerritory()->getTerritoryName() << " is now owned by " <<
-                     pOrder->getTargetTerritory()->getOwner()->getPlayerName() << " and has "
+                cout << pOrder->getTargetTerritory()->getTerritoryName() << " now has "
                      << pOrder->getTargetTerritory()->getUnitNbr() << " armies in it." << endl;
             }
             break;
