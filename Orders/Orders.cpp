@@ -236,8 +236,9 @@ void AdvanceOrder::issue() {
     // Determine number of armies to advance
     if (sourceTerritory->getPriority() > 0 && sourceTerritory->getUnitNbr() > 0)
         numberOfArmiesToAdvance = (rand() % sourceTerritory->getUnitNbr()) + 1;
+    //TODO: there should not be an else.. fix this
     else
-        numberOfArmiesToAdvance = 10;
+        numberOfArmiesToAdvance = 0;
 
     // Update priority
     targetTerritory->setPriority(attack ?
