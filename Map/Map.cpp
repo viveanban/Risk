@@ -117,8 +117,8 @@ void Territory::setPriority(int priority) {
 Continent::Continent() : continentId(), continentName(), territories(), bonus() {}
 
 Continent::~Continent() {
-    cout << "Deleting Territories of Continent" << endl;
     for(auto territory: territories) {
+        cout << "Deleting territory" << endl;
         delete territory;
         territory = nullptr;
     }
@@ -209,8 +209,8 @@ Map::Map(vector<Territory *> &territoryList, vector<Continent *> &continentList)
                                                                                        continentList(continentList) {}
 Map::~Map() {
     cout << "Deleting Map..." << endl;
-    cout << "Deleting Continents" << endl;
     for (auto continent: continentList) {
+        cout << "Deleting Continents" << endl;
         delete continent;
         continent = nullptr;
     }
