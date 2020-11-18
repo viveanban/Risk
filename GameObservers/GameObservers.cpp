@@ -128,8 +128,9 @@ void PhaseObserver::printBombOrder(BombOrder *pOrder) {
         case orders_execution:
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed a Bomb order on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
-            cout << pOrder->getTargetTerritory()->getTerritoryName() << " now has "
-                 << pOrder->getTargetTerritory()->getUnitNbr() << " unit number." << endl;
+            cout << pOrder->getTargetTerritory()->getOwner()->getPlayerName() << " now has "
+                 << pOrder->getTargetTerritory()->getUnitNbr() << " units left in "
+                 << pOrder->getTargetTerritory()->getTerritoryName() << endl;
             break;
         default:
             break;
