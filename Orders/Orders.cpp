@@ -364,7 +364,7 @@ bool BlockadeOrder::validate() {
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
-    cout << "Blockade order validation succeeded" << endl;
+    cout << "Blockade order validation succeeded!" << endl;
     return true;
 
 }
@@ -441,7 +441,7 @@ bool AirliftOrder::validate() {
              << "the source territory does not have enough armies to airlift." << endl;
         return false;
     }
-    cout << "Airlift order validation succeeded" << endl;
+    cout << "Airlift order validation succeeded!" << endl;
     return true;
 }
 
@@ -514,7 +514,7 @@ NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
 bool NegotiateOrder::validate() {
     // TODO: check that target is not the source player (Abhijit)
 
-    cout << "Negotiate order order validation succeeded" << endl;
+    cout << "Negotiate order order validation succeeded!" << endl;
     return true;
 }
 
