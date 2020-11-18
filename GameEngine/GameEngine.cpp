@@ -21,7 +21,6 @@ void GameInitialization::initializeGame() {
     setupObservers();
     setupPlayers();
     this->deck = new Deck(50);
-    gameState->setPlayers(&players);
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
@@ -171,7 +170,7 @@ int GameInitialization::getNumPlayer() const {
 }
 
 GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0),
-                                           gameState(new GameState(0, nullptr, nullptr, reinforcement)) {}
+                                           gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
     delete map;
@@ -183,6 +182,10 @@ GameInitialization::~GameInitialization() {
         player = nullptr;
     }
     players.clear();
+
+    delete Player::neutralPlayer;
+    Player::neutralPlayer = nullptr;
+
     map = nullptr;
     deck = nullptr;
     gameState = nullptr;
@@ -248,11 +251,11 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
     this->map = map;
     this->deck = deck;
     this->gameState = gameState;
-    gameState->setPlayers(&players);
 }
 
 GameEngine::~GameEngine() {
     players.clear();
+    delete gameInitialization;
 }
 
 // Startup phase logic
@@ -325,7 +328,7 @@ int GameEngine::getInitialArmyNumber() {
 // Main game loop logic
 void GameEngine::mainGameLoop() {
     static int counter = 1;
-    while (!winnerExists()) {
+    while (players.size() != 1) {
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ROUND " << counter << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         reinforcementPhase();
         issueOrdersPhase();
@@ -413,8 +416,10 @@ void GameEngine::executeOrdersPhase() {
             vector<Order *> &orderList = player->getOrders()->getOrderList();
             if (!orderList.empty()) {
                 orderList[0]->execute();
-                gameState->updateGameState(player, orders_execution, orderList[0],nullptr);
+                gameState->updateGameState(player, orders_execution, orderList[0], nullptr);
                 player->getOrders()->remove(orderList[0]);
+                if (winnerExists())
+                    return;
             } else {
                 playersWithNoMoreOrdersToExecute.insert(player);
             }
@@ -423,7 +428,13 @@ void GameEngine::executeOrdersPhase() {
 }
 
 bool GameEngine::winnerExists() {
-    return players.size() == 1;
+    set<Player*> remainingPlayers;
+    for(Player* player: players) {
+        if(!player->getTerritories().empty())
+            remainingPlayers.insert(player);
+    }
+
+    return remainingPlayers.size() == 1;
 }
 
 void GameEngine::removePlayersWithoutTerritoriesOwned() {

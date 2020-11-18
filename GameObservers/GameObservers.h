@@ -30,7 +30,6 @@ private:
 
 class GameState : public Subject {
 private:
-    vector<Player *> *players;
     Player *currentPlayer;
     Order *currentOrder;
     Card *currentCard;
@@ -39,7 +38,7 @@ private:
 public:
     GameState();
 
-    GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase);
+    GameState(int totalTerritories, Player *currentPlayer, Phase currentPhase);
 
     GameState(const GameState &original);
 
@@ -49,8 +48,6 @@ public:
 
     void updateGameState(Player *player, Phase phase, Order *order, Card *card);
 
-    void setPlayers(vector<Player *> *players);
-
     void setCurrentPlayer(Player *currentPlayer);
 
     void setCurrentPhase(Phase currentPhase);
@@ -58,8 +55,6 @@ public:
     Player *getCurrentPlayer() const;
 
     Phase getCurrentPhase() const;
-
-    const vector<Player *> *getPlayers() const;
 
     int getTotalTerritories() const;
 

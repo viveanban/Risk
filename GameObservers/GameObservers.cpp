@@ -1,6 +1,8 @@
 #include "GameObservers.h"
 #include <iomanip>
+#include <cmath>
 #include "./../Cards/Cards.h"
+#include "../GameEngine/GameEngine.h"
 
 // SUBJECT
 Subject::Subject() {
@@ -269,11 +271,11 @@ void PhaseObserver::printReinforcementCardInfo() {
          << endl;
 }
 
-GameState::GameState(int totalTerritories, vector<Player *> *players, Player *currentPlayer, Phase currentPhase)
-        : totalTerritories(totalTerritories), players(players),
+GameState::GameState(int totalTerritories, Player *currentPlayer, Phase currentPhase)
+        : totalTerritories(totalTerritories),
           currentPlayer(currentPlayer), currentPhase(currentPhase) {}
 
-GameState::GameState() : currentPlayer{}, currentPhase{}, players{}, totalTerritories{} {};
+GameState::GameState() : currentPlayer{}, currentPhase{}, totalTerritories{} {};
 
 Player *GameState::getCurrentPlayer() const {
     return currentPlayer;
@@ -283,16 +285,8 @@ Phase GameState::getCurrentPhase() const {
     return currentPhase;
 }
 
-const vector<Player *> *GameState::getPlayers() const {
-    return players;
-}
-
 int GameState::getTotalTerritories() const {
     return totalTerritories;
-}
-
-void GameState::setPlayers(vector<Player *> *players) {
-    GameState::players = players;
 }
 
 void GameState::setCurrentPlayer(Player *currentPlayer) {
@@ -318,21 +312,18 @@ void GameState::updateGameState(Player *player, Phase phase, Order *order, Card 
 
 GameState::GameState(const GameState &original) : Subject(original) {
     totalTerritories = original.totalTerritories;
-    players = new vector<Player *>(*original.players);
     currentPlayer = new Player(*original.currentPlayer);
     currentPhase = original.currentPhase;
 }
 
 GameState &GameState::operator=(const GameState &original) {
     totalTerritories = original.totalTerritories;
-    players = original.players;
     currentPlayer = original.currentPlayer;
     currentPhase = original.currentPhase;
     return *this;
 }
 
 GameState::~GameState() {
-    players->clear();
     currentPlayer = nullptr;
 }
 
@@ -379,15 +370,20 @@ void StatisticsObserver::update() {
 void StatisticsObserver::displayStatsUpdate() {
     cout << '|' << "Player" << setw(5) << '|' << "Territorial Control\t|" << endl;
     vector<float> playerDominationRatios{};
-    for (Player *player: *currentGameState->getPlayers()) {
+    for (Player *player: GameEngine::getInstance()->getPlayers()) {
         float playerDomination = calculateWorldDomination(player->getTerritories().size());
         playerDominationRatios.push_back(playerDomination);
         cout << fixed << setprecision(2) << '|' << player->getPlayerName() << setw(3) << '|'
              << " % " << playerDomination << "\t\t|" << endl;
     }
+    // Neutral player
+    float neutralPlayerDomination = calculateWorldDomination(Player::neutralPlayer->getTerritories().size());
+    cout << fixed << setprecision(2) << '|' << "Neutral " << setw(3) << '|'
+         << " % " << calculateWorldDomination(Player::neutralPlayer->getTerritories().size()) << "\t\t|" << endl;
+
     for (int i = 0; i < playerDominationRatios.size(); i++) {
-        if (playerDominationRatios[i] == 100.0) {
-            cout << "~ CONGRATULATIONS " << currentGameState->getPlayers()->at(i)->getPlayerName()
+        if(round(playerDominationRatios[i]) == round((100 - (int)neutralPlayerDomination))) {
+            cout << "~ CONGRATULATIONS " << GameEngine::getInstance()->getPlayers().at(i)->getPlayerName()
                  << " YOU WON THE GAME! VICCCTORY ~" << endl;
         }
     }
@@ -396,4 +392,5 @@ void StatisticsObserver::displayStatsUpdate() {
 float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
     return (float) numberOfTerritories / (float) currentGameState->getTotalTerritories() * 100;
 }
+
 
