@@ -28,7 +28,7 @@ ostream &operator<<(ostream &stream, const Card &c) {
 }
 
 // TODO: remove cout
-// TODO: add comment to remember to delete order
+// Orders are deleted when players are deleted since they reside in the player's orders list
 Order *Card::play() {
     Order *order;
     switch (type) {

@@ -337,7 +337,7 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-        removePlayersWithoutTerritoriesOwned();
+        removePlayersWithoutTerritoriesOwned(); // TODO: need to put cards back in deck before being removed?
         resetDiplomacy();
         counter++;
     }
@@ -380,7 +380,8 @@ void GameEngine::issueOrdersPhase() {
                 playersWithNoMoreOrderstoIssue.end()) {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
-                    cout << player->getPlayerName() << " is done issuing orders!" << endl; //TODO: add active phase observer hack here
+                    if (phaseObserverActive)
+                        cout << player->getPlayerName() << " is done issuing orders!" << endl;
                 }
             }
         }
