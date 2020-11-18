@@ -462,7 +462,7 @@ bool AirliftOrder::issue() {
     // Determine src territory
     sourceTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
-    // Determine target territory
+    // Determine target territory // TODO: check that target and src are different?
     targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
 
     // Determine number of armies to advance

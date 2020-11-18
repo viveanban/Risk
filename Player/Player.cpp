@@ -171,7 +171,6 @@ bool Player::issueOrder() {
                         order = nullptr;
                     } else {
                         GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, order, cardChosen);
-                        orders->add(order);
                         handOfCards->removeCard(cardChosen);
                     }
                 }
