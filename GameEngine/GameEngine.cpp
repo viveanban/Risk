@@ -253,19 +253,6 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
 
 GameEngine::~GameEngine() {
     players.clear();
-    for (auto p: players) {
-        delete p;
-        p = nullptr;
-    }
-    delete map;
-    delete gameInitialization;
-    delete deck;
-    delete gameState;
-
-    map = nullptr;
-    gameInitialization = nullptr;
-    deck = nullptr;
-    gameState = nullptr;
 }
 
 // Startup phase logic
