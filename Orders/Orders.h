@@ -29,6 +29,8 @@ public:
 
     Order &operator=(const Order &otherOrder);
 
+    virtual ~Order();
+
     friend ostream &operator<<(ostream &stream, Order &order);
 
     /**

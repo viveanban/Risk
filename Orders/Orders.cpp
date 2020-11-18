@@ -21,6 +21,8 @@ Order &Order::operator=(const Order &otherOrder) {
     return *this;
 }
 
+Order::~Order() = default;
+
 std::ostream &operator<<(std::ostream &stream, Order &order) {
     return stream << order.name << " => " << order.priority << endl;
 }

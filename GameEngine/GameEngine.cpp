@@ -173,7 +173,9 @@ GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlaye
                                            gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
-    for (auto player: GameEngine::getInstance()->getPlayers()) { // TODO: maybe rethink our design b/c we got mixed up with the players list in GameInit and in GameEngine.. the updated list of players is the one in GameEngine
+    // TODO: we need to delete observers?
+    
+    for (auto player: GameEngine::getInstance()->getPlayers()) { // TODO: maybe rethink our design b/c we got mixed up with the players list in GameInit and in GameEngine.. the updated list of players is the one in GameEngine (pointer to the vector)
         delete player;
         player = nullptr;
     }

@@ -15,7 +15,7 @@ int main() {
     gameEngine->startupPhase();
     gameEngine->mainGameLoop();
 
-    delete gameEngine; // TODO: we need to delete observers?
+    delete gameEngine;
 
     return 0;
 }
