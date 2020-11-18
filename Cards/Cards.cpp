@@ -181,17 +181,14 @@ void Hand::addCard(Card *card) {
     cards.push_back(card);
 }
 
-// TODO: remove bool (Ferdou)
-bool Hand::removeCard(Card *card) {
+void Hand::removeCard(Card* card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
         GameEngine::getInstance()->getDeck()->addCard(card);
         cards.erase(position);
-        return true;
+    } else {
+        cerr << "Remove card operation failed: this card does not belong in the Player's hand." << endl;
     }
-    cout << "Error removing card from hand." << endl;
-    // TODO: crash (Ferdou)
-    return false;
 }
 
 Card *Hand::getNextCard() {

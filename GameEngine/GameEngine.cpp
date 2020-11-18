@@ -14,7 +14,6 @@
 
 using namespace std;
 
-// TODO: edge case where territores # < # of player (Viveka)
 // ---------GAME INITIALIZATION---------------
 void GameInitialization::initializeGame() {
     selectMap();
@@ -88,12 +87,13 @@ int GameInitialization::isRegularFile(const char *path) {
 
 void GameInitialization::selectPlayerNumber() {
     int numPlayerTmp = -1;
-    cout << "The game supports up to 5 players with a minimum of 2."
+    int maxPlayerNumber = std::min( (int)map->getTerritoryList().size(), 5);
+    cout << "The game supports up to "<< maxPlayerNumber <<" players with a minimum of 2."
             " Please input the desired number of players" << endl;
     numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
-    while (numPlayerTmp < 2 or numPlayerTmp > 5) {
-        cout << "This does not look like a number between 2 to 5."
-                "The game supports up to 5 players with a minimum of 2." << endl <<
+    while (numPlayerTmp < 2 or numPlayerTmp > maxPlayerNumber) {
+        cout << "This does not look like a number between 2 to " << maxPlayerNumber <<
+                ". The game supports up to 5 players with a minimum of 2." << endl <<
              "Please input the desired number of players" << endl;
         numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     }
@@ -339,7 +339,12 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
+
         // TODO: give cards to those who conquered stuff (IMPORTANT) --> save a vector<Player*> with state before and after execution and compare the territories size befrore and after. If size increased = conquered something. Then, give card. (VivekA + FERODU)
+//        // Pick a card
+//        Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
+//        player->getHandOfCards()->addCard(drawnCard);
+//
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
         counter++;
@@ -393,9 +398,11 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
-    // Prioritize the orders TODO: print that list not using phase observer? (Viveka)
+    // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
+        cout << endl;
+        cout << player->getPlayerName() << "\'s order list:\n"<<*player->getOrders() << endl;
     }
 
     // Execute all deploy orders

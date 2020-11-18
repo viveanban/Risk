@@ -275,7 +275,7 @@ public:
      * @param order
      * @return boolean indicating order removed successfully
      */
-    bool remove(Order *order);
+    void remove(Order *order);
 
     /**
      * Moves an order to the given destination index
@@ -283,7 +283,7 @@ public:
      * @param destination
      * @return boolean indicating if move was successful
      */
-    bool move(Order *order, int destination);
+    void move(Order *order, int destination);
 
     vector<Order *> &getOrderList();
 

@@ -28,6 +28,13 @@ private:
 
     void sortTerritoryList(vector<Territory *> &territoryList);
 
+    void playReinforcementCard();
+
+    void issueDeployOrder();
+
+    void issueAdvanceOrder();
+
+    void issueOrderFromCard(Card *cardChosen);
 public:
     static Player *neutralPlayer;
 
