@@ -28,6 +28,11 @@ private:
 
     void sortTerritoryList(vector<Territory *> &territoryList);
 
+    void issueDeployOrder();
+
+    void issueAdvanceOrder();
+
+    void issueOrderFromCard(Card *cardChosen);
 public:
     static Player *neutralPlayer;
 
@@ -98,6 +103,8 @@ public:
     * @return false when player is done issuing order
     */
     bool issueOrder();
+
+
 };
 
 #endif //RISK_PLAYER_H
