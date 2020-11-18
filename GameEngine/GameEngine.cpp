@@ -21,7 +21,8 @@ void GameInitialization::initializeGame() {
     selectPlayerNumber();
     setupObservers();
     setupPlayers();
-    this->deck = new Deck(50); // TODO: print out that 50 cards are created and show that there's every type of card in the deck (Tarek)
+    this->deck = new Deck(50);
+    cout << *deck;
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
