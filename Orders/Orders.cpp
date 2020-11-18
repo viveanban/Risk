@@ -204,10 +204,6 @@ void AdvanceOrder::execute() {
                 // Transfer ownership
                 targetTerritory->setOwner(player);
 
-                // Pick a card TODO: remove card logic here (Viveka + Ferdou)
-                Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
-                player->getHandOfCards()->addCard(drawnCard);
-
             } else { // Target is not conquered
                 // Updating the army unit numbers for each territory
                 sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfSourceUnitsKilled);
@@ -590,21 +586,18 @@ void OrdersList::add(Order *order) {
     orderList.push_back(order);
 }
 
-// TODO: why bool? + crash (Ferdou)
-bool OrdersList::remove(Order *order) {
+void OrdersList::remove(Order *order) {
     auto position = find(orderList.begin(), orderList.end(), order);
     if (position != orderList.end()) {
         orderList.erase(position);
         delete order;
         order = nullptr;
-        return true;
+    } else {
+        cout << "Remove order operation failed: this order does not belong in the Player's order list." << endl;
     }
-    cout << "Error deleting order." << endl;
-    return false;
 }
 
-// TODO: why bool? + crash (Ferdou)
-bool OrdersList::move(Order *order, int destination) {
+void OrdersList::move(Order *order, int destination) {
     if (destination < orderList.size()) {
         auto oldPosition = find(orderList.begin(), orderList.end(), order);
         const int oldIndex = distance(orderList.begin(), oldPosition);
@@ -613,11 +606,10 @@ bool OrdersList::move(Order *order, int destination) {
             Order *copy = order;
             orderList.erase(orderList.begin() + oldIndex);
             orderList.insert(orderList.begin() + destination, copy);
-            return true;
         }
+    } else {
+        cout << "Move order operation failed, please check indexes." << endl;
     }
-    cout << "Error moving order, please check indexes." << endl;
-    return false;
 }
 
 vector<Order *> &OrdersList::getOrderList() {
