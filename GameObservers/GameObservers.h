@@ -26,6 +26,8 @@ public:
     Subject();
 
     ~Subject();
+
+    list<Observer *> *getObservers() const;
 };
 
 class GameState : public Subject {
@@ -42,6 +44,8 @@ private:
 
 public:
     GameState();
+
+    ~GameState();
 
     GameState(int totalTerritories, Player *currentPlayer, Phase currentPhase);
 
@@ -75,6 +79,7 @@ public:
 class Observer {
 public:
     virtual void update() = 0;
+    virtual ~Observer();
 };
 
 class StatisticsObserver : public Observer {

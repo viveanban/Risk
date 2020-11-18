@@ -174,8 +174,6 @@ GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlaye
                                            gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
-    // TODO: we need to delete observers (Tarek)
-
     for (auto player: GameEngine::getInstance()->getPlayers()) { // TODO: (merge everything together) (Abhijit)
         delete player;
         player = nullptr;

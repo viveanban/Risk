@@ -17,6 +17,7 @@ void Subject::attach(Observer *o) {
 };
 
 void Subject::detach(Observer *o) {
+    delete o;
     observers->remove(o);
 };
 
@@ -24,6 +25,10 @@ void Subject::notify() {
     auto i = observers->begin();
     for (; i != observers->end(); ++i)
         (*i)->update();
+}
+
+list<Observer *> *Subject::getObservers() const {
+    return observers;
 };
 
 //PHASE OBSERVER
@@ -338,6 +343,11 @@ void GameState::setCurrentCard(Card *currentCard) {
     GameState::currentCard = currentCard;
 }
 
+GameState::~GameState() {
+    for (auto o: *this->getObservers()) {
+        delete o;
+    }
+}
 
 // STATISTICS OBSERVER
 StatisticsObserver::StatisticsObserver() : currentGameState{} {};
@@ -377,7 +387,7 @@ void StatisticsObserver::displayStatsUpdate() {
          << " % " << calculateWorldDomination(Player::neutralPlayer->getTerritories().size()) << "\t\t|" << endl;
 
     for (int i = 0; i < playerDominationRatios.size(); i++) {
-        if(round(playerDominationRatios[i]) == round((100.0 - neutralPlayerDomination))) {
+        if (round(playerDominationRatios[i]) == round((100.0 - neutralPlayerDomination))) {
             cout << "~ CONGRATULATIONS " << GameEngine::getInstance()->getPlayers().at(i)->getPlayerName()
                  << " YOU WON THE GAME! VICCCTORY ~" << endl;
         }
@@ -389,3 +399,4 @@ float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
 }
 
 
+Observer::~Observer() = default;
