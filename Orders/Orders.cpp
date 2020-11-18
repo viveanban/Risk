@@ -116,6 +116,14 @@ void DeployOrder::issue() {
                   to_string(numberOfArmiesToDeploy) + " army units to " + targetTerritory->getTerritoryName();
 }
 
+Territory *DeployOrder::getTargetTerritory() const {
+    return targetTerritory;
+}
+
+int DeployOrder::getNumberOfArmiesToDeploy() const {
+    return numberOfArmiesToDeploy;
+}
+
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
 AdvanceOrder::AdvanceOrder() : AdvanceOrder(nullptr) {}
 
@@ -212,7 +220,7 @@ void AdvanceOrder::execute() {
                 targetTerritory->setOwner(player);
 
                 // Pick a card
-                Card* drawnCard = GameEngine::getInstance()->getDeck()->draw();
+                Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
                 player->getHandOfCards()->addCard(drawnCard);
 
             } else { // Target is not conquered
@@ -261,6 +269,18 @@ bool AdvanceOrder::kill(int probabilityToKill) {
     return randomValue <= probabilityToKill;
 }
 
+Territory *AdvanceOrder::getSourceTerritory() const {
+    return sourceTerritory;
+}
+
+Territory *AdvanceOrder::getTargetTerritory() const {
+    return targetTerritory;
+}
+
+int AdvanceOrder::getNumberOfArmiesToAdvance() const {
+    return numberOfArmiesToAdvance;
+}
+
 // BombOrder -----------------------------------------------------------------------------------------------------------
 BombOrder::BombOrder() : BombOrder(nullptr) {}
 
@@ -276,14 +296,34 @@ BombOrder &BombOrder::operator=(const BombOrder &otherOrder) {
 }
 
 bool BombOrder::validate() {
-    cout << "Validating bomb order." << endl;
+    // If the target belongs to the player that issued the order, the order is invalid.
+    if (targetTerritory->getOwner() == player) {
+        cout << "Bomb order validation has failed: "
+             << "the target territory belongs to the player that issued the order." << endl;
+        return false;
+    }
+    bool canAttackTargetTerritory = find(player->getPlayersNotToAttack().begin(), player->getPlayersNotToAttack().end(),
+                                         targetTerritory->getOwner()) == player->getPlayersNotToAttack().end();
+    if (!canAttackTargetTerritory) {
+        cout << "Bomb order validation has failed: "
+             << "the target territory belongs to a player that is in negotiation with the attacking player." << endl;
+        return false;
+    }
+    cout << "Bomb order validation is successful!" << endl;
     return true;
 
 }
 
 void BombOrder::execute() {
     if (validate()) {
+        // If the target belongs to an enemy player, half of the armies are removed from this territory.
+        targetTerritory->setUnitNbr((int) (targetTerritory->getUnitNbr() / 2));
+        //Output effect of the Bomb Order
         cout << "Executing bomb order." << endl;
+        cout << "KABOOM! A bomb was dropped on "
+             << targetTerritory->getTerritoryName() << endl;
+        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+             << " army units." << endl;
     }
 }
 
@@ -305,6 +345,10 @@ void BombOrder::issue() {
                   player->getPlayerName() + " wants to bomb " + targetTerritory->getTerritoryName();
 }
 
+Territory *BombOrder::getTargetTerritory() const {
+    return targetTerritory;
+}
+
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
 BlockadeOrder::BlockadeOrder() : BlockadeOrder(nullptr) {}
 
@@ -321,7 +365,13 @@ BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &otherOrder) {
 }
 
 bool BlockadeOrder::validate() {
-    cout << "Validating blockade order." << endl;
+    // If the target territory belongs to an enemy player, the order is declared invalid
+    if (targetTerritory->getOwner() != player) {
+        cout << "Blockade order validation has failed:"
+             << "the target territory does not belong to the player that issued the order." << endl;
+        return false;
+    }
+    cout << "Blockade order validation is successful!" << endl;
     return true;
 
 }
@@ -331,7 +381,16 @@ bool BlockadeOrder::validate() {
 // double the armi unit on the target territory
 void BlockadeOrder::execute() {
     if (validate()) {
+        // If the target territory belongs to the player issuing the order, the number of armies on the territory is
+        // doubled and the ownership of the territory is transferred to the Neutral player.
+        targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
+        targetTerritory->setOwner(Player::neutralPlayer);
+        //Output effect of the Blockade Order
         cout << "Executing blockade order." << endl;
+        cout << "A blockade was set up on "
+             << targetTerritory->getTerritoryName() << endl;
+        cout << targetTerritory->getTerritoryName() << " territory now has " << targetTerritory->getUnitNbr()
+             << " army units, and belongs to " << targetTerritory->getOwner()->getPlayerName() << endl;
     }
 }
 
@@ -352,6 +411,10 @@ void BlockadeOrder::issue() {
     description = "Blockade Order issued:\n" +
                   player->getPlayerName() + " wants to transform " + targetTerritory->getTerritoryName() +
                   " into a blockade.";
+}
+
+Territory *BlockadeOrder::getTargetTerritory() const {
+    return targetTerritory;
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
@@ -441,6 +504,18 @@ void AirliftOrder::issue() {
                   " to " + targetTerritory->getTerritoryName();
 }
 
+Territory *AirliftOrder::getSourceTerritory() const {
+    return sourceTerritory;
+}
+
+Territory *AirliftOrder::getTargetTerritory() const {
+    return targetTerritory;
+}
+
+int AirliftOrder::getNumberOfArmiesToAirlift() const {
+    return numberOfArmiesToAirlift;
+}
+
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
 NegotiateOrder::NegotiateOrder() : NegotiateOrder(nullptr) {}
 
@@ -469,15 +544,29 @@ void NegotiateOrder::execute() {
 }
 
 void NegotiateOrder::issue() {
-    // TODO: Determine a random enemy player
-//    targetPlayer = enemies.at(rand() % enemies.size());
+    //Determine a random enemy player
+    vector<Player *> players = GameEngine::getInstance()->getPlayers();
+    if (players.size() < 2) {
+        cout << "Cannot play a negotiate order with only one player!" << endl;
+        return;
+    }
+    do {
+        targetPlayer = players.at(rand() % players.size());
+    } while (targetPlayer == player);
 
+    set<Player *> playersNotToAttack = player->getPlayersNotToAttack();
+    playersNotToAttack.insert(targetPlayer);
+    targetPlayer->getPlayersNotToAttack().insert(player);
     // Update order list
     player->getOrders()->add(this);
 
     //Update the description
     description = "Negotiate Order issued:\n" +
                   player->getPlayerName() + " wants to negotiate with " + targetPlayer->getPlayerName();
+}
+
+Player *NegotiateOrder::getTargetPlayer() const {
+    return targetPlayer;
 }
 
 //--------------------- ORDERS LIST-------------------------------------------------------------------------------------

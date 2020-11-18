@@ -5,32 +5,63 @@
 #include "../Map/Map.h"
 #include "../Cards/Cards.h"
 #include "../Player/Player.h"
+#include "./../GameObservers/GameObservers.h"
 
 class GameInitialization {
 private:
     Map *map;
     Deck *deck;
+    GameState *gameState;
     vector<Player *> players;
     vector<string> availableMaps;
     bool phaseObserver = false;
     bool statisticsObserver = false;
-    int numPlayer;
+    int numPlayer{};
 
+    /**
+     * SelectMap is responsible for displaying available maps from the ./maps folder
+     * to the user and prompting him for a map
+     */
     void selectMap();
 
+    /**
+     * selectPlayerNumber is responsible for prompting the user on how many players he wants
+     */
     void selectPlayerNumber();
 
+    /**
+     * setAvailableMaps is responsible for fetching all available maps to be chosen from later
+     */
     void setAvailableMaps(const char *path);
 
+    /**
+     * setupObservers is responsible for setting up all the observers for the game
+     */
     void setupObservers();
 
+    /**
+     * getTrueFalseInputFromUser is responsible for prompting a user for true false answer while returning the result
+     */
     static bool getTrueFalseInputFromUser(string resultName);
 
 public:
+    GameInitialization();
+
+    ~GameInitialization();
+
+    GameInitialization(GameInitialization &original);
+
+    GameInitialization &operator=(const GameInitialization &otherGameInitialization);
+
+    friend std::ostream &operator<<(std::ostream &stream, GameInitialization &gameInitialization);
+
+    //GETTERS
 
     Map *getMap() const;
 
     Deck *getDeck() const;
+
+    GameState *getGameState() const;
 
     const vector<Player *> &getPlayers() const;
 
@@ -42,14 +73,29 @@ public:
 
     int getNumPlayer() const;
 
+    // responsible for initialization of the game
     void initializeGame();
 
+    // responsible to initialize the set of players
     void setupPlayers();
 
+    /**
+     * openMapFile responsible for opening up and returning a given mapFile from the user's choice
+     * @param MAP_DIRECTORY map directory where map files reside
+     * @param chosenMap chosen map that the user wants to use
+     * @param inputFile
+     * @return the index of the opened file
+     */
     int openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const;
 
+    // makes sure the file is not a directory or unknown format
     static int isRegularFile(const char *path);
 
+    /**
+     * validateNumberPlayerInput as its name indicates validate the player number that it receives and return an accepted one
+     * @param numPlayerTmp : initial number that the user provides
+     * @return a verified and valid number of player
+     */
     static int validateNumberPlayerInput(int numPlayerTmp);
 };
 
@@ -61,6 +107,8 @@ private:
     vector<Player *> players;
     Map *map;
     Deck *deck;
+    GameState *gameState;
+    bool phaseObserverActive;
 
     GameEngine();
 
@@ -96,13 +144,16 @@ private:
     int getInitialArmyNumber();
 
 public:
-    static GameEngine* gameEngine;
+
+    static GameEngine *getInstance();
+
+    GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState);
+
+    static GameEngine *gameEngine;
 
     GameEngine(GameEngine &other) = delete;
 
     void operator=(const GameEngine &) = delete;
-
-    static GameEngine* getInstance();
 
     ~GameEngine();
 
@@ -113,15 +164,26 @@ public:
      */
     void mainGameLoop();
 
-    const vector<Player *> &getPlayers() const;
+    void resetDiplomacy();
 
-    void setPlayers(const vector<Player *> &players);
+    bool isPhaseObserverActive() const;
+
+    Deck *getDeck() const;
 
     Map *getMap() const;
 
+    GameState *getGameState() const;
+
+    const vector<Player *> &getPlayers() const;
+
+    void setPhaseObserverActive(bool phaseObserverActive);
+
+    void setGameState(GameState *gameState);
+
+    void setPlayers(const vector<Player *> &players);
+
     void setMap(Map *map);
 
-    Deck *getDeck() const;
 
     void setDeck(Deck *deck);
 };

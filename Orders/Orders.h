@@ -75,6 +75,12 @@ public:
 
 private:
     Territory *targetTerritory;
+public:
+    Territory *getTargetTerritory() const;
+
+    int getNumberOfArmiesToDeploy() const;
+
+private:
 
     int numberOfArmiesToDeploy;
 
@@ -105,6 +111,14 @@ private:
     Territory *sourceTerritory;
     Territory *targetTerritory;
     int numberOfArmiesToAdvance;
+public:
+    Territory *getSourceTerritory() const;
+
+    Territory *getTargetTerritory() const;
+
+    int getNumberOfArmiesToAdvance() const;
+
+private:
 
     bool validate() override;
 
@@ -131,6 +145,10 @@ public:
 
 private:
     Territory* targetTerritory;
+public:
+    Territory *getTargetTerritory() const;
+
+private:
 
     bool validate() override;
 };
@@ -154,6 +172,10 @@ public:
 
 private:
     Territory *targetTerritory;
+public:
+    Territory *getTargetTerritory() const;
+
+private:
 
     bool validate() override;
 
@@ -179,6 +201,14 @@ public:
 private:
     Territory *sourceTerritory;
     Territory *targetTerritory;
+public:
+    Territory *getSourceTerritory() const;
+
+    Territory *getTargetTerritory() const;
+
+    int getNumberOfArmiesToAirlift() const;
+
+private:
 
     int numberOfArmiesToAirlift;
 
@@ -205,6 +235,10 @@ public:
 
 private:
     Player* targetPlayer;
+public:
+    Player *getTargetPlayer() const;
+
+private:
 
     bool validate() override;
 };
