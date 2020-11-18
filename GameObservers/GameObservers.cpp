@@ -132,19 +132,29 @@ void PhaseObserver::printBombOrder(BombOrder *pOrder) {
 void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
-            if(pOrder->getAdvanceOrderType() == AdvanceOrderType::attack)
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an advance order attacking from "
-                 << pOrder->getTargetTerritory()->getTerritoryName() << " from " << pOrder->getSourceTerritory()
-                 << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
+            if (pOrder->getAdvanceOrderType() == AdvanceOrderType::attack)
+                cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                     << " issued an advance order, attacking armies in "
+                     << pOrder->getTargetTerritory()->getTerritoryName() << " from " << pOrder->getSourceTerritory()
+                     << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             else
-                cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued an advance order transferring armies from "
+                cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                     << " issued an advance order, transferring armies from "
                      << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
                      << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
             break;
         case orders_execution:
-            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " executed an advance order from "
-                 << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
-                 << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
+            if (pOrder->getAdvanceOrderType() == AdvanceOrderType::attack)
+                cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                     << " executed an advance order, attacking armies in "
+                     << pOrder->getTargetTerritory()->getTerritoryName() << " from " << pOrder->getSourceTerritory()
+                     << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
+            else
+                cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                     << " executed an advance order, transferring armies from "
+                     << pOrder->getSourceTerritory()->getTerritoryName() << " to " << pOrder->getTargetTerritory()
+                     << " involving " << pOrder->getNumberOfArmiesToAdvance() << " number of armies." << endl;
+
             cout << pOrder->getTargetTerritory()->getTerritoryName() << " is now owned by " <<
                  pOrder->getTargetTerritory()->getOwner()->getPlayerName() << " and has "
                  << pOrder->getTargetTerritory()->getUnitNbr() << " armies in it." << endl;
