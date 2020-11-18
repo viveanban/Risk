@@ -9,15 +9,14 @@
 using namespace std;
 
 // Superclass: Order ---------------------------------------------------------------------------------------------------
+Order::Order(string name, int priority, Player *player) : name(name), priority(priority),
+                                                          player(player) {}
 
-Order::Order(string description, int priority, Player *player) : description(description), priority(priority),
-                                                                 player(player) {}
-
-Order::Order(const Order &original) : description(original.description), priority(original.priority),
+Order::Order(const Order &original) : name(original.name), priority(original.priority),
                                       player(original.player) {}
 
 Order &Order::operator=(const Order &otherOrder) {
-    description = otherOrder.description;
+    name = otherOrder.name;
     priority = otherOrder.priority;
     player = otherOrder.player;
 
@@ -25,10 +24,13 @@ Order &Order::operator=(const Order &otherOrder) {
 }
 
 std::ostream &operator<<(std::ostream &stream, Order &order) {
-    return stream << order.description << " => " << order.priority << endl;
+    return stream << order.name << " => " << order.priority << endl;
 }
 
-//TODO: Add a more descriptive description + add a field order name
+const string &Order::getName() const {
+    return name;
+}
+
 const string &Order::getDescription() const {
     return description;
 }
@@ -37,11 +39,17 @@ int Order::getPriority() const {
     return priority;
 }
 
+void Order::setPlayer(Player *player) {
+    Order::player = player;
+}
+
 Order::~Order() = default;
 
 // DeployOrder ---------------------------------------------------------------------------------------------------------
+DeployOrder::DeployOrder() : DeployOrder(nullptr) {}
+
 DeployOrder::DeployOrder(Player *player) : targetTerritory(nullptr), numberOfArmiesToDeploy(0),
-                                           Order("Deploy!", 1, player) {}
+                                           Order("Deploy", 1, player) {}
 
 
 DeployOrder::DeployOrder(const DeployOrder &original) : targetTerritory(original.targetTerritory),
@@ -88,7 +96,7 @@ void DeployOrder::issue() {
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << endl;
         return;
     }
 
@@ -102,6 +110,10 @@ void DeployOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    //Update the description
+    description = "Deploy Order issued:\n" + player->getPlayerName() + " wants to deploy " +
+                  to_string(numberOfArmiesToDeploy) + " army units to " + targetTerritory->getTerritoryName();
 }
 
 Territory *DeployOrder::getTargetTerritory() const {
@@ -113,8 +125,10 @@ int DeployOrder::getNumberOfArmiesToDeploy() const {
 }
 
 // AdvanceOrder --------------------------------------------------------------------------------------------------------
+AdvanceOrder::AdvanceOrder() : AdvanceOrder(nullptr) {}
+
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
-                                             numberOfArmiesToAdvance(0), Order("Advance!", 5, player) {}
+                                             numberOfArmiesToAdvance(0), Order("Advance", 5, player) {}
 
 AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : sourceTerritory(original.sourceTerritory),
                                                            targetTerritory(original.targetTerritory),
@@ -227,7 +241,7 @@ void AdvanceOrder::issue() {
     vector<Territory *> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(
             sourceTerritory);
     if (territoriesToChooseFrom.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << endl;
         return;
     }
 
@@ -247,6 +261,11 @@ void AdvanceOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    //Update the description
+    description = "Advance Order issued:\n" + player->getPlayerName() + " wants to advance " +
+                  to_string(numberOfArmiesToAdvance) + " army units from " + sourceTerritory->getTerritoryName() +
+                  " to " + targetTerritory->getTerritoryName();
 }
 
 bool AdvanceOrder::kill(int probabilityToKill) {
@@ -267,7 +286,9 @@ int AdvanceOrder::getNumberOfArmiesToAdvance() const {
 }
 
 // BombOrder -----------------------------------------------------------------------------------------------------------
-BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb!", 5, player) {}
+BombOrder::BombOrder() : BombOrder(nullptr) {}
+
+BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb", 5, player) {}
 
 BombOrder::BombOrder(const BombOrder &original) : targetTerritory(original.targetTerritory), Order(original) {}
 
@@ -314,7 +335,7 @@ void BombOrder::issue() {
     // Randomly determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
     if (territoriesToAttack.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << endl;
         return;
     }
 
@@ -322,6 +343,10 @@ void BombOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    //Update the description
+    description = "Bomb Order issued:\n" +
+                  player->getPlayerName() + " wants to bomb " + targetTerritory->getTerritoryName();
 }
 
 Territory *BombOrder::getTargetTerritory() const {
@@ -329,7 +354,9 @@ Territory *BombOrder::getTargetTerritory() const {
 }
 
 // BlockadeOrder -------------------------------------------------------------------------------------------------------
-BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade!", 3, player) {}
+BlockadeOrder::BlockadeOrder() : BlockadeOrder(nullptr) {}
+
+BlockadeOrder::BlockadeOrder(Player *player) : targetTerritory(nullptr), Order("Blockade", 3, player) {}
 
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : targetTerritory(original.targetTerritory),
                                                               Order(original) {}
@@ -361,7 +388,7 @@ void BlockadeOrder::execute() {
         // If the target territory belongs to the player issuing the order, the number of armies on the territory is
         // doubled and the ownership of the territory is transferred to the Neutral player.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
-//        targetTerritory->setOwner(TODO: neutral player)
+        targetTerritory->setOwner(Player::neutralPlayer);
         //Output effect of the Blockade Order
         cout << "Executing blockade order." << endl;
         cout << "A blockade was set up on "
@@ -375,7 +402,7 @@ void BlockadeOrder::issue() {
     // Determine target territory to be the player's territory with the most army units
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << endl;
         return;
     }
 
@@ -383,6 +410,11 @@ void BlockadeOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    //Update the description
+    description = "Blockade Order issued:\n" +
+                  player->getPlayerName() + " wants to transform " + targetTerritory->getTerritoryName() +
+                  " into a blockade.";
 }
 
 Territory *BlockadeOrder::getTargetTerritory() const {
@@ -390,8 +422,10 @@ Territory *BlockadeOrder::getTargetTerritory() const {
 }
 
 // AirliftOrder --------------------------------------------------------------------------------------------------------
+AirliftOrder::AirliftOrder() : AirliftOrder(nullptr) {}
+
 AirliftOrder::AirliftOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
-                                             numberOfArmiesToAirlift(0), Order("Airlift!", 2, player) {}
+                                             numberOfArmiesToAirlift(0), Order("Airlift", 2, player) {}
 
 AirliftOrder::AirliftOrder(const AirliftOrder &original) : sourceTerritory(original.sourceTerritory),
                                                            targetTerritory(original.targetTerritory),
@@ -448,7 +482,7 @@ void AirliftOrder::execute() {
 void AirliftOrder::issue() {
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getDescription() << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName() << endl;
         return;
     }
 
@@ -467,6 +501,11 @@ void AirliftOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
+
+    //Update the description
+    description = "Airlift Order issued:\n" + player->getPlayerName() + " wants to airlift " +
+                  to_string(numberOfArmiesToAirlift) + " army units from " + sourceTerritory->getTerritoryName() +
+                  " to " + targetTerritory->getTerritoryName();
 }
 
 Territory *AirliftOrder::getSourceTerritory() const {
@@ -482,7 +521,9 @@ int AirliftOrder::getNumberOfArmiesToAirlift() const {
 }
 
 // NegotiateOrder ------------------------------------------------------------------------------------------------------
-NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("Negotiate!", 4, player) {}
+NegotiateOrder::NegotiateOrder() : NegotiateOrder(nullptr) {}
+
+NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("Negotiate", 4, player) {}
 
 NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : targetPlayer(original.targetPlayer), Order(original) {}
 
@@ -509,14 +550,23 @@ void NegotiateOrder::execute() {
 void NegotiateOrder::issue() {
     //Determine a random enemy player
     vector<Player *> players = GameEngine::getInstance()->getPlayers();
+    if (players.size() < 2) {
+        cout << "Cannot play a negotiate order with only one player!" << endl;
+        return;
+    }
     do {
         targetPlayer = players.at(rand() % players.size());
     } while (targetPlayer == player);
 
-    vector<Player *> playersNotToAttack = player->getPlayersNotToAttack();
-    playersNotToAttack.push_back(targetPlayer);
+    set<Player *> playersNotToAttack = player->getPlayersNotToAttack();
+    playersNotToAttack.insert(targetPlayer);
+    targetPlayer->getPlayersNotToAttack().insert(player);
     // Update order list
     player->getOrders()->add(this);
+
+    //Update the description
+    description = "Negotiate Order issued:\n" +
+                  player->getPlayerName() + " wants to negotiate with " + targetPlayer->getPlayerName();
 }
 
 Player *NegotiateOrder::getTargetPlayer() const {
@@ -562,7 +612,7 @@ OrdersList &OrdersList::operator=(const OrdersList &original) {
 ostream &operator<<(ostream &stream, OrdersList &ordersList) {
     string result = "Orders in list:\n";
     for (Order *o : ordersList.orderList)
-        result += o->getDescription() + "\n";
+        result += o->getName() + "\n";
     return stream << result << endl;
 }
 

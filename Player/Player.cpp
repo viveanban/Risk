@@ -53,12 +53,12 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Armies: " << player.numberOfArmies << endl;
 }
 
-//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
+// Cannot call the setOwner method from here
 void Player::addTerritory(Territory *territory) {
     territories.push_back(territory);
 }
 
-//TODO: Add comment that you cannot call the setOwner method from here, sinon it'll be in an endless loop
+// Cannot call the setOwner method from here
 void Player::removeTerritory(Territory *territory) {
     auto position = find(territories.begin(), territories.end(), territory);
     if (position != territories.end()) {
@@ -152,7 +152,8 @@ bool Player::issueOrder() {
 
                 // Play card
                 Order *order = cardChosen->play();
-                if (order) {
+                if(order) {
+                    order->setPlayer(this);
                     order->issue();
                     GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, order, cardChosen);
                     orders->add(order);
@@ -186,7 +187,7 @@ int Player::getNumberofArmies() {
     return this->numberOfArmies;
 }
 
-vector<Player *> &Player::getPlayersNotToAttack() {
+set<Player *> &Player::getPlayersNotToAttack() {
     return playersNotToAttack;
 }
 
@@ -211,6 +212,6 @@ void Player::setNumberOfArmies(int numberOfArmies) {
     this->numberOfArmies = numberOfArmies;
 }
 
-void Player::setPlayersNotToAttack(const vector<Player *> &playersNotToAttack) {
+void Player::setPlayersNotToAttack(const set<Player *> &playersNotToAttack) {
     Player::playersNotToAttack = playersNotToAttack;
 }

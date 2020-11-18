@@ -170,17 +170,8 @@ int GameInitialization::getNumPlayer() const {
     return numPlayer;
 }
 
-GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0) {
-    gameState = new GameState(0, nullptr, nullptr, reinforcement);
-}
-
-GameState *GameInitialization::getGameState() const {
-    return gameState;
-}
-
-void GameInitialization::setGameState(GameState *gameState) {
-    GameInitialization::gameState = gameState;
-}
+GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0),
+                                           gameState(new GameState(0, nullptr, nullptr, reinforcement)) {}
 
 GameInitialization::~GameInitialization() {
     delete map;
@@ -191,6 +182,7 @@ GameInitialization::~GameInitialization() {
         delete player;
         player = nullptr;
     }
+    players.clear();
     map = nullptr;
     deck = nullptr;
     gameState = nullptr;
@@ -226,6 +218,10 @@ std::ostream &operator<<(ostream &stream, GameInitialization &gameInitialization
                   << "Deck: " << gameInitialization.getDeck() << endl;
 }
 
+GameState *GameInitialization::getGameState() const {
+    return gameState;
+}
+
 //GAME STARTUP PHASE
 // ---------GAME ENGINE---------------
 GameEngine *GameEngine::gameEngine = nullptr;
@@ -257,19 +253,6 @@ GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState
 
 GameEngine::~GameEngine() {
     players.clear();
-    for (auto p: players) {
-        delete p;
-        p = nullptr;
-    }
-    delete map;
-    delete gameInitialization;
-    delete deck;
-    delete gameState;
-
-    map = nullptr;
-    gameInitialization = nullptr;
-    deck = nullptr;
-    gameState = nullptr;
 }
 
 // Startup phase logic
@@ -331,7 +314,7 @@ int GameEngine::getInitialArmyNumber() {
         case 5:
         default:
             return 25;
-    };
+    }
 }
 
 // Main game loop logic

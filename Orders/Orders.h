@@ -13,15 +13,17 @@ using namespace std;
  */
 class Order {
 private:
-    string description;
+    string name;
 
     int priority;
 
 protected:
-    Player * player;
+    string description;
+
+    Player* player;
 
 public:
-    Order(string description, int priority, Player * player);
+    Order(string name, int priority, Player * player);
 
     Order(const Order &original);
 
@@ -43,9 +45,13 @@ public:
 
     virtual void issue() = 0;
 
+    const string &getName() const;
+
     const string &getDescription() const;
 
     int getPriority() const;
+
+    void setPlayer(Player *player);
 
     virtual ~Order();
 };
@@ -55,7 +61,9 @@ public:
  */
 class DeployOrder : public Order {
 public:
-    explicit DeployOrder(Player * player);
+    DeployOrder();
+
+    DeployOrder(Player * player);
 
     DeployOrder(const DeployOrder &original);
 
@@ -87,7 +95,9 @@ private:
  */
 class AdvanceOrder : public Order {
 public:
-    explicit AdvanceOrder(Player * player);
+    AdvanceOrder();
+
+    AdvanceOrder(Player * player);
 
     AdvanceOrder(const AdvanceOrder &original);
 
@@ -121,7 +131,9 @@ private:
  */
 class BombOrder : public Order {
 public:
-    explicit BombOrder(Player * player);
+    BombOrder();
+
+    BombOrder(Player * player);
 
     BombOrder(const BombOrder &original);
 
@@ -146,7 +158,9 @@ private:
  */
 class BlockadeOrder : public Order {
 public:
-    explicit BlockadeOrder(Player * player);
+    BlockadeOrder();
+
+    BlockadeOrder(Player * player);
 
     BlockadeOrder(const BlockadeOrder &original);
 
@@ -172,7 +186,9 @@ private:
  */
 class AirliftOrder : public Order {
 public:
-    explicit AirliftOrder(Player * player);
+    AirliftOrder();
+
+    AirliftOrder(Player * player);
 
     AirliftOrder(const AirliftOrder &original);
 
@@ -205,7 +221,9 @@ private:
  */
 class NegotiateOrder : public Order {
 public:
-    explicit NegotiateOrder(Player * player);
+    NegotiateOrder();
+
+    NegotiateOrder(Player * player);
 
     NegotiateOrder(const NegotiateOrder &original);
 
