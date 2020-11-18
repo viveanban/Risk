@@ -204,6 +204,10 @@ void AdvanceOrder::execute() {
                 // Transfer ownership
                 targetTerritory->setOwner(player);
 
+                // TODO: to remove (Viveka + Ferdou)
+                Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
+                player->getHandOfCards()->addCard(drawnCard);
+
             } else { // Target is not conquered
                 // Updating the army unit numbers for each territory
                 sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfSourceUnitsKilled);
