@@ -123,10 +123,6 @@ const vector<Card *> &Deck::getCards() const {
     return cards;
 }
 
-void Deck::setCards(const vector<Card *> &cards) {
-    Deck::cards = cards;
-}
-
 Card *Deck::draw() {
     if (cards.empty())
         return nullptr;
@@ -144,8 +140,6 @@ void Deck::addCard(Card *card) {
  * Hand class
  */
 Hand::Hand() : cards() {}
-
-Hand::Hand(vector<Card *> cards) : cards(cards) {}
 
 Hand::Hand(const Hand &original) {
     cards = vector<Card *>(original.getCards().size());
@@ -168,7 +162,6 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 Hand::~Hand() {
     for (Card* card : cards) {
         removeCard(card);
-        cout << "put back card in hand back in deck" << endl;
     }
 }
 
@@ -176,14 +169,11 @@ const vector<Card *> &Hand::getCards() const {
     return cards;
 }
 
-void Hand::setCards(const vector<Card *> &cards) {
-    Hand::cards = cards;
-}
-
 void Hand::addCard(Card *card) {
     cards.push_back(card);
 }
 
+// TODO: why bool if never use this feature?
 bool Hand::removeCard(Card* card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
@@ -193,15 +183,6 @@ bool Hand::removeCard(Card* card) {
     }
     cout << "Error removing card from hand." << endl;
     return false;
-}
-
-
-int Hand::getAmountOfCardsOfType(Card::CardType type) {
-    int counter = 0;
-    for (Card *card: cards)
-        if (card->getType() == type) counter++;
-
-    return counter;
 }
 
 Card *Hand::getNextCard() {
