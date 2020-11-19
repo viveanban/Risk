@@ -17,13 +17,15 @@ private:
     list<Observer *> *observers;
 
 public:
-    virtual void attach(Observer *o);
+    void attach(Observer *o);
 
-    virtual void detach(Observer *o); // This method is not used because we never allow the player to detach the observers from the subject
+    void detach(Observer *o); // This method is not used because we never allow the player to detach the observers from the subject
 
-    virtual void notify();
+    void notify();
 
     Subject();
+
+    Subject(const Subject &original);
 
     ~Subject();
 

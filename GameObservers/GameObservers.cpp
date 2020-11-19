@@ -8,6 +8,12 @@ Subject::Subject() {
     observers = new list<Observer *>;
 }
 
+Subject::Subject(const Subject &original) {
+    observers = new list<Observer *>();
+    for(auto observer: *original.observers)
+        observers->push_back(observer);
+}
+
 Subject::~Subject() {
     delete observers;
 }

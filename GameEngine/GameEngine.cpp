@@ -295,6 +295,7 @@ void GameEngine::mainGameLoop() {
 }
 
 void GameEngine::reinforcementPhase() {
+    cout << "Entering Reinforcement Phase ..." << endl;
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
         player->setNumberOfArmiesInReinforcementPool(
@@ -326,6 +327,7 @@ int GameEngine::getBonus(Player *player) {
 }
 
 void GameEngine::issueOrdersPhase() {
+    cout << "Entering Issuing Phase ..." << endl;
     vector<Player *> playersWithNoMoreOrderstoIssue;
     while (playersWithNoMoreOrderstoIssue.size() != players.size()) {
         for (Player *player: players) {
@@ -341,12 +343,15 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
+    cout << "Entering Execution Phase ..." << endl;
     // Save territory list sizes before execution
     vector<vector<int>> territoryIdsPerPlayerBeforeExecution;
 
     // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
+        cout << endl;
+        cout << player->getPlayerName() << "\'s order list:\n"<<*player->getOrders() << endl;
 
         vector<int> territoryIdsOfPlayer;
         for(Territory* territory: player->getTerritories())
