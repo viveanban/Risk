@@ -28,7 +28,7 @@ Player::Player(const Player &original) {
     for (int i = 0; i < territories.size(); i++) {
         territories[i] = original.territories[i];
     }
-    numberOfArmies = original.numberOfArmies;
+    numberOfArmiesInReinforcementPool = original.numberOfArmiesInReinforcementPool;
     handOfCards = new Hand(*original.handOfCards);
     orders = new OrdersList(*original.orders);
 }
@@ -40,7 +40,7 @@ Player &Player::operator=(const Player &otherPlayer) {
         for (int i = 0; i < territories.size(); i++) {
             territories[i] = otherPlayer.territories[i];
         }
-        numberOfArmies = otherPlayer.numberOfArmies;
+        numberOfArmiesInReinforcementPool = otherPlayer.numberOfArmiesInReinforcementPool;
 
         //Deleting old values in heap
         delete handOfCards;
