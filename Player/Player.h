@@ -26,15 +26,33 @@ private:
 
     set<Player *> playersNotToAttack;
 
+    /**
+     * Sort all territories from the list from the one with least unitNbr to the one with highest unitNbr
+     * @param territoryList: represents the territoryList to sort
+     */
     void sortTerritoryList(vector<Territory *> &territoryList);
 
+    /**
+     * Randomly decide if the player plays his reinforcement card, if yes then add +5 unit armies to the player.
+     */
     void playReinforcementCard();
 
+    /**
+     * Issue a deploy order and potentially a reinforcement card.
+     */
     void issueDeployOrder();
 
+    /**
+     * Issue an advance order, randomly decides whether to attack or defend and select a random territory to do so.
+     */
     void issueAdvanceOrder();
 
+    /**
+     * Issue any non-deploy and non-advance order triggered by a card.
+     * @param cardChosen : card to play
+     */
     void issueOrderFromCard(Card *cardChosen);
+
 public:
     static Player *neutralPlayer;
 
@@ -48,8 +66,16 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, Player &player);
 
+    /**
+     * Add a territory to the list of territory owned by the player
+     * @param territory : territory to add to the list of owned territory by the user.
+     */
     void addTerritory(Territory *territory);
 
+    /**
+     * Remove a territory from the list of territory owned by the player
+     * @param territory : territory to remove from the list of owned territory by the user.
+     */
     void removeTerritory(Territory *territory);
 
     // Getters
