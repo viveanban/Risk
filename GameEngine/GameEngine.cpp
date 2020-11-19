@@ -14,8 +14,10 @@
 
 using namespace std;
 
-// ---------GAME INITIALIZATION---------------
-void GameInitialization::initializeGame() {
+// TODO: edge case where territores # < # of player (Viveka)
+//GAME STARTUP PHASE
+// ---------GAME ENGINE---------------
+void GameEngine::initializeGame() {
     selectMap();
     selectPlayerNumber();
     setupObservers();
@@ -25,7 +27,7 @@ void GameInitialization::initializeGame() {
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
-void GameInitialization::selectMap() {
+void GameEngine::selectMap() {
     const string MAP_DIRECTORY = "../maps/";
     int chosenMap;
     ifstream inputFile;
@@ -48,7 +50,7 @@ void GameInitialization::selectMap() {
     inputFile.close();
 }
 
-int GameInitialization::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const {
+int GameEngine::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const {
     cin >> chosenMap;
     if (cin.fail()) {
         cin.clear();
@@ -62,7 +64,7 @@ int GameInitialization::openMapFile(const string &MAP_DIRECTORY, int chosenMap, 
     return chosenMap;
 }
 
-void GameInitialization::setAvailableMaps(const char *path) {
+void GameEngine::setAvailableMaps(const char *path) {
     DIR *dir = opendir(path);
     struct dirent *current;
     this->availableMaps.clear();
@@ -79,13 +81,13 @@ void GameInitialization::setAvailableMaps(const char *path) {
     }
 }
 
-int GameInitialization::isRegularFile(const char *path) {
+int GameEngine::isRegularFile(const char *path) {
     struct stat path_stat;
     stat(path, &path_stat);
     return S_ISREG(path_stat.st_mode);
 }
 
-void GameInitialization::selectPlayerNumber() {
+void GameEngine::selectPlayerNumber() {
     int numPlayerTmp = -1;
     int maxPlayerNumber = std::min( (int)map->getTerritoryList().size(), 5);
     cout << "The game supports up to "<< maxPlayerNumber <<" players with a minimum of 2."
@@ -100,7 +102,7 @@ void GameInitialization::selectPlayerNumber() {
     this->numPlayer = numPlayerTmp;
 }
 
-int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) {
+int GameEngine::validateNumberPlayerInput(int numPlayerTmp) {
     cin >> numPlayerTmp;
     if (cin.fail()) {
         cin.clear();
@@ -111,20 +113,24 @@ int GameInitialization::validateNumberPlayerInput(int numPlayerTmp) {
     return numPlayerTmp;
 }
 
-void GameInitialization::setupObservers() {
+void GameEngine::setupObservers() {
     if (getTrueFalseInputFromUser("phase")) {
         gameState->attach(new PhaseObserver(gameState));
-        phaseObserver = true;
+        phaseObserverActive = true;
     } else {
-        phaseObserver = false;
+        phaseObserverActive = false;
     }
 
-    if (getTrueFalseInputFromUser("statistics"))
+    if (getTrueFalseInputFromUser("statistics")) {
         gameState->attach(new StatisticsObserver(gameState));
+        statisticsObserverActive = true;
+    } else {
+        statisticsObserverActive = false;
+    }
 
 }
 
-bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
+bool GameEngine::getTrueFalseInputFromUser(string resultName) {
     bool result = false;
     do {
         cout << "Do you want to turn on the " << resultName << " observer [true/false]" << endl;
@@ -135,46 +141,28 @@ bool GameInitialization::getTrueFalseInputFromUser(string resultName) {
     return result;
 }
 
-void GameInitialization::setupPlayers() {
-
+void GameEngine::setupPlayers() {
     for (int i = 0; i < this->getNumPlayer(); i++) {
         this->players.push_back(new Player("Player " + to_string(i + 1)));
     }
 }
 
-Map *GameInitialization::getMap() const {
-    return map;
+
+bool GameEngine::isPhaseObserverActive() const {
+    return phaseObserverActive;
 }
 
-Deck *GameInitialization::getDeck() const {
-    return deck;
+bool GameEngine::isStatisticsObserverActive() const {
+    return statisticsObserverActive;
 }
 
-const vector<Player *> &GameInitialization::getPlayers() const {
-    return players;
-}
-
-const vector<string> &GameInitialization::getAvailableMaps() const {
-    return availableMaps;
-}
-
-bool GameInitialization::isPhaseObserver() const {
-    return phaseObserver;
-}
-
-bool GameInitialization::isStatisticsObserver() const {
-    return statisticsObserver;
-}
-
-int GameInitialization::getNumPlayer() const {
+int GameEngine::getNumPlayer() const {
     return numPlayer;
 }
 
-GameInitialization::GameInitialization() : map(nullptr), deck(nullptr), numPlayer(0),
-                                           gameState(new GameState(0, nullptr, reinforcement)) {}
-
-GameInitialization::~GameInitialization() {
-    for (auto player: GameEngine::getInstance()->getPlayers()) { // TODO: (merge everything together) (Abhijit)
+GameEngine::~GameEngine() {
+    // TODO: we need to delete observers (Tarek)
+    for (auto player: players) {
         delete player;
         player = nullptr;
     }
@@ -198,71 +186,34 @@ GameInitialization::~GameInitialization() {
     cout << "Deleted Map" << endl;
 }
 
-GameInitialization &GameInitialization::operator=(const GameInitialization &otherGameInitialization) {
-    map = otherGameInitialization.getMap();
-    players = otherGameInitialization.getPlayers();
-    deck = otherGameInitialization.getDeck();
-    gameState = otherGameInitialization.getGameState();
-    phaseObserver = otherGameInitialization.isPhaseObserver();
-    statisticsObserver = otherGameInitialization.isStatisticsObserver();
-    numPlayer = otherGameInitialization.getNumPlayer();
-    return *this;
+std::ostream &operator<<(ostream &stream, GameEngine &gameEngine) {
+    return stream << "Information on GameEngine object:" << endl
+                  << "map: " << gameEngine.getMap() << endl
+                  << "Number of players: " << gameEngine.getPlayers().size() << endl
+                  << "Statistic Observer on: " << boolalpha << gameEngine.isStatisticsObserverActive() << endl
+                  << "Phase Observer on: " << boolalpha << gameEngine.isPhaseObserverActive() << endl
+                  << "Deck: " << gameEngine.getDeck() << endl;
 }
 
-GameInitialization::GameInitialization(GameInitialization &original) {
-    map = original.getMap();
-    players = original.getPlayers();
-    deck = original.getDeck();
-    gameState = original.getGameState();
-    phaseObserver = original.isPhaseObserver();
-    statisticsObserver = original.isStatisticsObserver();
-    numPlayer = original.getNumPlayer();
-}
-
-std::ostream &operator<<(ostream &stream, GameInitialization &gameInitialization) {
-    return stream << "Information on GameInitialization object:" << endl
-                  << "map: " << gameInitialization.map << endl
-                  << "Number of players: " << gameInitialization.players.size() << endl
-                  << "Statistic Observer on: " << boolalpha << gameInitialization.isStatisticsObserver() << endl
-                  << "Phase Observer on: " << boolalpha << gameInitialization.isPhaseObserver() << endl
-                  << "Deck: " << gameInitialization.getDeck() << endl;
-}
-
-GameState *GameInitialization::getGameState() const {
-    return gameState;
-}
-
-//GAME STARTUP PHASE
-// ---------GAME ENGINE---------------
 GameEngine *GameEngine::gameEngine = nullptr;
 
-GameEngine::GameEngine()
-        : players(), map(nullptr), deck(nullptr), gameState{nullptr}, gameInitialization(nullptr),
-          phaseObserverActive{} {}
+GameEngine::GameEngine() : availableMaps{}, statisticsObserverActive{}, phaseObserverActive{}, numPlayer{0}, players(),
+                           map(nullptr), deck(nullptr), gameState(new GameState(0, nullptr, reinforcement)) {}
 
 GameEngine *GameEngine::getInstance() {
     if (gameEngine == nullptr) {
         gameEngine = new GameEngine();
-        gameEngine->gameInitialization = new GameInitialization();
-        gameEngine->gameInitialization->initializeGame();
-        gameEngine->deck = gameEngine->gameInitialization->getDeck();
-        gameEngine->map = gameEngine->gameInitialization->getMap();
-        gameEngine->players = gameEngine->gameInitialization->getPlayers();
-        gameEngine->gameState = gameEngine->gameInitialization->getGameState();
+        gameEngine->initializeGame();
     }
     return gameEngine;
 }
 
-GameEngine::GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState) {
-    this->players = players;
-    this->map = map;
-    this->deck = deck;
-    this->gameState = gameState;
-}
+GameEngine::GameEngine(const vector<string> &availableMaps, bool statisticsObserverActive, bool phaseObserverActive,
+                       int numPlayer, const vector<Player *> &players, Map *map, Deck *deck, GameState *gameState)
+        : availableMaps(availableMaps), statisticsObserverActive(statisticsObserverActive),
+          phaseObserverActive(phaseObserverActive), numPlayer(numPlayer), players(players), map(map), deck(deck),
+          gameState(gameState) {}
 
-GameEngine::~GameEngine() {
-    delete gameInitialization;
-}
 
 // Startup phase logic
 void GameEngine::startupPhase() {
@@ -366,7 +317,6 @@ int GameEngine::calculateNumberOfArmiesToGive(Player *player) {
     return numberOfArmiesToGive + getBonus(player);
 }
 
-// TODO: cout when bonus is given by observers (Tarek + Abhijit)
 int GameEngine::getBonus(Player *player) {
     set<Continent *> continentsWherePlayerOwnsTerritories;
     for (Territory *territory: player->getTerritories()) {
@@ -378,6 +328,9 @@ int GameEngine::getBonus(Player *player) {
     for (Continent *continent: continentsWherePlayerOwnsTerritories) {
         if (continent->getOwner() == player)
             controlValueBonus += continent->getBonus();
+    }
+    if (controlValueBonus > 0 and this->getInstance()->isPhaseObserverActive()) {
+        cout << player->getPlayerName() << " has received a bonus of " << controlValueBonus << " units." << endl;
     }
     return controlValueBonus;
 }
@@ -477,33 +430,8 @@ Deck *GameEngine::getDeck() const {
     return deck;
 }
 
-// Setters
-void GameEngine::setPlayers(const vector<Player *> &players) {
-    GameEngine::players = players;
-}
-
-void GameEngine::setMap(Map *map) {
-    GameEngine::map = map;
-}
-
-void GameEngine::setDeck(Deck *deck) {
-    GameEngine::deck = deck;
-}
-
 GameState *GameEngine::getGameState() const {
     return gameState;
-}
-
-void GameEngine::setGameState(GameState *gameState) {
-    GameEngine::gameState = gameState;
-}
-
-bool GameEngine::isPhaseObserverActive() const {
-    return phaseObserverActive;
-}
-
-void GameEngine::setPhaseObserverActive(bool phaseObserverActive) {
-    GameEngine::phaseObserverActive = phaseObserverActive;
 }
 
 void GameEngine::resetDiplomacy() {

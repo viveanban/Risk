@@ -314,7 +314,7 @@ void BombOrder::execute() {
     if (validate()) {
         // If the target belongs to an enemy player, half of the armies are removed from this territory.
         targetTerritory->setUnitNbr((int) (targetTerritory->getUnitNbr() / 2));
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -375,7 +375,7 @@ void BlockadeOrder::execute() {
         // doubled and the ownership of the territory is transferred to the Neutral player.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
         targetTerritory->setOwner(Player::neutralPlayer);
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -450,7 +450,7 @@ void AirliftOrder::execute() {
         // Transfer armies to target territory
         sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfArmiesToAirlift);
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToAirlift);
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -512,8 +512,12 @@ NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
 }
 
 bool NegotiateOrder::validate() {
-    // TODO: check that target is not the source player (Abhijit)
-
+    // If the target is the player issuing the order, then the order is invalid.
+    if (targetPlayer == player) {
+        cout << "Negotiate order validation has failed:"
+             << "the target player and the source player are the same." << endl;
+        return false;
+    }
     cout << "Negotiate order order validation succeeded!" << endl;
     return true;
 }
@@ -522,7 +526,7 @@ void NegotiateOrder::execute() {
     if (validate()) {
         player->getPlayersNotToAttack().insert(targetPlayer);
         targetPlayer->getPlayersNotToAttack().insert(player);
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
     }
 }
 
@@ -533,7 +537,7 @@ bool NegotiateOrder::issue() {
         cout << "Cannot play a negotiate order with only one player!" << endl;
         return false;
     }
-
+    
     do {
         targetPlayer = players.at(rand() % players.size());
     } while (targetPlayer == player);
