@@ -5,7 +5,6 @@
 #include "../GameEngine/GameEngine.h"
 
 using namespace std;
-// TODO: add order validated cout for each validate() method (Abhijit + Tarek)
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 Order::Order(string name, int priority, Player *player) : name(name), priority(priority),
                                                           player(player) {}
@@ -69,6 +68,7 @@ bool DeployOrder::validate() {
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
+    cout << "Deploy order validation succeeded!" << endl;
     return true;
 }
 
@@ -161,7 +161,7 @@ bool AdvanceOrder::validate() {
              << targetTerritory->getOwner()->getPlayerName() << endl;
         return false;
     }
-
+    cout << "Advance order validation succeeded!" << endl;
     return true;
 }
 
@@ -304,6 +304,7 @@ bool BombOrder::validate() {
              << "the target territory belongs to a player that is in negotiation with the attacking player." << endl;
         return false;
     }
+    cout << "Bomb order validation succeeded!" << endl;
 
     return true;
 
@@ -363,7 +364,7 @@ bool BlockadeOrder::validate() {
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
-
+    cout << "Blockade order validation succeeded!" << endl;
     return true;
 
 }
@@ -440,6 +441,7 @@ bool AirliftOrder::validate() {
              << "the source territory does not have enough armies to airlift." << endl;
         return false;
     }
+    cout << "Airlift order validation succeeded!" << endl;
     return true;
 }
 
@@ -516,6 +518,7 @@ bool NegotiateOrder::validate() {
              << "the target player and the source player are the same." << endl;
         return false;
     }
+    cout << "Negotiate order order validation succeeded!" << endl;
     return true;
 }
 
