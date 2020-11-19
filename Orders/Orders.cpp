@@ -122,7 +122,7 @@ int DeployOrder::getNumberOfArmiesToDeploy() const {
 AdvanceOrder::AdvanceOrder() : AdvanceOrder(nullptr) {}
 
 AdvanceOrder::AdvanceOrder(Player *player) : sourceTerritory(nullptr), targetTerritory(nullptr),
-                                             numberOfArmiesToAdvance(0), Order("Advance", 5, player) {}
+                                             numberOfArmiesToAdvance(0), Order("Advance", 4, player) {}
 
 AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : sourceTerritory(original.sourceTerritory),
                                                            targetTerritory(original.targetTerritory),
@@ -274,7 +274,7 @@ AdvanceOrderType AdvanceOrder::getAdvanceOrderType() const {
 // BombOrder -----------------------------------------------------------------------------------------------------------
 BombOrder::BombOrder() : BombOrder(nullptr) {}
 
-BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb", 5, player) {}
+BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb", 4, player) {}
 
 BombOrder::BombOrder(const BombOrder &original) : targetTerritory(original.targetTerritory), Order(original) {}
 
