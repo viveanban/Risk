@@ -79,7 +79,7 @@ string PhaseObserver::getPhaseText() {
 void PhaseObserver::displaySpecialInformation() {
     switch (currentGameState->getCurrentPhase()) {
         case reinforcement:
-            printReinforcementinfo();
+            printReinforcementInfo();
             break;
         case issuing_orders:
         case orders_execution:
@@ -88,10 +88,14 @@ void PhaseObserver::displaySpecialInformation() {
     }
 }
 
-void PhaseObserver::printReinforcementinfo() const {
+void PhaseObserver::printReinforcementInfo() const {
+    int totalUnitsReceived = GameEngine::getInstance()->calculateNumberOfArmiesToGive(
+            currentGameState->getCurrentPlayer());
+    int bonus = GameEngine::getInstance()->getBonus(currentGameState->getCurrentPlayer());
     cout << currentGameState->getCurrentPlayer()->getPlayerName()
-         << " has received new armies as part of reinforcement phase. He now owns "
+         << " has received " << totalUnitsReceived << " new armies as part of reinforcement phase. He now owns "
          << currentGameState->getCurrentPlayer()->getNumberofArmies() << " number of armies." << endl;
+    cout << "This includes " << totalUnitsReceived - bonus << " regular units and " << bonus << " bonus units." << endl;
 }
 
 void PhaseObserver::printOrderInfo(Order *order, Card *card) {

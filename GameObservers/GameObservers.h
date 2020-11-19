@@ -138,7 +138,7 @@ private:
 
     void printNegotiateOrder(NegotiateOrder *pOrder);
 
-    void printReinforcementinfo() const;
+    void printReinforcementInfo() const;
 
     void printReinforcementCardInfo();
 
