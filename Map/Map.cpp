@@ -2,7 +2,6 @@
 #include <set>
 #include <vector>
 #include <stack>
-#include <algorithm>
 #include "Map.h"
 #include "../Player/Player.h"
 
@@ -12,39 +11,30 @@ using namespace std;
  * Territory Class implementation
  */
 
-Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList() {}
+Territory::Territory() : territoryName(), territoryId(), unitNbr(), continentId(), owner(nullptr), adjList(), priority() {}
 
 Territory::Territory(const Territory &original) {
     territoryName = original.territoryName;
-    if(original.owner != nullptr)
-        owner = new Player(*original.owner);
-    else
-        owner = nullptr;
+    owner = original.owner;
     continentId = original.continentId;
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
-    adjList = vector<int>(original.adjList.size());
-    for (int i = 0; i < adjList.size(); i++)
-        adjList[i] = original.adjList[i];
-}
-
-Territory::Territory(const Territory &original, Player *player) {
-    territoryName = original.territoryName;
-    owner = player;
-    continentId = original.continentId;
-    territoryId = original.territoryId;
-    unitNbr = original.unitNbr;
-    adjList = vector<int>(original.adjList.size());
+    adjList = vector<Territory *>(original.adjList.size());
+    // Note: Shallow copy done on purpose. We want the new territory's adjacent list to be composed of pointers pointing
+    // to the same territories as those pointed by the adjacent list of original
     for (int i = 0; i < adjList.size(); i++)
         adjList[i] = original.adjList[i];
 }
 
 Territory &Territory::operator=(const Territory &otherTerritory) {
+    territoryName = otherTerritory.territoryName;
     owner = otherTerritory.owner;
     continentId = otherTerritory.continentId;
     territoryId = otherTerritory.territoryId;
     unitNbr = otherTerritory.unitNbr;
-    adjList = vector<int>(otherTerritory.adjList.size());
+    adjList = vector<Territory *>(otherTerritory.adjList.size());
+    // Note: Shallow copy done on purpose. We want the new territory's adjacent list to be composed of pointers pointing
+    // to the same territories as those pointed by the adjacent list of otherTerritory
     for (int i = 0; i < adjList.size(); i++)
         adjList[i] = otherTerritory.adjList[i];
 
@@ -64,7 +54,6 @@ std::ostream &operator<<(std::ostream &stream, Territory &t) {
 
 string Territory::getTerritoryName() {
     return this->territoryName;
-
 }
 
 void Territory::setTerritoryName(string territoryName) {
@@ -85,6 +74,7 @@ int Territory::getUnitNbr() {
 
 void Territory::setUnitNbr(int unitNbr) {
     this->unitNbr = unitNbr;
+    this->priority = unitNbr;
 }
 
 int Territory::getContinentId() {
@@ -99,35 +89,39 @@ Player *Territory::getOwner() {
     return this->owner;
 }
 
-void Territory::setOwner(Player *owner) {
-    this->owner = owner;
+void Territory::setOwner(Player *newOwner) {
+    if (this->owner != nullptr)
+        this->owner->removeTerritory(this);
+
+    this->owner = newOwner;
+    newOwner->addTerritory(this);
 }
 
-void Territory::addLink(int t) {
-    adjList.push_back(t);
-}
-
-vector<int> &Territory::getAdjList() {
+vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }
 
-void Territory::setAdjList(vector<int> &adjList) {
-    this->adjList = adjList;
+int Territory::getPriority() const {
+    return priority;
+}
 
+void Territory::setPriority(int priority) {
+    Territory::priority = priority;
 }
 
 /**
  * Continent Class implementation
  */
-Continent::Continent() : continentId(), continentName(),
-                         territories(), bonus() {}
+Continent::Continent() : continentId(), continentName(), territories(), bonus() {}
 
 Continent::~Continent() {
     for(auto territory: territories) {
+        cout << "Deleting territory" << endl;
         delete territory;
         territory = nullptr;
     }
-}                         
+    territories.clear();
+}
 
 Continent::Continent(const Continent &original) {
     continentId = original.continentId;
@@ -139,10 +133,17 @@ Continent::Continent(const Continent &original) {
 }
 
 Continent &Continent::operator=(const Continent &otherContinent) {
-
     continentName = otherContinent.continentName;
     continentId = otherContinent.continentId;
     bonus = otherContinent.bonus;
+
+    if(!territories.empty()) {
+        for (Territory* territory: territories)
+            delete territory;
+
+        territories.clear();
+    }
+
     territories = vector<Territory *>(otherContinent.territories.size());
     for (int i = 0; i < territories.size(); i++)
         territories[i] = new Territory(*otherContinent.territories[i]);
@@ -183,11 +184,14 @@ void Continent::setBonus(int bonus) {
 }
 
 bool Continent::isSameOwner() {
-    set<Territory *> setOfTerritoriesInContinent;
+    set<Player *> players;
     for (Territory *territory : getTerritories()) {
-        setOfTerritoriesInContinent.insert(territory);
+        if(territory->getOwner() == nullptr)
+            return false;
+        else
+            players.insert(territory->getOwner());
     }
-    return setOfTerritoriesInContinent.size() == 1;
+    return players.size() == 1;
 }
 
 Player *Continent::getOwner() {
@@ -198,68 +202,70 @@ vector<Territory *> &Continent::getTerritories() {
     return this->territories;
 }
 
-void Continent::setTerritories(vector<Territory *> territories) {
-    this->territories = territories;
+/**
+ * Map Class implementation
+ */
+Map::Map() : territoryList(), continentList() {}
+
+Map::Map(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
+                                                                                       continentList(continentList) {}
+Map::~Map() {
+    cout << "Deleting Map..." << endl;
+    for (auto continent: continentList) {
+        cout << "Deleting Continent" << endl;
+        delete continent;
+        continent = nullptr;
+    }
+    continentList.clear();
 }
 
-/**
- * Graph Class implementation
- */
-Graph::Graph() : territoryList() {}
-
-Graph::Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList) : territoryList(territoryList),
-                                                                                       continentList(continentList) {}
-
-Graph::Graph(const Graph &original) {
+// Note: Shallow copy for territoryList done purposefully. The Map is not responsible to create the new territories.
+// The Continent is.
+Map::Map(const Map &original) {
     territoryList = vector<Territory *>(original.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
-        territoryList[i] = new Territory(*original.territoryList[i]);
+        territoryList[i] = original.territoryList[i];
     continentList = vector<Continent *>(original.continentList.size());
     for (int i = 0; i < continentList.size(); i++)
         continentList[i] = new Continent(*original.continentList[i]);
 }
 
-Graph &Graph::operator=(const Graph &otherGraph) {
-    territoryList = vector<Territory *>(otherGraph.territoryList.size());
+// Note: Shallow copy for territoryList done purposefully. The Map is not responsible to create the new territories.
+// The Continent is.
+Map &Map::operator=(const Map &otherMap) {
+    territoryList = vector<Territory *>(otherMap.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
-        territoryList[i] = new Territory(*otherGraph.territoryList[i]);
-    continentList = vector<Continent *>(otherGraph.continentList.size());
+        territoryList[i] = otherMap.territoryList[i];
+
+    if(!continentList.empty()) {
+        for (Continent* continent: continentList)
+            delete continent;
+
+        continentList.clear();
+    }
+
+    continentList = vector<Continent *>(otherMap.continentList.size());
     for (int i = 0; i < continentList.size(); i++)
-        continentList[i] = new Continent(*otherGraph.continentList[i]);
+        continentList[i] = new Continent(*otherMap.continentList[i]);
+
     return *this;
 }
 
-vector<Territory *> &Graph::getTerritoryList() {
+vector<Territory *> &Map::getTerritoryList() {
     return this->territoryList;
 }
 
-std::ostream &operator<<(std::ostream &stream, Graph &g) {
-    return stream << "Information on Graph object:" << endl
+std::ostream &operator<<(std::ostream &stream, Map &g) {
+    return stream << "Information on Map object:" << endl
                   << "Number of Territories: " << g.getTerritoryList().size() << endl
                   << "Number of Continents: " << g.getContinentList().size() << endl;
 }
 
-void Graph::setTerritoryList(vector<Territory *> &territoryList) {
-    this->territoryList = territoryList;
-}
-
-void Graph::addTerritory(Territory *territory) {
-    territoryList.push_back(territory);
-}
-
-vector<Continent *> &Graph::getContinentList() {
+vector<Continent *> &Map::getContinentList() {
     return this->continentList;
 }
 
-void Graph::setContinentList(vector<Continent *> &continentList) {
-    this->continentList = continentList;
-}
-
-void Graph::addContinent(Continent *continent) {
-    continentList.push_back(continent);
-}
-
-bool Graph::isGraphConnected() {
+bool Map::isMapConnected() {
     set<int> seenTerritories{};
     stack<int> toVisitStack;
 
@@ -267,20 +273,20 @@ bool Graph::isGraphConnected() {
 
     while (!toVisitStack.empty()) {
 
-        //pop the top territories to visit it
+        // Pop the top territories to visit it
         int currentTerritory = toVisitStack.top();
         toVisitStack.pop();
 
-        //add all unvisited territories to the stack to visit them later
-        for (int territory : getTerritoryById(currentTerritory)->getAdjList()) {
-            if (seenTerritories.count(territory) == 0) {
-                toVisitStack.push(territory);
-                seenTerritories.insert(territory);
+        // Add all unvisited territories to the stack to visit them later
+        for (Territory * territory : getTerritoryById(currentTerritory)->getAdjList()) {
+            if (seenTerritories.count(territory->getTerritoryId()) == 0) {
+                toVisitStack.push(territory->getTerritoryId());
+                seenTerritories.insert(territory->getTerritoryId());
             }
         }
     }
 
-    //once we don't have anymore territories to visit in the stack,
+    // Once we don't have anymore territories to visit in the stack,
     // we need to verify if we visited all territories
     if (seenTerritories.size() == getTerritoryList().size()) {
         return true;
@@ -289,25 +295,25 @@ bool Graph::isGraphConnected() {
     }
 }
 
-bool Graph::isContinentSubgraphConnected() {
+bool Map::isContinentSubgraphConnected() {
     set<int> visitedContinents{};
     set<int> seenTerritories;
     stack<int> territoriesToVisit;
     int numberOfContinents = getContinentList().size();
-    // starting from the first territory
+    // Starting from the first territory
     territoriesToVisit.push(getTerritoryList().at(0)->getTerritoryId());
-    // loop until all continents visited or until no more connected territories to visit
+    // Loop until all continents visited or until no more connected territories to visit
     while (!territoriesToVisit.empty() && visitedContinents.size() < numberOfContinents) {
         int currentTerritoryId = territoriesToVisit.top();
         Territory *currentTerritory = getTerritoryById(currentTerritoryId);
         territoriesToVisit.pop();
 
-        for (int territory : currentTerritory->getAdjList()) {
-            // if we see the territory for the first time, add it to the territories to visit
-            if (seenTerritories.count(territory) == 0) {
-                territoriesToVisit.push(territory);
-                seenTerritories.insert(territory);
-                // add continent to the set of visitedContinents
+        for (Territory * territory : currentTerritory->getAdjList()) {
+            // If we see the territory for the first time, add it to the territories to visit
+            if (seenTerritories.count(territory->getTerritoryId()) == 0) {
+                territoriesToVisit.push(territory->getTerritoryId());
+                seenTerritories.insert(territory->getTerritoryId());
+                // Add continent to the set of visitedContinents
                 visitedContinents.insert(currentTerritory->getContinentId());
             }
         }
@@ -319,7 +325,7 @@ bool Graph::isContinentSubgraphConnected() {
     }
 }
 
-bool Graph::isTerritoryContinentUnique() {
+bool Map::isTerritoryContinentUnique() {
     set<string> seenTerritoryNames{};
     set<int> seenTerritoryIds{};
 
@@ -337,37 +343,26 @@ bool Graph::isTerritoryContinentUnique() {
     return seenTerritoryNames.size() == getTerritoryList().size();
 }
 
-bool Graph::validate() {
-    bool connectedTerritories = isGraphConnected();
+bool Map::validate() {
+    bool connectedTerritories = isMapConnected();
     bool connectedContinents = isContinentSubgraphConnected();
     bool uniqueTerritories = isTerritoryContinentUnique();
-
-    cout << boolalpha << "Territories: " << connectedTerritories << ", Continents: " << connectedContinents
-         << ", Unique Territories: " << uniqueTerritories << endl;
-    return
-            connectedTerritories &&
-            connectedContinents &&
-            uniqueTerritories;
+    cout << "Validating Map..." << endl;
+    cout << boolalpha << "All Territories are connected: " << connectedTerritories << ", All Continents are connected: "
+         << connectedContinents
+         << ", All Territories are unique: " << uniqueTerritories << endl;
+    bool isValid = connectedTerritories &&
+                   connectedContinents &&
+                   uniqueTerritories;
+    if (isValid) {
+        cout << "The Map is valid!" << endl;
+    } else {
+        cout << "The Map is not valid!" << endl;
+    }
+    return isValid;
 }
 
-Graph::~Graph() {
-    cout << "Deleting Graph..." << endl;
-    cout << "Deleting Continents" << endl;
-    for (auto continent: continentList) {
-        delete continent;
-        continent = nullptr;
-    }
-    continentList.clear();
-
-    cout << "Deleting Territories" << endl;
-    for (auto territory: territoryList) {
-        delete territory;
-        territory = nullptr;
-    }
-    territoryList.clear();
-}
-
-Territory *Graph::getTerritoryById(int id) {
+Territory *Map::getTerritoryById(int id) {
     for (Territory *t: territoryList) {
         if (t->getTerritoryId() == id)
             return t;

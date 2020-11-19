@@ -1,7 +1,3 @@
-//
-// Created by Viveka Anban on 24-09-2020.
-//
-
 #ifndef RISK_MAPLOADER_H
 #define RISK_MAPLOADER_H
 
@@ -13,10 +9,30 @@
 using namespace std;
 
 /**
- * This class takes care of creating a Graph object (the map) in the Risk game based on user input.
+ * This class takes care of creating a Map object (the map) in the Risk game based on user input.
  */
 class MapLoader {
 private:
+    enum Section {
+        other, continents, countries, borders
+    };
+
+    static const string MAP_FILENAME_FORMAT_REGEX;
+
+    static const string MAP_DIRECTORY;
+
+    static const string CONTINENT_REGEX;
+
+    static const string COUNTRY_REGEX;
+
+    static const string BORDER_REGEX;
+
+    static Section currentSection;
+
+    static vector<Continent *> continentsList;
+
+    static vector<Territory *> territoriesList;
+
     MapLoader() = default;
 
     MapLoader(const MapLoader &original);
@@ -24,7 +40,7 @@ private:
     MapLoader &operator=(const MapLoader &original);
 
     /**
-     * This method creates the Graph object and returns a pointer to it.
+     * This method creates the Map object and returns a pointer to it.
      *
      * @return void.
      * @param fstream: the file that will be parsed.
@@ -71,20 +87,20 @@ private:
     static void checkPattern(const string& line, const string& pattern);
 
     /**
-     * This method exits the program with an error.
+     * This method throws an exception following a map validation failure.
      *
      * @return void.
      * @param None.
      */
-    static void exitWithError();
+    static void throwInvalidMapException();
 
 public:
     /**
-     * This method creates the Graph object and returns a pointer to it.
+     * This method creates the Map object and returns a pointer to it.
      *
-     * @return Graph pointer.
+     * @return Map pointer.
      */
-    static Graph *loadMap(const string& mapName);
+    static Map *loadMap(const string& mapName);
 
     friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
 

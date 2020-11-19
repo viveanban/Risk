@@ -11,51 +11,51 @@ using namespace std;
 /**
  * MapLoader Class implementation
  */
-const string MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
-const string MAP_DIRECTORY = "../maps/";
-const string CONTINENT_REGEX = "([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
-const string COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-)+\\s+(\\d+|\\d+\\s.*)";
-const string BORDER_REGEX = "(\\d+\\s+)+\\d+";
 
-enum Section {
-    other, continents, countries, borders
-};
+const string MapLoader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
+const string MapLoader::MAP_DIRECTORY = "../maps/";
+const string MapLoader::CONTINENT_REGEX = "([A-Z]|[a-z]|_|-|[0-9])+\\s+(\\d+|\\d+\\s.*)";
+const string MapLoader::COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-|[0-9])+\\s+(\\d+|\\d+\\s.*)";
+const string MapLoader::BORDER_REGEX = "(\\d+\\s+)+\\d+";
 
-Section currentSection;
-vector<Continent *> continentsList;
-vector<Territory *> territoriesList;
+MapLoader::Section MapLoader::currentSection{};
+vector<Continent *> MapLoader::continentsList{};
+vector<Territory *> MapLoader::territoriesList{};
 
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 
 MapLoader &MapLoader::operator=(const MapLoader &original) { return *this; }
 
 std::ostream &operator<<(ostream &stream, MapLoader &mapLoader) {
-    return stream << "MapLoader: [continentList size =" << continentsList.size()
-                  << ", territoriesList size = " << continentsList.size() << "]" << endl;
+    return stream << "MapLoader: [continentList size =" << MapLoader::continentsList.size()
+                  << ", territoriesList size = " << MapLoader::territoriesList.size() << "]" << endl;
 }
 
-Graph *MapLoader::loadMap(const string &mapName) {
+Map *MapLoader::loadMap(const string &mapName) {
     // Have a clear setup when loading a new map
     continentsList.clear();
     territoriesList.clear();
+    try {
+        // Read map
+        fstream mapFile;
+        checkPattern(mapName, MAP_FILENAME_FORMAT_REGEX);
 
-    // Read map
-    fstream mapFile;
-    checkPattern(mapName, MAP_FILENAME_FORMAT_REGEX);
+        mapFile.open(MAP_DIRECTORY + mapName, ios::in);
 
-    mapFile.open(MAP_DIRECTORY + mapName, ios::in);
+        if (mapFile.is_open()) {
+            parseFile(mapFile);
+            mapFile.close();
+        } else
+            throwInvalidMapException();
 
-    if (mapFile.is_open()) {
-        parseFile(mapFile);
-        mapFile.close();
+        // Construct Map object
+        auto *graph = new Map(territoriesList, continentsList);
+
+        return graph;
+    } catch (const invalid_argument e) {
+        cout << e.what() << endl;
+        return NULL;
     }
-    else
-        exitWithError();
-
-    // Construct Graph object
-    auto *graph = new Graph(territoriesList, continentsList);
-
-    return graph;
 }
 
 void MapLoader::parseFile(fstream &mapFile) {
@@ -73,6 +73,7 @@ void MapLoader::parseFile(fstream &mapFile) {
             if (currentSection == continents) {
                 checkPattern(line, CONTINENT_REGEX);
                 continentsList.push_back(createContinents(line, continentId));
+                continentId++;
             } else if (currentSection == countries) {
                 checkPattern(line, COUNTRY_REGEX);
                 territoriesList.push_back(createTerritories(line));
@@ -115,13 +116,13 @@ Continent *MapLoader::createContinents(const string &line, int &continentId) {
         counter++;
     }
 
-    continent->setContinentId(continentId++);
+    continent->setContinentId(continentId);
 
     return continent;
 }
 
 Territory *MapLoader::createTerritories(const string &line) {
-    if (continentsList.empty()) exitWithError();
+    if (continentsList.empty()) throwInvalidMapException();
 
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
@@ -144,7 +145,7 @@ Territory *MapLoader::createTerritories(const string &line) {
 }
 
 void MapLoader::constructAdjencyList(const string &line) {
-    if (territoriesList.empty()) exitWithError();
+    if (territoriesList.empty()) throwInvalidMapException();
 
     const char *token = strtok((char *) line.c_str(), " ");
     int counter = 0;
@@ -158,8 +159,7 @@ void MapLoader::constructAdjencyList(const string &line) {
                 if (territory->getTerritoryId() == territoryId) {
                     for (Territory *border : territoriesList) {
                         if (border->getTerritoryId() == borderId) {
-                            territory->getAdjList().push_back(
-                                    borderId); // getAdjList returns an address to the real vector list b/c or else if would return a copy of the vector list which is not what we want
+                            territory->getAdjList().push_back(border);
                             break;
                         }
                     }
@@ -173,11 +173,10 @@ void MapLoader::constructAdjencyList(const string &line) {
 
 void MapLoader::checkPattern(const string &line, const string &pattern) {
     if (!regex_match(line, regex(pattern))) {
-        exitWithError();
+        throwInvalidMapException();
     }
 }
 
-void MapLoader::exitWithError() {
-    cout << "This map is invalid!" << endl;
-    exit(EXIT_FAILURE);
+void MapLoader::throwInvalidMapException() {
+    throw invalid_argument("Error loading map, this map format is invalid!");
 }

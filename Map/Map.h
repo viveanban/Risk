@@ -17,19 +17,23 @@ class Player;
 class Territory {
 private:
     string territoryName;
+
     Player *owner;
+
     int continentId;
+
     int territoryId;
+
     int unitNbr;
-    vector<int> adjList;
+
+    vector<Territory *> adjList;
+
+    int priority;
+
 public:
     Territory();
 
     Territory(const Territory &original);
-
-    // Copy constructor called from the Copy Constructor of Player
-    // Create a new Territory based on an existing Territory but no new Player is created.
-    Territory(const Territory &original, Player *player);
 
     Territory &operator=(const Territory &otherTerritory);
 
@@ -44,14 +48,16 @@ public:
 
     int getUnitNbr();
 
-    vector<int> &getAdjList();
+    vector<Territory *> &getAdjList();
 
     int getContinentId();
+
+    int getPriority() const;
 
     // Setters
     void setTerritoryName(string territoryName);
 
-    void setOwner(Player *owner);
+    void setOwner(Player *newOwner);
 
     void setTerritoryId(int territoryId);
 
@@ -59,10 +65,7 @@ public:
 
     void setContinentId(int continentId);
 
-    void setAdjList(vector<int> &adjList);
-
-    // Adds an edge between two territories
-    void addLink(int id);
+    void setPriority(int priority);
 };
 
 /**
@@ -73,9 +76,14 @@ public:
 class Continent {
 private:
     int continentId;
+
     int bonus;
+
     string continentName;
+
     vector<Territory *> territories;
+
+    bool isSameOwner();
 
 public:
     Continent();
@@ -86,10 +94,7 @@ public:
 
     Continent &operator=(const Continent &otherContinent);
 
-    // output insertion stream operator override
     friend std::ostream &operator<<(std::ostream &stream, Continent &c);
-
-    bool isSameOwner();
 
     // Getters
     int getContinentId();
@@ -108,23 +113,21 @@ public:
     void setContinentName(string continentName);
 
     void setBonus(int bonus);
-
-    void setTerritories(vector<Territory *> territories);
 };
 
 /**
- * This class represents a graph in the Risk game
- * A Graph is a list of connected Territories. In other words, it represents a list of countries
- * and continent that are interconnected with each other
+ * This class represents a Map in the Risk game.
+ * A Map is a list of connected Territories. In other words, it represents a list of countries
+ * and continent that are interconnected with each other.
  */
-class Graph {
+class Map {
 private:
     vector<Territory *> territoryList;
 
     vector<Continent *> continentList;
 
     // Used to validate if the graph is fully connected
-    bool isGraphConnected();
+    bool isMapConnected();
 
     // Used to validate if the continents are connected
     bool isContinentSubgraphConnected();
@@ -133,17 +136,17 @@ private:
     bool isTerritoryContinentUnique();
 
 public:
-    Graph();
+    Map();
 
-    ~Graph();
+    ~Map();
 
-    Graph(vector<Territory *> &territoryList, vector<Continent *> &continentList);
+    Map(vector<Territory *> &territoryList, vector<Continent *> &continentList);
 
-    Graph(const Graph &original);
+    Map(const Map &original);
 
-    Graph &operator=(const Graph &otherGraph);
+    Map &operator=(const Map &otherMap);
 
-    friend std::ostream &operator<<(std::ostream &stream, Graph &c);
+    friend std::ostream &operator<<(std::ostream &stream, Map &c);
 
     // Getters
     vector<Territory *> &getTerritoryList();
@@ -151,17 +154,6 @@ public:
     vector<Continent *> &getContinentList();
 
     Territory *getTerritoryById(int id);
-
-    // Setters
-    void setTerritoryList(vector<Territory *> &territoryList);
-
-    void setContinentList(vector<Continent *> &continentList);
-
-    // Add continents individually
-    void addContinent(Continent *continent);
-
-    // Add territories individually
-    void addTerritory(Territory *territory);
 
     // Used to validate the graph using the 3 defined conditions for connectivity.
     bool validate();

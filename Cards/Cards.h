@@ -32,7 +32,7 @@ public:
 
     CardType getType() const;
 
-    void setType(CardType type);
+    string getTypeName();
 
     /**
      * This method should create an order based on the card type and
@@ -46,7 +46,7 @@ private:
 
 /**
  * The Deck class represents the set of card available to be used during a game
- * It randomly picks cards from different type and add them to the stack of card to be used
+ * It randomly picks cards from different type and give them to the Players
  */
 class Deck {
 private:
@@ -54,9 +54,9 @@ private:
 public:
     Deck(int size);
 
-    Deck(const Deck &original);
-
     ~Deck();
+
+    Deck(const Deck &original);
 
     Deck &operator=(const Deck &otherDeck);
 
@@ -64,12 +64,11 @@ public:
 
     const vector<Card *> &getCards() const;
 
-    void setCards(const vector<Card *> &cards);
-
+    // Add card to the cards vector in Deck
     void addCard(Card *card);
 
     /**
-     * The draw method should randomly pick a card inside the deck, remove it
+     * The draw method should randomly pick a card inside the deck, remove it from the Deck
      * and return it to be used by the caller
      * @return a random card inside the deck
      */
@@ -77,45 +76,32 @@ public:
 };
 
 /**
- * The Hand class represents the hand of card that a player has during a game
- * it contains a set of cards that the play can use
+ * The Hand class represents the hand of cards that a player has during a game.
  */
 class Hand {
 private:
     vector<Card *> cards;
-    int cardNbr;
 public:
     Hand();
 
-    Hand(vector<Card *> cards);
+    ~Hand();
 
     Hand(const Hand &original);
 
     Hand &operator=(const Hand &otherHand);
 
-    ~Hand();
-
     friend std::ostream &operator<<(std::ostream &stream, const Hand &c);
-
-    int getCardNbr() const;
-
-    void setCardNbr(int cardNbr);
 
     const vector<Card *> &getCards() const;
 
-    void setCards(const vector<Card *> &cards);
+    // Returns a card that is not a reinforcement card
+    Card* getNextCard();
 
-    /**
-     * addCard() adds a given card to the hand of cards
-     * @param card
-     */
+    // Add card to the cards vector in Hand
     void addCard(Card *card);
 
-    /**
-     * remove card from the Hand
-     * @param index representing the index of the card to be removed
-     */
-    void removeCard(int index);
+    // Remove a Card from the Hand
+    void removeCard(Card* card);
 };
 
 #endif //RISK_CARDS_H

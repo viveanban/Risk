@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include "../Map/Map.h"
 
 using namespace std;
 
@@ -11,41 +12,80 @@ using namespace std;
  * The possible types of Orders are Deploy, Advance, Bomb, Blockade, Airlift, Negotiate.
  */
 class Order {
-public:
-    string description;
+private:
+    string name;
 
-    friend ostream &operator<<(ostream &stream, Order &order);
+    int priority; // Smaller number means higher priority
 
-    // The following methods are pure virtual functions (must be overridden)
+protected:
+
+    Player *player;
+
     /**
      * Checks if the Order given is a valid order.
      * @return boolean
      */
     virtual bool validate() = 0;
 
+public:
+    Order(string name, int priority, Player *player);
+
+    Order(const Order &original);
+
+    virtual ~Order();
+
+    friend ostream &operator<<(ostream &stream, Order &order);
+
+    Order &operator=(const Order &otherOrder);
     /**
-     * Executes the Order's actions.
+     * PLayer assigned to this order executes the Order's actions.
      */
     virtual void execute() = 0;
 
-    virtual ~Order();
+    /**
+     * Player assigned to this order will issue it
+     * @return true if order is issued successfully
+     */
+    virtual bool issue() = 0;
+
+    const string &getName() const;
+
+    int getPriority() const;
+
+    void setPlayer(Player *player);
 };
 
 /**
  * Places some armies on one of the current player’s territories.
  */
 class DeployOrder : public Order {
+private:
+    Territory *targetTerritory;
+
+    int numberOfArmiesToDeploy;
+
+    bool validate() override;
+
 public:
     DeployOrder();
 
+    explicit DeployOrder(Player *player);
+
     DeployOrder(const DeployOrder &original);
 
-    DeployOrder &operator=(const DeployOrder &order) ;
-
-private:
-    bool validate() override;
+    DeployOrder &operator=(const DeployOrder &otherOrder);
 
     void execute() override;
+
+    bool issue() override;
+
+    Territory *getTargetTerritory() const;
+
+    int getNumberOfArmiesToDeploy() const;
+};
+
+enum AdvanceOrderType {
+    attack, transfer
 };
 
 /**
@@ -55,16 +95,39 @@ private:
  * territories.
  */
 class AdvanceOrder : public Order {
+private:
+    Territory *sourceTerritory;
+
+    Territory *targetTerritory;
+
+    AdvanceOrderType advanceOrderType;
+
+    int numberOfArmiesToAdvance;
+
+    bool validate() override;
+
+    bool kill(int probabilityToKill);
+
 public:
     AdvanceOrder();
 
+    explicit AdvanceOrder(Player *player);
+
     AdvanceOrder(const AdvanceOrder &original);
 
-    AdvanceOrder &operator=(const AdvanceOrder &order);
-private:
-    bool validate() override;
+    AdvanceOrder &operator=(const AdvanceOrder &otherOrder);
 
     void execute() override;
+
+    bool issue() override;
+
+    Territory *getSourceTerritory() const;
+
+    Territory *getTargetTerritory() const;
+
+    int getNumberOfArmiesToAdvance() const;
+
+    AdvanceOrderType getAdvanceOrderType() const;
 };
 
 /**
@@ -72,91 +135,118 @@ private:
  * player’s territories.
  */
 class BombOrder : public Order {
-public:
-    BombOrder();
-
-    BombOrder(const BombOrder &original);
-
-    BombOrder &operator=(const BombOrder &order);
-
-
 private:
+    Territory *targetTerritory;
 
     bool validate() override;
 
+public:
+    BombOrder();
+
+    explicit BombOrder(Player *player);
+
+    BombOrder(const BombOrder &original);
+
+    BombOrder &operator=(const BombOrder &otherOrder);
+
     void execute() override;
+
+    bool issue() override;
+
+    Territory *getTargetTerritory() const;
 };
 
 /**
  * Triple the number of armies on one of the current player’s territories and make it a neutral territory
  */
 class BlockadeOrder : public Order {
+private:
+    Territory *targetTerritory;
+
+    bool validate() override;
+
 public:
     BlockadeOrder();
 
+    explicit BlockadeOrder(Player *player);
+
     BlockadeOrder(const BlockadeOrder &original);
 
-    BlockadeOrder &operator=(const BlockadeOrder &order) ;
-private:
-    bool validate() override;
+    BlockadeOrder &operator=(const BlockadeOrder &otherOrder);
 
     void execute() override;
 
+    bool issue() override;
+
+    Territory *getTargetTerritory() const;
 };
 
 /**
- * Advance some armies from one of the current player’s territories to any another territory.
+ * Advance some armies from one of the current player’s territories to another of their territory.
+ * Note: The assignment's directives were ambiguous and contradictory regarding the Airlift order. Therefore,
+ * we based our implementation on what we found in the Warzone wiki (https://www.warzone.com/wiki/Airlift_Card)
+ * and our discussions with our TA Daniel. Basically, we concluded that an Airlift order cannot be used to do any attacks.
  */
 class AirliftOrder : public Order {
+private:
+    Territory *sourceTerritory;
+
+    Territory *targetTerritory;
+
+    int numberOfArmiesToAirlift;
+
+    bool validate() override;
+
 public:
     AirliftOrder();
 
+    explicit AirliftOrder(Player *player);
+
     AirliftOrder(const AirliftOrder &original);
 
-    AirliftOrder &operator=(const AirliftOrder &order);
-private:
-    bool validate() override;
+    AirliftOrder &operator=(const AirliftOrder &otherOrder);
 
     void execute() override;
 
+    bool issue() override;
+
+    Territory *getSourceTerritory() const;
+
+    Territory *getTargetTerritory() const;
+
+    int getNumberOfArmiesToAirlift() const;
 };
 
 /**
  * Prevent attacks between the current player and another player until the end of the turn.
  */
 class NegotiateOrder : public Order {
+private:
+    Player *targetPlayer;
+
+    bool validate() override;
+
 public:
     NegotiateOrder();
 
+    explicit NegotiateOrder(Player *player);
+
     NegotiateOrder(const NegotiateOrder &original);
 
-    NegotiateOrder &operator=(const NegotiateOrder &order);
-
-private:
-    bool validate() override;
+    NegotiateOrder &operator=(const NegotiateOrder &otherOrder);
 
     void execute() override;
+
+    bool issue() override;
+
+    Player *getTargetPlayer() const;
 };
 
-class ReinforcementOrder : public Order {
-public:
-    ReinforcementOrder();
-
-    ReinforcementOrder(const ReinforcementOrder &original);
-
-    ReinforcementOrder &operator=(const ReinforcementOrder &order) ;
-
-private:
-    bool validate() override;
-
-    void execute() override;
-};
 /**
  * This class represents a list of orders for the Risk game
  * An OrdersList is a list of Orders that can be Deploy, Advance, Bomb, Blockade, Airlift, Negotiate, Reinforce.
  */
 class OrdersList {
-
 private:
     vector<Order *> orderList;
 
@@ -190,7 +280,7 @@ public:
      * @param order
      * @return boolean indicating order removed successfully
      */
-    bool remove(Order *order);
+    void remove(Order *order);
 
     /**
      * Moves an order to the given destination index
@@ -198,11 +288,11 @@ public:
      * @param destination
      * @return boolean indicating if move was successful
      */
-    bool move(Order *order, int destination);
-
-    void executeAll();
+    void move(Order *order, int destination);
 
     vector<Order *> &getOrderList();
+
+    void sortOrderListByPriority();
 };
 
 #endif //RISK_ORDERS_H
