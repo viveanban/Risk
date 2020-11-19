@@ -2,7 +2,6 @@
 #include "../GameEngine/GameEngine.h"
 #include <vector>
 #include <iostream>
-#include <ctime>
 #include <random>
 #include <algorithm>
 
@@ -27,7 +26,7 @@ ostream &operator<<(ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
-// Orders are deleted when players are deleted since they reside in the player's orders list
+// Note: Orders are deleted when players are deleted since they reside in the player's orders list
 Order *Card::play() {
     Order *order;
     switch (type) {
@@ -68,10 +67,6 @@ string Card::getTypeName() {
             return "airlift";
     }
     return "unknown";
-}
-
-void Card::setType(Card::CardType type) {
-    Card::type = type;
 }
 
 /**
@@ -182,6 +177,8 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
                   << "Number of cards in Hand: " << h.getCards().size() << endl;
 }
 
+// Note: It is not the Hand's responsability to delete the cards but rather the Deck's.
+// Hence, the cards left in the Hand are put back in the Deck.
 Hand::~Hand() {
     for (Card *card : cards) {
         removeCard(card);
