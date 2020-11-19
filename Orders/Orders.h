@@ -36,6 +36,7 @@ public:
 
     friend ostream &operator<<(ostream &stream, Order &order);
 
+    Order &operator=(const Order &otherOrder);
     /**
      * PLayer assigned to this order executes the Order's actions.
      */
