@@ -177,7 +177,7 @@ private:
     // Prints the information of the reinforcement card.
     void printReinforcementCardInfo();
 
-    // Prints if current player is attacking of defending.
+    // Prints the list of territories the player can defend and attack.
     void printToDefendToAttack();
 };
 
