@@ -6,17 +6,22 @@
 #include "../Cards/Cards.h"
 #include "../Player/Player.h"
 #include "./../GameObservers/GameObservers.h"
-
-class GameInitialization {
+/**
+ * The GameEngine class is a Singleton and it represents the entire game
+ */
+class GameEngine {
 private:
+    vector<string> availableMaps;
+    bool statisticsObserverActive;
+    bool phaseObserverActive;
+    int numPlayer;
+
+    vector<Player *> players;
     Map *map;
     Deck *deck;
     GameState *gameState;
-    vector<Player *> players;
-    vector<string> availableMaps;
-    bool phaseObserver = false;
-    bool statisticsObserver = false;
-    int numPlayer{};
+
+    GameEngine();
 
     /**
      * SelectMap is responsible for displaying available maps from the ./maps folder
@@ -43,75 +48,6 @@ private:
      * getTrueFalseInputFromUser is responsible for prompting a user for true false answer while returning the result
      */
     static bool getTrueFalseInputFromUser(string resultName);
-
-public:
-    GameInitialization();
-
-    ~GameInitialization();
-
-    GameInitialization(GameInitialization &original);
-
-    GameInitialization &operator=(const GameInitialization &otherGameInitialization);
-
-    friend std::ostream &operator<<(std::ostream &stream, GameInitialization &gameInitialization);
-
-    //GETTERS
-
-    Map *getMap() const;
-
-    Deck *getDeck() const;
-
-    GameState *getGameState() const;
-
-    const vector<Player *> &getPlayers() const;
-
-    const vector<string> &getAvailableMaps() const;
-
-    bool isPhaseObserver() const;
-
-    bool isStatisticsObserver() const;
-
-    int getNumPlayer() const;
-
-    // responsible for initialization of the game
-    void initializeGame();
-
-    // responsible to initialize the set of players
-    void setupPlayers();
-
-    /**
-     * openMapFile responsible for opening up and returning a given mapFile from the user's choice
-     * @param MAP_DIRECTORY map directory where map files reside
-     * @param chosenMap chosen map that the user wants to use
-     * @param inputFile
-     * @return the index of the opened file
-     */
-    int openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const;
-
-    // makes sure the file is not a directory or unknown format
-    static int isRegularFile(const char *path);
-
-    /**
-     * validateNumberPlayerInput as its name indicates validate the player number that it receives and return an accepted one
-     * @param numPlayerTmp : initial number that the user provides
-     * @return a verified and valid number of player
-     */
-    static int validateNumberPlayerInput(int numPlayerTmp);
-};
-
-/**
- * The GameEngine class is a Singleton and it represents the entire game
- */
-class GameEngine {
-private:
-    GameInitialization *gameInitialization;
-    vector<Player *> players;
-    Map *map;
-    Deck *deck;
-    GameState *gameState;
-    bool phaseObserverActive;
-
-    GameEngine();
 
     /**
      * The reinforcementPhase determines how many armies to give to a player
@@ -148,7 +84,8 @@ public:
 
     static GameEngine *getInstance();
 
-    GameEngine(vector<Player *> players, Map *map, Deck *deck, GameState *gameState);
+    GameEngine(const vector<string> &availableMaps, bool statisticsObserverActive, bool phaseObserverActive,
+               int numPlayer, const vector<Player *> &players, Map *map, Deck *deck, GameState *gameState);
 
     static GameEngine *gameEngine;
 
@@ -157,6 +94,34 @@ public:
     void operator=(const GameEngine &) = delete;
 
     ~GameEngine();
+
+    int getNumPlayer() const;
+
+    // responsible for initialization of the game
+    void initializeGame();
+
+    // responsible to initialize the set of players
+    void setupPlayers();
+
+    /**
+     * openMapFile responsible for opening up and returning a given mapFile from the user's choice
+     * @param MAP_DIRECTORY map directory where map files reside
+     * @param chosenMap chosen map that the user wants to use
+     * @param inputFile
+     * @return the index of the opened file
+     */
+    int openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const;
+
+    // makes sure the file is not a directory or unknown format
+    static int isRegularFile(const char *path);
+
+    /**
+     * validateNumberPlayerInput as its name indicates validate the player number that it receives and return an accepted one
+     * @param numPlayerTmp : initial number that the user provides
+     * @return a verified and valid number of player
+     */
+    static int validateNumberPlayerInput(int numPlayerTmp);
+
 
     void startupPhase();
 
@@ -176,17 +141,8 @@ public:
     GameState *getGameState() const;
 
     const vector<Player *> &getPlayers() const;
-
-    void setPhaseObserverActive(bool phaseObserverActive);
-
-    void setGameState(GameState *gameState);
-
-    void setPlayers(const vector<Player *> &players);
-
-    void setMap(Map *map);
-
-
-    void setDeck(Deck *deck);
+    
+    bool isStatisticsObserverActive() const;
 };
 
 #endif //RISK_GAMEENGINE_H

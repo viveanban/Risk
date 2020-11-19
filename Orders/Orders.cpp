@@ -510,7 +510,12 @@ NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
 }
 
 bool NegotiateOrder::validate() {
-    // TODO: check that target is not the source player (Abhijit)
+    // If the target is the player issuing the order, then the order is invalid.
+    if (targetPlayer == player) {
+        cout << "Negotiate order validation has failed:"
+             << "the target player and the source player are the same." << endl;
+        return false;
+    }
     return true;
 }
 
