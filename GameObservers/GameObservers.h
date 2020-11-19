@@ -27,7 +27,7 @@ public:
 
     Subject(const Subject &original);
 
-    ~Subject();
+    virtual ~Subject();
 
     list<Observer *> *getObservers() const;
 };

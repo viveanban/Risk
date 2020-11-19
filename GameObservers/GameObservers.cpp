@@ -16,6 +16,7 @@ Subject::Subject(const Subject &original) {
 
 Subject::~Subject() {
     delete observers;
+    cout << "Deleted list of observer" << endl;
 }
 
 void Subject::attach(Observer *o) {
@@ -372,6 +373,7 @@ void GameState::setCurrentCard(Card *currentCard) {
 GameState::~GameState() {
     for (auto o: *this->getObservers()) {
         delete o;
+        cout << "Deleted observer" << endl;
     }
 }
 
