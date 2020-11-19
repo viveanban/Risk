@@ -1,7 +1,3 @@
-//
-// Created by Viveka Anban on 24-09-2020.
-//
-
 #ifndef RISK_MAPLOADER_H
 #define RISK_MAPLOADER_H
 

@@ -2,7 +2,6 @@
 #include <set>
 #include <vector>
 #include <stack>
-#include <algorithm>
 #include "Map.h"
 #include "../Player/Player.h"
 
@@ -21,6 +20,8 @@ Territory::Territory(const Territory &original) {
     territoryId = original.territoryId;
     unitNbr = original.unitNbr;
     adjList = vector<Territory *>(original.adjList.size());
+    // Note: Shallow copy done on purpose. We want the new territory's adjacent list to be composed of pointers pointing
+    // to the same territories as those pointed by the adjacent list of original
     for (int i = 0; i < adjList.size(); i++)
         adjList[i] = original.adjList[i];
 }
@@ -32,6 +33,8 @@ Territory &Territory::operator=(const Territory &otherTerritory) {
     territoryId = otherTerritory.territoryId;
     unitNbr = otherTerritory.unitNbr;
     adjList = vector<Territory *>(otherTerritory.adjList.size());
+    // Note: Shallow copy done on purpose. We want the new territory's adjacent list to be composed of pointers pointing
+    // to the same territories as those pointed by the adjacent list of otherTerritory
     for (int i = 0; i < adjList.size(); i++)
         adjList[i] = otherTerritory.adjList[i];
 
@@ -98,11 +101,6 @@ vector<Territory *> &Territory::getAdjList() {
     return this->adjList;
 }
 
-void Territory::setAdjList(vector<Territory *> &adjList) {
-    this->adjList = adjList;
-
-}
-
 int Territory::getPriority() const {
     return priority;
 }
@@ -138,6 +136,14 @@ Continent &Continent::operator=(const Continent &otherContinent) {
     continentName = otherContinent.continentName;
     continentId = otherContinent.continentId;
     bonus = otherContinent.bonus;
+
+    if(!territories.empty()) {
+        for (Territory* territory: territories)
+            delete territory;
+
+        territories.clear();
+    }
+
     territories = vector<Territory *>(otherContinent.territories.size());
     for (int i = 0; i < territories.size(); i++)
         territories[i] = new Territory(*otherContinent.territories[i]);
@@ -206,13 +212,15 @@ Map::Map(vector<Territory *> &territoryList, vector<Continent *> &continentList)
 Map::~Map() {
     cout << "Deleting Map..." << endl;
     for (auto continent: continentList) {
-        cout << "Deleting Continents" << endl;
+        cout << "Deleting Continent" << endl;
         delete continent;
         continent = nullptr;
     }
     continentList.clear();
 }
 
+// Note: Shallow copy for territoryList done purposefully. The Map is not responsible to create the new territories.
+// The Continent is.
 Map::Map(const Map &original) {
     territoryList = vector<Territory *>(original.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
@@ -222,13 +230,24 @@ Map::Map(const Map &original) {
         continentList[i] = new Continent(*original.continentList[i]);
 }
 
+// Note: Shallow copy for territoryList done purposefully. The Map is not responsible to create the new territories.
+// The Continent is.
 Map &Map::operator=(const Map &otherMap) {
     territoryList = vector<Territory *>(otherMap.territoryList.size());
     for (int i = 0; i < territoryList.size(); i++)
         territoryList[i] = otherMap.territoryList[i];
+
+    if(!continentList.empty()) {
+        for (Continent* continent: continentList)
+            delete continent;
+
+        continentList.clear();
+    }
+
     continentList = vector<Continent *>(otherMap.continentList.size());
     for (int i = 0; i < continentList.size(); i++)
         continentList[i] = new Continent(*otherMap.continentList[i]);
+
     return *this;
 }
 
@@ -254,11 +273,11 @@ bool Map::isMapConnected() {
 
     while (!toVisitStack.empty()) {
 
-        //pop the top territories to visit it
+        // Pop the top territories to visit it
         int currentTerritory = toVisitStack.top();
         toVisitStack.pop();
 
-        //add all unvisited territories to the stack to visit them later
+        // Add all unvisited territories to the stack to visit them later
         for (Territory * territory : getTerritoryById(currentTerritory)->getAdjList()) {
             if (seenTerritories.count(territory->getTerritoryId()) == 0) {
                 toVisitStack.push(territory->getTerritoryId());
@@ -267,7 +286,7 @@ bool Map::isMapConnected() {
         }
     }
 
-    //once we don't have anymore territories to visit in the stack,
+    // Once we don't have anymore territories to visit in the stack,
     // we need to verify if we visited all territories
     if (seenTerritories.size() == getTerritoryList().size()) {
         return true;
@@ -281,20 +300,20 @@ bool Map::isContinentSubgraphConnected() {
     set<int> seenTerritories;
     stack<int> territoriesToVisit;
     int numberOfContinents = getContinentList().size();
-    // starting from the first territory
+    // Starting from the first territory
     territoriesToVisit.push(getTerritoryList().at(0)->getTerritoryId());
-    // loop until all continents visited or until no more connected territories to visit
+    // Loop until all continents visited or until no more connected territories to visit
     while (!territoriesToVisit.empty() && visitedContinents.size() < numberOfContinents) {
         int currentTerritoryId = territoriesToVisit.top();
         Territory *currentTerritory = getTerritoryById(currentTerritoryId);
         territoriesToVisit.pop();
 
         for (Territory * territory : currentTerritory->getAdjList()) {
-            // if we see the territory for the first time, add it to the territories to visit
+            // If we see the territory for the first time, add it to the territories to visit
             if (seenTerritories.count(territory->getTerritoryId()) == 0) {
                 territoriesToVisit.push(territory->getTerritoryId());
                 seenTerritories.insert(territory->getTerritoryId());
-                // add continent to the set of visitedContinents
+                // Add continent to the set of visitedContinents
                 visitedContinents.insert(currentTerritory->getContinentId());
             }
         }
