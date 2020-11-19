@@ -16,7 +16,7 @@ class Player {
 private:
     string playerName;
 
-    int numberOfArmies;
+    int numberOfArmiesInReinforcementPool;
 
     vector<Territory *> territories;
 
@@ -61,12 +61,12 @@ public:
 
     OrdersList *getOrders();
 
-    int getNumberofArmies();
+    int getNumberofArmiesInReinforcementPool();
 
     set<Player *> &getPlayersNotToAttack();
 
     // Setters
-    void setNumberOfArmies(int numberOfArmies);
+    void setNumberOfArmiesInReinforcementPool(int numberOfArmies);
 
     /**
     * This method returns a list of territories that can be defended.

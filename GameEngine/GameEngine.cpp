@@ -261,8 +261,8 @@ void GameEngine::assignTerritoriesToPlayers() {
 void GameEngine::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
     for (auto p : players) {
-        p->setNumberOfArmies(nmbArmy);
-        cout << p->getPlayerName() << " got assigned A = " << p->getNumberofArmies() << endl;
+        p->setNumberOfArmiesInReinforcementPool(nmbArmy);
+        cout << p->getPlayerName() << " got assigned A = " << p->getNumberofArmiesInReinforcementPool() << endl;
     }
 }
 
@@ -288,12 +288,6 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-
-        // TODO: give cards to those who conquered stuff (IMPORTANT) --> save a vector<Player*> with state before and after execution and compare the territories size befrore and after. If size increased = conquered something. Then, give card. (VivekA + FERODU)
-//        // Pick a card
-//        Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
-//        player->getHandOfCards()->addCard(drawnCard);
-//
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
         counter++;
@@ -304,7 +298,8 @@ void GameEngine::mainGameLoop() {
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
+        player->setNumberOfArmiesInReinforcementPool(
+                player->getNumberofArmiesInReinforcementPool() + numberOfArmiesToGive);
         gameState->updateGameState(player, reinforcement, nullptr, nullptr);
     }
 }

@@ -91,7 +91,7 @@ void PhaseObserver::displaySpecialInformation() {
 void PhaseObserver::printReinforcementinfo() const {
     cout << currentGameState->getCurrentPlayer()->getPlayerName()
          << " has received new armies as part of reinforcement phase. He now owns "
-         << currentGameState->getCurrentPlayer()->getNumberofArmies() << " number of armies." << endl;
+         << currentGameState->getCurrentPlayer()->getNumberofArmiesInReinforcementPool() << " number of armies." << endl;
 }
 
 void PhaseObserver::printOrderInfo(Order *order, Card *card) {
@@ -193,7 +193,7 @@ void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of "
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
-            cout << currentGameState->getCurrentPlayer()->getNumberofArmies()
+            cout << currentGameState->getCurrentPlayer()->getNumberofArmiesInReinforcementPool()
                  << " armies remaining in reinforcement pool."
                  << endl;
             break;

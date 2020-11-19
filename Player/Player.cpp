@@ -10,7 +10,7 @@
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
 Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
-                                    numberOfArmies(0), territories() {}
+                                    numberOfArmiesInReinforcementPool(0), territories() {}
 
 Player::~Player() {
     delete handOfCards;
@@ -53,7 +53,7 @@ std::ostream &operator<<(std::ostream &stream, Player &player) {
                   << "Number of Territories Owned: " << player.getTerritories().size() << endl
                   << "Size of Hand: " << player.getHandOfCards()->getCards().size() << endl
                   << "Number of Orders: " << player.getOrders()->getOrderList().size() << endl
-                  << "Number of Armies: " << player.numberOfArmies << endl;
+                  << "Number of Armies: " << player.numberOfArmiesInReinforcementPool << endl;
 }
 
 // Cannot call the setOwner method from here
@@ -119,7 +119,7 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
 // TODO: if unsuccessful, should we let the player try issuing another order (Viveka) (LOW PRIORITY)
 bool Player::issueOrder() {
     // Issue deploy orders as long as player's reinforcement pool is not empty
-    if (numberOfArmies > 0) {
+    if (numberOfArmiesInReinforcementPool > 0) {
         issueDeployOrder();
         return true;
     } else { // Other orders
@@ -161,7 +161,7 @@ void Player::playReinforcementCard() {
         if (card->getType() == Card::reinforcement) {
             bool playReinforcementCard = rand() % 2;
             if (playReinforcementCard) {
-                numberOfArmies += numberOfArmies + 5;
+                numberOfArmiesInReinforcementPool += numberOfArmiesInReinforcementPool + 5;
                 handOfCards->removeCard(card);
                 GameEngine::getInstance()->getGameState()->updateGameState(this, issuing_orders, nullptr, card);
             }
@@ -213,8 +213,8 @@ OrdersList *Player::getOrders() {
     return this->orders;
 }
 
-int Player::getNumberofArmies() {
-    return this->numberOfArmies;
+int Player::getNumberofArmiesInReinforcementPool() {
+    return this->numberOfArmiesInReinforcementPool;
 }
 
 set<Player *> &Player::getPlayersNotToAttack() {
@@ -222,6 +222,6 @@ set<Player *> &Player::getPlayersNotToAttack() {
 }
 
 // Setters
-void Player::setNumberOfArmies(int numberOfArmies) {
-    this->numberOfArmies = numberOfArmies;
+void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcementPool) {
+    this->numberOfArmiesInReinforcementPool = numberOfArmiesInReinforcementPool;
 }
