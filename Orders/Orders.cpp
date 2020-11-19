@@ -12,16 +12,6 @@ Order::Order(string name, int priority, Player *player) : name(name), priority(p
 Order::Order(const Order &original) : name(original.name), priority(original.priority),
                                       player(original.player) {}
 
-Order &Order::operator=(const Order &otherOrder) {
-    name = otherOrder.name;
-    priority = otherOrder.priority;
-    player = otherOrder.player;
-
-    return *this;
-}
-
-Order::~Order() = default;
-
 std::ostream &operator<<(std::ostream &stream, Order &order) {
     return stream << order.name << " => " << order.priority << endl;
 }

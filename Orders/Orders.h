@@ -15,22 +15,11 @@ class Order {
 private:
     string name;
 
-    int priority;
+    int priority; // Smaller number means higher priority
 
 protected:
 
     Player *player;
-
-public:
-    Order(string name, int priority, Player *player);
-
-    Order(const Order &original);
-
-    Order &operator=(const Order &otherOrder);
-
-    virtual ~Order();
-
-    friend ostream &operator<<(ostream &stream, Order &order);
 
     /**
      * Checks if the Order given is a valid order.
@@ -38,11 +27,24 @@ public:
      */
     virtual bool validate() = 0;
 
+public:
+    Order(string name, int priority, Player *player);
+
+    Order(const Order &original);
+
+    virtual ~Order();
+
+    friend ostream &operator<<(ostream &stream, Order &order);
+
     /**
-     * Executes the Order's actions.
+     * PLayer assigned to this order executes the Order's actions.
      */
     virtual void execute() = 0;
 
+    /**
+     * Player assigned to this order will issue it
+     * @return true if order is issued successfully
+     */
     virtual bool issue() = 0;
 
     const string &getName() const;
