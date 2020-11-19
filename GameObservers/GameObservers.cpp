@@ -94,20 +94,11 @@ void PhaseObserver::printReinforcementinfo() const {
          << currentGameState->getCurrentPlayer()->getNumberofArmies() << " number of armies." << endl;
 }
 
-void PhaseObserver::printDrawCardAfterExecution() {
-    cout << currentGameState->getCurrentPlayer()->getPlayerName()
-         << " has conquered as least 1 territory at the end of this turn! They have drawn the "
-         << currentGameState->getCurrentCard()->getType()
-         << " card!" << endl;
-}
-
 void PhaseObserver::printOrderInfo(Order *order, Card *card) {
-    if (card != nullptr && card->getType() == Card::CardType::reinforcement) {
+    if (card != nullptr && card->getType() == Card::CardType::reinforcement && currentGameState->getCurrentPhase() == issuing_orders) {
         printReinforcementCardInfo();
         return;
-    }else if(order == nullptr && card != nullptr && currentGameState->getCurrentPhase() == orders_execution ){
-
-    } else if (order == nullptr && card == nullptr && currentGameState->getCurrentPhase() == issuing_orders) {
+    }else if(order == nullptr && card == nullptr && currentGameState->getCurrentPhase() == issuing_orders ){
         cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
         return;
     } else if (order == nullptr){

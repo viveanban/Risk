@@ -470,7 +470,9 @@ void GameEngine::executeOrdersPhase() {
             // Pick a card
             Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
             player->getHandOfCards()->addCard(drawnCard);
-            gameState->updateGameState(player, orders_execution, nullptr, drawnCard);
+            cout << player->getPlayerName()
+                 << " has conquered at least 1 territory in this round. They have drawn the "
+                 << drawnCard->getTypeName() << " card!" << endl;
         }
     }
 }
