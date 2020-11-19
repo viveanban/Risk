@@ -36,10 +36,12 @@ PhaseObserver::PhaseObserver() : currentGameState{} {}
 
 PhaseObserver::PhaseObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
+// Shallow copy because we want to keep track of the same gameState as the one in GameEngine
 PhaseObserver::PhaseObserver(const PhaseObserver &original) {
     currentGameState = original.currentGameState;
 }
 
+// Shallow copy because we want to keep track of the same gameState as the one in GameEngine
 PhaseObserver &PhaseObserver::operator=(const PhaseObserver &otherObserver) {
     currentGameState = otherObserver.currentGameState;
     return *this;
@@ -333,12 +335,14 @@ void GameState::updateGameState(Player *player, Phase phase, Order *order, Card 
     notify();
 }
 
+// Shallow copy because we don't want to create a new player, only keep track of players from game engine
 GameState::GameState(const GameState &original) : Subject(original) {
     totalTerritories = original.totalTerritories;
-    currentPlayer = new Player(*original.currentPlayer);
+    currentPlayer = original.currentPlayer;
     currentPhase = original.currentPhase;
 }
 
+// Shallow copy because we don't want to create a new player, only keep track of players from game engine
 GameState &GameState::operator=(const GameState &original) {
     totalTerritories = original.totalTerritories;
     currentPlayer = original.currentPlayer;
@@ -373,10 +377,12 @@ StatisticsObserver::StatisticsObserver() : currentGameState{} {};
 
 StatisticsObserver::StatisticsObserver(GameState *currGameState) : currentGameState(currGameState) {}
 
+// Shallow copy because we want to keep track of the same gameState as the one in GameEngine
 StatisticsObserver::StatisticsObserver(const StatisticsObserver &original) {
     currentGameState = original.currentGameState;
 }
 
+// Shallow copy because we want to keep track of the same gameState as the one in GameEngine
 StatisticsObserver &StatisticsObserver::operator=(const StatisticsObserver &otherObserver) {
     currentGameState = otherObserver.currentGameState;
     return *this;
