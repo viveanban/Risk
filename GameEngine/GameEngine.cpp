@@ -206,13 +206,6 @@ GameEngine *GameEngine::getInstance() {
     return gameEngine;
 }
 
-GameEngine::GameEngine(const vector<string> &availableMaps, bool statisticsObserverActive, bool phaseObserverActive,
-                       int numPlayer, const vector<Player *> &players, Map *map, Deck *deck, GameState *gameState)
-        : availableMaps(availableMaps), statisticsObserverActive(statisticsObserverActive),
-          phaseObserverActive(phaseObserverActive), numPlayer(numPlayer), players(players), map(map), deck(deck),
-          gameState(gameState) {}
-
-
 // Startup phase logic
 void GameEngine::startupPhase() {
     randomlySetOrder();
