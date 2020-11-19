@@ -14,8 +14,7 @@
 
 using namespace std;
 
-// TODO: edge case where territores # < # of player (Viveka)
-//GAME STARTUP PHASE
+// GAME STARTUP PHASE
 // ---------GAME ENGINE---------------
 void GameEngine::initializeGame() {
     selectMap();
@@ -161,7 +160,6 @@ int GameEngine::getNumPlayer() const {
 }
 
 GameEngine::~GameEngine() {
-    // TODO: we need to delete observers (Tarek)
     for (auto player: players) {
         delete player;
         player = nullptr;

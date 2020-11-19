@@ -19,7 +19,7 @@ private:
 public:
     virtual void attach(Observer *o);
 
-    virtual void detach(Observer *o); // TODO: add comment why we are nt using it (Ferdou)
+    virtual void detach(Observer *o); // This method is not used because we never allow the player to detach the observers from the subject
 
     virtual void notify();
 
