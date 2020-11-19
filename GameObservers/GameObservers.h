@@ -19,20 +19,22 @@ private:
     list<Observer *> *observers;
 
 public:
-    virtual void attach(Observer *o);
+    void attach(Observer *o);
 
     // This method is not used because we never allow the player to detach the observers
     // from the subject after the game has been initialized.
-    virtual void detach(Observer *o);
+    void detach(Observer *o); // This method is not used because we never allow the player to detach the observers from the subject
 
     // Notifies all the observers of changes.
-    virtual void notify();
+    void notify();
 
     // Default constructor.
     Subject();
 
+    Subject(const Subject &original);
+   
     // Destructor.
-    ~Subject();
+    virtual ~Subject();
 
     list<Observer *> *getObservers() const;
 };
