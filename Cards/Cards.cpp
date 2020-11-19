@@ -105,9 +105,18 @@ Deck::Deck(const Deck &original) {
 }
 
 Deck &Deck::operator=(const Deck &otherDeck) {
+    if(!cards.empty()) {
+        for(Card* card: cards) {
+            delete card;
+        }
+        cards.clear();
+    }
+
     cards = vector<Card *>(otherDeck.cards.size());
+
     for (int i = 0; i < cards.size(); i++)
         cards[i] = new Card(*otherDeck.cards[i]);
+
     return *this;
 }
 
@@ -166,6 +175,13 @@ Hand::Hand(const Hand &original) {
 }
 
 Hand &Hand::operator=(const Hand &otherHand) {
+    if(!cards.empty()) {
+        for(Card* card: cards) {
+            delete card;
+        }
+        cards.clear();
+    }
+
     cards = vector<Card *>(otherHand.getCards().size());
     for (int i = 0; i < cards.size(); i++)
         cards[i] = new Card(*otherHand.getCards().at(i));
