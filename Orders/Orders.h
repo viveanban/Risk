@@ -18,7 +18,6 @@ private:
     int priority;
 
 protected:
-    string description;
 
     Player* player;
 
@@ -47,8 +46,6 @@ public:
     virtual bool issue() = 0;
 
     const string &getName() const;
-
-    const string &getDescription() const;
 
     int getPriority() const;
 

@@ -30,10 +30,6 @@ const string &Order::getName() const {
     return name;
 }
 
-const string &Order::getDescription() const {
-    return description;
-}
-
 int Order::getPriority() const {
     return priority;
 }
@@ -102,10 +98,6 @@ bool DeployOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
-
-    // Update the description
-    description = "Deploy Order issued:\n" + player->getPlayerName() + " wants to deploy " +
-                  to_string(numberOfArmiesToDeploy) + " army units to " + targetTerritory->getTerritoryName();
 
     return true;
 }
@@ -247,11 +239,6 @@ bool AdvanceOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
-    //Update the description
-    description = "Advance Order issued:\n" + player->getPlayerName() + " wants to advance " +
-                  to_string(numberOfArmiesToAdvance) + " army units from " + sourceTerritory->getTerritoryName() +
-                  " to " + targetTerritory->getTerritoryName();
-
     return true;
 }
 
@@ -331,10 +318,6 @@ bool BombOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
-    //Update the description
-    description = "Bomb Order issued:\n" +
-                  player->getPlayerName() + " wants to bomb " + targetTerritory->getTerritoryName();
-
     return true;
 }
 
@@ -391,12 +374,6 @@ bool BlockadeOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
-
-    //Update the description
-    description = "Blockade Order issued:\n" +
-                  player->getPlayerName() + " wants to transform " + targetTerritory->getTerritoryName() +
-                  " into a blockade.";
-
     return true;
 }
 
@@ -477,11 +454,6 @@ bool AirliftOrder::issue() {
     // Update order list
     player->getOrders()->add(this);
 
-    // Update the description // TODO: use descriptions for observers (add them in execute as well) (enhancement). If not used, then delete description. (Tarek + Abhijit) (LOW PRIOIRTY)
-    description = "Airlift Order issued:\n" + player->getPlayerName() + " wants to airlift " +
-                  to_string(numberOfArmiesToAirlift) + " army units from " + sourceTerritory->getTerritoryName() +
-                  " to " + targetTerritory->getTerritoryName();
-
     return true;
 }
 
@@ -545,10 +517,6 @@ bool NegotiateOrder::issue() {
 
     // Update order list
     player->getOrders()->add(this);
-
-    // Update the description
-    description = "Negotiate Order issued:\n" +
-                  player->getPlayerName() + " wants to negotiate with " + targetPlayer->getPlayerName();
 
     return true;
 }

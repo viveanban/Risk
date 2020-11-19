@@ -302,7 +302,6 @@ void GameEngine::mainGameLoop() {
     }
 }
 
-// TODO: cout how much they receive additional in each round by observer (Tarek + Abhijit)
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
