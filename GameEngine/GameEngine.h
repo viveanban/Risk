@@ -21,6 +21,7 @@ private:
     Deck *deck;
     GameState *gameState;
 
+    // Default constructor
     GameEngine();
 
     /**
@@ -64,39 +65,46 @@ private:
      */
     void executeOrdersPhase();
 
+    // Randomizes the order of the players
     void randomlySetOrder();
 
+    // Assigns territories to players in round robin fashion
     void assignTerritoriesToPlayers();
 
+    // Assigns armies to each players based on the number of players
     void assignArmiesToPlayers();
 
+    // Checks if a player has won the game.
     bool winnerExists();
 
+    // Eliminates players that do not own any territories (have been conquered by other players)
     void removePlayersWithoutTerritoriesOwned();
 
+    // Gets the number of armies each player should receive at the start of the game based on the number of players
     int getInitialArmyNumber();
 
 public:
-
+    // Returns the singleton instance of the GameEngine
     static GameEngine *getInstance();
 
-    GameEngine(const vector<string> &availableMaps, bool statisticsObserverActive, bool phaseObserverActive,
-               int numPlayer, const vector<Player *> &players, Map *map, Deck *deck, GameState *gameState);
-
+    // Singleton Object
     static GameEngine *gameEngine;
 
+    // Singleton does not allow for copy constructor (there must be only one instance)
     GameEngine(GameEngine &other) = delete;
 
+    // Singleton does not allow for assignment operator (there must be only one instance)
     void operator=(const GameEngine &) = delete;
 
     ~GameEngine();
 
+    // Returns the number of players in the game.
     int getNumPlayer() const;
 
-    // responsible for initialization of the game
+    // Responsible for the initialization of the game.
     void initializeGame();
 
-    // responsible to initialize the set of players
+    // Responsible to initialize the set of players
     void setupPlayers();
 
     /**
@@ -118,7 +126,7 @@ public:
      */
     static int validateNumberPlayerInput(int numPlayerTmp);
 
-
+    // Startup Phase of the game, randomizes player order, assigns territories and armies to players.
     void startupPhase();
 
     /**
@@ -126,9 +134,14 @@ public:
      */
     void mainGameLoop();
 
+    // Cancels the negotiations between players when the round has ended.
     void resetDiplomacy();
 
+    // Checks if the Phase Observer flag was set at the start of the game.
     bool isPhaseObserverActive() const;
+
+    // Checks if the Stats Observer flag was set at the start of the game.
+    bool isStatisticsObserverActive() const;
 
     Deck *getDeck() const;
 
@@ -138,10 +151,10 @@ public:
 
     const vector<Player *> &getPlayers() const;
 
-    bool isStatisticsObserverActive() const;
-
+    // Calculates the total number of armies including bonus to give during reinforcement phase.
     int calculateNumberOfArmiesToGive(Player *player);
 
+    // Calculates the bonus to give during reinforcement phase.
     int getBonus(Player *player);
 };
 
