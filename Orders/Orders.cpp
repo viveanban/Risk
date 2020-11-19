@@ -60,7 +60,7 @@ DeployOrder &DeployOrder::operator=(const DeployOrder &otherOrder) {
 bool DeployOrder::validate() {
     // If the target territory does not belong to the player that issued the order, the order is invalid.
     if (targetTerritory->getOwner() != player) {
-        cout << player->getPlayerName() << "'s deploy order validation has failed:"
+        cout << player->getPlayerName() << "'s deploy order validation has failed: "
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
@@ -133,7 +133,7 @@ AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &otherOrder) {
 bool AdvanceOrder::validate() {
     // If the source territory does not belong to the player that issued the order, the order is invalid.
     if (sourceTerritory->getOwner() != player) {
-        cout << player->getPlayerName() << "'s advance order validation has failed:"
+        cout << player->getPlayerName() << "'s advance order validation has failed: "
              << "the source territory does not belong to the player that issued the order." << endl;
         return false;
     }
@@ -147,8 +147,9 @@ bool AdvanceOrder::validate() {
     // Negotiation
     bool canAttackTargetTerritory = find(player->getPlayersNotToAttack().begin(), player->getPlayersNotToAttack().end(),
                                          targetTerritory->getOwner()) == player->getPlayersNotToAttack().end();
-    if (!canAttackTargetTerritory) { // TODO: check if it works properly (Viveka + Ferdou)
-        cout << player->getPlayerName() << "'s advance order validation has failed:"
+
+    if (!canAttackTargetTerritory) {
+        cout << player->getPlayerName() << "'s advance order validation has failed: "
              << "the target territory cannot be attacked because you negotiated with its owner "
              << targetTerritory->getOwner()->getPlayerName() << endl;
         return false;
@@ -157,7 +158,6 @@ bool AdvanceOrder::validate() {
     return true;
 }
 
-// TODO: refactor if possible (Viveka)
 void AdvanceOrder::execute() {
     if (validate()) {
         //Transfer army units from src to trg territory if both are owned by issuing player
@@ -338,7 +338,7 @@ BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &otherOrder) {
 bool BlockadeOrder::validate() {
     // If the target territory belongs to an enemy player, the order is declared invalid
     if (targetTerritory->getOwner() != player) {
-        cout << player->getPlayerName() << "'s blockade order validation has failed:"
+        cout << player->getPlayerName() << "'s blockade order validation has failed: "
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
@@ -398,18 +398,18 @@ AirliftOrder &AirliftOrder::operator=(const AirliftOrder &otherOrder) {
 
 bool AirliftOrder::validate() {
     if (sourceTerritory->getOwner() != player) {
-        cout << player->getPlayerName() << "'s airlift order validation has failed:"
+        cout << player->getPlayerName() << "'s airlift order validation has failed: "
              << "the source territory does not belong to the player that issued the order." << endl;
         return false;
     }
     if (targetTerritory->getOwner() != player) {
-        cout << player->getPlayerName() << "'s airlift order validation has failed:"
+        cout << player->getPlayerName() << "'s airlift order validation has failed: "
              << "the target territory does not belong to the player that issued the order." << endl;
         return false;
     }
 
     if (numberOfArmiesToAirlift > sourceTerritory->getUnitNbr()) {
-        cout << player->getPlayerName() << "'s airlift order validation has failed:"
+        cout << player->getPlayerName() << "'s airlift order validation has failed: "
              << "the source territory does not have enough armies to airlift." << endl;
         return false;
     }
@@ -481,7 +481,7 @@ NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
 bool NegotiateOrder::validate() {
     // If the target is the player issuing the order, then the order is invalid.
     if (targetPlayer == player) {
-        cout << player->getPlayerName() << "'s negotiate order validation has failed:"
+        cout << player->getPlayerName() << "'s negotiate order validation has failed: "
              << "the target player and the source player are the same." << endl;
         return false;
     }

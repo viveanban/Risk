@@ -116,7 +116,6 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
     });
 }
 
-// TODO: if unsuccessful, should we let the player try issuing another order (Viveka) (LOW PRIORITY)
 bool Player::issueOrder() {
     // Issue deploy orders as long as player's reinforcement pool is not empty
     if (numberOfArmies > 0) {

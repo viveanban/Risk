@@ -347,7 +347,6 @@ void GameEngine::executeOrdersPhase() {
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
 
-        // TODO: extract somewhere?
         vector<int> territoryIdsOfPlayer;
         for(Territory* territory: player->getTerritories())
         {
