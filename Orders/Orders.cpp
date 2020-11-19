@@ -557,6 +557,12 @@ void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Ord
 }
 
 OrdersList &OrdersList::operator=(const OrdersList &original) {
+    //deleting old orderList before assigning new one
+    for(auto o: orderList){
+        delete o;
+    }
+    orderList.clear();
+
     auto newOrderList = vector<Order *>();
     copyOrderList(original.orderList, newOrderList);
     orderList = newOrderList;
