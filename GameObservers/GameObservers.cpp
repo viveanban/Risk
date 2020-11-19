@@ -8,8 +8,16 @@ Subject::Subject() {
     observers = new list<Observer *>;
 }
 
+Subject::Subject(const Subject &original) {
+    observers = new list<Observer *>();
+    for(auto observer: *original.observers)
+        observers->push_back(observer);
+}
+
 Subject::~Subject() {
     delete observers;
+    observers = nullptr;
+    cout << "Deleted list of observer" << endl;
 }
 
 void Subject::attach(Observer *o) {
@@ -18,6 +26,7 @@ void Subject::attach(Observer *o) {
 
 void Subject::detach(Observer *o) {
     delete o;
+    o = nullptr;
     observers->remove(o);
 };
 
@@ -370,6 +379,8 @@ void GameState::setCurrentCard(Card *currentCard) {
 GameState::~GameState() {
     for (auto o: *this->getObservers()) {
         delete o;
+        o = nullptr;
+        cout << "Deleted observer" << endl;
     }
 }
 
