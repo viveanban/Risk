@@ -137,10 +137,11 @@ Continent &Continent::operator=(const Continent &otherContinent) {
     continentId = otherContinent.continentId;
     bonus = otherContinent.bonus;
 
-    if(!otherContinent.territories.empty())
-    {
-        for (int i = 0; i < otherContinent.territories.size(); i++)
-            delete territories[i];
+    if(!territories.empty()) {
+        for (Territory* territory: territories)
+            delete territory;
+
+        territories.clear();
     }
 
     territories = vector<Territory *>(otherContinent.territories.size());
@@ -236,9 +237,11 @@ Map &Map::operator=(const Map &otherMap) {
     for (int i = 0; i < territoryList.size(); i++)
         territoryList[i] = otherMap.territoryList[i];
 
-    if(!otherMap.continentList.empty()) {
-        for (int i = 0; i < otherMap.continentList.size(); i++)
-            delete continentList[i];
+    if(!continentList.empty()) {
+        for (Continent* continent: continentList)
+            delete continent;
+
+        continentList.clear();
     }
 
     continentList = vector<Continent *>(otherMap.continentList.size());
