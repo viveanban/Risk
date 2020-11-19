@@ -34,21 +34,22 @@ Player::Player(const Player &original) {
 }
 
 Player &Player::operator=(const Player &otherPlayer) {
-    playerName = otherPlayer.playerName;
-    territories = vector<Territory *>(otherPlayer.territories.size());
-    for (int i = 0; i < territories.size(); i++) {
-        territories[i] = otherPlayer.territories[i];
+    if (&otherPlayer != this) {
+        playerName = otherPlayer.playerName;
+        territories = vector<Territory *>(otherPlayer.territories.size());
+        for (int i = 0; i < territories.size(); i++) {
+            territories[i] = otherPlayer.territories[i];
+        }
+        numberOfArmies = otherPlayer.numberOfArmies;
+
+        //Deleting old values in heap
+        delete handOfCards;
+        delete orders;
+
+        //Making a deep copy of new ones
+        handOfCards = new Hand(*otherPlayer.handOfCards);
+        orders = new OrdersList(*otherPlayer.orders);
     }
-    numberOfArmies = otherPlayer.numberOfArmies;
-
-    //Deleting old values in heap
-    delete handOfCards;
-    delete  orders;
-
-    //Making a deep copy of new ones
-    handOfCards = new Hand(*otherPlayer.handOfCards);
-    orders = new OrdersList(*otherPlayer.orders);
-
     return *this;
 }
 
