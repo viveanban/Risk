@@ -223,7 +223,7 @@ bool AdvanceOrder::issue() {
 
     targetTerritory = territoriesToChooseFrom.at(0);
 
-    // Determine number of armies to advance TODO: use priority, investiagte if corectly updated and why priority is < 0 sometimes (Viveka + Ferdou)
+    // Determine number of armies to advance
     numberOfArmiesToAdvance = (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
 
     // Update priority

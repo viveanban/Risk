@@ -288,12 +288,6 @@ void GameEngine::mainGameLoop() {
         reinforcementPhase();
         issueOrdersPhase();
         executeOrdersPhase();
-
-        // TODO: give cards to those who conquered stuff (IMPORTANT) --> save a vector<Player*> with state before and after execution and compare the territories size befrore and after. If size increased = conquered something. Then, give card. (VivekA + FERODU)
-//        // Pick a card
-//        Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
-//        player->getHandOfCards()->addCard(drawnCard);
-//
         removePlayersWithoutTerritoriesOwned();
         resetDiplomacy();
         counter++;
@@ -362,8 +356,6 @@ void GameEngine::executeOrdersPhase() {
 
         territoryIdsPerPlayerBeforeExecution.push_back(territoryIdsOfPlayer);
     }
-
-    cout << "territories before execution are saved!" << territoryIdsPerPlayerBeforeExecution.size() << endl;
 
     // Execute all deploy orders
     set<Player *> playersWithNoMoreDeployOrderstoExecute;
