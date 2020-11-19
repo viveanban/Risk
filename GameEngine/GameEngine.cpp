@@ -261,8 +261,8 @@ void GameEngine::assignTerritoriesToPlayers() {
 void GameEngine::assignArmiesToPlayers() {
     int nmbArmy = getInitialArmyNumber();
     for (auto p : players) {
-        p->setNumberOfArmies(nmbArmy);
-        cout << p->getPlayerName() << " got assigned A = " << p->getNumberofArmies() << endl;
+        p->setNumberOfArmiesInReinforcementPool(nmbArmy);
+        cout << p->getPlayerName() << " got assigned A = " << p->getNumberofArmiesInReinforcementPool() << endl;
     }
 }
 
@@ -297,7 +297,8 @@ void GameEngine::mainGameLoop() {
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
-        player->setNumberOfArmies(player->getNumberofArmies() + numberOfArmiesToGive);
+        player->setNumberOfArmiesInReinforcementPool(
+                player->getNumberofArmiesInReinforcementPool() + numberOfArmiesToGive);
         gameState->updateGameState(player, reinforcement, nullptr, nullptr);
     }
 }

@@ -92,9 +92,10 @@ void PhaseObserver::printReinforcementInfo() const {
     int totalUnitsReceived = GameEngine::getInstance()->calculateNumberOfArmiesToGive(
             currentGameState->getCurrentPlayer());
     int bonus = GameEngine::getInstance()->getBonus(currentGameState->getCurrentPlayer());
+    
     cout << currentGameState->getCurrentPlayer()->getPlayerName()
          << " has received " << totalUnitsReceived << " new armies as part of reinforcement phase. He now owns "
-         << currentGameState->getCurrentPlayer()->getNumberofArmies() << " number of armies." << endl;
+         << currentGameState->getCurrentPlayer()->getNumberofArmiesInReinforcementPool() << " number of armies." << endl;
     cout << "This includes " << totalUnitsReceived - bonus << " regular units and " << bonus << " bonus units." << endl;
 }
 
@@ -197,7 +198,7 @@ void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of "
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
-            cout << currentGameState->getCurrentPlayer()->getNumberofArmies()
+            cout << currentGameState->getCurrentPlayer()->getNumberofArmiesInReinforcementPool()
                  << " armies remaining in reinforcement pool."
                  << endl;
             break;

@@ -77,8 +77,8 @@ void DeployOrder::execute() {
 }
 
 bool DeployOrder::issue() {
-    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmies
-    numberOfArmiesToDeploy = (rand() % player->getNumberofArmies()) + 1;
+    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
+    numberOfArmiesToDeploy = (rand() % player->getNumberofArmiesInReinforcementPool()) + 1;
 
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();
@@ -94,7 +94,7 @@ bool DeployOrder::issue() {
     targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToDeploy);
 
     // Update number of armies
-    player->setNumberOfArmies(player->getNumberofArmies() - numberOfArmiesToDeploy);
+    player->setNumberOfArmiesInReinforcementPool(player->getNumberofArmiesInReinforcementPool() - numberOfArmiesToDeploy);
 
     // Update order list
     player->getOrders()->add(this);
@@ -227,6 +227,7 @@ bool AdvanceOrder::issue() {
     numberOfArmiesToAdvance = (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
 
     // Update priority
+    sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAdvance);
     targetTerritory->setPriority(attack ?
                                  targetTerritory->getPriority() - numberOfArmiesToAdvance :
                                  targetTerritory->getPriority() + numberOfArmiesToAdvance);
@@ -310,6 +311,9 @@ bool BombOrder::issue() {
 
     targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
 
+    // Update priority
+    targetTerritory->setPriority(targetTerritory->getPriority() / 2);
+
     // Update order list
     player->getOrders()->add(this);
 
@@ -366,6 +370,9 @@ bool BlockadeOrder::issue() {
     }
 
     targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
+
+    // Update priority
+    targetTerritory->setPriority(targetTerritory->getPriority() * 2);
 
     // Update order list
     player->getOrders()->add(this);
