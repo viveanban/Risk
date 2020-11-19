@@ -95,10 +95,10 @@ void PhaseObserver::printReinforcementinfo() const {
 }
 
 void PhaseObserver::printOrderInfo(Order *order, Card *card) {
-    if (card != nullptr && card->getType() == Card::CardType::reinforcement) {
+    if (card != nullptr && card->getType() == Card::CardType::reinforcement && currentGameState->getCurrentPhase() == issuing_orders) {
         printReinforcementCardInfo();
         return;
-    } else if (order == nullptr && card == nullptr && currentGameState->getCurrentPhase() == issuing_orders) {
+    }else if(order == nullptr && card == nullptr && currentGameState->getCurrentPhase() == issuing_orders ){
         cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
         return;
     } else if (order == nullptr){

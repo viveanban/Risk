@@ -349,12 +349,24 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
+    // Save territory list sizes before execution
+    vector<vector<int>> territoryIdsPerPlayerBeforeExecution;
+
     // Prioritize the orders
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
-        cout << endl;
-        cout << player->getPlayerName() << "\'s order list:\n"<<*player->getOrders() << endl;
+
+        // TODO: extract somewhere?
+        vector<int> territoryIdsOfPlayer;
+        for(Territory* territory: player->getTerritories())
+        {
+            territoryIdsOfPlayer.push_back(territory->getTerritoryId());
+        }
+
+        territoryIdsPerPlayerBeforeExecution.push_back(territoryIdsOfPlayer);
     }
+
+    cout << "territories before execution are saved!" << territoryIdsPerPlayerBeforeExecution.size() << endl;
 
     // Execute all deploy orders
     set<Player *> playersWithNoMoreDeployOrderstoExecute;
@@ -388,6 +400,30 @@ void GameEngine::executeOrdersPhase() {
             } else {
                 playersWithNoMoreOrdersToExecute.insert(player);
             }
+        }
+    }
+
+    // Check if any territory has been conquered by player
+    for(int index = 0; index < players.size(); index++) {
+        bool hasConqueredAtLeastOneTerritory = false;
+        Player* player = players.at(index);
+        vector<int> territoryIdsBeforeExecution = territoryIdsPerPlayerBeforeExecution.at(index);
+
+        for(Territory* territory: player->getTerritories()) {
+            auto position = find(territoryIdsBeforeExecution.begin(), territoryIdsBeforeExecution.end(), territory->getTerritoryId());
+            if (position == territoryIdsBeforeExecution.end()) {
+                hasConqueredAtLeastOneTerritory = true;
+                break;
+            }
+        }
+
+        if(hasConqueredAtLeastOneTerritory) {
+            // Pick a card
+            Card *drawnCard = GameEngine::getInstance()->getDeck()->draw();
+            player->getHandOfCards()->addCard(drawnCard);
+            cout << player->getPlayerName()
+                 << " has conquered at least 1 territory in this round. They have drawn the "
+                 << drawnCard->getTypeName() << " card!" << endl;
         }
     }
 }
