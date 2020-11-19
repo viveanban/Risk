@@ -65,8 +65,6 @@ public:
 
     void setContinentId(int continentId);
 
-    void setAdjList(vector<Territory *> &adjList);
-
     void setPriority(int priority);
 };
 
@@ -118,9 +116,9 @@ public:
 };
 
 /**
- * This class represents a graph in the Risk game
+ * This class represents a Map in the Risk game.
  * A Map is a list of connected Territories. In other words, it represents a list of countries
- * and continent that are interconnected with each other
+ * and continent that are interconnected with each other.
  */
 class Map {
 private:
@@ -157,7 +155,6 @@ public:
 
     Territory *getTerritoryById(int id);
 
-    // Setters
     // Used to validate the graph using the 3 defined conditions for connectivity.
     bool validate();
 };
