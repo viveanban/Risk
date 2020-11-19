@@ -2,7 +2,6 @@
 #include "../GameEngine/GameEngine.h"
 #include <vector>
 #include <iostream>
-#include <ctime>
 #include <random>
 #include <algorithm>
 
@@ -27,7 +26,7 @@ ostream &operator<<(ostream &stream, const Card &c) {
                   << "Card type: " << c.type << endl;
 }
 
-// Orders are deleted when players are deleted since they reside in the player's orders list
+// Note: Orders are deleted when players are deleted since they reside in the player's orders list
 Order *Card::play() {
     Order *order;
     switch (type) {
@@ -70,10 +69,6 @@ string Card::getTypeName() {
     return "unknown";
 }
 
-void Card::setType(Card::CardType type) {
-    Card::type = type;
-}
-
 /**
  * Deck class
  */
@@ -109,6 +104,13 @@ Deck::Deck(const Deck &original) {
         cards[i] = new Card(*original.cards[i]);
 }
 
+Deck &Deck::operator=(const Deck &otherDeck) {
+    cards = vector<Card *>(otherDeck.cards.size());
+    for (int i = 0; i < cards.size(); i++)
+        cards[i] = new Card(*otherDeck.cards[i]);
+    return *this;
+}
+
 Deck::~Deck() {
     for (auto p : cards) {
         delete p;
@@ -116,13 +118,6 @@ Deck::~Deck() {
         cout << "Deleted card from deck" << endl;
     }
     cards.clear();
-}
-
-Deck &Deck::operator=(const Deck &otherDeck) {
-    cards = vector<Card *>(otherDeck.cards.size());
-    for (int i = 0; i < cards.size(); i++)
-        cards[i] = new Card(*otherDeck.cards[i]);
-    return *this;
 }
 
 std::ostream &operator<<(std::ostream &stream, const Deck &d) {
@@ -182,6 +177,8 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
                   << "Number of cards in Hand: " << h.getCards().size() << endl;
 }
 
+// Note: It is not the Hand's responsability to delete the cards but rather the Deck's.
+// Hence, the cards left in the Hand are put back in the Deck.
 Hand::~Hand() {
     for (Card *card : cards) {
         removeCard(card);
