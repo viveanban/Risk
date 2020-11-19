@@ -294,7 +294,6 @@ void GameEngine::mainGameLoop() {
     }
 }
 
-// TODO: cout how much they receive additional in each round by observer (Tarek + Abhijit)
 void GameEngine::reinforcementPhase() {
     for (Player *player: players) {
         int numberOfArmiesToGive = calculateNumberOfArmiesToGive(player);
@@ -322,9 +321,7 @@ int GameEngine::getBonus(Player *player) {
         if (continent->getOwner() == player)
             controlValueBonus += continent->getBonus();
     }
-    if (controlValueBonus > 0 and this->getInstance()->isPhaseObserverActive()) {
-        cout << player->getPlayerName() << " has received a bonus of " << controlValueBonus << " units." << endl;
-    }
+
     return controlValueBonus;
 }
 
@@ -351,7 +348,6 @@ void GameEngine::executeOrdersPhase() {
     for (Player *player: players) {
         player->getOrders()->sortOrderListByPriority();
 
-        // TODO: extract somewhere?
         vector<int> territoryIdsOfPlayer;
         for(Territory* territory: player->getTerritories())
         {
@@ -360,8 +356,6 @@ void GameEngine::executeOrdersPhase() {
 
         territoryIdsPerPlayerBeforeExecution.push_back(territoryIdsOfPlayer);
     }
-
-    cout << "territories before execution are saved!" << territoryIdsPerPlayerBeforeExecution.size() << endl;
 
     // Execute all deploy orders
     set<Player *> playersWithNoMoreDeployOrderstoExecute;
