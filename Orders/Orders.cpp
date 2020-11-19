@@ -13,10 +13,11 @@ Order::Order(const Order &original) : name(original.name), priority(original.pri
                                       player(original.player) {}
 
 Order &Order::operator=(const Order &otherOrder) {
-    name = otherOrder.name;
-    priority = otherOrder.priority;
-    player = otherOrder.player;
-
+    if (&otherOrder != this) {
+        name = otherOrder.name;
+        priority = otherOrder.priority;
+        //Note: not assigning player to prevent infinite loop caused by circular dependency
+    }
     return *this;
 }
 
@@ -50,10 +51,11 @@ DeployOrder::DeployOrder(const DeployOrder &original) : targetTerritory(original
                                                         Order(original) {}
 
 DeployOrder &DeployOrder::operator=(const DeployOrder &otherOrder) {
-    Order::operator=(otherOrder);
-    targetTerritory = otherOrder.targetTerritory;
-    numberOfArmiesToDeploy = otherOrder.numberOfArmiesToDeploy;
-
+    if (&otherOrder != this) {
+        Order::operator=(otherOrder);
+        targetTerritory = otherOrder.targetTerritory;
+        numberOfArmiesToDeploy = otherOrder.numberOfArmiesToDeploy;
+    }
     return *this;
 }
 
@@ -122,11 +124,12 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder &original) : sourceTerritory(origi
                                                            Order(original) {}
 
 AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &otherOrder) {
-    Order::operator=(otherOrder);
-    sourceTerritory = otherOrder.sourceTerritory;
-    targetTerritory = otherOrder.targetTerritory;
-    numberOfArmiesToAdvance = otherOrder.numberOfArmiesToAdvance;
-
+    if (&otherOrder != this) {
+        Order::operator=(otherOrder);
+        sourceTerritory = otherOrder.sourceTerritory;
+        targetTerritory = otherOrder.targetTerritory;
+        numberOfArmiesToAdvance = otherOrder.numberOfArmiesToAdvance;
+    }
     return *this;
 }
 
@@ -267,9 +270,10 @@ BombOrder::BombOrder(Player *player) : targetTerritory(nullptr), Order("Bomb", 4
 BombOrder::BombOrder(const BombOrder &original) : targetTerritory(original.targetTerritory), Order(original) {}
 
 BombOrder &BombOrder::operator=(const BombOrder &otherOrder) {
-    Order::operator=(otherOrder);
-    targetTerritory = otherOrder.targetTerritory;
-
+    if (&otherOrder != this) {
+        Order::operator=(otherOrder);
+        targetTerritory = otherOrder.targetTerritory;
+    }
     return *this;
 }
 
@@ -333,9 +337,10 @@ BlockadeOrder::BlockadeOrder(const BlockadeOrder &original) : targetTerritory(or
                                                               Order(original) {}
 
 BlockadeOrder &BlockadeOrder::operator=(const BlockadeOrder &otherOrder) {
-    Order::operator=(otherOrder);
-    targetTerritory = otherOrder.targetTerritory;
-
+    if (&otherOrder != this) {
+        Order::operator=(otherOrder);
+        targetTerritory = otherOrder.targetTerritory;
+    }
     return *this;
 }
 
@@ -395,11 +400,12 @@ AirliftOrder::AirliftOrder(const AirliftOrder &original) : sourceTerritory(origi
                                                            Order(original) {}
 
 AirliftOrder &AirliftOrder::operator=(const AirliftOrder &otherOrder) {
-    Order::operator=(otherOrder);
-    sourceTerritory = otherOrder.sourceTerritory;
-    targetTerritory = otherOrder.targetTerritory;
-    numberOfArmiesToAirlift = otherOrder.numberOfArmiesToAirlift;
-
+    if (&otherOrder != this) {
+        Order::operator=(otherOrder);
+        sourceTerritory = otherOrder.sourceTerritory;
+        targetTerritory = otherOrder.targetTerritory;
+        numberOfArmiesToAirlift = otherOrder.numberOfArmiesToAirlift;
+    }
     return *this;
 }
 
@@ -479,9 +485,10 @@ NegotiateOrder::NegotiateOrder(Player *player) : targetPlayer(nullptr), Order("N
 NegotiateOrder::NegotiateOrder(const NegotiateOrder &original) : targetPlayer(original.targetPlayer), Order(original) {}
 
 NegotiateOrder &NegotiateOrder::operator=(const NegotiateOrder &otherOrder) {
-    Order::operator=(otherOrder);
-    targetPlayer = otherOrder.targetPlayer;
-
+    if (&otherOrder != this) {
+        Order::operator=(otherOrder);
+        targetPlayer = otherOrder.targetPlayer;
+    }
     return *this;
 }
 
@@ -511,7 +518,7 @@ bool NegotiateOrder::issue() {
         cout << "Cannot play a negotiate order with only one player!" << endl;
         return false;
     }
-    
+
     do {
         targetPlayer = players.at(rand() % players.size());
     } while (targetPlayer == player);
