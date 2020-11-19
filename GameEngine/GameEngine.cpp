@@ -328,9 +328,7 @@ int GameEngine::getBonus(Player *player) {
         if (continent->getOwner() == player)
             controlValueBonus += continent->getBonus();
     }
-    if (controlValueBonus > 0 and this->getInstance()->isPhaseObserverActive()) {
-        cout << player->getPlayerName() << " has received a bonus of " << controlValueBonus << " units." << endl;
-    }
+
     return controlValueBonus;
 }
 

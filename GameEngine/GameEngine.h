@@ -74,10 +74,6 @@ private:
 
     void removePlayersWithoutTerritoriesOwned();
 
-    int getBonus(Player *player);
-
-    int calculateNumberOfArmiesToGive(Player *player);
-
     int getInitialArmyNumber();
 
 public:
@@ -141,8 +137,12 @@ public:
     GameState *getGameState() const;
 
     const vector<Player *> &getPlayers() const;
-    
+
     bool isStatisticsObserverActive() const;
+
+    int calculateNumberOfArmiesToGive(Player *player);
+
+    int getBonus(Player *player);
 };
 
 #endif //RISK_GAMEENGINE_H
