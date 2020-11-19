@@ -19,10 +19,10 @@ private:
 
 protected:
 
-    Player* player;
+    Player *player;
 
 public:
-    Order(string name, int priority, Player * player);
+    Order(string name, int priority, Player *player);
 
     Order(const Order &original);
 
@@ -66,7 +66,7 @@ private:
 public:
     DeployOrder();
 
-    explicit DeployOrder(Player * player);
+    explicit DeployOrder(Player *player);
 
     DeployOrder(const DeployOrder &original);
 
@@ -81,7 +81,9 @@ public:
     int getNumberOfArmiesToDeploy() const;
 };
 
-enum AdvanceOrderType { attack, transfer };
+enum AdvanceOrderType {
+    attack, transfer
+};
 
 /**
  * Move some armies from one of the current player’s territories (source) to an adjacent territory
@@ -106,7 +108,7 @@ private:
 public:
     AdvanceOrder();
 
-    explicit AdvanceOrder(Player * player);
+    explicit AdvanceOrder(Player *player);
 
     AdvanceOrder(const AdvanceOrder &original);
 
@@ -131,14 +133,14 @@ public:
  */
 class BombOrder : public Order {
 private:
-    Territory* targetTerritory;
+    Territory *targetTerritory;
 
     bool validate() override;
 
 public:
     BombOrder();
 
-    explicit BombOrder(Player * player);
+    explicit BombOrder(Player *player);
 
     BombOrder(const BombOrder &original);
 
@@ -163,7 +165,7 @@ private:
 public:
     BlockadeOrder();
 
-    explicit BlockadeOrder(Player * player);
+    explicit BlockadeOrder(Player *player);
 
     BlockadeOrder(const BlockadeOrder &original);
 
@@ -177,7 +179,10 @@ public:
 };
 
 /**
- * Advance some armies from one of the current player’s territories to any another territory.
+ * Advance some armies from one of the current player’s territories to another of their territory.
+ * Note: The assignment's directives were ambiguous and contradictory regarding the Airlift order. Therefore,
+ * we based our implementation on what we found in the Warzone wiki (https://www.warzone.com/wiki/Airlift_Card)
+ * and our discussions with our TA Daniel. Basically, we concluded that an Airlift order cannot be used to do any attacks.
  */
 class AirliftOrder : public Order {
 private:
@@ -192,7 +197,7 @@ private:
 public:
     AirliftOrder();
 
-    explicit AirliftOrder(Player * player);
+    explicit AirliftOrder(Player *player);
 
     AirliftOrder(const AirliftOrder &original);
 
@@ -214,14 +219,14 @@ public:
  */
 class NegotiateOrder : public Order {
 private:
-    Player* targetPlayer;
+    Player *targetPlayer;
 
     bool validate() override;
 
 public:
     NegotiateOrder();
 
-    explicit NegotiateOrder(Player * player);
+    explicit NegotiateOrder(Player *player);
 
     NegotiateOrder(const NegotiateOrder &original);
 
