@@ -181,25 +181,11 @@ void MapLoader::throwInvalidMapException() {
     throw invalid_argument("Error loading map, this map format is invalid!");
 }
 
-ConquestFileReader::ConquestFileReader(const ConquestFileReader &original) {
+ConquestFileReaderAdapter::ConquestFileReaderAdapter(): conquestFileReader() {}
 
-}
-
-ConquestFileReader &ConquestFileReader::operator=(const ConquestFileReader &original) {
-    return <#initializer#>;
-}
-
-ConquestFileReader::~ConquestFileReader() {
-
-}
-
-Map *ConquestFileReader::loadConquestMap(const string &mapName) {
-    return nullptr;
-}
+ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader) :
+        conquestFileReader(conquestFileReader) {}
 
 Map *ConquestFileReaderAdapter::loadMap(const string &mapName) {
-    return nullptr;
+    return conquestFileReader.loadConquestMap(mapName);
 }
-
-ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader) : conquestFileReader(
-        conquestFileReader) {}

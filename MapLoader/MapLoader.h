@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "../Map/Map.h"
+#include "ConquestFileReader.h"
 
 using namespace std;
 
@@ -32,8 +33,6 @@ private:
     static vector<Continent *> continentsList;
 
     static vector<Territory *> territoriesList;
-
-    MapLoader() = default;
 
     MapLoader(const MapLoader &original);
 
@@ -95,6 +94,8 @@ private:
     static void throwInvalidMapException();
 
 public:
+    MapLoader() = default;
+
     /**
      * This method creates the Map object and returns a pointer to it.
      *
@@ -103,28 +104,15 @@ public:
     virtual Map *loadMap(const string &mapName);
 
     friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
-
 };
 
-class ConquestFileReader {
-private:
-
-public:
-    ConquestFileReader() = default;
-
-    ConquestFileReader(const ConquestFileReader &original);
-
-    ConquestFileReader &operator=(const ConquestFileReader &original);
-
-    ~ConquestFileReader();
-
-    static Map *loadConquestMap(const string &conquestMapName);
-};
 
 class ConquestFileReaderAdapter : public MapLoader {
 private:
     ConquestFileReader conquestFileReader;
 public:
+    ConquestFileReaderAdapter();
+
     ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader);
 
     /**
