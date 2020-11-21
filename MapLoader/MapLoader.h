@@ -84,7 +84,7 @@ private:
      * @return void.
      * @param string: the line being read, string: the regex pattern.
      */
-    static void checkPattern(const string& line, const string& pattern);
+    static void checkPattern(const string &line, const string &pattern);
 
     /**
      * This method throws an exception following a map validation failure.
@@ -100,10 +100,38 @@ public:
      *
      * @return Map pointer.
      */
-    static Map *loadMap(const string& mapName);
+    virtual Map *loadMap(const string &mapName);
 
     friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
 
+};
+
+class ConquestFileReader {
+private:
+
+public:
+    ConquestFileReader() = default;
+
+    ConquestFileReader(const ConquestFileReader &original);
+
+    ConquestFileReader &operator=(const ConquestFileReader &original);
+
+    ~ConquestFileReader();
+
+    static Map *loadConquestMap(const string &conquestMapName);
+};
+
+class ConquestFileReaderAdapter : public MapLoader {
+private:
+    ConquestFileReader conquestFileReader;
+public:
+    ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader);
+
+    /**
+    * This method creates the Map object from a conquest map file and returns a pointer to it.
+    * @return Map pointer.
+    */
+    Map *loadMap(const string &mapName);
 };
 
 #endif //RISK_MAPLOADER_H
