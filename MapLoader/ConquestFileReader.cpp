@@ -8,9 +8,8 @@
 
 const string ConquestFileReader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
 const string ConquestFileReader::MAP_DIRECTORY = "../maps/conquest_maps/";
-//TODO: Create Regex to match the continent and the territories section
-const string ConquestFileReader::CONTINENT_REGEX = "([A-Z]|[a-z]|_|-|[0-9])+\\s+(\\d+|\\d+\\s.*)";
-const string ConquestFileReader::TERRITORY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-|[0-9])+\\s+(\\d+|\\d+\\s.*)";
+const string ConquestFileReader::CONTINENT_REGEX = "(([A-Z]([a-z])*\\s*)+=[0-9]*)+";
+const string ConquestFileReader::TERRITORY_REGEX = "((([A-Z][a-z]*\\s*)+),[0-9]*,[0-9]*(,((([A-Z][a-z]*\\s*)+))*)*)";
 
 ConquestFileReader::Section ConquestFileReader::currentSection{};
 vector<Continent *> ConquestFileReader::continentsList{};
