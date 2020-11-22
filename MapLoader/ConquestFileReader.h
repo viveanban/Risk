@@ -24,6 +24,10 @@ private:
 
     static Section currentSection;
 
+    static map<string, int> continentsToIDMap;
+
+    static map<string, int> territoryToIDMap;
+
     static vector<Continent *> continentsList;
 
     static vector<Territory *> territoriesList;

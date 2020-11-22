@@ -14,6 +14,8 @@ const string ConquestFileReader::TERRITORY_REGEX = "((([A-Z][a-z]*\\s*)+),[0-9]*
 ConquestFileReader::Section ConquestFileReader::currentSection{};
 vector<Continent *> ConquestFileReader::continentsList{};
 vector<Territory *> ConquestFileReader::territoriesList{};
+map<string, int> ConquestFileReader::continentsToIDMap{};
+map<string, int> ConquestFileReader::territoryToIDMap{};
 
 
 ConquestFileReader::ConquestFileReader(const ConquestFileReader &original) {}
@@ -49,6 +51,7 @@ Map *ConquestFileReader::loadConquestMap(const string &mapName) {
     }
     return nullptr;
 }
+
 void ConquestFileReader::parseFile(fstream &mapFile) {
     string line;
     int continentId = 1;
@@ -63,11 +66,11 @@ void ConquestFileReader::parseFile(fstream &mapFile) {
 
         if (!isUpdated) {
             if (currentSection == continents) {
-//                checkPattern(line, CONTINENT_REGEX); TODO: Uncomment after regex is determined
+                checkPattern(line, CONTINENT_REGEX);
                 continentsList.push_back(createContinents(line, continentId));
                 continentId++;
             } else if (currentSection == territories) {
-//                checkPattern(line, TERRITORY_REGEX); TODO: Uncomment after regex is determined
+                checkPattern(line, TERRITORY_REGEX);
                 territoriesList.push_back(createTerritories(line, territoryId));
                 territoryId++;
             }
@@ -103,7 +106,7 @@ Continent *ConquestFileReader::createContinents(const string &line, int &contine
         counter++;
     }
 
-    //TODO: Create unordered list to map continent name to id
+    continentsToIDMap[continent->getContinentName()] = continentId;
     continent->setContinentId(continentId);
 
     return continent;
@@ -114,14 +117,15 @@ Territory *ConquestFileReader::createTerritories(const string &line, int &territ
 
     const char *token = strtok((char *) line.c_str(), ",");
     int counter = 0;
+    int territoryIDCounter =0;
     auto *territory = new Territory();
     while (token != nullptr) {
         if (counter == 0) {
-            // TODO: Add territory name + ID in a hash map
+            territoryIDCounter++;
+            territoryToIDMap[token] =territoryIDCounter;
             territory->setTerritoryName(token);
         } else if (counter == 3) {
-            //TODO: Get the id mapped to the continent name
-//            territory->setContinentId(id);
+            territory->setContinentId(continentsToIDMap[token]);
         } else if (counter >= 4) {
             //TODO: Add key value in a hash map with the territory object mapped to a list of territory names (we don't have the ids yet)
         }
