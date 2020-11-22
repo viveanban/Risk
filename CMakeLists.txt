@@ -3,4 +3,4 @@ project(Risk)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Risk MapLoader/MapLoader.h MapLoader/MapLoader.cpp Map/Map.h Map/Map.cpp Orders/Orders.cpp Orders/Orders.h Cards/Cards.cpp Cards/Cards.h Player/Player.cpp Player/Player.h GameEngine/GameEngine.cpp GameEngine/GameEngine.h GameEngine/GameEngineDriver.cpp GameObservers/GameObservers.cpp GameObservers/GameObservers.h)
+add_executable(Risk MapLoader/MapLoader.h MapLoader/MapLoader.cpp Map/Map.h Map/Map.cpp Orders/Orders.cpp Orders/Orders.h Cards/Cards.cpp Cards/Cards.h Player/Player.cpp Player/Player.h GameEngine/GameEngine.cpp GameEngine/GameEngine.h GameEngine/GameEngineDriver.cpp GameObservers/GameObservers.cpp GameObservers/GameObservers.h PlayerStrategies/PlayerStrategies.cpp PlayerStrategies/PlayerStrategies.h)

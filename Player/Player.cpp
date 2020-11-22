@@ -9,9 +9,16 @@
 
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
+// TODO: might remove this cstor
 Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
                                     numberOfArmiesInReinforcementPool(0), territories() {}
 
+Player::Player(string playerName, PlayerStrategy* strategy) : playerName(playerName), handOfCards(new Hand()),
+                                                             orders(new OrdersList()),
+                                                             numberOfArmiesInReinforcementPool(0), territories(),
+                                                             strategy(strategy) {}
+
+// TODO: delete strategy?
 Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
@@ -76,11 +83,13 @@ void Player::removeTerritory(Territory *territory) {
     }
 }
 
+// TODO: delegate to strategy
 vector<Territory *> Player::toDefend() {
     sortTerritoryList(territories);
     return territories;
 }
 
+// TODO: ot sure what to do with this
 vector<Territory *> Player::toDefend(Territory *srcTerritory) {
     vector<Territory *> territoriesToDefend;
     for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
@@ -91,6 +100,7 @@ vector<Territory *> Player::toDefend(Territory *srcTerritory) {
     return territoriesToDefend;
 }
 
+// TODO: delegate to strategy
 vector<Territory *> Player::toAttack() {
     vector<Territory *> territoriesToAttack;
 
@@ -104,6 +114,7 @@ vector<Territory *> Player::toAttack() {
     return territoriesToAttack;
 }
 
+// TODO: not sure what to do with this
 vector<Territory *> Player::toAttack(Territory *srcTerritory) {
     vector<Territory *> territoriesToAttack;
 
@@ -123,6 +134,7 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
     });
 }
 
+// TODO: delegate to strategy
 bool Player::issueOrder() {
     // Issue deploy orders as long as player's reinforcement pool is not empty
     if (numberOfArmiesInReinforcementPool > 0) {
@@ -230,4 +242,9 @@ set<Player *> &Player::getPlayersNotToAttack() {
 // Setters
 void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcementPool) {
     this->numberOfArmiesInReinforcementPool = numberOfArmiesInReinforcementPool;
+}
+
+// TODO: not working, commented out for now
+void Player::setStrategy(PlayerStrategy &strategy) {
+//    this->strategy = strategy;
 }
