@@ -147,7 +147,7 @@ Territory *ConquestFileReader::createTerritories(const string &line, int &territ
 }
 
 void ConquestFileReader::constructAdjencyList() {
-    for (auto pair : adjacentTerritoryNamesMap)
-        for(auto territoryName : pair.second)
+    for (pair<Territory *, set<string>> pair : adjacentTerritoryNamesMap)
+        for(const string& territoryName : pair.second)
             pair.first->getAdjList().push_back(nameToTerritoryMap[territoryName]);
 }
