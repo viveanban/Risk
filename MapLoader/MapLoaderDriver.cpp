@@ -4,7 +4,7 @@
 
 int main() {
 
-    string conquestMapsToValidate[] = {"Africa.map", "Asia.map", "UnconnectedAfrica.map", "InvalidAfrica.map"};
+    string conquestMapsToValidate[] = {"Africa.map", "NY.map", "Oregon.map", "UnconnectedAfrica.map", "InvalidAfrica.map"};
     string regularMapsToValidate[] = {"Europe.map", "USInvalid"};
     Map *map;
     ConquestFileReader conquestFileReader;
