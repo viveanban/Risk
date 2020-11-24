@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "../Map/Map.h"
+#include "ConquestFileReader.h"
 
 using namespace std;
 
@@ -32,8 +33,6 @@ private:
     static vector<Continent *> continentsList;
 
     static vector<Territory *> territoriesList;
-
-    MapLoader() = default;
 
     MapLoader(const MapLoader &original);
 
@@ -84,7 +83,7 @@ private:
      * @return void.
      * @param string: the line being read, string: the regex pattern.
      */
-    static void checkPattern(const string& line, const string& pattern);
+    static void checkPattern(const string &line, const string &pattern);
 
     /**
      * This method throws an exception following a map validation failure.
@@ -95,15 +94,32 @@ private:
     static void throwInvalidMapException();
 
 public:
+    MapLoader() = default;
+
     /**
      * This method creates the Map object and returns a pointer to it.
      *
      * @return Map pointer.
      */
-    static Map *loadMap(const string& mapName);
+    virtual Map *loadMap(const string &mapName);
 
     friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
+};
 
+
+class ConquestFileReaderAdapter : public MapLoader {
+private:
+    ConquestFileReader conquestFileReader;
+public:
+    ConquestFileReaderAdapter();
+
+    ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader);
+
+    /**
+    * This method creates the Map object from a conquest map file and returns a pointer to it.
+    * @return Map pointer.
+    */
+    Map *loadMap(const string &mapName);
 };
 
 #endif //RISK_MAPLOADER_H
