@@ -98,7 +98,7 @@ void GameEngine::selectPlayerNumber() {
     numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     while (numPlayerTmp < 2 or numPlayerTmp > maxPlayerNumber) {
         cout << "This does not look like a number between 2 to " << maxPlayerNumber <<
-             ". The game supports up to 5 players with a minimum of 2." << endl <<
+             ". The game supports up to "<< maxPlayerNumber <<" players with a minimum of 2." << endl <<
              "Please input the desired number of players" << endl;
         numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     }
