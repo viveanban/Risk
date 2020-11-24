@@ -77,6 +77,18 @@ private:
      static */
     static void constructAdjencyList(const string &line);
 
+public:
+    MapLoader() = default;
+
+    /**
+     * This method creates the Map object and returns a pointer to it.
+     *
+     * @return Map pointer.
+     */
+    virtual Map *loadMap(const string &mapName);
+
+    friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
+
     /**
      * This method verifies that a parsed line follows a specific pattern depending under which section it resides.
      *
@@ -92,18 +104,6 @@ private:
      * @param None.
      */
     static void throwInvalidMapException();
-
-public:
-    MapLoader() = default;
-
-    /**
-     * This method creates the Map object and returns a pointer to it.
-     *
-     * @return Map pointer.
-     */
-    virtual Map *loadMap(const string &mapName);
-
-    friend std::ostream &operator<<(std::ostream &stream, MapLoader &mapLoader);
 };
 
 

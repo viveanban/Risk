@@ -27,7 +27,7 @@ void GameEngine::initializeGame() {
 }
 
 void GameEngine::selectMap() {
-    //TODO: Change the map directory according to the type of maps the user wants
+    //TODO: Change the map directory according to the type of map
     const string MAP_DIRECTORY = "../maps/conquest_maps/";
     int chosenMap;
     ifstream inputFile;
@@ -61,7 +61,7 @@ int GameEngine::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream
         // discard 'bad' character(s)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-    if (chosenMap > 0 and chosenMap < availableMaps.size()) {
+    if (chosenMap > 0 and chosenMap <= availableMaps.size()) {
         inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
     }
     return chosenMap;
@@ -98,7 +98,7 @@ void GameEngine::selectPlayerNumber() {
     numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     while (numPlayerTmp < 2 or numPlayerTmp > maxPlayerNumber) {
         cout << "This does not look like a number between 2 to " << maxPlayerNumber <<
-             ". The game supports up to 5 players with a minimum of 2." << endl <<
+             ". The game supports up to "<< maxPlayerNumber <<" players with a minimum of 2." << endl <<
              "Please input the desired number of players" << endl;
         numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     }

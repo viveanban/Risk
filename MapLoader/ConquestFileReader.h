@@ -3,9 +3,11 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include <iostream>
 #include "../Map/Map.h"
 
+//TODO: As per the TA's recommendation, join this file with the maploader.cpp/h
 class ConquestFileReader {
 private:
     enum Section {
@@ -24,6 +26,12 @@ private:
 
     static Section currentSection;
 
+    static map<string, Continent*> nameToContinentMap;
+
+    static map<string, Territory*> nameToTerritoryMap;
+
+    static map<Territory*, set<string>> adjacentTerritoryNamesMap;
+
     static vector<Continent *> continentsList;
 
     static vector<Territory *> territoriesList;
@@ -37,25 +45,29 @@ private:
      */
     static bool updateSection(string &line);
 
-    /**
-     * This method creates a Continent object by parsing a Continent entry from the file.
-     *
-     * @return Continent pointer.
-     * @param string: the line being read, int: the continent id (reference).
-     */
+   /**
+    * This method creates a Continent object by parsing a Continent entry from the file.
+    *
+    * @param line being read
+    * @param continentId
+    * @return pointer of the created Continent
+    */
     static Continent *createContinents(const string &line, int &continentId);
 
     /**
-     * This method creates a Territory object by parsing a Country entry from the file.
+     * This method creates a Territory object by parsing a Territory entry from the file.
      *
-     * @return Territory pointer.
-     * @param string: the line being read.
+     * @param line being read
+     * @param territoryId
+     * @return pointer of the created Territory
      */
     static Territory *createTerritories(const string &line, int &territoryId);
 
-    static void checkPattern(const string &line, const string &pattern);
+    /**
+     * This method populates the adjList of each territory that has been created
+     */
+    static void constructAdjencyList();
 
-    static void throwInvalidMapException();
 
 public:
     ConquestFileReader() = default;
