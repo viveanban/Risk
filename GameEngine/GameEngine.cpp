@@ -61,7 +61,7 @@ int GameEngine::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream
         // discard 'bad' character(s)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-    if (chosenMap > 0 and chosenMap < availableMaps.size()) {
+    if (chosenMap > 0 and chosenMap <= availableMaps.size()) {
         inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
     }
     return chosenMap;
