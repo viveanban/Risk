@@ -2,7 +2,7 @@
 
 // HUMAN PLAYER STRATEGY
 HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
-
+    this->player = player;
 }
 
 bool HumanPlayerStrategy::issueOrder() {
@@ -19,7 +19,7 @@ vector<Territory *> HumanPlayerStrategy::toDefend() {
 
 // AGGRESIVE PLAYER STRATEGY
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
-
+    this->player = player;
 }
 
 bool AggressivePlayerStrategy::issueOrder() {
@@ -36,7 +36,7 @@ vector<Territory *> AggressivePlayerStrategy::toDefend() {
 
 // BENEVOLENT PLAYER STRATEGY
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
-
+    this->player = player;
 }
 
 bool BenevolentPlayerStrategy::issueOrder() {
@@ -54,7 +54,7 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend() {
 
 // NEUTRAL PLAYER STRATEGY
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player *player) {
-
+    this->player = player;
 }
 
 bool NeutralPlayerStrategy::issueOrder() {
