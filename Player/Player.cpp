@@ -83,38 +83,37 @@ void Player::removeTerritory(Territory *territory) {
     }
 }
 
-// TODO: delegate to strategy
 vector<Territory *> Player::toDefend() {
-    sortTerritoryList(territories);
-    return territories;
+//    sortTerritoryList(territories);
+//    return territories;
+    return this->strategy->toDefend();
 }
 
-// TODO: ot sure what to do with this
 vector<Territory *> Player::toDefend(Territory *srcTerritory) {
     vector<Territory *> territoriesToDefend;
     for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
         if (adjacentTerritory->getOwner() == this)
             territoriesToDefend.push_back(adjacentTerritory);
     }
-    sortTerritoryList(territoriesToDefend);
-    return territoriesToDefend;
+//    sortTerritoryList(territoriesToDefend);
+//    return territoriesToDefend;
+    return this->strategy->toDefend(srcTerritory);
 }
 
-// TODO: delegate to strategy
 vector<Territory *> Player::toAttack() {
-    vector<Territory *> territoriesToAttack;
-
-    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
-        if (territory->getOwner() != this)
-            territoriesToAttack.push_back(territory);
-    }
-
-    sortTerritoryList(territoriesToAttack);
-
-    return territoriesToAttack;
+//    vector<Territory *> territoriesToAttack;
+//
+//    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+//        if (territory->getOwner() != this)
+//            territoriesToAttack.push_back(territory);
+//    }
+//
+//    sortTerritoryList(territoriesToAttack);
+//
+//    return territoriesToAttack;
+    return this->strategy->toAttack();
 }
 
-// TODO: not sure what to do with this
 vector<Territory *> Player::toAttack(Territory *srcTerritory) {
     vector<Territory *> territoriesToAttack;
 
@@ -122,10 +121,10 @@ vector<Territory *> Player::toAttack(Territory *srcTerritory) {
         if (territory->getOwner() != this)
             territoriesToAttack.push_back(territory);
     }
-
-    sortTerritoryList(territoriesToAttack);
-
-    return territoriesToAttack;
+//    sortTerritoryList(territoriesToAttack);
+//
+//    return territoriesToAttack;
+    return this->strategy->toAttack(srcTerritory);
 }
 
 void Player::sortTerritoryList(vector<Territory *> &territoryList) {
@@ -134,29 +133,29 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
     });
 }
 
-// TODO: delegate to strategy
 bool Player::issueOrder() {
-    // Issue deploy orders as long as player's reinforcement pool is not empty
-    if (numberOfArmiesInReinforcementPool > 0) {
-        issueDeployOrder();
-        return true;
-    } else { // Other orders
-        bool continueIssuingOrders = rand() % 2;
-        if (continueIssuingOrders) {
-            bool advance = handOfCards->getCards().empty() || rand() % 2;
-            if (advance) { //Always issue an Advance order if player has an empty hand
-                issueAdvanceOrder();
-            } else {
-                // Pick a card
-                Card *cardChosen = handOfCards->getNextCard();
-                if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
-
-                // Play card
-                issueOrderFromCard(cardChosen);
-            }
-        }
-        return continueIssuingOrders;
-    }
+//    // Issue deploy orders as long as player's reinforcement pool is not empty
+//    if (numberOfArmiesInReinforcementPool > 0) {
+//        issueDeployOrder();
+//        return true;
+//    } else { // Other orders
+//        bool continueIssuingOrders = rand() % 2;
+//        if (continueIssuingOrders) {
+//            bool advance = handOfCards->getCards().empty() || rand() % 2;
+//            if (advance) { //Always issue an Advance order if player has an empty hand
+//                issueAdvanceOrder();
+//            } else {
+//                // Pick a card
+//                Card *cardChosen = handOfCards->getNextCard();
+//                if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
+//
+//                // Play card
+//                issueOrderFromCard(cardChosen);
+//            }
+//        }
+//        return continueIssuingOrders;
+//    }
+    return this->strategy->issueOrder();
 }
 
 void Player::issueDeployOrder() {
@@ -247,4 +246,8 @@ void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcem
 // TODO: not working, commented out for now
 void Player::setStrategy(PlayerStrategy &strategy) {
 //    this->strategy = strategy;
+}
+
+PlayerStrategy *Player::getStrategy() const {
+    return strategy;
 }

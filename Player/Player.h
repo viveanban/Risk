@@ -142,6 +142,8 @@ public:
 
     void setStrategy(PlayerStrategy &strategy);
 
+    PlayerStrategy *getStrategy() const;
+
 };
 
 #endif //RISK_PLAYER_H
