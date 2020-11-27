@@ -89,7 +89,6 @@ vector<Territory *> Player::toDefend() {
     return this->strategy->toDefend();
 }
 
-// TODO: ot sure what to do with this
 vector<Territory *> Player::toDefend(Territory *srcTerritory) {
     vector<Territory *> territoriesToDefend;
     for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
@@ -98,7 +97,7 @@ vector<Territory *> Player::toDefend(Territory *srcTerritory) {
     }
 //    sortTerritoryList(territoriesToDefend);
 //    return territoriesToDefend;
-    return this->strategy->toDefend();
+    return this->strategy->toDefend(srcTerritory);
 }
 
 vector<Territory *> Player::toAttack() {
@@ -115,7 +114,6 @@ vector<Territory *> Player::toAttack() {
     return this->strategy->toAttack();
 }
 
-// TODO: not sure what to do with this
 vector<Territory *> Player::toAttack(Territory *srcTerritory) {
     vector<Territory *> territoriesToAttack;
 
@@ -126,7 +124,7 @@ vector<Territory *> Player::toAttack(Territory *srcTerritory) {
 //    sortTerritoryList(territoriesToAttack);
 //
 //    return territoriesToAttack;
-    return this->strategy->toAttack();
+    return this->strategy->toAttack(srcTerritory);
 }
 
 void Player::sortTerritoryList(vector<Territory *> &territoryList) {
