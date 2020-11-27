@@ -11,7 +11,11 @@ public:
 
     virtual vector<Territory *> toAttack() = 0;
 
+    virtual vector<Territory *> toAttack(Territory *srcTerritory) = 0;
+
     virtual vector<Territory *> toDefend() = 0;
+
+    virtual vector<Territory *> toDefend(Territory *srcTerritory) = 0;
 };
 
 /*
@@ -19,13 +23,17 @@ public:
  */
 class HumanPlayerStrategy : PlayerStrategy {
 public:
-    explicit HumanPlayerStrategy(Player* player);
+    explicit HumanPlayerStrategy(Player *player);
 
     bool issueOrder() override;
 
     vector<Territory *> toAttack() override;
 
     vector<Territory *> toDefend() override;
+
+    vector<Territory *> toAttack(Territory *srcTerritory) override;
+
+    vector<Territory *> toDefend(Territory *srcTerritory) override;
 };
 
 /*
@@ -35,13 +43,17 @@ public:
  */
 class AggressivePlayerStrategy : PlayerStrategy {
 public:
-    explicit AggressivePlayerStrategy(Player* player);
+    explicit AggressivePlayerStrategy(Player *player);
 
     bool issueOrder() override;
 
     vector<Territory *> toAttack() override;
 
     vector<Territory *> toDefend() override;
+
+    vector<Territory *> toAttack(Territory *srcTerritory) override;
+
+    vector<Territory *> toDefend(Territory *srcTerritory) override;
 };
 
 /*
@@ -51,24 +63,35 @@ public:
  */
 class BenevolentPlayerStrategy : PlayerStrategy {
 public:
-    explicit BenevolentPlayerStrategy(Player* player);
+    explicit BenevolentPlayerStrategy(Player *player);
 
     bool issueOrder() override;
 
     vector<Territory *> toAttack() override;
 
     vector<Territory *> toDefend() override;
+
+    vector<Territory *> toAttack(Territory *srcTerritory) override;
+
+    vector<Territory *> toDefend(Territory *srcTerritory) override;
 };
 
+/*
+ * A neutral player that never issues any order.
+ */
 class NeutralPlayerStrategy : PlayerStrategy {
 public:
-    explicit NeutralPlayerStrategy(Player* player);
+    explicit NeutralPlayerStrategy(Player *player);
 
     bool issueOrder() override;
 
     vector<Territory *> toAttack() override;
 
     vector<Territory *> toDefend() override;
+
+    vector<Territory *> toAttack(Territory *srcTerritory) override;
+
+    vector<Territory *> toDefend(Territory *srcTerritory) override;
 };
 
 #endif //RISK_PLAYERSTRATEGIES_H

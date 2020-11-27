@@ -6,6 +6,7 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
 }
 
 bool HumanPlayerStrategy::issueOrder() {
+    cout << "Please select the type of order you wish to issue: " << endl;
     return false;
 }
 
@@ -14,6 +15,14 @@ vector<Territory *> HumanPlayerStrategy::toAttack() {
 }
 
 vector<Territory *> HumanPlayerStrategy::toDefend() {
+    return vector<Territory *>();
+}
+
+vector<Territory *> HumanPlayerStrategy::toAttack(Territory *srcTerritory) {
+    return vector<Territory *>();
+}
+
+vector<Territory *> HumanPlayerStrategy::toDefend(Territory *srcTerritory) {
     return vector<Territory *>();
 }
 
@@ -34,6 +43,14 @@ vector<Territory *> AggressivePlayerStrategy::toDefend() {
     return vector<Territory *>();
 }
 
+vector<Territory *> AggressivePlayerStrategy::toAttack(Territory *srcTerritory) {
+    return vector<Territory *>();
+}
+
+vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) {
+    return vector<Territory *>();
+}
+
 // BENEVOLENT PLAYER STRATEGY
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
     this->player = player;
@@ -48,6 +65,14 @@ vector<Territory *> BenevolentPlayerStrategy::toAttack() {
 }
 
 vector<Territory *> BenevolentPlayerStrategy::toDefend() {
+    return vector<Territory *>();
+}
+
+vector<Territory *> BenevolentPlayerStrategy::toAttack(Territory *srcTerritory) {
+    return vector<Territory *>();
+}
+
+vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) {
     return vector<Territory *>();
 }
 
@@ -66,5 +91,13 @@ vector<Territory *> NeutralPlayerStrategy::toAttack() {
 }
 
 vector<Territory *> NeutralPlayerStrategy::toDefend() {
+    return vector<Territory *>();
+}
+
+vector<Territory *> NeutralPlayerStrategy::toAttack(Territory *srcTerritory) {
+    return vector<Territory *>();
+}
+
+vector<Territory *> NeutralPlayerStrategy::toDefend(Territory *srcTerritory) {
     return vector<Territory *>();
 }
