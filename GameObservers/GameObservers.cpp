@@ -118,8 +118,9 @@ void PhaseObserver::printOrderInfo(Order *order, Card *card) {
         if (auto *neutralPlayer = dynamic_cast<NeutralPlayerStrategy *>(currentGameState->getCurrentPlayer()->getStrategy())) {
             cout << currentGameState->getCurrentPlayer()->getPlayerName()
                  << " is a Neutral Player, and hence does not issue any orders." << endl;
+        } else {
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
         }
-        cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
         return;
     } else if (order == nullptr){
         return;
