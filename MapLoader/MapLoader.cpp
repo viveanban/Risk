@@ -180,3 +180,12 @@ void MapLoader::checkPattern(const string &line, const string &pattern) {
 void MapLoader::throwInvalidMapException() {
     throw invalid_argument("Error loading map, this map format is invalid!");
 }
+
+ConquestFileReaderAdapter::ConquestFileReaderAdapter(): conquestFileReader() {}
+
+ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader) :
+        conquestFileReader(conquestFileReader) {}
+
+Map *ConquestFileReaderAdapter::loadMap(const string &mapName) {
+    return conquestFileReader.loadConquestMap(mapName);
+}

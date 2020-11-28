@@ -9,6 +9,7 @@
 /**
  * The GameEngine class is a Singleton and it represents the entire game
  */
+ //TODO: Suggestion: add a field MapType that will be set in the gameEngine (depending on which type to run, the correct map file reader will be called)
 class GameEngine {
 private:
     vector<string> availableMaps;
