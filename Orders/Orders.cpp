@@ -79,13 +79,17 @@ void DeployOrder::execute() {
 }
 
 bool DeployOrder::issue() {
-
+    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
     if (player->getIsHumanPlayer()) {
-
+        do {
+            numberOfArmiesToDeploy = Player::getIntegerInput(
+                    "Please enter the number of armies you wish to deploy (available troops " +
+                    to_string(totalAvailableArmies) + " ): ");
+        } while (numberOfArmiesToDeploy > totalAvailableArmies);
     } else {
-        numberOfArmiesToDeploy = (rand() % player->getNumberofArmiesInReinforcementPool()) + 1;
+        // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
+        numberOfArmiesToDeploy = (rand() % totalAvailableArmies) + 1;
     }
-    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
 
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();
@@ -94,14 +98,21 @@ bool DeployOrder::issue() {
              << " because this player has no territories to defend." << endl;
         return false;
     }
-
-    targetTerritory = territoriesToDefend.at(0);
+    if (player->getIsHumanPlayer()) {
+        for (int i = 0; i < territoriesToDefend.size(); ++i) {
+            cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << endl;
+        }
+        targetTerritory = territoriesToDefend.at(Player::getIntegerInput("Please pick a target territory to defend: "));
+    } else {
+        targetTerritory = territoriesToDefend.at(0);
+    }
 
     // Update the priority of the target territory so that it is not at the top of the list for the next deploy order
     targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToDeploy);
 
     // Update number of armies
-    player->setNumberOfArmiesInReinforcementPool(player->getNumberofArmiesInReinforcementPool() - numberOfArmiesToDeploy);
+    player->setNumberOfArmiesInReinforcementPool(
+            player->getNumberofArmiesInReinforcementPool() - numberOfArmiesToDeploy);
 
     // Update order list
     player->getOrders()->add(this);

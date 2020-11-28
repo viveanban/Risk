@@ -6,34 +6,30 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
 }
 
 bool HumanPlayerStrategy::issueOrder() {
-    while (this->player->getNumberofArmiesInReinforcementPool() > 0) {
-        cout << "Please issue a Deploy Order." << endl;
-        this->player->issueDeployOrder();
-        return true;
-    }
     // Issue deploy orders as long as player's reinforcement pool is not empty
     if (this->player->getNumberofArmiesInReinforcementPool() > 0) {
-
-
+        cout << "You must issue a deploy order." << endl;
+        this->player->issueDeployOrder();
+        return true;
     } else { // Other orders
-        cout << "Please select the type of order you wish to issue: " << endl;
-        bool continueIssuingOrders = rand() % 2;
+        bool continueIssuingOrders = Player::getBooleanInput("Do you want to continue issuing orders? [true/false] ");
         if (continueIssuingOrders) {
-            bool advance = handOfCards->getCards().empty() || rand() % 2;
-            if (advance) { //Always issue an Advance order if player has an empty hand
-                issueAdvanceOrder();
+            if (player->getHandOfCards()->getCards().empty()) {
+                cout << "You must issue an Advance Order because your hand is empty!" << endl;
+                player->issueAdvanceOrder();
             } else {
+                vector<Card *> handOfCards = player->getHandOfCards()->getCards();
+                for (int i = 0; i < handOfCards.size(); ++i) {
+                    cout << i << " - " << handOfCards.at(i)->getTypeName() << endl;
+                }
                 // Pick a card
-                Card *cardChosen = handOfCards->getNextCard();
-                if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
-
+                Card *cardChosen = handOfCards.at(Player::getIntegerInput("Please select the card you wish to play: "));
                 // Play card
-                issueOrderFromCard(cardChosen);
+                player->issueOrderFromCard(cardChosen);
             }
         }
         return continueIssuingOrders;
     }
-    return false;
 }
 
 vector<Territory *> HumanPlayerStrategy::toAttack() {
@@ -41,7 +37,8 @@ vector<Territory *> HumanPlayerStrategy::toAttack() {
 }
 
 vector<Territory *> HumanPlayerStrategy::toDefend() {
-    return vector<Territory *>();
+    player->sortTerritoryList(player->getTerritories());
+    return player->getTerritories();
 }
 
 vector<Territory *> HumanPlayerStrategy::toAttack(Territory *srcTerritory) {
