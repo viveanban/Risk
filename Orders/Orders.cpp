@@ -79,8 +79,13 @@ void DeployOrder::execute() {
 }
 
 bool DeployOrder::issue() {
+
+    if (player->getIsHumanPlayer()) {
+
+    } else {
+        numberOfArmiesToDeploy = (rand() % player->getNumberofArmiesInReinforcementPool()) + 1;
+    }
     // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
-    numberOfArmiesToDeploy = (rand() % player->getNumberofArmiesInReinforcementPool()) + 1;
 
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();

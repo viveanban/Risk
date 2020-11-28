@@ -9,14 +9,16 @@
 
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
-// TODO: might remove this cstor
-Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
-                                    numberOfArmiesInReinforcementPool(0), territories() {}
-
-Player::Player(string playerName, PlayerStrategy* strategy) : playerName(playerName), handOfCards(new Hand()),
-                                                             orders(new OrdersList()),
-                                                             numberOfArmiesInReinforcementPool(0), territories(),
-                                                             strategy(strategy) {}
+Player::Player(string playerName, PlayerStrategy *strategy) : playerName(playerName), handOfCards(new Hand()),
+                                                              orders(new OrdersList()),
+                                                              numberOfArmiesInReinforcementPool(0), territories(),
+                                                              strategy(strategy) {
+    if (auto humanPlayerStrategy = dynamic_cast<HumanPlayerStrategy *>(strategy)) {
+        isHumanPlayer = true;
+    } else {
+        isHumanPlayer = false;
+    }
+}
 
 // TODO: delete strategy?
 Player::~Player() {
@@ -136,7 +138,7 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
 }
 
 bool Player::issueOrder() {
-//    // Issue deploy orders as long as player's reinforcement pool is not empty
+    // Issue deploy orders as long as player's reinforcement pool is not empty
 //    if (numberOfArmiesInReinforcementPool > 0) {
 //        issueDeployOrder();
 //        return true;
@@ -178,7 +180,12 @@ void Player::issueDeployOrder() {
 void Player::playReinforcementCard() {
     for (Card *card: handOfCards->getCards()) {
         if (card->getType() == Card::reinforcement) {
-            bool playReinforcementCard = rand() % 2;
+            bool playReinforcementCard;
+            if (isHumanPlayer) {
+                playReinforcementCard = getBooleanInput("Would you like to play the reinforcement card? [true/false]");
+            } else {
+                playReinforcementCard = rand() % 2;
+            }
             if (playReinforcementCard) {
                 numberOfArmiesInReinforcementPool += numberOfArmiesInReinforcementPool + 5;
                 handOfCards->removeCard(card);
@@ -187,6 +194,28 @@ void Player::playReinforcementCard() {
             break;
         }
     }
+}
+
+bool Player::getBooleanInput(string printStatement) {
+    bool output = false;
+    do {
+        cout << printStatement << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> boolalpha >> output;
+    } while (cin.fail());
+    return output;
+}
+
+int Player::getIntegerInput(string printStatement) {
+    int output = 0;
+    do {
+        cout << printStatement << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> output;
+    } while (cin.fail());
+    return output;
 }
 
 void Player::issueAdvanceOrder() {
@@ -245,11 +274,20 @@ void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcem
     this->numberOfArmiesInReinforcementPool = numberOfArmiesInReinforcementPool;
 }
 
-// TODO: not working, commented out for now
-void Player::setStrategy(PlayerStrategy &strategy) {
-//    this->strategy = strategy;
+// TODO: Check if this works
+void Player::setStrategy(PlayerStrategy *playerStrategy) {
+    this->strategy = playerStrategy;
+    if (auto humanPlayerStrategy = dynamic_cast<HumanPlayerStrategy *>(playerStrategy)) {
+        isHumanPlayer = true;
+    } else {
+        isHumanPlayer = false;
+    }
 }
 
 PlayerStrategy *Player::getStrategy() const {
     return strategy;
+}
+
+bool Player::getIsHumanPlayer() const {
+    return isHumanPlayer;
 }

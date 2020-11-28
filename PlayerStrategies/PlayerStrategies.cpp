@@ -6,7 +6,33 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
 }
 
 bool HumanPlayerStrategy::issueOrder() {
-    cout << "Please select the type of order you wish to issue: " << endl;
+    while (this->player->getNumberofArmiesInReinforcementPool() > 0) {
+        cout << "Please issue a Deploy Order." << endl;
+        this->player->issueDeployOrder();
+        return true;
+    }
+    // Issue deploy orders as long as player's reinforcement pool is not empty
+    if (this->player->getNumberofArmiesInReinforcementPool() > 0) {
+
+
+    } else { // Other orders
+        cout << "Please select the type of order you wish to issue: " << endl;
+        bool continueIssuingOrders = rand() % 2;
+        if (continueIssuingOrders) {
+            bool advance = handOfCards->getCards().empty() || rand() % 2;
+            if (advance) { //Always issue an Advance order if player has an empty hand
+                issueAdvanceOrder();
+            } else {
+                // Pick a card
+                Card *cardChosen = handOfCards->getNextCard();
+                if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
+
+                // Play card
+                issueOrderFromCard(cardChosen);
+            }
+        }
+        return continueIssuingOrders;
+    }
     return false;
 }
 
