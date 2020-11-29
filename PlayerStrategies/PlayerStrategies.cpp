@@ -1,4 +1,5 @@
 #include "PlayerStrategies.h"
+#include "../GameEngine/GameEngine.h"
 
 // HUMAN PLAYER STRATEGY
 HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
@@ -18,6 +19,7 @@ bool HumanPlayerStrategy::issueOrder() {
                 cout << "You must issue an Advance Order because your hand is empty!" << endl;
                 player->issueAdvanceOrder();
             } else {
+                // Print all cards in Hand
                 vector<Card *> handOfCards = player->getHandOfCards()->getCards();
                 for (int i = 0; i < handOfCards.size(); ++i) {
                     cout << i << " - " << handOfCards.at(i)->getTypeName() << endl;
@@ -33,20 +35,38 @@ bool HumanPlayerStrategy::issueOrder() {
 }
 
 vector<Territory *> HumanPlayerStrategy::toAttack() {
-    return vector<Territory *>();
+    vector<Territory *> territoriesToAttack;
+    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+    // don't need to sort for human player because they can choose any from list.
+    return territoriesToAttack;
 }
 
 vector<Territory *> HumanPlayerStrategy::toDefend() {
-    player->sortTerritoryList(player->getTerritories());
+    // don't need to sort for human player because they can choose any from list.
     return player->getTerritories();
 }
 
 vector<Territory *> HumanPlayerStrategy::toAttack(Territory *srcTerritory) {
-    return vector<Territory *>();
+    vector<Territory *> territoriesToAttack;
+    for (Territory *territory: srcTerritory->getAdjList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+    // don't need to sort for human player because they can choose any from list.
+    return territoriesToAttack;
 }
 
 vector<Territory *> HumanPlayerStrategy::toDefend(Territory *srcTerritory) {
-    return vector<Territory *>();
+    vector<Territory *> territoriesToDefend;
+    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+        if (adjacentTerritory->getOwner() == this->player)
+            territoriesToDefend.push_back(adjacentTerritory);
+    }
+    // don't need to sort for human player because they can choose any from list.
+    return territoriesToDefend;
 }
 
 // AGGRESIVE PLAYER STRATEGY

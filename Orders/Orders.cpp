@@ -5,6 +5,7 @@
 #include "../GameEngine/GameEngine.h"
 
 using namespace std;
+// TODO: Input checking for all user numeric inputs (number of armies)
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 Order::Order(string name, int priority, Player *player) : name(name), priority(priority),
                                                           player(player) {}
@@ -226,12 +227,22 @@ void AdvanceOrder::execute() {
 }
 
 bool AdvanceOrder::issue() {
-    // Determine src territory
-    sourceTerritory = player->getTerritories().at(rand() % player->getTerritories().size());
+    auto territories = player->getTerritories();
+    if (player->getIsHumanPlayer()) {
+        // Determine src territory
+        for (int i = 0; i < territories.size(); ++i) {
+            cout << i << " - " << territories.at(i)->getTerritoryName() << endl;
+        }
+        sourceTerritory = territories.at(Player::getIntegerInput("Please pick a source territory to advance from: "));
+        // Pick attack or defend
+        bool attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
+        advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
+    } else {
+        sourceTerritory = territories.at(rand() % player->getTerritories().size());
+        bool attack = rand() % 2;
+        advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
+    }
 
-    // Determine target territory
-    bool attack = rand() % 2;
-    advanceOrderType = attack? AdvanceOrderType::attack : AdvanceOrderType::transfer;
     vector<Territory *> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(
             sourceTerritory);
     if (territoriesToChooseFrom.empty()) {
@@ -240,10 +251,21 @@ bool AdvanceOrder::issue() {
         return false;
     }
 
-    targetTerritory = territoriesToChooseFrom.at(0);
-
-    // Determine number of armies to advance
-    numberOfArmiesToAdvance = (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
+    if (player->getIsHumanPlayer()) {
+        // Determine target territory
+        for (int i = 0; i < territoriesToChooseFrom.size(); ++i) {
+            cout << i << " - " << territoriesToChooseFrom.at(i)->getTerritoryName() << endl;
+        }
+        targetTerritory = territories.at(Player::getIntegerInput("Please pick a target territory to advance to: "));
+        numberOfArmiesToAdvance = Player::getIntegerInput(
+                "Please enter the number of armies you wish to advance (available troops " +
+                to_string(sourceTerritory->getPriority()) + " ): ");
+    } else {
+        targetTerritory = territoriesToChooseFrom.at(0);
+        // Determine number of armies to advance
+        numberOfArmiesToAdvance =
+                (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
+    }
 
     // Update priority
     sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAdvance);
@@ -325,11 +347,19 @@ bool BombOrder::issue() {
     // Randomly determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
     if (territoriesToAttack.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getName() << " because this player has no territories to attack." << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName()
+             << " because this player has no territories to attack." << endl;
         return false;
     }
-
-    targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
+    if (player->getIsHumanPlayer()) {
+        // Determine target territory
+        for (int i = 0; i < territoriesToAttack.size(); ++i) {
+            cout << i << " - " << territoriesToAttack.at(i)->getTerritoryName() << endl;
+        }
+        targetTerritory = territoriesToAttack.at(Player::getIntegerInput("Please pick a target territory to bomb: "));
+    } else {
+        targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
+    }
 
     // Update priority
     targetTerritory->setPriority(targetTerritory->getPriority() / 2);
@@ -386,12 +416,20 @@ bool BlockadeOrder::issue() {
     // Determine target territory to be the player's territory with the most army units
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getName() << " because this player has no territories to defend." << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName()
+             << " because this player has no territories to defend." << endl;
         return false;
     }
-
-    targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
-
+    if (player->getIsHumanPlayer()) {
+        // Determine target territory
+        for (int i = 0; i < territoriesToDefend.size(); ++i) {
+            cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << endl;
+        }
+        targetTerritory = territoriesToDefend.at(
+                Player::getIntegerInput("Please pick a target territory to blockade: "));
+    } else {
+        targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
+    }
     // Update priority
     targetTerritory->setPriority(targetTerritory->getPriority() * 2);
 
@@ -458,19 +496,31 @@ void AirliftOrder::execute() {
 bool AirliftOrder::issue() {
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
-        cout << player->getPlayerName() << " could not issue order: " << getName() << " because this player has no territories to defend." << endl;
+        cout << player->getPlayerName() << " could not issue order: " << getName()
+             << " because this player has no territories to defend." << endl;
         return false;
     }
-
-    // Determine src territory
-    sourceTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
-
-    // Determine target territory
-    targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
-
-    // Determine number of armies to advance
-    numberOfArmiesToAirlift = (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
-
+    if (player->getIsHumanPlayer()) {
+        // Determine target territory
+        for (int i = 0; i < territoriesToDefend.size(); ++i) {
+            cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << endl;
+        }
+        sourceTerritory = territoriesToDefend.at(
+                Player::getIntegerInput("Please pick a source territory to airlift from: "));
+        targetTerritory = territoriesToDefend.at(
+                Player::getIntegerInput("Please pick a target territory to airlift to: "));
+        numberOfArmiesToAirlift = Player::getIntegerInput(
+                "Please enter the number of armies you wish to airlift (available troops " +
+                to_string(sourceTerritory->getPriority()) + " ): ");
+    } else {
+        // Determine src territory
+        sourceTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
+        // Determine target territory
+        targetTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
+        // Determine number of armies to advance
+        numberOfArmiesToAirlift =
+                (rand() % (sourceTerritory->getPriority() > 0 ? sourceTerritory->getPriority() : 6)) + 1;
+    }
     // Update priority
     sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAirlift);
     targetTerritory->setPriority(targetTerritory->getPriority() + numberOfArmiesToAirlift);
@@ -535,11 +585,20 @@ bool NegotiateOrder::issue() {
         return false;
     }
 
-    do {
-        targetPlayer = players.at(rand() % players.size());
-    } while (targetPlayer == player);
-
-
+    if (player->getIsHumanPlayer()) {
+        // Determine target territory
+        for (int i = 0; i < players.size(); ++i) {
+            cout << i << " - " << players.at(i)->getPlayerName() << endl;
+        }
+        do {
+            targetPlayer = players.at(
+                    Player::getIntegerInput("Please pick a target player to negociate a diplomacy with: "));
+        } while (targetPlayer == player);
+    } else {
+        do {
+            targetPlayer = players.at(rand() % players.size());
+        } while (targetPlayer == player);
+    }
     // Update order list
     player->getOrders()->add(this);
 

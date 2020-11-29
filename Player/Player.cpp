@@ -92,11 +92,11 @@ vector<Territory *> Player::toDefend() {
 }
 
 vector<Territory *> Player::toDefend(Territory *srcTerritory) {
-    vector<Territory *> territoriesToDefend;
-    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
-        if (adjacentTerritory->getOwner() == this)
-            territoriesToDefend.push_back(adjacentTerritory);
-    }
+//    vector<Territory *> territoriesToDefend;
+//    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+//        if (adjacentTerritory->getOwner() == this)
+//            territoriesToDefend.push_back(adjacentTerritory);
+//    }
 //    sortTerritoryList(territoriesToDefend);
 //    return territoriesToDefend;
     return this->strategy->toDefend(srcTerritory);
@@ -117,12 +117,12 @@ vector<Territory *> Player::toAttack() {
 }
 
 vector<Territory *> Player::toAttack(Territory *srcTerritory) {
-    vector<Territory *> territoriesToAttack;
-
-    for (Territory *territory: srcTerritory->getAdjList()) {
-        if (territory->getOwner() != this)
-            territoriesToAttack.push_back(territory);
-    }
+//    vector<Territory *> territoriesToAttack;
+//
+//    for (Territory *territory: srcTerritory->getAdjList()) {
+//        if (territory->getOwner() != this)
+//            territoriesToAttack.push_back(territory);
+//    }
 //    sortTerritoryList(territoriesToAttack);
 //
 //    return territoriesToAttack;
