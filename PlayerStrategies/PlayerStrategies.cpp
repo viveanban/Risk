@@ -25,7 +25,8 @@ bool HumanPlayerStrategy::issueOrder() {
                     cout << i << " - " << handOfCards.at(i)->getTypeName() << endl;
                 }
                 // Pick a card
-                Card *cardChosen = handOfCards.at(Player::getIntegerInput("Please select the card you wish to play: "));
+                Card *cardChosen = handOfCards.at(Player::getIntegerInput("Please select the card you wish to play: ",
+                                                                          0, handOfCards.size()));
                 // Play card
                 player->issueOrderFromCard(cardChosen);
             }

@@ -5,7 +5,6 @@
 #include "../GameEngine/GameEngine.h"
 
 using namespace std;
-// TODO: Input checking for all user numeric inputs (number of armies)
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 Order::Order(string name, int priority, Player *player) : name(name), priority(priority),
                                                           player(player) {}
@@ -85,7 +84,7 @@ bool DeployOrder::issue() {
         do {
             numberOfArmiesToDeploy = Player::getIntegerInput(
                     "Please enter the number of armies you wish to deploy (available troops " +
-                    to_string(totalAvailableArmies) + " ): ");
+                    to_string(totalAvailableArmies) + " ): ", 0, totalAvailableArmies + 1);
         } while (numberOfArmiesToDeploy > totalAvailableArmies);
     } else {
         // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
@@ -103,7 +102,8 @@ bool DeployOrder::issue() {
         for (int i = 0; i < territoriesToDefend.size(); ++i) {
             cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << endl;
         }
-        targetTerritory = territoriesToDefend.at(Player::getIntegerInput("Please pick a target territory to defend: "));
+        targetTerritory = territoriesToDefend.at(Player::getIntegerInput("Please pick a target territory to defend: ",
+                                                                         0, territoriesToDefend.size()));
     } else {
         targetTerritory = territoriesToDefend.at(0);
     }
@@ -233,7 +233,8 @@ bool AdvanceOrder::issue() {
         for (int i = 0; i < territories.size(); ++i) {
             cout << i << " - " << territories.at(i)->getTerritoryName() << endl;
         }
-        sourceTerritory = territories.at(Player::getIntegerInput("Please pick a source territory to advance from: "));
+        sourceTerritory = territories.at(Player::getIntegerInput("Please pick a source territory to advance from: ", 0,
+                                                                 territories.size()));
         // Pick attack or defend
         bool attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
         advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
@@ -256,10 +257,11 @@ bool AdvanceOrder::issue() {
         for (int i = 0; i < territoriesToChooseFrom.size(); ++i) {
             cout << i << " - " << territoriesToChooseFrom.at(i)->getTerritoryName() << endl;
         }
-        targetTerritory = territories.at(Player::getIntegerInput("Please pick a target territory to advance to: "));
+        targetTerritory = territories.at(Player::getIntegerInput("Please pick a target territory to advance to: ", 0,
+                                                                 territoriesToChooseFrom.size()));
         numberOfArmiesToAdvance = Player::getIntegerInput(
                 "Please enter the number of armies you wish to advance (available troops " +
-                to_string(sourceTerritory->getPriority()) + " ): ");
+                to_string(sourceTerritory->getPriority()) + " ): ", 0, sourceTerritory->getPriority() + 1);
     } else {
         targetTerritory = territoriesToChooseFrom.at(0);
         // Determine number of armies to advance
@@ -356,7 +358,8 @@ bool BombOrder::issue() {
         for (int i = 0; i < territoriesToAttack.size(); ++i) {
             cout << i << " - " << territoriesToAttack.at(i)->getTerritoryName() << endl;
         }
-        targetTerritory = territoriesToAttack.at(Player::getIntegerInput("Please pick a target territory to bomb: "));
+        targetTerritory = territoriesToAttack.at(Player::getIntegerInput("Please pick a target territory to bomb: ", 0,
+                                                                         territoriesToAttack.size()));
     } else {
         targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
     }
@@ -426,7 +429,7 @@ bool BlockadeOrder::issue() {
             cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << endl;
         }
         targetTerritory = territoriesToDefend.at(
-                Player::getIntegerInput("Please pick a target territory to blockade: "));
+                Player::getIntegerInput("Please pick a target territory to blockade: ", 0, territoriesToDefend.size()));
     } else {
         targetTerritory = territoriesToDefend.at(territoriesToDefend.size() - 1);
     }
@@ -506,12 +509,14 @@ bool AirliftOrder::issue() {
             cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << endl;
         }
         sourceTerritory = territoriesToDefend.at(
-                Player::getIntegerInput("Please pick a source territory to airlift from: "));
+                Player::getIntegerInput("Please pick a source territory to airlift from: ", 0,
+                                        territoriesToDefend.size()));
         targetTerritory = territoriesToDefend.at(
-                Player::getIntegerInput("Please pick a target territory to airlift to: "));
+                Player::getIntegerInput("Please pick a target territory to airlift to: ", 0,
+                                        territoriesToDefend.size()));
         numberOfArmiesToAirlift = Player::getIntegerInput(
                 "Please enter the number of armies you wish to airlift (available troops " +
-                to_string(sourceTerritory->getPriority()) + " ): ");
+                to_string(sourceTerritory->getPriority()) + " ): ", 0, sourceTerritory->getPriority() + 1);
     } else {
         // Determine src territory
         sourceTerritory = territoriesToDefend.at(rand() % territoriesToDefend.size());
@@ -592,7 +597,8 @@ bool NegotiateOrder::issue() {
         }
         do {
             targetPlayer = players.at(
-                    Player::getIntegerInput("Please pick a target player to negociate a diplomacy with: "));
+                    Player::getIntegerInput("Please pick a target player to negociate a diplomacy with: ", 0,
+                                            players.size()));
         } while (targetPlayer == player);
     } else {
         do {

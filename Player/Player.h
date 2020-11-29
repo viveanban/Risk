@@ -149,7 +149,7 @@ public:
 
     static bool getBooleanInput(string printStatement);
 
-    static int getIntegerInput(string printStatement);
+    static int getIntegerInput(string printStatement, int leftBound, int rightBound);
 };
 
 #endif //RISK_PLAYER_H

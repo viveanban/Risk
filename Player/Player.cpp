@@ -205,14 +205,14 @@ bool Player::getBooleanInput(string printStatement) {
     return output;
 }
 
-int Player::getIntegerInput(string printStatement) {
+int Player::getIntegerInput(string printStatement, int leftBound, int rightBound) {
     int output = 0;
     do {
         cout << printStatement << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> output;
-    } while (cin.fail());
+    } while (cin.fail() or output < leftBound or output >= rightBound);
     return output;
 }
 
