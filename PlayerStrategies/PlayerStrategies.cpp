@@ -76,7 +76,26 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
 }
 
 bool AggressivePlayerStrategy::issueOrder() {
-    return false;
+    //Issue deploy orders as long as player's reinforcement pool is not empty
+    if (player->getNumberofArmiesInReinforcementPool() > 0) {
+        player->issueDeployOrder();
+        return true;
+    } else { // Other orders
+        bool continueIssuingOrders = rand() % 2;
+        if (continueIssuingOrders) {
+            bool advance = player->getHandOfCards()->getCards().empty() || rand() % 2;
+            if (advance) { //Always issue an Advance order if player has an empty hand
+                player->issueDeployOrder();
+            } else {
+                // Pick a card
+                Card *cardChosen = player->getHandOfCards()->getNextCard();
+                if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
+                // Play card
+                player->issueOrderFromCard(cardChosen);
+            }
+        }
+        return continueIssuingOrders;
+    }
 }
 
 vector<Territory *> AggressivePlayerStrategy::toAttack() {
