@@ -1,41 +1,34 @@
 //#include <fstream>
 //#include "MapLoader.h"
 //
+//void loadMaps(const vector<string> conquestMapsToValidate, MapLoader *mapLoader);
+//
 //int main() {
+//    vector<string> conquestMapsToValidate = {"Asia.map", "Africa.map", "NY.map", "Oregon.map", "UnconnectedAfrica.map", "InvalidAfrica.map", "InvalidExtension.txt"};
+//    vector<string> regularMapsToValidate = {"Europe.map", "USInvalid"};
 //
-//    //TODO: Add comments in the map files about why they are invalid
-//    string conquestMapsToValidate[] = {"Asia.map", "Africa.map", "NY.map", "Oregon.map", "UnconnectedAfrica.map", "InvalidAfrica.map"};
-//    string regularMapsToValidate[] = {"Europe.map", "USInvalid"};
-//    Map *map;
 //    MapLoader *conquestMapLoader = new ConquestFileReaderAdapter();
+//    loadMaps(conquestMapsToValidate, conquestMapLoader);
+//
 //    MapLoader *mapLoader = new MapLoader();
+//    loadMaps(regularMapsToValidate, mapLoader);
 //
-//    for (const string& mapName: conquestMapsToValidate) {
-//        cout << "==========================================================" << endl;
-//        cout << "Loading " << mapName << " from maps/conquest_maps/" << endl;
-//        map = conquestMapLoader->loadMap(mapName);
-//        if (map != nullptr) {
-//            cout << *map << endl;
-//            map->validate();
-//        }
-//        cout << "==========================================================" << endl;
-//
-//    }
-//    for (const string& mapName: regularMapsToValidate) {
-//        cout << "==========================================================" << endl;
-//        cout << "Loading " << mapName << " from maps/domination_maps/" << endl;
-//        map = mapLoader->loadMap(mapName);
-//        if (map != nullptr) {
-//            cout << *map << endl;
-//            map->validate();
-//        }
-//        cout << "==========================================================" << endl;
-//
-//    }
-//
-//    delete map;
 //    delete conquestMapLoader;
 //    delete mapLoader;
 //}
 //
+//void loadMaps(const vector<string> conquestMapsToValidate, MapLoader *mapLoader) {
+//    for (string mapName: conquestMapsToValidate) {
+//        cout << "==========================================================" << endl;
+//        cout << "Loading " << mapName << " from maps/conquest_maps/" << endl;
+//        Map* map = mapLoader->loadMap(mapName);
+//        if (map != nullptr) {
+//            cout << *map << endl;
+//            map->validate();
+//        }
+//        cout << "==========================================================" << endl;
 //
+//        delete map;
+//        map = nullptr;
+//    }
+//}
