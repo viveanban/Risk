@@ -101,16 +101,12 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
 }
 
 bool BenevolentPlayerStrategy::issueOrder() {
-    //a benevolent computer player that focuses on protecting its weak countries
-    //(reinforces its weakest countries, never attacks, then fortifies in order
-    //to move armies to weaker countries)
-
     // Issue deploy orders as long as player's reinforcement pool is not empty
     if (this->player->getNumberofArmiesInReinforcementPool() > 0) {
         this->player->issueDeployOrder();
         return true;
     } else {
-        // since benevolent player cannot conquer a territory, he won't have a card, he can just move to weaker territories.
+        //Since benevolent player cannot conquer a territory, he won't have a card, he can just move to weaker territories.
         bool continueIssuingOrders = rand() % 2;
         if (continueIssuingOrders) {
             // sort his territories from strongest to weakest so he picks strongest territory as source territory
@@ -121,7 +117,6 @@ bool BenevolentPlayerStrategy::issueOrder() {
                       });
             this->player->issueAdvanceOrder();
         }
-
         return continueIssuingOrders;
     }
 }
