@@ -227,6 +227,8 @@ void AdvanceOrder::execute() {
 
 bool AdvanceOrder::issue() {
     auto territories = player->getTerritories();
+    bool attack;
+
     if (player->getIsHumanPlayer()) {
         // Determine src territory
         for (int i = 0; i < territories.size(); ++i) {
@@ -235,13 +237,13 @@ bool AdvanceOrder::issue() {
         sourceTerritory = territories.at(Player::getIntegerInput("Please pick a source territory to advance from: ", 0,
                                                                  territories.size()));
         // Pick attack or defend
-        bool attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
-        advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
+        attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
     } else {
         sourceTerritory = territories.at(rand() % player->getTerritories().size());
-        bool attack = rand() % 2;
-        advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
+        attack = rand() % 2;
     }
+
+    advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
 
     vector<Territory *> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(
             sourceTerritory);
@@ -270,7 +272,7 @@ bool AdvanceOrder::issue() {
 
     // Update priority
     sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAdvance);
-    targetTerritory->setPriority(attack ?
+    targetTerritory->setPriority( attack ?
                                  targetTerritory->getPriority() - numberOfArmiesToAdvance :
                                  targetTerritory->getPriority() + numberOfArmiesToAdvance);
 

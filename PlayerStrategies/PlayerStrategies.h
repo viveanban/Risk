@@ -3,11 +3,6 @@
 
 #include "../Player/Player.h"
 
-// Added end as an enum because this is what was recommended on StackOverflow to iterate over enum types
-enum Strategy {
-    human = 0, benevolent = 1, aggresive = 2, neutral = 3, end
-};
-
 class PlayerStrategy {
 protected:
     Player *player;

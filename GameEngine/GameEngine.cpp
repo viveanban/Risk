@@ -2,7 +2,6 @@
 #include "GameEngine.h"
 #include <set>
 #include "../MapLoader/MapLoader.h"
-#include "./../GameObservers/GameObservers.h"
 #include <random>
 #include <string>
 #include <iostream>
@@ -149,37 +148,32 @@ void GameEngine::setupPlayers() {
     }
 
     // Determine strategy for each player
-    for(int i = 0; i < Strategy::end; i++)
-    {
-        cout << i << " - " << (Strategy) i << endl;
-    }
+    vector<string> strategies = {"Human", "Benevolent", "Aggresive", "Neutral"};
+    for(int i = 0; i < 4; i++)
+        cout << i << " - " << strategies.at(i) << endl;
 
-    Strategy chosenStrategy;
+    int chosenStrategy;
     for(Player* player: players) {
-        chosenStrategy = (Strategy) Player::getIntegerInput(
-                "Please enter the chosen strategy for Player " + player->getPlayerName(), 0, 3);
-
-        // TODO: extract in method
-        switch (chosenStrategy) {
-            case human:
-                player->setStrategy(new HumanPlayerStrategy(player));
-                break;
-            case benevolent:
-                player->setStrategy(new BenevolentPlayerStrategy(player));
-                break;
-            case aggresive:
-                player->setStrategy(new AggressivePlayerStrategy(player));
-                break;
-            case neutral:
-                player->setStrategy(new NeutralPlayerStrategy(player));
-                break;
-            default:
-                break;
-        }
+        chosenStrategy = Player::getIntegerInput(
+                "Please enter the chosen strategy for " + player->getPlayerName(), 0, 4);
+        player->setStrategy(getPlayerStrategyFromUserInput(chosenStrategy, player));
     }
-
 }
 
+PlayerStrategy* GameEngine::getPlayerStrategyFromUserInput(int chosenStrategy, Player* player) {
+    switch (chosenStrategy) {
+        case 0:
+            return new HumanPlayerStrategy(player);
+        case 1:
+            return new BenevolentPlayerStrategy(player);
+        case 2:
+            return new AggressivePlayerStrategy(player);
+        case 3:
+            return new NeutralPlayerStrategy(player);
+        default:
+            return new NeutralPlayerStrategy(player); // TODO: check if everyone if that's chill b/c I don't want to deal with nullptr
+    }
+}
 
 bool GameEngine::isPhaseObserverActive() const {
     return phaseObserverActive;

@@ -9,16 +9,10 @@
 
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
-Player::Player(string playerName, PlayerStrategy *strategy) : playerName(playerName), handOfCards(new Hand()),
-                                                              orders(new OrdersList()),
-                                                              numberOfArmiesInReinforcementPool(0), territories(),
-                                                              strategy(strategy) {
-    if (auto humanPlayerStrategy = dynamic_cast<HumanPlayerStrategy *>(strategy)) {
-        isHumanPlayer = true;
-    } else {
-        isHumanPlayer = false;
-    }
-}
+Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()),
+                                    orders(new OrdersList()),
+                                    numberOfArmiesInReinforcementPool(0), territories(),
+                                    strategy(nullptr) {}
 
 Player::~Player() {
     delete handOfCards;
