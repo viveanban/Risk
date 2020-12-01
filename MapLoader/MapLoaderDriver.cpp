@@ -1,7 +1,7 @@
 //#include <fstream>
 //#include "MapLoader.h"
 //
-//void loadMaps(const vector<string>& conquestMapsToValidate, MapLoader *mapLoader);
+//void loadMaps(const vector<string>& mapsToValidate, MapLoader *mapLoader);
 //
 //int main() {
 //    vector<string> conquestMapsToValidate = {"Asia.map", "Africa.map", "NY.map", "Oregon.map", "UnconnectedAfrica.map", "InvalidAfrica.map", "InvalidExtension.txt"};
@@ -17,8 +17,8 @@
 //    delete mapLoader;
 //}
 //
-//void loadMaps(const vector<string>& conquestMapsToValidate, MapLoader *mapLoader) {
-//    for (const string& mapName: conquestMapsToValidate) {
+//void loadMaps(const vector<string>& mapsToValidate, MapLoader *mapLoader) {
+//    for (const string& mapName: mapsToValidate) {
 //        cout << "==========================================================" << endl;
 //        cout << "Loading " << mapName << " from maps/conquest_maps/" << endl;
 //        Map* map = mapLoader->loadMap(mapName);
