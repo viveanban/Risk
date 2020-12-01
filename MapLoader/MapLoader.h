@@ -113,9 +113,13 @@ private:
 public:
     ConquestFileReaderAdapter();
 
-    ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader);
+    ConquestFileReaderAdapter(const ConquestFileReaderAdapter &original);
 
-    //TODO: Add an assignment operator, a stream operator
+    ConquestFileReaderAdapter &operator=(const ConquestFileReaderAdapter &original);
+
+    friend ostream &operator<<(ostream &os, const ConquestFileReaderAdapter &reader);
+
+    ~ConquestFileReaderAdapter();
 
     /**
     * This method creates the Map object from a conquest map file and returns a pointer to it.

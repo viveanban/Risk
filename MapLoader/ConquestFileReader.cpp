@@ -25,6 +25,11 @@ ConquestFileReader::ConquestFileReader(const ConquestFileReader &original) {}
 
 ConquestFileReader &ConquestFileReader::operator=(const ConquestFileReader &original) { return *this; }
 
+ostream &operator<<(ostream &os, const ConquestFileReader &reader) {
+    return os << "ConquestFileReader: [continentList size =" << ConquestFileReader::continentsList.size()
+              << ", territoriesList size = " << ConquestFileReader::territoriesList.size() << "]";
+}
+
 ConquestFileReader::~ConquestFileReader() {}
 
 Map *ConquestFileReader::loadConquestMap(const string &mapName) {
