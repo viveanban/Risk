@@ -16,6 +16,8 @@ public:
     virtual vector<Territory *> toDefend() = 0;
 
     virtual vector<Territory *> toDefend(Territory *srcTerritory) = 0;
+
+    static void sortTerritoryListMostToLeastArmies(vector<Territory *> &territoryList);
 };
 
 /*
@@ -54,6 +56,8 @@ public:
     vector<Territory *> toAttack(Territory *srcTerritory) override;
 
     vector<Territory *> toDefend(Territory *srcTerritory) override;
+
+    static void discardDefensiveCards(vector<Card *> &cards);
 };
 
 /*

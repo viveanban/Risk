@@ -239,8 +239,8 @@ bool AdvanceOrder::issue() {
         bool attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
         advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
     } else {
-        sourceTerritory = territories.at(rand() % player->getTerritories().size());
-        bool attack = rand() % 2;
+        bool attack = true; // TODO: merge here
+        sourceTerritory = territories.at(0);
         advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
     }
 

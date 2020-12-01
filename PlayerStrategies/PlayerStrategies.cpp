@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "PlayerStrategies.h"
 #include "../GameEngine/GameEngine.h"
 
@@ -41,12 +42,10 @@ vector<Territory *> HumanPlayerStrategy::toAttack() {
         if (territory->getOwner() != this->player)
             territoriesToAttack.push_back(territory);
     }
-    // don't need to sort for human player because they can choose any from list.
     return territoriesToAttack;
 }
 
 vector<Territory *> HumanPlayerStrategy::toDefend() {
-    // don't need to sort for human player because they can choose any from list.
     return player->getTerritories();
 }
 
@@ -56,7 +55,6 @@ vector<Territory *> HumanPlayerStrategy::toAttack(Territory *srcTerritory) {
         if (territory->getOwner() != this->player)
             territoriesToAttack.push_back(territory);
     }
-    // don't need to sort for human player because they can choose any from list.
     return territoriesToAttack;
 }
 
@@ -66,7 +64,6 @@ vector<Territory *> HumanPlayerStrategy::toDefend(Territory *srcTerritory) {
         if (adjacentTerritory->getOwner() == this->player)
             territoriesToDefend.push_back(adjacentTerritory);
     }
-    // don't need to sort for human player because they can choose any from list.
     return territoriesToDefend;
 }
 
@@ -76,6 +73,7 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
 }
 
 bool AggressivePlayerStrategy::issueOrder() {
+    sortTerritoryListMostToLeastArmies(player->getTerritories());
     //Issue deploy orders as long as player's reinforcement pool is not empty
     if (player->getNumberofArmiesInReinforcementPool() > 0) {
         player->issueDeployOrder();
@@ -85,9 +83,10 @@ bool AggressivePlayerStrategy::issueOrder() {
         if (continueIssuingOrders) {
             bool advance = player->getHandOfCards()->getCards().empty() || rand() % 2;
             if (advance) { //Always issue an Advance order if player has an empty hand
-                player->issueDeployOrder();
+                player->issueAdvanceOrder();
             } else {
                 // Pick a card
+                discardDefensiveCards(player->getHandOfCards()->getCards());
                 Card *cardChosen = player->getHandOfCards()->getNextCard();
                 if (!cardChosen) return continueIssuingOrders; // if the reinforcement card was picked, just continue...
                 // Play card
@@ -99,19 +98,42 @@ bool AggressivePlayerStrategy::issueOrder() {
 }
 
 vector<Territory *> AggressivePlayerStrategy::toAttack() {
-    return vector<Territory *>();
+    vector<Territory *> territoriesToAttack;
+    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+    return territoriesToAttack;
 }
 
 vector<Territory *> AggressivePlayerStrategy::toDefend() {
-    return vector<Territory *>();
+    return this->player->getTerritories();
 }
 
 vector<Territory *> AggressivePlayerStrategy::toAttack(Territory *srcTerritory) {
-    return vector<Territory *>();
+    vector<Territory *> territoriesToAttack;
+    for (Territory *territory: srcTerritory->getAdjList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+    return territoriesToAttack;
 }
 
 vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) {
-    return vector<Territory *>();
+    vector<Territory *> territoriesToDefend;
+    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+        if (adjacentTerritory->getOwner() == this->player)
+            territoriesToDefend.push_back(adjacentTerritory);
+    }
+    return territoriesToDefend;
+}
+
+void AggressivePlayerStrategy::discardDefensiveCards(vector<Card *> &cards) {
+    cards.erase(remove_if(cards.begin(), cards.end(), [](const Card &card) {
+        return card.getType() == Card::blockade
+               or card.getType() == Card::airlift
+               or card.getType() == Card::diplomacy;
+    }), cards.end());
 }
 
 // BENEVOLENT PLAYER STRATEGY
@@ -163,4 +185,10 @@ vector<Territory *> NeutralPlayerStrategy::toAttack(Territory *srcTerritory) {
 
 vector<Territory *> NeutralPlayerStrategy::toDefend(Territory *srcTerritory) {
     return vector<Territory *>();
+}
+
+void PlayerStrategy::sortTerritoryListMostToLeastArmies(vector<Territory *> &territoryList) {
+    sort(territoryList.begin(), territoryList.end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() > rhs->getPriority();
+    });
 }

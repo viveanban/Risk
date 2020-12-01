@@ -202,7 +202,7 @@ Hand::~Hand() {
     }
 }
 
-const vector<Card *> &Hand::getCards() const {
+vector<Card *> &Hand::getCards() {
     return cards;
 }
 

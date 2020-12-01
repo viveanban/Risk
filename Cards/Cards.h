@@ -92,7 +92,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &stream, const Hand &c);
 
-    const vector<Card *> &getCards() const;
+    vector<Card *> &getCards();
 
     // Returns a card that is not a reinforcement card
     Card* getNextCard();
