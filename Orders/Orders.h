@@ -18,7 +18,6 @@ private:
     int priority; // Smaller number means higher priority
 
 protected:
-
     Player *player;
 
     /**

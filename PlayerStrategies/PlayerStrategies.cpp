@@ -1,6 +1,8 @@
 #include "PlayerStrategies.h"
 #include "../GameEngine/GameEngine.h"
 
+PlayerStrategy::~PlayerStrategy() = default;
+
 // HUMAN PLAYER STRATEGY
 HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
     this->player = player;

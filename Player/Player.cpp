@@ -20,7 +20,6 @@ Player::Player(string playerName, PlayerStrategy *strategy) : playerName(playerN
     }
 }
 
-// TODO: delete strategy?
 Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
@@ -29,6 +28,10 @@ Player::~Player() {
     delete orders;
     orders = nullptr;
     cout << "Deleted orders" << endl;
+
+    delete strategy;
+    strategy = nullptr;
+    cout << "Deleted strategy" << endl;
 }
 
 Player::Player(const Player &original) {

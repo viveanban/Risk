@@ -3,6 +3,11 @@
 
 #include "../Player/Player.h"
 
+// Added end as an enum because this is what was recommended on StackOverflow to iterate over enum types
+enum Strategy {
+    human = 0, benevolent = 1, aggresive = 2, neutral = 3, end
+};
+
 class PlayerStrategy {
 protected:
     Player *player;
@@ -16,12 +21,14 @@ public:
     virtual vector<Territory *> toDefend() = 0;
 
     virtual vector<Territory *> toDefend(Territory *srcTerritory) = 0;
+
+    virtual ~PlayerStrategy();
 };
 
 /*
  * Human player that requires user interaction to make decisions.
  */
-class HumanPlayerStrategy : PlayerStrategy {
+class HumanPlayerStrategy : public PlayerStrategy {
 public:
     explicit HumanPlayerStrategy(Player *player);
 
@@ -41,7 +48,7 @@ public:
  * on attack (reinforces its strongest country, then always attack with it until it cannot attack anymore,
  * then fortifies in order to maximize aggregation of forces in one country.
  */
-class AggressivePlayerStrategy : PlayerStrategy {
+class AggressivePlayerStrategy : public PlayerStrategy {
 public:
     explicit AggressivePlayerStrategy(Player *player);
 
@@ -61,7 +68,7 @@ public:
  * (reinforces its weakest countries, never attacks,
  * then fortifies in order to move armies to weaker countries.
  */
-class BenevolentPlayerStrategy : PlayerStrategy {
+class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
     explicit BenevolentPlayerStrategy(Player *player);
 
@@ -79,7 +86,7 @@ public:
 /*
  * A neutral player that never issues any order.
  */
-class NeutralPlayerStrategy : PlayerStrategy {
+class NeutralPlayerStrategy : public PlayerStrategy {
 public:
     explicit NeutralPlayerStrategy(Player *player);
 

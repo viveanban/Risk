@@ -19,8 +19,8 @@ using namespace std;
 void GameEngine::initializeGame() {
     selectMap();
     selectPlayerNumber();
-    setupObservers();
     setupPlayers();
+    setupObservers();
     this->deck = new Deck(50);
     cout << *deck;
     gameState->setTotalTerritories(map->getTerritoryList().size());
@@ -148,6 +148,37 @@ void GameEngine::setupPlayers() {
     for (int i = 0; i < this->getNumPlayer(); i++) {
         this->players.push_back(new Player("Player " + to_string(i + 1)));
     }
+
+    // Determine strategy for each player
+    for(int i = 0; i < Strategy::end; i++)
+    {
+        cout << i << " - " << (Strategy) i << endl;
+    }
+
+    Strategy chosenStrategy;
+    for(Player* player: players) {
+        chosenStrategy = (Strategy) Player::getIntegerInput(
+                "Please enter the chosen strategy for Player " + player->getPlayerName(), 0, 3);
+
+        // TODO: extract in method
+        switch (chosenStrategy) {
+            case human:
+                player->setStrategy(new HumanPlayerStrategy(player));
+                break;
+            case benevolent:
+                player->setStrategy(new BenevolentPlayerStrategy(player));
+                break;
+            case aggresive:
+                player->setStrategy(new AggressivePlayerStrategy(player));
+                break;
+            case neutral:
+                player->setStrategy(new NeutralPlayerStrategy(player));
+                break;
+            default:
+                break;
+        }
+    }
+
 }
 
 
