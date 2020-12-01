@@ -27,14 +27,13 @@ void GameEngine::initializeGame() {
 }
 
 void GameEngine::selectMap() {
-    //TODO: Change the map directory according to the type of map
-    const string MAP_DIRECTORY = "../maps/conquest_maps/";
+    MapType chosenType = selectMapType();
+    const string MAP_DIRECTORY = chosenType == MapType::conquest ? "../maps/conquest_maps/" : "../maps/domination_maps/";
     int chosenMap;
     ifstream inputFile;
     do {
         cout << "Please enter the number of the game Map you wish to play from the following list:" << endl;
-        auto path = "../maps/conquest_maps/";
-        setAvailableMaps(path);
+        setAvailableMaps(MAP_DIRECTORY.c_str());
         for (int i = 1; i <= availableMaps.size(); i++) {
             cout << i << " - " << availableMaps.at(i - 1) << endl;
         }
@@ -45,12 +44,46 @@ void GameEngine::selectMap() {
             cout << "Please pick another map now: " << endl;
             chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
-        MapLoader *mapLoader = new ConquestFileReaderAdapter();
+        MapLoader *mapLoader = chosenType == MapType::conquest ? new ConquestFileReaderAdapter() : new MapLoader();
         this->map = mapLoader->loadMap(availableMaps.at(chosenMap - 1));
         delete mapLoader;
         mapLoader = nullptr;
     } while (map == NULL or !map->validate());
     inputFile.close();
+}
+
+GameEngine::MapType GameEngine::selectMapType(){
+
+    cout << "Please enter the number of the map type you wish to play from:" << endl;
+    auto path = "../maps/conquest_maps/";
+    cout << 0 << " - " << "Conquest Maps" << endl;
+    cout << 1 << " - " << "Domination Maps" << endl;
+
+    int chosenType;
+
+    while (true) {
+        cin >> chosenType;
+
+        // If the input is invalid
+        if (cin.fail() || chosenType > 1 || chosenType < 0) {
+            cout << "Hey you made a mistake. ";
+            cout << "Please pick another map type now: " << endl;
+
+            cin.clear();
+            chosenType = -1;
+            // discard 'bad' character(s)
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        switch (chosenType) {
+            case 0:
+                return MapType::conquest;
+            case 1:
+                return MapType::domination;
+            default:
+                break;
+        }
+    }
 }
 
 int GameEngine::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const {
