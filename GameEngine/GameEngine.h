@@ -9,7 +9,6 @@
 /**
  * The GameEngine class is a Singleton and it represents the entire game
  */
- //TODO: Suggestion: add a field MapType that will be set in the gameEngine (depending on which type to run, the correct map file reader will be called)
 class GameEngine {
 private:
     vector<string> availableMaps;
@@ -22,6 +21,8 @@ private:
     Deck *deck;
     GameState *gameState;
 
+    enum MapType {conquest, domination};
+
     // Default constructor
     GameEngine();
 
@@ -30,6 +31,12 @@ private:
      * to the user and prompting him for a map
      */
     void selectMap();
+
+    /**
+     * SelectMapType is responsible for displaying available map types (i.e Conquest and Domination)
+     * to the user and prompting them for a map type
+     */
+    MapType selectMapType();
 
     /**
      * selectPlayerNumber is responsible for prompting the user on how many players he wants
