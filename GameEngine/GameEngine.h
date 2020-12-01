@@ -91,6 +91,9 @@ private:
     // Gets the number of armies each player should receive at the start of the game based on the number of players
     int getInitialArmyNumber();
 
+    // Creates a new player strategy based on the user input and returns a pointer to the newly created strategy
+    static PlayerStrategy *getPlayerStrategyFromUserInput(int chosenStrategy, Player *player);
+
 public:
     // Returns the singleton instance of the GameEngine
     static GameEngine *getInstance();

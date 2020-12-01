@@ -30,34 +30,8 @@ private:
     set<Player *> playersNotToAttack;
 
     PlayerStrategy* strategy;
-private:
 
-    /**
-     * Sort all territories from the list from the one with least unitNbr to the one with highest unitNbr
-     * @param territoryList: represents the territoryList to sort
-     */
-    void sortTerritoryList(vector<Territory *> &territoryList);
-
-    /**
-     * Randomly decide if the player plays his reinforcement card, if yes then add +5 unit armies to the player.
-     */
-    void playReinforcementCard();
-
-    /**
-     * Issue a deploy order and potentially a reinforcement card.
-     */
-    void issueDeployOrder();
-
-    /**
-     * Issue an advance order, randomly decides whether to attack or defend and select a random territory to do so.
-     */
-    void issueAdvanceOrder();
-
-    /**
-     * Issue any non-deploy and non-advance order triggered by a card.
-     * @param cardChosen : card to play
-     */
-    void issueOrderFromCard(Card *cardChosen);
+    bool isHumanPlayer;
 
 public:
     static Player *neutralPlayer;
@@ -113,6 +87,33 @@ public:
     bool issueOrder();
 
     /**
+     * Sort all territories from the list from the one with least unitNbr to the one with highest unitNbr
+     * @param territoryList: represents the territoryList to sort
+     */
+    void sortTerritoryList(vector<Territory *> &territoryList);
+
+    /**
+     * Randomly decide if the player plays his reinforcement card, if yes then add +5 unit armies to the player.
+     */
+    void playReinforcementCard();
+
+    /**
+     * Issue a deploy order and potentially a reinforcement card.
+     */
+    void issueDeployOrder();
+
+    /**
+     * Issue an advance order, randomly decides whether to attack or defend and select a random territory to do so.
+     */
+    void issueAdvanceOrder();
+
+    /**
+     * Issue any non-deploy and non-advance order triggered by a card.
+     * @param cardChosen : card to play
+     */
+    void issueOrderFromCard(Card *cardChosen);
+
+    /**
      * Add a territory to the list of territory owned by the player
      * @param territory : territory to add to the list of owned territory by the user.
      */
@@ -140,10 +141,15 @@ public:
     // Setters
     void setNumberOfArmiesInReinforcementPool(int numberOfArmies);
 
-    void setStrategy(PlayerStrategy &strategy);
+    void setStrategy(PlayerStrategy *playerStrategy);
 
     PlayerStrategy *getStrategy() const;
 
+    bool getIsHumanPlayer() const;
+
+    static bool getBooleanInput(string printStatement);
+
+    static int getIntegerInput(string printStatement, int leftBound, int rightBound);
 };
 
 #endif //RISK_PLAYER_H

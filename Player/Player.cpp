@@ -9,16 +9,11 @@
 
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
-// TODO: might remove this cstor
-Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()), orders(new OrdersList()),
-                                    numberOfArmiesInReinforcementPool(0), territories() {}
+Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()),
+                                    orders(new OrdersList()),
+                                    numberOfArmiesInReinforcementPool(0), territories(),
+                                    strategy(nullptr) {}
 
-Player::Player(string playerName, PlayerStrategy* strategy) : playerName(playerName), handOfCards(new Hand()),
-                                                             orders(new OrdersList()),
-                                                             numberOfArmiesInReinforcementPool(0), territories(),
-                                                             strategy(strategy) {}
-
-// TODO: delete strategy?
 Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
@@ -27,6 +22,10 @@ Player::~Player() {
     delete orders;
     orders = nullptr;
     cout << "Deleted orders" << endl;
+
+    delete strategy;
+    strategy = nullptr;
+    cout << "Deleted strategy" << endl;
 }
 
 Player::Player(const Player &original) {
@@ -90,11 +89,11 @@ vector<Territory *> Player::toDefend() {
 }
 
 vector<Territory *> Player::toDefend(Territory *srcTerritory) {
-    vector<Territory *> territoriesToDefend;
-    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
-        if (adjacentTerritory->getOwner() == this)
-            territoriesToDefend.push_back(adjacentTerritory);
-    }
+//    vector<Territory *> territoriesToDefend;
+//    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+//        if (adjacentTerritory->getOwner() == this)
+//            territoriesToDefend.push_back(adjacentTerritory);
+//    }
 //    sortTerritoryList(territoriesToDefend);
 //    return territoriesToDefend;
     return this->strategy->toDefend(srcTerritory);
@@ -115,12 +114,12 @@ vector<Territory *> Player::toAttack() {
 }
 
 vector<Territory *> Player::toAttack(Territory *srcTerritory) {
-    vector<Territory *> territoriesToAttack;
-
-    for (Territory *territory: srcTerritory->getAdjList()) {
-        if (territory->getOwner() != this)
-            territoriesToAttack.push_back(territory);
-    }
+//    vector<Territory *> territoriesToAttack;
+//
+//    for (Territory *territory: srcTerritory->getAdjList()) {
+//        if (territory->getOwner() != this)
+//            territoriesToAttack.push_back(territory);
+//    }
 //    sortTerritoryList(territoriesToAttack);
 //
 //    return territoriesToAttack;
@@ -134,7 +133,7 @@ void Player::sortTerritoryList(vector<Territory *> &territoryList) {
 }
 
 bool Player::issueOrder() {
-//    // Issue deploy orders as long as player's reinforcement pool is not empty
+    // Issue deploy orders as long as player's reinforcement pool is not empty
 //    if (numberOfArmiesInReinforcementPool > 0) {
 //        issueDeployOrder();
 //        return true;
@@ -176,7 +175,12 @@ void Player::issueDeployOrder() {
 void Player::playReinforcementCard() {
     for (Card *card: handOfCards->getCards()) {
         if (card->getType() == Card::reinforcement) {
-            bool playReinforcementCard = rand() % 2;
+            bool playReinforcementCard;
+            if (isHumanPlayer) {
+                playReinforcementCard = getBooleanInput("Would you like to play the reinforcement card? [true/false]");
+            } else {
+                playReinforcementCard = rand() % 2;
+            }
             if (playReinforcementCard) {
                 numberOfArmiesInReinforcementPool += numberOfArmiesInReinforcementPool + 5;
                 handOfCards->removeCard(card);
@@ -185,6 +189,28 @@ void Player::playReinforcementCard() {
             break;
         }
     }
+}
+
+bool Player::getBooleanInput(string printStatement) {
+    bool output = false;
+    do {
+        cout << printStatement << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> boolalpha >> output;
+    } while (cin.fail());
+    return output;
+}
+
+int Player::getIntegerInput(string printStatement, int leftBound, int rightBound) {
+    int output = 0;
+    do {
+        cout << printStatement << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> output;
+    } while (cin.fail() or output < leftBound or output >= rightBound);
+    return output;
 }
 
 void Player::issueAdvanceOrder() {
@@ -243,11 +269,20 @@ void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcem
     this->numberOfArmiesInReinforcementPool = numberOfArmiesInReinforcementPool;
 }
 
-// TODO: not working, commented out for now
-void Player::setStrategy(PlayerStrategy &strategy) {
-//    this->strategy = strategy;
+// TODO: Check if this works
+void Player::setStrategy(PlayerStrategy *playerStrategy) {
+    this->strategy = playerStrategy;
+    if (dynamic_cast<HumanPlayerStrategy *>(playerStrategy) != nullptr) {
+        isHumanPlayer = true;
+    } else {
+        isHumanPlayer = false;
+    }
 }
 
 PlayerStrategy *Player::getStrategy() const {
     return strategy;
+}
+
+bool Player::getIsHumanPlayer() const {
+    return isHumanPlayer;
 }
