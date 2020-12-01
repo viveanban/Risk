@@ -278,7 +278,7 @@ void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcem
 // TODO: Check if this works
 void Player::setStrategy(PlayerStrategy *playerStrategy) {
     this->strategy = playerStrategy;
-    if (auto humanPlayerStrategy = dynamic_cast<HumanPlayerStrategy *>(playerStrategy)) {
+    if (dynamic_cast<HumanPlayerStrategy *>(playerStrategy) != nullptr) {
         isHumanPlayer = true;
     } else {
         isHumanPlayer = false;

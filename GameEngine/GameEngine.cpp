@@ -27,7 +27,6 @@ void GameEngine::initializeGame() {
 }
 
 void GameEngine::selectMap() {
-    //TODO: Change the map directory according to the type of map
     const string MAP_DIRECTORY = "../maps/conquest_maps/";
     int chosenMap;
     ifstream inputFile;

@@ -7,7 +7,6 @@
 #include <iostream>
 #include "../Map/Map.h"
 
-//TODO: As per the TA's recommendation, join this file with the maploader.cpp/h
 class ConquestFileReader {
 private:
     enum Section {
