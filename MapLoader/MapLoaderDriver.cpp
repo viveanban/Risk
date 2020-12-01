@@ -7,8 +7,7 @@
 //    string conquestMapsToValidate[] = {"Asia.map", "Africa.map", "NY.map", "Oregon.map", "UnconnectedAfrica.map", "InvalidAfrica.map"};
 //    string regularMapsToValidate[] = {"Europe.map", "USInvalid"};
 //    Map *map;
-//    ConquestFileReader conquestFileReader;
-//    MapLoader *conquestMapLoader = new ConquestFileReaderAdapter(conquestFileReader);
+//    MapLoader *conquestMapLoader = new ConquestFileReaderAdapter();
 //    MapLoader *mapLoader = new MapLoader();
 //
 //    for (const string& mapName: conquestMapsToValidate) {
