@@ -307,6 +307,9 @@ bool Map::isContinentSubgraphConnected() {
         int currentTerritoryId = territoriesToVisit.top();
         Territory *currentTerritory = getTerritoryById(currentTerritoryId);
         territoriesToVisit.pop();
+        visitedContinents.insert(currentTerritory->getContinentId());
+        seenTerritories.insert(currentTerritory->getTerritoryId());
+
 
         for (Territory * territory : currentTerritory->getAdjList()) {
             // If we see the territory for the first time, add it to the territories to visit
@@ -314,7 +317,7 @@ bool Map::isContinentSubgraphConnected() {
                 territoriesToVisit.push(territory->getTerritoryId());
                 seenTerritories.insert(territory->getTerritoryId());
                 // Add continent to the set of visitedContinents
-                visitedContinents.insert(currentTerritory->getContinentId());
+                visitedContinents.insert(territory->getContinentId());
             }
         }
     }
@@ -348,8 +351,9 @@ bool Map::validate() {
     bool connectedContinents = isContinentSubgraphConnected();
     bool uniqueTerritories = isTerritoryContinentUnique();
     cout << "Validating Map..." << endl;
-    cout << boolalpha << "All Territories are connected: " << connectedTerritories << ", All Continents are connected: "
-         << connectedContinents
+    cout << boolalpha
+         << "All Territories are connected: " << connectedTerritories
+         << ", All Continents are connected: " << connectedContinents
          << ", All Territories are unique: " << uniqueTerritories << endl;
     bool isValid = connectedTerritories &&
                    connectedContinents &&

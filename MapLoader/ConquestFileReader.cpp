@@ -132,6 +132,8 @@ Territory *ConquestFileReader::createTerritories(const string &line, int &territ
             nameToTerritoryMap[token] = territory;
         } else if (counter == 3) {
             Continent* continent = nameToContinentMap[token];
+            if(continent == nullptr)
+                MapLoader::throwInvalidMapException();
             territory->setContinentId(continent->getContinentId());
             continent->getTerritories().push_back(territory);
         } else if (counter >= 4) {
