@@ -13,7 +13,7 @@ using namespace std;
  */
 
 const string MapLoader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
-const string MapLoader::MAP_DIRECTORY = "../maps/";
+const string MapLoader::MAP_DIRECTORY = "../maps/domination_maps/";
 const string MapLoader::CONTINENT_REGEX = "([A-Z]|[a-z]|_|-|[0-9])+\\s+(\\d+|\\d+\\s.*)";
 const string MapLoader::COUNTRY_REGEX = "\\d+\\s+([A-Z]|[a-z]|_|-|[0-9])+\\s+(\\d+|\\d+\\s.*)";
 const string MapLoader::BORDER_REGEX = "(\\d+\\s+)+\\d+";

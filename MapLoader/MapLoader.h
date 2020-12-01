@@ -115,6 +115,8 @@ public:
 
     ConquestFileReaderAdapter(const ConquestFileReader &conquestFileReader);
 
+    //TODO: Add an assignment operator, a stream operator
+
     /**
     * This method creates the Map object from a conquest map file and returns a pointer to it.
     * @return Map pointer.

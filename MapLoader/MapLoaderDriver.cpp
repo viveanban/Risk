@@ -1,9 +1,9 @@
-////TODO: Test ConquestFileReader with Asia.map (validation of connected continents fail; check if it's true)
 //#include <fstream>
 //#include "MapLoader.h"
 //
 //int main() {
 //
+//    //TODO: Add comments in the map files about why they are invalid
 //    string conquestMapsToValidate[] = {"Asia.map", "Africa.map", "NY.map", "Oregon.map", "UnconnectedAfrica.map", "InvalidAfrica.map"};
 //    string regularMapsToValidate[] = {"Europe.map", "USInvalid"};
 //    Map *map;
@@ -24,7 +24,7 @@
 //    }
 //    for (const string& mapName: regularMapsToValidate) {
 //        cout << "==========================================================" << endl;
-//        cout << "Loading " << mapName << " from maps/" << endl;
+//        cout << "Loading " << mapName << " from maps/domination_maps/" << endl;
 //        map = mapLoader->loadMap(mapName);
 //        if (map != nullptr) {
 //            cout << *map << endl;

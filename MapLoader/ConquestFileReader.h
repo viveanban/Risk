@@ -76,6 +76,7 @@ public:
 
     ConquestFileReader &operator=(const ConquestFileReader &original);
 
+    //TODO: Add a stream operator
     ~ConquestFileReader();
 
     static Map *loadConquestMap(const string &conquestMapName);

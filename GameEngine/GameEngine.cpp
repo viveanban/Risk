@@ -55,7 +55,6 @@ void GameEngine::selectMap() {
 GameEngine::MapType GameEngine::selectMapType(){
 
     cout << "Please enter the number of the map type you wish to play from:" << endl;
-    auto path = "../maps/conquest_maps/";
     cout << 0 << " - " << "Conquest Maps" << endl;
     cout << 1 << " - " << "Domination Maps" << endl;
 
