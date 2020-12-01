@@ -1,3 +1,5 @@
+; This map is invalid because all the continents are not connected
+
 [Map]
 author=Sean O'Connor
 warn=yes

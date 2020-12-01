@@ -1,3 +1,5 @@
+; This map is invalid because a territory entry is in an incorrect format
+
 [Map]
 author=Sean O'Connor
 warn=yes
