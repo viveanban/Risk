@@ -98,13 +98,6 @@ vector<Territory *> Player::toAttack(Territory *srcTerritory) {
     return this->strategy->toAttack(srcTerritory);
 }
 
-// TODO: where is this used?
-void Player::sortTerritoryList(vector<Territory *> &territoryList) {
-    sort(territoryList.begin(), territoryList.end(), [](Territory *lhs, Territory *rhs) {
-        return lhs->getPriority() < rhs->getPriority();
-    });
-}
-
 bool Player::issueOrder() {
     return this->strategy->issueOrder();
 }
@@ -140,6 +133,7 @@ void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcem
 }
 
 void Player::setStrategy(PlayerStrategy *playerStrategy) {
+    // todo: check if there was a strategy before, if yes, delete it before assigning new strategy (Ferdou)
     this->strategy = playerStrategy;
 }
 

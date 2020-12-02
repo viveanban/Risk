@@ -3,6 +3,7 @@
 
 #include "../Player/Player.h"
 
+// TODO: correct copy constructor, assignment operator, and stream insertion operator. (Abhijit)
 class PlayerStrategy {
 protected:
     Player *player;
@@ -112,6 +113,8 @@ public:
 
     bool issueOrder() override;
 
+    bool setUpAdvanceOrder(AdvanceOrder* order) override;
+
     vector<Territory *> toAttack() override;
 
     vector<Territory *> toDefend() override;
@@ -131,6 +134,8 @@ public:
     explicit BenevolentPlayerStrategy(Player *player);
 
     bool issueOrder() override;
+
+    bool setUpAdvanceOrder(AdvanceOrder* order) override;
 
     /**
      * toAttack takes care of returning a list of territories that the player can attack
@@ -181,4 +186,25 @@ public:
     vector<Territory *> toDefend(Territory *srcTerritory) override;
 };
 
+/*
+ * A random player that issues can both defend and attack using the most appropriate territories.
+ */
+class RandomPlayerStrategy : public PlayerStrategy {
+public:
+    explicit RandomPlayerStrategy(Player *player);
+
+    bool issueOrder() override;
+
+    bool setUpDeployOrder(DeployOrder *order) override;
+
+    bool setUpAdvanceOrder(AdvanceOrder *order) override;
+
+    vector<Territory *> toAttack() override;
+
+    vector<Territory *> toDefend() override;
+
+    vector<Territory *> toAttack(Territory *srcTerritory) override;
+
+    vector<Territory *> toDefend(Territory *srcTerritory) override;
+};
 #endif //RISK_PLAYERSTRATEGIES_H

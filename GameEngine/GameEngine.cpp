@@ -181,7 +181,7 @@ void GameEngine::setupPlayers() {
     }
 
     // Determine strategy for each player
-    vector<string> strategies = {"Human", "Benevolent", "Aggresive", "Neutral"};
+    vector<string> strategies = {"Human", "Benevolent", "Aggresive", "Neutral", "Random"};
     for(int i = 0; i < strategies.size(); i++)
         cout << i << " - " << strategies.at(i) << endl;
 
@@ -204,7 +204,7 @@ PlayerStrategy* GameEngine::getPlayerStrategyFromUserInput(int chosenStrategy, P
         case 3:
             return new NeutralPlayerStrategy(player);
         default:
-            return new NeutralPlayerStrategy(player); // TODO: check if everyone if that's chill b/c I don't want to deal with nullptr
+            return new RandomPlayerStrategy(player); // TODO: remeber to remove this at the end (Viveka)
     }
 }
 
@@ -385,8 +385,9 @@ void GameEngine::issueOrdersPhase() {
     vector<Player *> playersWithNoMoreOrderstoIssue;
     while (playersWithNoMoreOrderstoIssue.size() != players.size()) {
         for (Player *player: players) {
-            if (find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
-                playersWithNoMoreOrderstoIssue.end()) {
+            bool playerIsFinishedIssuingOrders = find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
+                                                 playersWithNoMoreOrderstoIssue.end();
+            if (playerIsFinishedIssuingOrders) {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
                     gameState->updateGameState(player, issuing_orders, nullptr, nullptr);
