@@ -83,12 +83,6 @@ public:
     bool issueOrder();
 
     /**
-     * Sort all territories from the list from the one with least unitNbr to the one with highest unitNbr
-     * @param territoryList: represents the territoryList to sort
-     */
-    void sortTerritoryList(vector<Territory *> &territoryList);
-
-    /**
      * Add a territory to the list of territory owned by the player
      * @param territory : territory to add to the list of owned territory by the user.
      */
