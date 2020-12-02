@@ -182,13 +182,13 @@ void GameEngine::setupPlayers() {
 
     // Determine strategy for each player
     vector<string> strategies = {"Human", "Benevolent", "Aggresive", "Neutral"};
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < strategies.size(); i++)
         cout << i << " - " << strategies.at(i) << endl;
 
     int chosenStrategy;
     for(Player* player: players) {
-        chosenStrategy = Player::getIntegerInput(
-                "Please enter the chosen strategy for " + player->getPlayerName(), 0, 4);
+        chosenStrategy = PlayerStrategy::getIntegerInput(
+                "Please enter the chosen strategy for " + player->getPlayerName(), 0, strategies.size());
         player->setStrategy(getPlayerStrategyFromUserInput(chosenStrategy, player));
     }
 }

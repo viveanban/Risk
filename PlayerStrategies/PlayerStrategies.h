@@ -17,7 +17,56 @@ public:
 
     virtual vector<Territory *> toDefend(Territory *srcTerritory) = 0;
 
+    // ----------Deploy Order methods--------------
+
+    /**
+     * Issue a deploy order and potentially a reinforcement card.
+     */
+    virtual void issueDeployOrder();
+
+    virtual bool setUpDeployOrder(DeployOrder* order);
+
+    /**
+     * Randomly decide if the player plays his reinforcement card, if yes then add +5 unit armies to the player.
+     */
+    virtual void playReinforcementCard();
+
+    // ----------Deploy Order methods--------------
+
+    // ----------Advance Order methods--------------
+
+    /**
+     * Issue an advance order, randomly decides whether to attack or defend and select a random territory to do so.
+     */
+    virtual void issueAdvanceOrder();
+
+    virtual bool setUpAdvanceOrder(AdvanceOrder* order);
+
+    // ----------Advance Order methods--------------
+
+    // ----------Other Order methods--------------
+
+    /**
+     * Issue any non-deploy and non-advance order triggered by a card.
+     * @param cardChosen : card to play
+     */
+    virtual void issueOrderFromCard(Card* cardChosen);
+
+    virtual bool issueBombOrder(BombOrder* order);
+
+    virtual bool issueBlockadeOrder(BlockadeOrder* order);
+
+    virtual bool issueAirliftOrder(AirliftOrder* order);
+
+    virtual bool issueNegotiateOrder(NegotiateOrder* order);
+
+    // ----------Advance Order methods--------------
+
     virtual ~PlayerStrategy();
+
+    static bool getBooleanInput(string printStatement);
+
+    static int getIntegerInput(string printStatement, int leftBound, int rightBound);
 };
 
 /*
@@ -36,6 +85,20 @@ public:
     vector<Territory *> toAttack(Territory *srcTerritory) override;
 
     vector<Territory *> toDefend(Territory *srcTerritory) override;
+
+    bool setUpDeployOrder(DeployOrder *order) override;
+
+    void playReinforcementCard() override;
+
+    bool setUpAdvanceOrder(AdvanceOrder* order) override;
+
+    bool issueBombOrder(BombOrder* order) override;
+
+    bool issueBlockadeOrder(BlockadeOrder* order) override;
+
+    bool issueAirliftOrder(AirliftOrder* order) override;
+
+    bool issueNegotiateOrder(NegotiateOrder* order) override;
 };
 
 /*

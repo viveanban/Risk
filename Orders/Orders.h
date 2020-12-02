@@ -41,12 +41,6 @@ public:
      */
     virtual void execute() = 0;
 
-    /**
-     * Player assigned to this order will issue it
-     * @return true if order is issued successfully
-     */
-    virtual bool issue() = 0;
-
     const string &getName() const;
 
     int getPriority() const;
@@ -76,11 +70,13 @@ public:
 
     void execute() override;
 
-    bool issue() override;
-
     Territory *getTargetTerritory() const;
 
     int getNumberOfArmiesToDeploy() const;
+
+    void setTargetTerritory(Territory *targetTerritory);
+
+    void setNumberOfArmiesToDeploy(int numberOfArmiesToDeploy);
 };
 
 enum AdvanceOrderType {
@@ -118,8 +114,6 @@ public:
 
     void execute() override;
 
-    bool issue() override;
-
     Territory *getSourceTerritory() const;
 
     Territory *getTargetTerritory() const;
@@ -127,6 +121,14 @@ public:
     int getNumberOfArmiesToAdvance() const;
 
     AdvanceOrderType getAdvanceOrderType() const;
+
+    void setSourceTerritory(Territory *sourceTerritory);
+
+    void setTargetTerritory(Territory *targetTerritory);
+
+    void setAdvanceOrderType(AdvanceOrderType advanceOrderType);
+
+    void setNumberOfArmiesToAdvance(int numberOfArmiesToAdvance);
 };
 
 /**
@@ -150,9 +152,9 @@ public:
 
     void execute() override;
 
-    bool issue() override;
-
     Territory *getTargetTerritory() const;
+
+    void setTargetTerritory(Territory *targetTerritory);
 };
 
 /**
@@ -175,9 +177,9 @@ public:
 
     void execute() override;
 
-    bool issue() override;
-
     Territory *getTargetTerritory() const;
+
+    void setTargetTerritory(Territory *targetTerritory);
 };
 
 /**
@@ -207,13 +209,18 @@ public:
 
     void execute() override;
 
-    bool issue() override;
-
     Territory *getSourceTerritory() const;
 
     Territory *getTargetTerritory() const;
 
     int getNumberOfArmiesToAirlift() const;
+
+    void setSourceTerritory(Territory *sourceTerritory);
+
+    void setTargetTerritory(Territory *targetTerritory);
+
+    void setNumberOfArmiesToAirlift(int numberOfArmiesToAirlift);
+
 };
 
 /**
@@ -236,9 +243,9 @@ public:
 
     void execute() override;
 
-    bool issue() override;
-
     Player *getTargetPlayer() const;
+
+    void setTargetPlayer(Player *targetPlayer);
 };
 
 /**
