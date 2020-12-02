@@ -540,6 +540,7 @@ bool HumanPlayerStrategy::issueBlockadeOrder(BlockadeOrder *order) {
     // Update priority
     targetTerritory->setPriority(targetTerritory->getPriority() * 2);
 
+    order->setTargetTerritory(targetTerritory);
     // Update order list
     player->getOrders()->add(order);
     return true;
