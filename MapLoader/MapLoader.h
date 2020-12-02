@@ -120,8 +120,6 @@ private:
 
     static const string TERRITORY_REGEX;
 
-    static const string BORDER_REGEX;
-
     static Section currentSection;
 
     static map<string, Continent*> nameToContinentMap;
@@ -183,7 +181,7 @@ public:
 
 class ConquestFileReaderAdapter : public MapLoader {
 private:
-    ConquestFileReader conquestFileReader; // TODO: make it a pointer + delete it (Viveka)
+    ConquestFileReader* conquestFileReader;
 public:
     ConquestFileReaderAdapter();
 
