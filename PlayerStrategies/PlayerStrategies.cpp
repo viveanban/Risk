@@ -606,11 +606,7 @@ bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     }
     order->setTargetTerritory(territoriesToChooseFrom.at(0));
 
-    // Determine number of territories to advance
-    int numberOfArmies = (rand() %
-                          (order->getSourceTerritory()->getPriority() > 0 ? order->getSourceTerritory()->getPriority()
-                                                                          : 6)) + 1;
-    order->setNumberOfArmiesToAdvance(numberOfArmies);
+    order->setNumberOfArmiesToAdvance(order->getSourceTerritory()->getPriority());
 
     // Update priority
     order->getSourceTerritory()->setPriority(order->getSourceTerritory()->getPriority() - numberOfArmies);
@@ -639,7 +635,7 @@ vector<Territory *> AggressivePlayerStrategy::toAttack() {
 vector<Territory *> AggressivePlayerStrategy::toDefend() {
     // This sorted list is used when an aggressive player issues an advance order (AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order))
     sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
-        return lhs->getPriority() < rhs->getPriority();
+        return lhs->getPriority() > rhs->getPriority();
     });
     return player->getTerritories();
 }
@@ -665,7 +661,7 @@ vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) 
             territoriesToDefend.push_back(adjacentTerritory);
     }
     sort(territoriesToDefend.begin(), territoriesToDefend.end(), [](Territory *lhs, Territory *rhs) {
-        return lhs->getPriority() < rhs->getPriority();
+        return lhs->getPriority() > rhs->getPriority();
     });
     return territoriesToDefend;
 }
