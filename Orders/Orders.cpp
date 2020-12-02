@@ -240,7 +240,7 @@ bool AdvanceOrder::issue() {
         attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
     } else {
         sourceTerritory = territories.at(rand() % player->getTerritories().size());
-        attack = rand() % 2;
+        bool attack = dynamic_cast<AggressivePlayerStrategy*> (player->getStrategy()) != nullptr;
     }
 
     advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
