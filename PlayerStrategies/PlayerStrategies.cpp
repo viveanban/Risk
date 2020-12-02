@@ -662,9 +662,12 @@ vector<Territory *> AggressivePlayerStrategy::toAttack() {
 }
 
 vector<Territory *> AggressivePlayerStrategy::toDefend() {
-    // This sorted list is used when an aggressive player issues an advance order (AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order))
     sort(player->getTerritories().begin(), player->getTerritories().end(), [this](Territory *lhs, Territory *rhs) {
-        return lhs->getPriority() > rhs->getPriority() || toAttack(lhs).size() > toAttack(rhs).size();
+        return toAttack(lhs).size() > toAttack(rhs).size();
+    });
+
+    sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() > rhs->getPriority();
     });
 
     return player->getTerritories();
@@ -690,9 +693,15 @@ vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) 
         if (adjacentTerritory->getOwner() == this->player)
             territoriesToDefend.push_back(adjacentTerritory);
     }
+
+    sort(territoriesToDefend.begin(), territoriesToDefend.end(), [this](Territory *lhs, Territory *rhs) {
+        return toAttack(lhs).size() > toAttack(rhs).size();
+    });
+
     sort(territoriesToDefend.begin(), territoriesToDefend.end(), [](Territory *lhs, Territory *rhs) {
         return lhs->getPriority() > rhs->getPriority();
     });
+
     return territoriesToDefend;
 }
 
@@ -700,6 +709,7 @@ int AggressivePlayerStrategy::getUnitNumberToDeploy() {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
     return totalAvailableArmies;
 }
+
 // BENEVOLENT PLAYER STRATEGY
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
