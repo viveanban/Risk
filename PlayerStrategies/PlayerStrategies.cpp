@@ -626,7 +626,7 @@ bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
 }
 
 bool AggressivePlayerStrategy::issueBombOrder(BombOrder *order) {
-    // Randomly determine a target territory to bomb
+    // Determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
     if (territoriesToAttack.empty()) {
         cout << player->getPlayerName() << " could not issue order: " << order->getName()
