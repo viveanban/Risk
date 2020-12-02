@@ -724,9 +724,7 @@ bool BenevolentPlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
 
     // Update priority
     order->getSourceTerritory()->setPriority(order->getSourceTerritory()->getPriority() - numberOfArmies);
-    order->getTargetTerritory()->setPriority(attack ?
-                                             order->getTargetTerritory()->getPriority() - numberOfArmies :
-                                             order->getTargetTerritory()->getPriority() + numberOfArmies);
+    order->getTargetTerritory()->setPriority(order->getTargetTerritory()->getPriority() + numberOfArmies);
 
     // Update order list
     player->getOrders()->add(order);
