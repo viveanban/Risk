@@ -229,3 +229,11 @@ Card *Hand::getNextCard() {
 
     return cardChosen;
 }
+
+Card *Hand::getBombCard() {
+    auto bombCardPosition = find_if(cards.begin(),
+                                 cards.end(),
+                                 [](Card *card) { return card->getType() == Card::bomb; });
+
+    return bombCardPosition != cards.end() ? *bombCardPosition : nullptr;
+}
