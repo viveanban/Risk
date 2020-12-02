@@ -609,8 +609,8 @@ bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     order->setNumberOfArmiesToAdvance(order->getSourceTerritory()->getPriority());
 
     // Update priority
-    order->getSourceTerritory()->setPriority(order->getSourceTerritory()->getPriority() - numberOfArmies);
-    order->getTargetTerritory()->setPriority(order->getTargetTerritory()->getPriority() - numberOfArmies);
+    order->getSourceTerritory()->setPriority(order->getSourceTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
+    order->getTargetTerritory()->setPriority(order->getTargetTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
 
     // Update order list
     player->getOrders()->add(order);
