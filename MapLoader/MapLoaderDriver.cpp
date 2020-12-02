@@ -1,40 +1,34 @@
-//TODO: Adapt old MapLoaderDriver to demonstrate MapLoader and ConquestFileReader
-
-//TODO: Test ConquestFileReader with Asia.map (validation of connected continents fail; check if it's true)
 //#include <fstream>
 //#include "MapLoader.h"
 //
-//const string MAP_DIRECTORY = "../maps/";
-//
-//string getUserInput() {
-//    string userInput = "";
-//    ifstream infile;
-//
-//    cout << "Enter your desired map:  " << std::endl;
-//    cin >> userInput;
-//
-//    infile.open(MAP_DIRECTORY + userInput);
-//    while (!infile) {
-//        cout << "This map does not exist. Please enter another map: \n";
-//        cin >> userInput;
-//        infile.open(MAP_DIRECTORY + userInput);
-//    }
-//
-//    return userInput;
-//}
-//
+//void loadMaps(const vector<string>& mapsToValidate, MapLoader *mapLoader);
 //
 //int main() {
-//    cout << "Getting input from player.. \n";
-//    string userInput = getUserInput();
+//    vector<string> conquestMapsToValidate = {"Asia.map", "Africa.map", "NY.map", "Oregon.map", "UnconnectedAfrica.map", "InvalidAfrica.map", "InvalidExtension.txt"};
+//    vector<string> regularMapsToValidate = {"Europe.map", "USInvalid"};
 //
-//    cout << "Map is being loaded.. \n";
-//    Graph *map;
-//    map = MapLoader::loadMap(userInput);
-//    cout << *map << endl;
+//    MapLoader *conquestMapLoader = new ConquestFileReaderAdapter();
+//    loadMaps(conquestMapsToValidate, conquestMapLoader);
 //
-//    delete map;
-//    map = nullptr;
+//    MapLoader *mapLoader = new MapLoader();
+//    loadMaps(regularMapsToValidate, mapLoader);
+//
+//    delete conquestMapLoader;
+//    delete mapLoader;
 //}
-
-
+//
+//void loadMaps(const vector<string>& mapsToValidate, MapLoader *mapLoader) {
+//    for (const string& mapName: mapsToValidate) {
+//        cout << "==========================================================" << endl;
+//        cout << "Loading " << mapName << " from maps/conquest_maps/" << endl;
+//        Map* map = mapLoader->loadMap(mapName);
+//        if (map != nullptr) {
+//            cout << *map << endl;
+//            map->validate();
+//        }
+//        cout << "==========================================================" << endl;
+//
+//        delete map;
+//        map = nullptr;
+//    }
+//}

@@ -5,6 +5,7 @@
 #include "../GameEngine/GameEngine.h"
 
 using namespace std;
+
 // Superclass: Order ---------------------------------------------------------------------------------------------------
 Order::Order(string name, int priority, Player *player) : name(name), priority(priority),
                                                           player(player) {}
@@ -74,18 +75,16 @@ void DeployOrder::execute() {
     if (validate()) {
         // If the target territory belongs to the player that issued the deploy order (validation successful), the selected number of armies is added to the number of armies on that territory.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToDeploy);
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
     }
 }
 
 bool DeployOrder::issue() {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
     if (player->getIsHumanPlayer()) {
-        do {
-            numberOfArmiesToDeploy = Player::getIntegerInput(
-                    "Please enter the number of armies you wish to deploy (available troops " +
-                    to_string(totalAvailableArmies) + " ): ", 0, totalAvailableArmies + 1);
-        } while (numberOfArmiesToDeploy > totalAvailableArmies);
+        numberOfArmiesToDeploy = Player::getIntegerInput(
+                "Please enter the number of armies you wish to deploy (available troops " +
+                to_string(totalAvailableArmies) + " ): ", 0, totalAvailableArmies + 1);
     } else {
         // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
         numberOfArmiesToDeploy = (rand() % totalAvailableArmies) + 1;
@@ -222,12 +221,14 @@ void AdvanceOrder::execute() {
                 targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() - numberOfTargetUnitsKilled);
             }
         }
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
     }
 }
 
 bool AdvanceOrder::issue() {
     auto territories = player->getTerritories();
+    bool attack;
+
     if (player->getIsHumanPlayer()) {
         // Determine src territory
         for (int i = 0; i < territories.size(); ++i) {
@@ -236,13 +237,13 @@ bool AdvanceOrder::issue() {
         sourceTerritory = territories.at(Player::getIntegerInput("Please pick a source territory to advance from: ", 0,
                                                                  territories.size()));
         // Pick attack or defend
-        bool attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
-        advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
+        attack = Player::getBooleanInput("Do you wish to attack a territory? [true/false] ");
     } else {
         sourceTerritory = territories.at(rand() % player->getTerritories().size());
         bool attack = dynamic_cast<AggressivePlayerStrategy*> (player->getStrategy()) != nullptr;
-        advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
     }
+
+    advanceOrderType = attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer;
 
     vector<Territory *> territoriesToChooseFrom = attack ? player->toAttack(sourceTerritory) : player->toDefend(
             sourceTerritory);
@@ -271,7 +272,7 @@ bool AdvanceOrder::issue() {
 
     // Update priority
     sourceTerritory->setPriority(sourceTerritory->getPriority() - numberOfArmiesToAdvance);
-    targetTerritory->setPriority(attack ?
+    targetTerritory->setPriority( attack ?
                                  targetTerritory->getPriority() - numberOfArmiesToAdvance :
                                  targetTerritory->getPriority() + numberOfArmiesToAdvance);
 
@@ -341,7 +342,7 @@ void BombOrder::execute() {
     if (validate()) {
         // If the target belongs to an enemy player, half of the armies are removed from this territory.
         targetTerritory->setUnitNbr((int) (targetTerritory->getUnitNbr() / 2));
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
     }
 }
 
@@ -411,7 +412,7 @@ void BlockadeOrder::execute() {
         // doubled and the ownership of the territory is transferred to the Neutral player.
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() * 2);
         targetTerritory->setOwner(Player::neutralPlayer);
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
     }
 }
 
@@ -492,7 +493,7 @@ void AirliftOrder::execute() {
         // Transfer armies to target territory
         sourceTerritory->setUnitNbr(sourceTerritory->getUnitNbr() - numberOfArmiesToAirlift);
         targetTerritory->setUnitNbr(targetTerritory->getUnitNbr() + numberOfArmiesToAirlift);
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
     }
 }
 
@@ -578,7 +579,7 @@ void NegotiateOrder::execute() {
     if (validate()) {
         player->getPlayersNotToAttack().insert(targetPlayer);
         targetPlayer->getPlayersNotToAttack().insert(player);
-        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this,nullptr);
+        GameEngine::getInstance()->getGameState()->updateGameState(player, orders_execution, this, nullptr);
     }
 }
 
@@ -646,7 +647,7 @@ void OrdersList::copyOrderList(const vector<Order *> &originalVector, vector<Ord
 
 OrdersList &OrdersList::operator=(const OrdersList &original) {
     //deleting old orderList before assigning new one
-    for(auto o: orderList){
+    for (auto o: orderList) {
         delete o;
     }
     orderList.clear();

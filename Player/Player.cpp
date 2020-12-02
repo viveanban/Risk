@@ -9,18 +9,11 @@
 
 Player *Player::neutralPlayer = new Player("Neutral Player");
 
-Player::Player(string playerName, PlayerStrategy *strategy) : playerName(playerName), handOfCards(new Hand()),
-                                                              orders(new OrdersList()),
-                                                              numberOfArmiesInReinforcementPool(0), territories(),
-                                                              strategy(strategy) {
-    if (auto humanPlayerStrategy = dynamic_cast<HumanPlayerStrategy *>(strategy)) {
-        isHumanPlayer = true;
-    } else {
-        isHumanPlayer = false;
-    }
-}
+Player::Player(string playerName) : playerName(playerName), handOfCards(new Hand()),
+                                    orders(new OrdersList()),
+                                    numberOfArmiesInReinforcementPool(0), territories(),
+                                    strategy(nullptr) {}
 
-// TODO: delete strategy?
 Player::~Player() {
     delete handOfCards;
     handOfCards = nullptr;
@@ -29,6 +22,10 @@ Player::~Player() {
     delete orders;
     orders = nullptr;
     cout << "Deleted orders" << endl;
+
+    delete strategy;
+    strategy = nullptr;
+    cout << "Deleted strategy" << endl;
 }
 
 Player::Player(const Player &original) {
@@ -275,7 +272,7 @@ void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcem
 // TODO: Check if this works
 void Player::setStrategy(PlayerStrategy *playerStrategy) {
     this->strategy = playerStrategy;
-    if (auto humanPlayerStrategy = dynamic_cast<HumanPlayerStrategy *>(playerStrategy)) {
+    if (dynamic_cast<HumanPlayerStrategy *>(playerStrategy) != nullptr) {
         isHumanPlayer = true;
     } else {
         isHumanPlayer = false;
