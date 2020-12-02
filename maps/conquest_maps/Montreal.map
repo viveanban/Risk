@@ -1,0 +1,20 @@
+[Map]
+author=Tarik Ait Hamouda
+image=Montreal.bmp
+wrap=no
+scroll=none
+warn=yes
+
+[Continents]
+EAST SIDE=6
+WEST SIDE=1
+
+[Territories]
+Anjou,57,408,EAST SIDE,St leonard,Riviere des prairies,Montreal Nord
+St leonard,131,268,EAST SIDE,Anjou,Montreal Nord
+Riviere des prairies,131,268,EAST SIDE,Anjou,Montreal Nord
+Montreal Nord,131,234,EAST SIDE,Ahunstic,Riviere des prairies,Anjou,St leonard
+
+Ahunstic,57,408,WEST SIDE,Saint Laurent,Montreal Nord
+Saint Laurent,57,408,WEST SIDE,Mont royal,Ahunstic
+Mont royal,57,408,WEST SIDE,Saint Laurent,Ahunstic
