@@ -115,6 +115,8 @@ public:
 
     bool setUpAdvanceOrder(AdvanceOrder* order) override;
 
+    bool issueBombOrder(BombOrder* order) override;
+
     vector<Territory *> toAttack() override;
 
     vector<Territory *> toDefend() override;
