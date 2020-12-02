@@ -1,5 +1,6 @@
 #include "PlayerStrategies.h"
 #include "../GameEngine/GameEngine.h"
+#include <algorithm>
 
 PlayerStrategy::~PlayerStrategy() = default;
 
@@ -112,11 +113,9 @@ bool BenevolentPlayerStrategy::issueOrder() {
         bool continueIssuingOrders = rand() % 2;
         if (continueIssuingOrders) {
             // sort his territories from strongest to weakest so he picks strongest territory as source territory
-            std::sort(player->getTerritories().begin(),
-                      player->getTerritories().end(),
-                      [](Territory &territory1, Territory &territory2) {
-                          return territory1.getUnitNbr() > territory2.getUnitNbr();
-                      });
+            sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+                return lhs->getUnitNbr() > rhs->getUnitNbr();
+            });
             this->player->issueAdvanceOrder();
         }
         return continueIssuingOrders;
@@ -135,11 +134,9 @@ vector<Territory *> BenevolentPlayerStrategy::toAttack() {
 
 vector<Territory *> BenevolentPlayerStrategy::toDefend() {
     // Need to return territories in order of weakest --> strongest
-    std::sort(player->getTerritories().begin(),
-              player->getTerritories().end(),
-              [](Territory &territory1, Territory &territory2) {
-                  return territory1.getUnitNbr() < territory2.getUnitNbr();
-              });
+    sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getUnitNbr() < rhs->getUnitNbr();
+    });
     return player->getTerritories();
 }
 
@@ -160,11 +157,9 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) 
             territoriesToDefend.push_back(adjacentTerritory);
     }
     //sort from weakest to strongest
-    std::sort(territoriesToDefend.begin(),
-              territoriesToDefend.end(),
-              [](Territory &territory1, Territory &territory2) {
-                  return territory1.getUnitNbr() < territory2.getUnitNbr();
-              });
+    sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getUnitNbr() < rhs->getUnitNbr();
+    });
     return territoriesToDefend;
 }
 
