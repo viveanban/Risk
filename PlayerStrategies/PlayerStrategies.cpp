@@ -3,6 +3,10 @@
 #include <algorithm>
 
 // DEFAULT PLAYER STRATEGY
+PlayerStrategy::PlayerStrategy() {}
+
+PlayerStrategy::PlayerStrategy(Player *player) : player(player) {}
+
 PlayerStrategy::~PlayerStrategy() = default;
 
 void PlayerStrategy::issueDeployOrder() {
@@ -261,10 +265,45 @@ int PlayerStrategy::getUnitNumberToDeploy() {
     return (rand() % totalAvailableArmies) + 1;
 }
 
+// Shallow copy because we don't want to create new players
+PlayerStrategy::PlayerStrategy(const PlayerStrategy &original) {
+    this->player = original.player;
+}
+
+PlayerStrategy &PlayerStrategy::operator=(const PlayerStrategy &other) {
+    if (this != &other) {
+        this->player = other.player;
+    }
+    return *this;
+}
+
+std::ostream &operator<<(ostream &stream, PlayerStrategy &playerStrategy) {
+    return stream << playerStrategy.player->getPlayerName() << " uses the base player strategy." << endl;
+}
+
 // HUMAN PLAYER STRATEGY
+HumanPlayerStrategy::HumanPlayerStrategy() {}
 
 HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
     this->player = player;
+}
+
+HumanPlayerStrategy::~HumanPlayerStrategy() = default;
+
+// Shallow copy because we don't want to create new players
+HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy &original) {
+    this->player = original.player;
+}
+
+HumanPlayerStrategy &HumanPlayerStrategy::operator=(const HumanPlayerStrategy &other) {
+    if (this != &other) {
+        this->player = other.player;
+    }
+    return *this;
+}
+
+std::ostream &operator<<(ostream &stream, HumanPlayerStrategy &playerStrategy) {
+    return stream << playerStrategy.player->getPlayerName() << " uses the human player strategy." << endl;
 }
 
 vector<Territory *> HumanPlayerStrategy::toAttack() {
@@ -573,9 +612,28 @@ bool HumanPlayerStrategy::issueNegotiateOrder(NegotiateOrder *order) {
 }
 
 // AGGRESIVE PLAYER STRATEGY
+AggressivePlayerStrategy::AggressivePlayerStrategy() {}
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
     this->player = player;
+}
+
+AggressivePlayerStrategy::~AggressivePlayerStrategy() = default;
+
+// Shallow copy because we don't want to create new players
+AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &original) {
+    this->player = original.player;
+}
+
+AggressivePlayerStrategy &AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy &other) {
+    if (this != &other) {
+        this->player = other.player;
+    }
+    return *this;
+}
+
+std::ostream &operator<<(ostream &stream, AggressivePlayerStrategy &playerStrategy) {
+    return stream << playerStrategy.player->getPlayerName() << " uses the aggressive player strategy." << endl;
 }
 
 bool AggressivePlayerStrategy::issueOrder() {
@@ -586,7 +644,7 @@ bool AggressivePlayerStrategy::issueOrder() {
     } else { // Other orders
         bool continueIssuingOrders = rand() % 2;
         if (continueIssuingOrders) {
-            Card* bombCard = player->getHandOfCards()->getBombCard();
+            Card *bombCard = player->getHandOfCards()->getBombCard();
             bool advance = !bombCard || rand() % 2;
             if (advance) { //Always issue an Advance order if player has an empty hand
                 issueAdvanceOrder();
@@ -711,9 +769,28 @@ int AggressivePlayerStrategy::getUnitNumberToDeploy() {
 }
 
 // BENEVOLENT PLAYER STRATEGY
+BenevolentPlayerStrategy::BenevolentPlayerStrategy() {}
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
     this->player = player;
+}
+
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() = default;
+
+// Shallow copy because we don't want to create new players
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy &original) {
+    this->player = original.player;
+}
+
+BenevolentPlayerStrategy &BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy &other) {
+    if (this != &other) {
+        this->player = other.player;
+    }
+    return *this;
+}
+
+std::ostream &operator<<(ostream &stream, BenevolentPlayerStrategy &playerStrategy) {
+    return stream << playerStrategy.player->getPlayerName() << " uses the benevolent player strategy." << endl;
 }
 
 bool BenevolentPlayerStrategy::issueOrder() {
@@ -811,9 +888,28 @@ int BenevolentPlayerStrategy::getUnitNumberToDeploy() {
 
 
 // NEUTRAL PLAYER STRATEGY
+NeutralPlayerStrategy::NeutralPlayerStrategy() {}
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player *player) {
     this->player = player;
+}
+
+NeutralPlayerStrategy::~NeutralPlayerStrategy() = default;
+
+// Shallow copy because we don't want to create new players
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy &original) {
+    this->player = original.player;
+}
+
+NeutralPlayerStrategy &NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy &other) {
+    if (this != &other) {
+        this->player = other.player;
+    }
+    return *this;
+}
+
+std::ostream &operator<<(ostream &stream, NeutralPlayerStrategy &playerStrategy) {
+    return stream << playerStrategy.player->getPlayerName() << " uses the neutral player strategy." << endl;
 }
 
 bool NeutralPlayerStrategy::issueOrder() {

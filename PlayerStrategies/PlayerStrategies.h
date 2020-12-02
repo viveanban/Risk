@@ -3,11 +3,10 @@
 
 #include "../Player/Player.h"
 
-// TODO: correct copy constructor, assignment operator, and stream insertion operator. (Abhijit)
 class PlayerStrategy {
-protected:
-    Player *player;
 public:
+    Player *player;
+
     virtual bool issueOrder() = 0;
 
     virtual vector<Territory *> toAttack() = 0;
@@ -57,19 +56,29 @@ public:
 
     virtual bool issueBombOrder(BombOrder* order);
 
-    virtual bool issueBlockadeOrder(BlockadeOrder* order);
+    virtual bool issueBlockadeOrder(BlockadeOrder *order);
 
-    virtual bool issueAirliftOrder(AirliftOrder* order);
+    virtual bool issueAirliftOrder(AirliftOrder *order);
 
-    virtual bool issueNegotiateOrder(NegotiateOrder* order);
+    virtual bool issueNegotiateOrder(NegotiateOrder *order);
 
     // ----------Advance Order methods--------------
 
     virtual ~PlayerStrategy();
 
+    PlayerStrategy();
+
+    PlayerStrategy(Player *player);
+
     static bool getBooleanInput(string printStatement);
 
     static int getIntegerInput(string printStatement, int leftBound, int rightBound);
+
+    PlayerStrategy(const PlayerStrategy &original);
+
+    PlayerStrategy &operator=(const PlayerStrategy &other);
+
+    friend std::ostream &operator<<(ostream &stream, PlayerStrategy &playerStrategy);
 };
 
 /*
@@ -77,7 +86,17 @@ public:
  */
 class HumanPlayerStrategy : public PlayerStrategy {
 public:
+    HumanPlayerStrategy();
+
     explicit HumanPlayerStrategy(Player *player);
+
+    HumanPlayerStrategy(const HumanPlayerStrategy &original);
+
+    HumanPlayerStrategy &operator=(const HumanPlayerStrategy &other);
+
+    friend std::ostream &operator<<(ostream &stream, HumanPlayerStrategy &playerStrategy);
+
+    virtual ~HumanPlayerStrategy();
 
     bool issueOrder() override;
 
@@ -111,11 +130,21 @@ public:
  */
 class AggressivePlayerStrategy : public PlayerStrategy {
 public:
+    AggressivePlayerStrategy();
+
     explicit AggressivePlayerStrategy(Player *player);
+
+    AggressivePlayerStrategy(const AggressivePlayerStrategy &original);
+
+    AggressivePlayerStrategy &operator=(const AggressivePlayerStrategy &other);
+
+    friend std::ostream &operator<<(ostream &stream, AggressivePlayerStrategy &playerStrategy);
+
+    virtual ~AggressivePlayerStrategy();
 
     bool issueOrder() override;
 
-    bool setUpAdvanceOrder(AdvanceOrder* order) override;
+    bool setUpAdvanceOrder(AdvanceOrder *order) override;
 
     bool issueBombOrder(BombOrder* order) override;
 
@@ -141,11 +170,21 @@ public:
  */
 class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
+    BenevolentPlayerStrategy();
+
     explicit BenevolentPlayerStrategy(Player *player);
+
+    BenevolentPlayerStrategy(const BenevolentPlayerStrategy &original);
+
+    BenevolentPlayerStrategy &operator=(const BenevolentPlayerStrategy &other);
+
+    friend std::ostream &operator<<(ostream &stream, BenevolentPlayerStrategy &playerStrategy);
+
+    virtual ~BenevolentPlayerStrategy();
 
     bool issueOrder() override;
 
-    bool setUpAdvanceOrder(AdvanceOrder* order) override;
+    bool setUpAdvanceOrder(AdvanceOrder *order) override;
 
     /**
      * toAttack takes care of returning a list of territories that the player can attack
@@ -190,7 +229,17 @@ public:
  */
 class NeutralPlayerStrategy : public PlayerStrategy {
 public:
+    NeutralPlayerStrategy();
+
     explicit NeutralPlayerStrategy(Player *player);
+
+    NeutralPlayerStrategy(const NeutralPlayerStrategy &original);
+
+    NeutralPlayerStrategy &operator=(const NeutralPlayerStrategy &other);
+
+    friend std::ostream &operator<<(ostream &stream, NeutralPlayerStrategy &playerStrategy);
+
+    virtual ~NeutralPlayerStrategy();
 
     bool issueOrder() override;
 
