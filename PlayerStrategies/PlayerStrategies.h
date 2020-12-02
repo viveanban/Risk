@@ -134,6 +134,8 @@ public:
 
     bool issueOrder() override;
 
+    //TODO: Change the implementation of the setupDeployOrder to distribute reinforcement evenly between weak territories
+
     bool setUpAdvanceOrder(AdvanceOrder* order) override;
 
     /**
