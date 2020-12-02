@@ -20,6 +20,7 @@ void PlayerStrategy::issueDeployOrder() {
     }
 }
 
+//TODO: Create another implemenation for the aggressive player wehere they will deployr ALL their aarmies on their strongest
 bool PlayerStrategy::setUpDeployOrder(DeployOrder *order) {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
 
