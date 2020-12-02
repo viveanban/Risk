@@ -26,10 +26,8 @@ void PlayerStrategy::issueDeployOrder() {
 
 // TODO: return false when random player will be deleted (Viveka)
 bool PlayerStrategy::setUpDeployOrder(DeployOrder *order) {
-    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
-
     // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
-    order->setNumberOfArmiesToDeploy((rand() % totalAvailableArmies) + 1);
+    order->setNumberOfArmiesToDeploy(getUnitNumberToDeploy());
 
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();
@@ -144,7 +142,6 @@ void PlayerStrategy::issueOrderFromCard(Card *cardChosen) {
 }
 
 // TODO: return false when random player will be deleted (Viveka)
-//  TODO: (aggresive will override this) (Ferdou)
 bool PlayerStrategy::issueBombOrder(BombOrder *order) {
     // Randomly determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
@@ -261,6 +258,11 @@ int PlayerStrategy::getIntegerInput(string printStatement, int leftBound, int ri
         cin >> output;
     } while (cin.fail() or output < leftBound or output >= rightBound);
     return output;
+}
+
+int PlayerStrategy::getUnitNumberToDeploy() {
+    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
+    return (rand() % totalAvailableArmies) + 1;
 }
 
 // Shallow copy because we don't want to create new players
@@ -612,8 +614,6 @@ bool HumanPlayerStrategy::issueNegotiateOrder(NegotiateOrder *order) {
 // AGGRESIVE PLAYER STRATEGY
 AggressivePlayerStrategy::AggressivePlayerStrategy() {}
 
-// TODO: overwrite setUpDeployOrder --> suggestion: maybe just have a numberOFArmiesToDeploy method that is going to be overwritten (Tarek)
-// TODO: Create another implemenation for the aggressive player wehere they will deployr ALL their aarmies on their strongest (Tarek)
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
     this->player = player;
 }
@@ -684,6 +684,27 @@ bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     return true;
 }
 
+bool AggressivePlayerStrategy::issueBombOrder(BombOrder *order) {
+    // Determine a target territory to bomb
+    vector<Territory *> territoriesToAttack = player->toAttack();
+    if (territoriesToAttack.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << order->getName()
+             << " because this player has no territories to attack." << endl;
+        return false;
+    }
+
+    Territory *targetTerritory = territoriesToAttack.at(territoriesToAttack.size() - 1); // Attack the strongest enemy territory
+    order->setTargetTerritory(targetTerritory);
+
+    // Update priority
+    targetTerritory->setPriority(order->getTargetTerritory()->getPriority() / 2);
+
+    // Update order list
+    player->getOrders()->add(order);
+
+    return true;
+}
+
 vector<Territory *> AggressivePlayerStrategy::toAttack() {
     vector<Territory *> territoriesToAttack;
 
@@ -732,11 +753,13 @@ vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) 
     return territoriesToDefend;
 }
 
+int AggressivePlayerStrategy::getUnitNumberToDeploy() {
+    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
+    return totalAvailableArmies;
+}
 // BENEVOLENT PLAYER STRATEGY
 BenevolentPlayerStrategy::BenevolentPlayerStrategy() {}
 
-// TODO: overwrite setUpDeployOrder --> suggestion: maybe just have a numberOFArmiesToDeploy method that is going to be overwritten (Tarek)
-// TODO: Change the implementation of the setupDeployOrder to distribute reinforcement evenly between weak territories (une limite) (Tarek)
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
     this->player = player;
 }
@@ -847,6 +870,10 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) 
     });
     return territoriesToDefend;
 }
+
+int BenevolentPlayerStrategy::getUnitNumberToDeploy() {
+    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
+    return (rand() % (totalAvailableArmies/2))+1;}
 
 
 // NEUTRAL PLAYER STRATEGY

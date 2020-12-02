@@ -8,7 +8,7 @@
 #include <set>
 
 using namespace std;
-
+//TODO: Handle Clang-Tidy: Initialization of 'MAP_DIRECTORY' with static storage duration may throw an exception that cannot be caught
 // ================================ MapLoader  =========================================================================
 const string MapLoader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
 const string MapLoader::MAP_DIRECTORY = "../maps/domination_maps/";
@@ -22,7 +22,7 @@ vector<Territory *> MapLoader::territoriesList{};
 
 MapLoader::MapLoader(const MapLoader &original) : MapLoader() {}
 
-MapLoader &MapLoader::operator=(const MapLoader &original) { return *this; }
+MapLoader &MapLoader::operator=(const MapLoader &original) = default;
 
 std::ostream &operator<<(ostream &stream, MapLoader &mapLoader) {
     return stream << "MapLoader: [continentList size =" << MapLoader::continentsList.size()
@@ -50,9 +50,9 @@ Map *MapLoader::loadMap(const string &mapName) {
         auto *graph = new Map(territoriesList, continentsList);
 
         return graph;
-    } catch (const invalid_argument e) {
+    } catch (const invalid_argument& e) {
         cout << e.what() << endl;
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -85,11 +85,11 @@ void MapLoader::parseFile(fstream &mapFile) {
 
 bool MapLoader::updateSection(string &line) {
     if (line.at(0) == '[') {
-        if (line.compare("[continents]") == 0) {
+        if (line == "[continents]") {
             currentSection = continents;
-        } else if (line.compare("[countries]") == 0) {
+        } else if (line == "[countries]") {
             currentSection = countries;
-        } else if (line.compare("[borders]") == 0) {
+        } else if (line == "[borders]") {
             currentSection = borders;
         } else {
             currentSection = other;
@@ -195,14 +195,14 @@ map<Territory*, set<string>> ConquestFileReader::adjacentTerritoryNamesMap{};
 
 ConquestFileReader::ConquestFileReader(const ConquestFileReader &original) {}
 
-ConquestFileReader &ConquestFileReader::operator=(const ConquestFileReader &original) { return *this; }
+ConquestFileReader &ConquestFileReader::operator=(const ConquestFileReader &original) = default;
 
 ostream &operator<<(ostream &os, const ConquestFileReader &reader) {
     return os << "ConquestFileReader: [continentList size =" << ConquestFileReader::continentsList.size()
               << ", territoriesList size = " << ConquestFileReader::territoriesList.size() << "]";
 }
 
-ConquestFileReader::~ConquestFileReader() {}
+ConquestFileReader::~ConquestFileReader() = default;
 
 Map *ConquestFileReader::loadConquestMap(const string &mapName) {
     // Have a clear setup when loading a new map
@@ -230,11 +230,10 @@ Map *ConquestFileReader::loadConquestMap(const string &mapName) {
         auto *graph = new Map(territoriesList, continentsList);
 
         return graph;
-    } catch (const invalid_argument e) {
+    } catch (const invalid_argument& e) {
         cout << e.what() << endl;
-        return NULL;
+        return nullptr;
     }
-    return nullptr;
 }
 
 void ConquestFileReader::parseFile(fstream &mapFile) {
@@ -265,9 +264,9 @@ void ConquestFileReader::parseFile(fstream &mapFile) {
 
 bool ConquestFileReader::updateSection(string &line) {
     if (line.at(0) == '[') {
-        if (line.compare("[Continents]") == 0) {
+        if (line == "[Continents]") {
             currentSection = continents;
-        } else if (line.compare("[Territories]") == 0) {
+        } else if (line == "[Territories]") {
             currentSection = territories;
         } else {
             currentSection = other;
@@ -309,8 +308,8 @@ Territory *ConquestFileReader::createTerritories(const string &line, int &territ
             nameToTerritoryMap[token] = territory;
         } else if (counter == 3) {
             Continent* continent = nameToContinentMap[token];
-            if(continent == nullptr)
-                MapLoader::throwInvalidMapException();
+            if(continent == nullptr) MapLoader::throwInvalidMapException();
+
             territory->setContinentId(continent->getContinentId());
             continent->getTerritories().push_back(territory);
         } else if (counter >= 4) {
@@ -332,16 +331,25 @@ void ConquestFileReader::constructAdjencyList() {
 }
 
 // ================================ ConquestFileReaderAdapter  =========================================================
-ConquestFileReaderAdapter::ConquestFileReaderAdapter(): conquestFileReader() {}
+ConquestFileReaderAdapter::ConquestFileReaderAdapter(): conquestFileReader(new ConquestFileReader()) {}
 
-ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReaderAdapter &original): conquestFileReader() {}
+ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReaderAdapter &original): conquestFileReader(new ConquestFileReader(*original.conquestFileReader)) {}
 
-ConquestFileReaderAdapter &ConquestFileReaderAdapter::operator=(const ConquestFileReaderAdapter &original) {return *this;}
+ConquestFileReaderAdapter &ConquestFileReaderAdapter::operator=(const ConquestFileReaderAdapter &original) {
+    if(&original != this){
+        delete conquestFileReader;
+        conquestFileReader = new ConquestFileReader(*original.conquestFileReader);
+    }
+    return *this;
+}
 
 ostream &operator<<(ostream &os, const ConquestFileReaderAdapter &reader) { return os << "Conquest File Reader Adapter";}
 
-ConquestFileReaderAdapter::~ConquestFileReaderAdapter() {}
+ConquestFileReaderAdapter::~ConquestFileReaderAdapter() {
+    delete conquestFileReader;
+    conquestFileReader = nullptr;
+}
 
 Map *ConquestFileReaderAdapter::loadMap(const string &mapName) {
-    return conquestFileReader.loadConquestMap(mapName);
+    return conquestFileReader->loadConquestMap(mapName);
 }
