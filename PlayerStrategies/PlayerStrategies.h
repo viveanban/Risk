@@ -3,7 +3,6 @@
 
 #include "../Player/Player.h"
 
-// TODO: correct copy constructor, assignment operator, and stream insertion operator. (Abhijit)
 class PlayerStrategy {
 public:
     Player *player;
