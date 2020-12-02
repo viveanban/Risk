@@ -146,7 +146,7 @@ bool PlayerStrategy::issueBombOrder(BombOrder *order) {
         return false;
     }
 
-    Territory *targetTerritory = territoriesToAttack.at(rand() % territoriesToAttack.size());
+    Territory *targetTerritory = territoriesToAttack.at(territoriesToAttack.size() - 1); // Attack the strongest enemy territory
     order->setTargetTerritory(targetTerritory);
 
     // Update priority
@@ -571,8 +571,24 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
 }
 
 bool AggressivePlayerStrategy::issueOrder() {
-    //TODO: Merge with PR #88
-    return false;
+    // Issue deploy orders as long as player's reinforcement pool is not empty
+    if (player->getNumberofArmiesInReinforcementPool() > 0) {
+        issueDeployOrder();
+        return true;
+    } else { // Other orders
+        bool continueIssuingOrders = rand() % 2;
+        if (continueIssuingOrders) {
+            Card* bombCard = player->getHandOfCards()->getBombCard();
+            bool advance = !bombCard || rand() % 2;
+            if (advance) { //Always issue an Advance order if player has an empty hand
+                issueAdvanceOrder();
+            } else {
+                // Play card
+                issueOrderFromCard(bombCard);
+            }
+        }
+        return continueIssuingOrders;
+    }
 }
 
 bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
@@ -607,23 +623,51 @@ bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
 }
 
 vector<Territory *> AggressivePlayerStrategy::toAttack() {
-    //TODO: sort the list from weakest to strongest
-    return vector<Territory *>();
+    vector<Territory *> territoriesToAttack;
+
+    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+
+    sort(territoriesToAttack.begin(), territoriesToAttack.end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
+    return territoriesToAttack;
 }
 
 vector<Territory *> AggressivePlayerStrategy::toDefend() {
-    //TODO: sort the list from strongest to weakest
-    return vector<Territory *>();
+    // This sorted list is used when an aggressive player issues an advance order (AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order))
+    sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
+    return player->getTerritories();
 }
 
 vector<Territory *> AggressivePlayerStrategy::toAttack(Territory *srcTerritory) {
-    //TODO: sort the list from weakest to strongest
-    return vector<Territory *>();
+    vector<Territory *> territoriesToAttack;
+
+    for (Territory *territory: srcTerritory->getAdjList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+
+    sort(territoriesToAttack.begin(), territoriesToAttack.end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
+    return territoriesToAttack;
 }
 
 vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) {
-    //TODO: sort the list from strongest to weakest
-    return vector<Territory *>();
+    vector<Territory *> territoriesToDefend;
+    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+        if (adjacentTerritory->getOwner() == this->player)
+            territoriesToDefend.push_back(adjacentTerritory);
+    }
+    sort(territoriesToDefend.begin(), territoriesToDefend.end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getPriority() < rhs->getPriority();
+    });
+    return territoriesToDefend;
 }
 
 // BENEVOLENT PLAYER STRATEGY
