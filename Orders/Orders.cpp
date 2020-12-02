@@ -101,7 +101,7 @@ bool DeployOrder::issue() {
         for (int i = 0; i < territoriesToDefend.size(); ++i) {
             cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << endl;
         }
-        targetTerritory = territoriesToDefend.at(Player::getIntegerInput("Please pick a target territory to defend: ",
+        targetTerritory = territoriesToDefend.at(Player::getIntegerInput("Please pick a target territory to deploy to: ",
                                                                          0, territoriesToDefend.size()));
     } else {
         targetTerritory = territoriesToDefend.at(0);
@@ -148,7 +148,7 @@ AdvanceOrder &AdvanceOrder::operator=(const AdvanceOrder &otherOrder) {
     }
     return *this;
 }
-
+//TODO: RIGHT NOW IT IS POSSIBLE TO FIND YOURSELF IN A SITUATION WHERE YOU HAVE A NEGATIVE UNIT NUMBER
 bool AdvanceOrder::validate() {
     // If the source territory does not belong to the player that issued the order, the order is invalid.
     if (sourceTerritory->getOwner() != player) {
@@ -252,13 +252,12 @@ bool AdvanceOrder::issue() {
              << " because this player has no territories to " << (attack ? "attack" : "transfer") << endl;
         return false;
     }
-
     if (player->getIsHumanPlayer()) {
         // Determine target territory
         for (int i = 0; i < territoriesToChooseFrom.size(); ++i) {
             cout << i << " - " << territoriesToChooseFrom.at(i)->getTerritoryName() << endl;
         }
-        targetTerritory = territories.at(Player::getIntegerInput("Please pick a target territory to advance to: ", 0,
+        targetTerritory = territoriesToChooseFrom.at(Player::getIntegerInput("Please pick a target territory to advance to: ", 0,
                                                                  territoriesToChooseFrom.size()));
         numberOfArmiesToAdvance = Player::getIntegerInput(
                 "Please enter the number of armies you wish to advance (available troops " +
