@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <cmath>
 #include "../GameEngine/GameEngine.h"
+#include <algorithm>
 
 // SUBJECT
 Subject::Subject() {
@@ -211,6 +212,17 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
 void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
+            sort(currentGameState->getCurrentPlayer()->getTerritories().begin(), currentGameState->getCurrentPlayer()->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+                return lhs->getUnitNbr() < rhs->getUnitNbr();
+            });
+
+            cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                 << " can defend the following territories in order from weakest to strongest: ";
+            for (auto t: currentGameState->getCurrentPlayer()->getTerritories()) {
+                cout << t->getTerritoryName() << " ";
+            }
+            cout << endl;
+
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of "
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;

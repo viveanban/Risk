@@ -3,6 +3,8 @@
 #include <algorithm>
 
 // DEFAULT PLAYER STRATEGY
+const int PlayerStrategy::PERCENTAGE = 90;
+
 PlayerStrategy::PlayerStrategy() {}
 
 PlayerStrategy::PlayerStrategy(Player *player) : player(player) {}
@@ -151,7 +153,8 @@ bool PlayerStrategy::issueBombOrder(BombOrder *order) {
         return false;
     }
 
-    Territory *targetTerritory = territoriesToAttack.at(territoriesToAttack.size() - 1); // Attack the strongest enemy territory
+    Territory *targetTerritory = territoriesToAttack.at(
+            territoriesToAttack.size() - 1); // Attack the strongest enemy territory
     order->setTargetTerritory(targetTerritory);
 
     // Update priority
@@ -399,7 +402,7 @@ bool HumanPlayerStrategy::setUpDeployOrder(DeployOrder *order) {
 
     for (int i = 0; i < territoriesToDefend.size(); ++i) {
         cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << " (unit nb: "
-             << territoriesToDefend.at(i)->getPriority() << ")" << endl;
+             << territoriesToDefend.at(i)->getUnitNbr() << ")" << endl;
     }
     Territory *targetTerritory = territoriesToDefend.at(
             PlayerStrategy::getIntegerInput("Please pick a target territory to deploy to: ",
@@ -441,7 +444,8 @@ bool HumanPlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     // Determine src territory
     auto territories = player->getTerritories();
     for (int i = 0; i < territories.size(); ++i) {
-        cout << i << " - " << territories.at(i)->getTerritoryName() << " (unit nb: " << territories.at(i)->getPriority()
+        cout << i << " - " << territories.at(i)->getTerritoryName() << " (unit nb: "
+             << territories.at(i)->getUnitNbr()
              << ")" << endl;
     }
     Territory *sourceTerritory = territories.at(
@@ -465,7 +469,7 @@ bool HumanPlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     // Determine target territory
     for (int i = 0; i < territoriesToChooseFrom.size(); ++i) {
         cout << i << " - " << territoriesToChooseFrom.at(i)->getTerritoryName() << " (unit nb: "
-             << territoriesToChooseFrom.at(i)->getPriority() << ")" << endl;
+             << territoriesToChooseFrom.at(i)->getUnitNbr() << ")" << endl;
     }
     Territory *targetTerritory = territoriesToChooseFrom.at(
             PlayerStrategy::getIntegerInput("Please pick a target territory to advance to: ", 0,
@@ -503,7 +507,7 @@ bool HumanPlayerStrategy::issueBombOrder(BombOrder *order) {
     // Determine target territory
     for (int i = 0; i < territoriesToAttack.size(); ++i) {
         cout << i << " - " << territoriesToAttack.at(i)->getTerritoryName() << " (unit nb: "
-             << territoriesToAttack.at(i)->getPriority() << ")" << endl;
+             << territoriesToAttack.at(i)->getUnitNbr() << ")" << endl;
     }
     Territory *targetTerritory = territoriesToAttack.at(
             PlayerStrategy::getIntegerInput("Please pick a target territory to bomb: ", 0,
@@ -531,16 +535,17 @@ bool HumanPlayerStrategy::issueBlockadeOrder(BlockadeOrder *order) {
     // Determine target territory
     for (int i = 0; i < territoriesToDefend.size(); ++i) {
         cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << " (unit nb: "
-             << territoriesToDefend.at(i)->getPriority() << ")" << endl;
+             << territoriesToDefend.at(i)->getUnitNbr() << ")" << endl;
     }
     Territory *targetTerritory = territoriesToDefend.at(
             PlayerStrategy::getIntegerInput("Please pick a target territory to blockade: ", 0,
                                             territoriesToDefend.size()));
 
+    order->setTargetTerritory(targetTerritory);
+
     // Update priority
     targetTerritory->setPriority(targetTerritory->getPriority() * 2);
 
-    order->setTargetTerritory(targetTerritory);
     // Update order list
     player->getOrders()->add(order);
     return true;
@@ -557,7 +562,7 @@ bool HumanPlayerStrategy::issueAirliftOrder(AirliftOrder *order) {
     // Determine src territory
     for (int i = 0; i < territoriesToDefend.size(); ++i) {
         cout << i << " - " << territoriesToDefend.at(i)->getTerritoryName() << " (unit nb: "
-             << territoriesToDefend.at(i)->getPriority() << ")" << endl;
+             << territoriesToDefend.at(i)->getUnitNbr() << ")" << endl;
     }
     Territory *sourceTerritory = territoriesToDefend.at(
             PlayerStrategy::getIntegerInput("Please pick a source territory to airlift from: ", 0,
@@ -643,7 +648,8 @@ bool AggressivePlayerStrategy::issueOrder() {
         issueDeployOrder();
         return true;
     } else { // Other orders
-        bool continueIssuingOrders = rand() % 2;
+        int percentage = (rand() % 100) + 1;
+        bool continueIssuingOrders = percentage <= PERCENTAGE;
         if (continueIssuingOrders) {
             Card *bombCard = player->getHandOfCards()->getBombCard();
             bool advance = !bombCard || rand() % 2;
@@ -656,6 +662,43 @@ bool AggressivePlayerStrategy::issueOrder() {
         }
         return continueIssuingOrders;
     }
+}
+
+bool AggressivePlayerStrategy::setUpDeployOrder(DeployOrder *order) {
+    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
+    order->setNumberOfArmiesToDeploy(getUnitNumberToDeploy());
+
+    // Set the target territory to be player's territory with the least amount of unit armies
+    vector<Territory *> territoriesToDefend = player->toDefend();
+
+    if (territoriesToDefend.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << order->getName()
+             << " because this player has no territories to defend." << endl;
+        return false;
+    }
+
+    Territory* targetTerritory;
+    for(Territory* territory: territoriesToDefend) {
+        if(!toAttack(territory).empty()) {
+            targetTerritory = territory;
+            break;
+        }
+    }
+
+    order->setTargetTerritory(targetTerritory ? targetTerritory : territoriesToDefend.at(0));
+
+    // Update the priority of the target territory so that it is not at the top of the list for the next deploy order
+    order->getTargetTerritory()->setPriority(
+            order->getTargetTerritory()->getPriority() + order->getNumberOfArmiesToDeploy());
+
+    // Update number of armies
+    player->setNumberOfArmiesInReinforcementPool(
+            player->getNumberofArmiesInReinforcementPool() - order->getNumberOfArmiesToDeploy());
+
+    // Update order list
+    player->getOrders()->add(order);
+
+    return true;
 }
 
 bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
@@ -676,8 +719,10 @@ bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     order->setNumberOfArmiesToAdvance(order->getSourceTerritory()->getPriority());
 
     // Update priority
-    order->getSourceTerritory()->setPriority(order->getSourceTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
-    order->getTargetTerritory()->setPriority(order->getTargetTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
+    order->getSourceTerritory()->setPriority(
+            order->getSourceTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
+    order->getTargetTerritory()->setPriority(
+            order->getTargetTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
 
     // Update order list
     player->getOrders()->add(order);
@@ -694,7 +739,8 @@ bool AggressivePlayerStrategy::issueBombOrder(BombOrder *order) {
         return false;
     }
 
-    Territory *targetTerritory = territoriesToAttack.at(territoriesToAttack.size() - 1); // Attack the strongest enemy territory
+    Territory *targetTerritory = territoriesToAttack.at(
+            territoriesToAttack.size() - 1); // Attack the strongest enemy territory
     order->setTargetTerritory(targetTerritory);
 
     // Update priority
@@ -721,10 +767,6 @@ vector<Territory *> AggressivePlayerStrategy::toAttack() {
 }
 
 vector<Territory *> AggressivePlayerStrategy::toDefend() {
-    sort(player->getTerritories().begin(), player->getTerritories().end(), [this](Territory *lhs, Territory *rhs) {
-        return toAttack(lhs).size() > toAttack(rhs).size();
-    });
-
     sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
         return lhs->getPriority() > rhs->getPriority();
     });
@@ -752,10 +794,6 @@ vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) 
         if (adjacentTerritory->getOwner() == this->player)
             territoriesToDefend.push_back(adjacentTerritory);
     }
-
-    sort(territoriesToDefend.begin(), territoriesToDefend.end(), [this](Territory *lhs, Territory *rhs) {
-        return toAttack(lhs).size() > toAttack(rhs).size();
-    });
 
     sort(territoriesToDefend.begin(), territoriesToDefend.end(), [](Territory *lhs, Territory *rhs) {
         return lhs->getPriority() > rhs->getPriority();
@@ -801,7 +839,8 @@ bool BenevolentPlayerStrategy::issueOrder() {
         return true;
     } else {
         //Since benevolent player cannot conquer a territory, he won't have a card, he can just move to weaker territories.
-        bool continueIssuingOrders = rand() % 2;
+        int percentage = (rand() % 100) + 1;
+        bool continueIssuingOrders = percentage <= PERCENTAGE;
         if (continueIssuingOrders) {
             issueAdvanceOrder();
         }
@@ -885,7 +924,8 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) 
 
 int BenevolentPlayerStrategy::getUnitNumberToDeploy() {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
-    return (rand() % ((totalAvailableArmies/2) == 0 ? totalAvailableArmies : (totalAvailableArmies/2))) + 1;}
+    return (rand() % ((totalAvailableArmies / 2) == 0 ? totalAvailableArmies : (totalAvailableArmies / 2))) + 1;
+}
 
 
 // NEUTRAL PLAYER STRATEGY
@@ -946,7 +986,8 @@ bool RandomPlayerStrategy::issueOrder() {
         issueDeployOrder();
         return true;
     } else { // Other orders
-        bool continueIssuingOrders = rand() % 2;
+        int percentage = (rand() % 100) + 1;
+        bool continueIssuingOrders = percentage <= PERCENTAGE;
         if (continueIssuingOrders) {
             bool advance = player->getHandOfCards()->getCards().empty() || rand() % 2;
             if (advance) { //Always issue an Advance order if player has an empty hand

@@ -46,8 +46,7 @@ Order *Card::play() {
             order = new NegotiateOrder();
             break;
     }
-
-    cout << "Card played for " << order->getName() << endl;
+    
     return order;
 }
 
@@ -155,9 +154,29 @@ const vector<Card *> &Deck::getCards() const {
 Card *Deck::draw() {
     if (cards.empty())
         return nullptr;
+
     int randomIndex = rand() % cards.size();
     Card *card = cards.at(randomIndex);
     cards.erase(cards.begin() + randomIndex);
+
+//    // TESTING PURPOSES
+//    auto position = find_if(cards.begin(), cards.end(), [](Card *lhs) {
+//        return lhs->getTypeName() == "blockade";
+//    });
+//
+//    Card* card;
+//    if(position == cards.end()) {
+//        int randomIndex = rand() % cards.size();
+//        card = cards.at(randomIndex);
+//        cards.erase(cards.begin() + randomIndex);
+//    }
+//    else {
+//        card = *position;
+//        cards.erase(position);
+//    }
+//
+//    // TESTING PURPOSES
+
     return card;
 }
 

@@ -7,6 +7,8 @@ class PlayerStrategy {
 public:
     Player *player;
 
+    static const int PERCENTAGE;
+
     virtual bool issueOrder() = 0;
 
     virtual vector<Territory *> toAttack() = 0;
@@ -143,6 +145,8 @@ public:
     virtual ~AggressivePlayerStrategy();
 
     bool issueOrder() override;
+
+    bool setUpDeployOrder(DeployOrder *order) override;
 
     bool setUpAdvanceOrder(AdvanceOrder *order) override;
 
