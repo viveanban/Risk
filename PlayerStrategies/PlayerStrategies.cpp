@@ -584,23 +584,63 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
 }
 
 bool BenevolentPlayerStrategy::issueOrder() {
-    return false;
+    // Issue deploy orders as long as player's reinforcement pool is not empty
+    if (this->player->getNumberofArmiesInReinforcementPool() > 0) {
+        this->player->issueDeployOrder();
+        return true;
+    } else {
+        //Since benevolent player cannot conquer a territory, he won't have a card, he can just move to weaker territories.
+        bool continueIssuingOrders = rand() % 2;
+        if (continueIssuingOrders) {
+            // sort his territories from strongest to weakest so he picks strongest territory as source territory
+            sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+                return lhs->getUnitNbr() > rhs->getUnitNbr();
+            });
+            this->player->issueAdvanceOrder();
+        }
+        return continueIssuingOrders;
+    }
 }
 
 vector<Territory *> BenevolentPlayerStrategy::toAttack() {
-    return vector<Territory *>();
+    //It is never going to call this method, but we leave it since it wouldn't be correct to not have an attack method
+    vector<Territory *> territoriesToAttack;
+    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+    return territoriesToAttack;
 }
 
 vector<Territory *> BenevolentPlayerStrategy::toDefend() {
-    return vector<Territory *>();
+    // Need to return territories in order of weakest --> strongest
+    sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getUnitNbr() < rhs->getUnitNbr();
+    });
+    return player->getTerritories();
 }
 
 vector<Territory *> BenevolentPlayerStrategy::toAttack(Territory *srcTerritory) {
-    return vector<Territory *>();
+
+    vector<Territory *> territoriesToAttack;
+    for (Territory *territory: srcTerritory->getAdjList()) {
+        if (territory->getOwner() != this->player)
+            territoriesToAttack.push_back(territory);
+    }
+    return territoriesToAttack;
 }
 
 vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) {
-    return vector<Territory *>();
+    vector<Territory *> territoriesToDefend;
+    for (Territory *adjacentTerritory: srcTerritory->getAdjList()) {
+        if (adjacentTerritory->getOwner() == this->player)
+            territoriesToDefend.push_back(adjacentTerritory);
+    }
+    //sort from weakest to strongest
+    sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+        return lhs->getUnitNbr() < rhs->getUnitNbr();
+    });
+    return territoriesToDefend;
 }
 
 

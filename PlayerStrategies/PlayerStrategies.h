@@ -122,7 +122,7 @@ public:
 };
 
 /*
- * A benevolent computer player that focuses on protecting its weak countries
+ * A benevolent computer player focuses on protecting its weak countries
  * (reinforces its weakest countries, never attacks,
  * then fortifies in order to move armies to weaker countries.
  */
@@ -132,12 +132,34 @@ public:
 
     bool issueOrder() override;
 
+    /**
+     * toAttack takes care of returning a list of territories that the player can attack
+     * This method will never be called however since the player won't ever attack another territory
+     * @return a list of territories that the player can attack
+     */
     vector<Territory *> toAttack() override;
 
+    /**
+     * toDefend takes care of returning a list of territories that the player can defend
+     * the territory with least number of unit deployed in it will be first.
+     * @return a list of territories that the player can defend
+     */
     vector<Territory *> toDefend() override;
 
+    /**
+     * toAttack takes care of returning a list of territories that the player can attack based on a source territory
+     * This method will never be called however since the player won't ever attack another territory
+     * @param srcTerritory
+     * @return a list of territories that the player can attack
+     */
     vector<Territory *> toAttack(Territory *srcTerritory) override;
 
+    /**
+     * toDefend takes care of returning a list of territories that the player can defend from a source territory
+     * the territory with least number of unit deployed in it will be first.
+     * @param srcTerritory
+     * @return a list of territories that the player can defend
+     */
     vector<Territory *> toDefend(Territory *srcTerritory) override;
 };
 
