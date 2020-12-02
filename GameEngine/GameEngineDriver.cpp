@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-    srand(time(0));
+    srand(time(nullptr));
 
     GameEngine* gameEngine = GameEngine::getInstance();
     gameEngine->startupPhase();

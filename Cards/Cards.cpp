@@ -46,8 +46,7 @@ Order *Card::play() {
             order = new NegotiateOrder();
             break;
     }
-
-    cout << "Card played for " << order->getName() << endl;
+    
     return order;
 }
 
