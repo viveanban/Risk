@@ -541,10 +541,11 @@ bool HumanPlayerStrategy::issueBlockadeOrder(BlockadeOrder *order) {
             PlayerStrategy::getIntegerInput("Please pick a target territory to blockade: ", 0,
                                             territoriesToDefend.size()));
 
+    order->setTargetTerritory(targetTerritory);
+
     // Update priority
     targetTerritory->setPriority(targetTerritory->getPriority() * 2);
 
-    order->setTargetTerritory(targetTerritory);
     // Update order list
     player->getOrders()->add(order);
     return true;

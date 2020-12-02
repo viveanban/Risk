@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Player.h"
-#include "../GameEngine/GameEngine.h"
 #include <algorithm>
 
 /**
