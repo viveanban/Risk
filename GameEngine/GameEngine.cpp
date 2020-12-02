@@ -204,7 +204,7 @@ PlayerStrategy* GameEngine::getPlayerStrategyFromUserInput(int chosenStrategy, P
         case 3:
             return new NeutralPlayerStrategy(player);
         default:
-            return new RandomPlayerStrategy(player); // TODO: check if everyone if that's chill b/c I don't want to deal with nullptr
+            return new RandomPlayerStrategy(player); // TODO: remeber to remove this at the end (Viveka)
     }
 }
 

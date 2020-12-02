@@ -20,7 +20,7 @@ void PlayerStrategy::issueDeployOrder() {
     }
 }
 
-//TODO: Create another implemenation for the aggressive player wehere they will deployr ALL their aarmies on their strongest
+// TODO: return false when random player will be deleted (Viveka)
 bool PlayerStrategy::setUpDeployOrder(DeployOrder *order) {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
 
@@ -76,6 +76,7 @@ void PlayerStrategy::issueAdvanceOrder() {
     }
 }
 
+// TODO: return false when random player will be deleted (Viveka)
 bool PlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     // Determine src territory
     order->setSourceTerritory(player->getTerritories().at(rand() % player->getTerritories().size()));
@@ -138,6 +139,8 @@ void PlayerStrategy::issueOrderFromCard(Card *cardChosen) {
     }
 }
 
+// TODO: return false when random player will be deleted (Viveka)
+//  TODO: (aggresive will override this) (Ferdou)
 bool PlayerStrategy::issueBombOrder(BombOrder *order) {
     // Randomly determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
@@ -159,6 +162,7 @@ bool PlayerStrategy::issueBombOrder(BombOrder *order) {
     return true;
 }
 
+// TODO: return false when random player will be deleted (Viveka)
 bool PlayerStrategy::issueBlockadeOrder(BlockadeOrder *order) {
     // Determine target territory to be the player's territory with the most army units
     vector<Territory *> territoriesToDefend = player->toDefend();
@@ -180,7 +184,7 @@ bool PlayerStrategy::issueBlockadeOrder(BlockadeOrder *order) {
     return true;
 }
 
-// TODO: Both Aggressive and Benevolent players will not use this method, why keep it then?
+// TODO: just return false at the end when random player will be deleted (Viveka)
 bool PlayerStrategy::issueAirliftOrder(AirliftOrder *order) {
     vector<Territory *> territoriesToDefend = player->toDefend();
     if (territoriesToDefend.empty()) {
@@ -213,6 +217,7 @@ bool PlayerStrategy::issueAirliftOrder(AirliftOrder *order) {
     return true;
 }
 
+// TODO: return false when random player will be deleted (Viveka)
 bool PlayerStrategy::issueNegotiateOrder(NegotiateOrder *order) {
     // Determine a random enemy player
     vector<Player *> players = GameEngine::getInstance()->getPlayers();
@@ -567,6 +572,8 @@ bool HumanPlayerStrategy::issueNegotiateOrder(NegotiateOrder *order) {
 
 // AGGRESIVE PLAYER STRATEGY
 
+// TODO: overwrite setUpDeployOrder --> suggestion: maybe just have a numberOFArmiesToDeploy method that is going to be overwritten (Tarek)
+// TODO: Create another implemenation for the aggressive player wehere they will deployr ALL their aarmies on their strongest (Tarek)
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
     this->player = player;
 }
@@ -669,6 +676,8 @@ vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) 
 
 // BENEVOLENT PLAYER STRATEGY
 
+// TODO: overwrite setUpDeployOrder --> suggestion: maybe just have a numberOFArmiesToDeploy method that is going to be overwritten (Tarek)
+// TODO: Change the implementation of the setupDeployOrder to distribute reinforcement evenly between weak territories (une limite) (Tarek)
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
     this->player = player;
 }
@@ -734,15 +743,6 @@ bool BenevolentPlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
 }
 
 vector<Territory *> BenevolentPlayerStrategy::toAttack() {
-    //It is never going to call this method, but we leave it since it wouldn't be correct to not have an attack method
-    vector<Territory *> territoriesToAttack;
-    for (Territory *territory: GameEngine::getInstance()->getMap()->getTerritoryList()) {
-        if (territory->getOwner() != this->player)
-            territoriesToAttack.push_back(territory);
-    }
-    //TODO: Should we just return an empty list? so that it indicates that this strategy has no territories to attack
-    // even if toAttack is called, the user would see that there is nothing to attack
-    // would this cause memory leaks
     return {};
 }
 
@@ -755,14 +755,6 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend() {
 }
 
 vector<Territory *> BenevolentPlayerStrategy::toAttack(Territory *srcTerritory) {
-    vector<Territory *> territoriesToAttack;
-    for (Territory *territory: srcTerritory->getAdjList()) {
-        if (territory->getOwner() != this->player)
-            territoriesToAttack.push_back(territory);
-    }
-    //TODO: Should we just return an empty list? so that it indicates that this strategy has no territories to attack
-    // even if toAttack is called, the user would see that there is nothing to attack
-    // would this cause memory leaks?
     return {};
 }
 

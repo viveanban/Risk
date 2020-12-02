@@ -3,6 +3,7 @@
 
 #include "../Player/Player.h"
 
+// TODO: correct copy constructor, assignment operator, and stream insertion operator. (Abhijit)
 class PlayerStrategy {
 protected:
     Player *player;
@@ -133,8 +134,6 @@ public:
     explicit BenevolentPlayerStrategy(Player *player);
 
     bool issueOrder() override;
-
-    //TODO: Change the implementation of the setupDeployOrder to distribute reinforcement evenly between weak territories
 
     bool setUpAdvanceOrder(AdvanceOrder* order) override;
 

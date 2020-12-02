@@ -183,7 +183,7 @@ public:
 
 class ConquestFileReaderAdapter : public MapLoader {
 private:
-    ConquestFileReader conquestFileReader;
+    ConquestFileReader conquestFileReader; // TODO: make it a pointer + delete it (Viveka)
 public:
     ConquestFileReaderAdapter();
 
