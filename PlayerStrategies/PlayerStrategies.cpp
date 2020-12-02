@@ -78,7 +78,7 @@ void PlayerStrategy::issueAdvanceOrder() {
 bool PlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     // Determine src territory
     order->setSourceTerritory(player->getTerritories().at(rand() % player->getTerritories().size()));
-    bool attack = rand() % 2;
+    bool attack = dynamic_cast<AggressivePlayerStrategy*> (player->getStrategy()) != nullptr;
     order->setAdvanceOrderType(attack ? AdvanceOrderType::attack : AdvanceOrderType::transfer);
 
     // Determine target territory
