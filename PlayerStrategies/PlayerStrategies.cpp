@@ -776,7 +776,7 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) 
 
 int BenevolentPlayerStrategy::getUnitNumberToDeploy() {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
-    return (rand() % (totalAvailableArmies/3))+1;}
+    return (rand() % (totalAvailableArmies/2))+1;}
 
 
 // NEUTRAL PLAYER STRATEGY
