@@ -586,7 +586,7 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
 bool BenevolentPlayerStrategy::issueOrder() {
     // Issue deploy orders as long as player's reinforcement pool is not empty
     if (this->player->getNumberofArmiesInReinforcementPool() > 0) {
-        this->player->issueDeployOrder();
+        issueDeployOrder();
         return true;
     } else {
         //Since benevolent player cannot conquer a territory, he won't have a card, he can just move to weaker territories.
@@ -596,7 +596,7 @@ bool BenevolentPlayerStrategy::issueOrder() {
             sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
                 return lhs->getUnitNbr() > rhs->getUnitNbr();
             });
-            this->player->issueAdvanceOrder();
+            issueAdvanceOrder();
         }
         return continueIssuingOrders;
     }
