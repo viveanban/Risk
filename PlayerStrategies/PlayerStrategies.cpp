@@ -22,10 +22,8 @@ void PlayerStrategy::issueDeployOrder() {
 
 // TODO: return false when random player will be deleted (Viveka)
 bool PlayerStrategy::setUpDeployOrder(DeployOrder *order) {
-    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
-
     // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
-    order->setNumberOfArmiesToDeploy((rand() % totalAvailableArmies) + 1);
+    order->setNumberOfArmiesToDeploy(getUnitNumberToDeploy());
 
     // Set the target territory to be player's territory with the least amount of unit armies
     vector<Territory *> territoriesToDefend = player->toDefend();
@@ -256,6 +254,11 @@ int PlayerStrategy::getIntegerInput(string printStatement, int leftBound, int ri
         cin >> output;
     } while (cin.fail() or output < leftBound or output >= rightBound);
     return output;
+}
+
+int PlayerStrategy::getUnitNumberToDeploy() {
+    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
+    return (rand() % totalAvailableArmies) + 1;
 }
 
 // HUMAN PLAYER STRATEGY
@@ -571,8 +574,6 @@ bool HumanPlayerStrategy::issueNegotiateOrder(NegotiateOrder *order) {
 
 // AGGRESIVE PLAYER STRATEGY
 
-// TODO: overwrite setUpDeployOrder --> suggestion: maybe just have a numberOFArmiesToDeploy method that is going to be overwritten (Tarek)
-// TODO: Create another implemenation for the aggressive player wehere they will deployr ALL their aarmies on their strongest (Tarek)
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
     this->player = player;
 }
@@ -694,10 +695,12 @@ vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) 
     return territoriesToDefend;
 }
 
+int AggressivePlayerStrategy::getUnitNumberToDeploy() {
+    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
+    return totalAvailableArmies;
+}
 // BENEVOLENT PLAYER STRATEGY
 
-// TODO: overwrite setUpDeployOrder --> suggestion: maybe just have a numberOFArmiesToDeploy method that is going to be overwritten (Tarek)
-// TODO: Change the implementation of the setupDeployOrder to distribute reinforcement evenly between weak territories (une limite) (Tarek)
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
     this->player = player;
 }
@@ -790,6 +793,10 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) 
     });
     return territoriesToDefend;
 }
+
+int BenevolentPlayerStrategy::getUnitNumberToDeploy() {
+    int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
+    return (rand() % (totalAvailableArmies/2))+1;}
 
 
 // NEUTRAL PLAYER STRATEGY

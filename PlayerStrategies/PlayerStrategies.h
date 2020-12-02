@@ -18,6 +18,8 @@ public:
 
     virtual vector<Territory *> toDefend(Territory *srcTerritory) = 0;
 
+    virtual int getUnitNumberToDeploy();
+
     // ----------Deploy Order methods--------------
 
     /**
@@ -124,6 +126,12 @@ public:
     vector<Territory *> toAttack(Territory *srcTerritory) override;
 
     vector<Territory *> toDefend(Territory *srcTerritory) override;
+
+    /**
+ * getUnitNumberToDeploy returns the number of armies to deploy every turn based on the strategy of the player
+ * @return the number of armies to deploy every turn based on the strategy of the player
+ */
+    virtual int getUnitNumberToDeploy() override;
 };
 
 /*
@@ -168,6 +176,13 @@ public:
      * @return a list of territories that the player can defend
      */
     vector<Territory *> toDefend(Territory *srcTerritory) override;
+
+    /**
+     * getUnitNumberToDeploy returns the number of armies to deploy every turn based on the strategy of the player
+     * @return the number of armies to deploy every turn based on the strategy of the player
+     */
+    virtual int getUnitNumberToDeploy() override;
+
 };
 
 /*
