@@ -662,10 +662,14 @@ vector<Territory *> AggressivePlayerStrategy::toAttack() {
 }
 
 vector<Territory *> AggressivePlayerStrategy::toDefend() {
-    // This sorted list is used when an aggressive player issues an advance order (AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order))
+    sort(player->getTerritories().begin(), player->getTerritories().end(), [this](Territory *lhs, Territory *rhs) {
+        return toAttack(lhs).size() > toAttack(rhs).size();
+    });
+
     sort(player->getTerritories().begin(), player->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
         return lhs->getPriority() > rhs->getPriority();
     });
+
     return player->getTerritories();
 }
 
@@ -689,9 +693,15 @@ vector<Territory *> AggressivePlayerStrategy::toDefend(Territory *srcTerritory) 
         if (adjacentTerritory->getOwner() == this->player)
             territoriesToDefend.push_back(adjacentTerritory);
     }
+
+    sort(territoriesToDefend.begin(), territoriesToDefend.end(), [this](Territory *lhs, Territory *rhs) {
+        return toAttack(lhs).size() > toAttack(rhs).size();
+    });
+
     sort(territoriesToDefend.begin(), territoriesToDefend.end(), [](Territory *lhs, Territory *rhs) {
         return lhs->getPriority() > rhs->getPriority();
     });
+
     return territoriesToDefend;
 }
 
@@ -699,6 +709,7 @@ int AggressivePlayerStrategy::getUnitNumberToDeploy() {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
     return totalAvailableArmies;
 }
+
 // BENEVOLENT PLAYER STRATEGY
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
@@ -796,7 +807,7 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend(Territory *srcTerritory) 
 
 int BenevolentPlayerStrategy::getUnitNumberToDeploy() {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();
-    return (rand() % (totalAvailableArmies/2))+1;}
+    return (rand() % ((totalAvailableArmies/2) == 0 ? totalAvailableArmies : (totalAvailableArmies/2))) + 1;}
 
 
 // NEUTRAL PLAYER STRATEGY
