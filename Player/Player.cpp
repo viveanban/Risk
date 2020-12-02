@@ -133,7 +133,9 @@ void Player::setNumberOfArmiesInReinforcementPool(int numberOfArmiesInReinforcem
 }
 
 void Player::setStrategy(PlayerStrategy *playerStrategy) {
-    // todo: check if there was a strategy before, if yes, delete it before assigning new strategy (Ferdou)
+    if(this->strategy != nullptr)
+        delete this->strategy;
+
     this->strategy = playerStrategy;
 }
 

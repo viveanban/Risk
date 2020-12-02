@@ -140,7 +140,6 @@ void PlayerStrategy::issueOrderFromCard(Card *cardChosen) {
 }
 
 // TODO: return false when random player will be deleted (Viveka)
-//  TODO: (aggresive will override this) (Ferdou)
 bool PlayerStrategy::issueBombOrder(BombOrder *order) {
     // Randomly determine a target territory to bomb
     vector<Territory *> territoriesToAttack = player->toAttack();
@@ -619,6 +618,27 @@ bool AggressivePlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     // Update priority
     order->getSourceTerritory()->setPriority(order->getSourceTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
     order->getTargetTerritory()->setPriority(order->getTargetTerritory()->getPriority() - order->getNumberOfArmiesToAdvance());
+
+    // Update order list
+    player->getOrders()->add(order);
+
+    return true;
+}
+
+bool AggressivePlayerStrategy::issueBombOrder(BombOrder *order) {
+    // Randomly determine a target territory to bomb
+    vector<Territory *> territoriesToAttack = player->toAttack();
+    if (territoriesToAttack.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << order->getName()
+             << " because this player has no territories to attack." << endl;
+        return false;
+    }
+
+    Territory *targetTerritory = territoriesToAttack.at(territoriesToAttack.size() - 1); // Attack the strongest enemy territory
+    order->setTargetTerritory(targetTerritory);
+
+    // Update priority
+    targetTerritory->setPriority(order->getTargetTerritory()->getPriority() / 2);
 
     // Update order list
     player->getOrders()->add(order);
