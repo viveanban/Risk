@@ -410,6 +410,7 @@ void StatisticsObserver::update() {
 }
 
 void StatisticsObserver::displayStatsUpdate() {
+    cout << "===================================================================================================" << endl;
     cout << '|' << "Player" << setw(5) << '|' << "Territorial Control\t|" << endl;
     vector<float> playerDominationRatios{};
     for (Player *player: GameEngine::getInstance()->getPlayers()) {
@@ -429,6 +430,7 @@ void StatisticsObserver::displayStatsUpdate() {
                  << "! YOU WON THE GAME! VICTORY ~" << endl;
         }
     }
+    cout << "===================================================================================================" << endl;
 }
 
 float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
