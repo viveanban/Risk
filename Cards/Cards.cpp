@@ -159,24 +159,6 @@ Card *Deck::draw() {
     Card *card = cards.at(randomIndex);
     cards.erase(cards.begin() + randomIndex);
 
-//    // TESTING PURPOSES
-//    auto position = find_if(cards.begin(), cards.end(), [](Card *lhs) {
-//        return lhs->getTypeName() == "blockade";
-//    });
-//
-//    Card* card;
-//    if(position == cards.end()) {
-//        int randomIndex = rand() % cards.size();
-//        card = cards.at(randomIndex);
-//        cards.erase(cards.begin() + randomIndex);
-//    }
-//    else {
-//        card = *position;
-//        cards.erase(position);
-//    }
-//
-//    // TESTING PURPOSES
-
     return card;
 }
 

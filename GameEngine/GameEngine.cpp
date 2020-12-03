@@ -181,7 +181,7 @@ void GameEngine::setupPlayers() {
     }
 
     // Determine strategy for each player
-    vector<string> strategies = {"Human", "Benevolent", "Aggresive", "Neutral", "Random"};
+    vector<string> strategies = {"Human", "Benevolent", "Aggressive", "Neutral"};
     for(int i = 0; i < strategies.size(); i++)
         cout << i << " - " << strategies.at(i) << endl;
 
@@ -201,10 +201,8 @@ PlayerStrategy* GameEngine::getPlayerStrategyFromUserInput(int chosenStrategy, P
             return new BenevolentPlayerStrategy(player);
         case 2:
             return new AggressivePlayerStrategy(player);
-        case 3:
-            return new NeutralPlayerStrategy(player);
         default:
-            return new RandomPlayerStrategy(player); // TODO: remeber to remove this at the end (Viveka)
+            return new NeutralPlayerStrategy(player);
     }
 }
 

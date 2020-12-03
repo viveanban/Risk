@@ -189,6 +189,8 @@ public:
 
     bool issueOrder() override;
 
+    bool setUpDeployOrder(DeployOrder *order) override;
+
     bool setUpAdvanceOrder(AdvanceOrder *order) override;
 
     /**
@@ -247,28 +249,6 @@ public:
     virtual ~NeutralPlayerStrategy();
 
     bool issueOrder() override;
-
-    vector<Territory *> toAttack() override;
-
-    vector<Territory *> toDefend() override;
-
-    vector<Territory *> toAttack(Territory *srcTerritory) override;
-
-    vector<Territory *> toDefend(Territory *srcTerritory) override;
-};
-
-/*
- * A random player that issues can both defend and attack using the most appropriate territories.
- */
-class RandomPlayerStrategy : public PlayerStrategy {
-public:
-    explicit RandomPlayerStrategy(Player *player);
-
-    bool issueOrder() override;
-
-    bool setUpDeployOrder(DeployOrder *order) override;
-
-    bool setUpAdvanceOrder(AdvanceOrder *order) override;
 
     vector<Territory *> toAttack() override;
 
