@@ -199,7 +199,7 @@ bool HumanPlayerStrategy::issueOrder() {
     } else { // Other orders
         bool continueIssuingOrders = getBooleanInput("Do you want to continue issuing orders? [true/false] ");
         if (continueIssuingOrders) {
-            if (player->getHandOfCards()->getCards().empty()) {
+            if (player->getHandOfCards()->getCards().empty() || isOnlyReinforcement()) {
                 cout << "You must issue an Advance Order because your hand is empty!" << endl;
                 issueAdvanceOrder();
             } else {
@@ -216,7 +216,8 @@ bool HumanPlayerStrategy::issueOrder() {
                     // Print all cards in Hand
                     vector<Card *> handOfCards = player->getHandOfCards()->getCards();
                     for (int i = 0; i < handOfCards.size(); ++i) {
-                        cout << i << " - " << handOfCards.at(i)->getTypeName() << endl;
+                        if(handOfCards.at(i)->getTypeName() != "reinforcement")
+                            cout << i << " - " << handOfCards.at(i)->getTypeName() << endl;
                     }
                     // Pick a card
                     Card *cardChosen = handOfCards.at(getIntegerInput("Please select the card you wish to play: ",
@@ -229,6 +230,15 @@ bool HumanPlayerStrategy::issueOrder() {
         return continueIssuingOrders;
     }
 }
+
+ bool HumanPlayerStrategy::isOnlyReinforcement(){
+     for(auto card : player->getHandOfCards()->getCards()){
+         if(card->getTypeName() != "reinforcement"){
+             return false;
+         }
+     }
+     return true;
+ }
 
 bool HumanPlayerStrategy::setUpDeployOrder(DeployOrder *order) {
     int totalAvailableArmies = player->getNumberofArmiesInReinforcementPool();

@@ -154,10 +154,26 @@ const vector<Card *> &Deck::getCards() const {
 Card *Deck::draw() {
     if (cards.empty())
         return nullptr;
+//    // TESTING PURPOSES
+    auto position = find_if(cards.begin(), cards.end(), [](Card *lhs) {
+        return lhs->getTypeName() == "reinforcement";
+    });
 
-    int randomIndex = rand() % cards.size();
-    Card *card = cards.at(randomIndex);
-    cards.erase(cards.begin() + randomIndex);
+    Card* card;
+    if(position == cards.end()) {
+        int randomIndex = rand() % cards.size();
+        card = cards.at(randomIndex);
+        cards.erase(cards.begin() + randomIndex);
+    }
+    else {
+        card = *position;
+        cards.erase(position);
+    }
+//
+//    // TESTING PURPOSES
+//    int randomIndex = rand() % cards.size();
+//    Card *card = cards.at(randomIndex);
+//    cards.erase(cards.begin() + randomIndex);
 
     return card;
 }
