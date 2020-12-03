@@ -688,6 +688,34 @@ bool BenevolentPlayerStrategy::issueOrder() {
     }
 }
 
+bool BenevolentPlayerStrategy::setUpDeployOrder(DeployOrder *order) {
+    // This ensures that the numberOfArmiesToDeploy is always smaller or equal than numberOfArmiesInReinforcementPool
+    order->setNumberOfArmiesToDeploy(getUnitNumberToDeploy());
+
+    // Set the target territory to be player's territory with the least amount of unit armies
+    vector<Territory *> territoriesToDefend = player->toDefend();
+    if (territoriesToDefend.empty()) {
+        cout << player->getPlayerName() << " could not issue order: " << order->getName()
+             << " because this player has no territories to defend." << endl;
+        return false;
+    }
+
+    order->setTargetTerritory(territoriesToDefend.at(0));
+
+    // Update the priority of the target territory so that it is not at the top of the list for the next deploy order
+    order->getTargetTerritory()->setPriority(
+            order->getTargetTerritory()->getPriority() + order->getNumberOfArmiesToDeploy());
+
+    // Update number of armies
+    player->setNumberOfArmiesInReinforcementPool(
+            player->getNumberofArmiesInReinforcementPool() - order->getNumberOfArmiesToDeploy());
+
+    // Update order list
+    player->getOrders()->add(order);
+
+    return true;
+}
+
 bool BenevolentPlayerStrategy::setUpAdvanceOrder(AdvanceOrder *order) {
     order->setAdvanceOrderType(AdvanceOrderType::transfer);
 

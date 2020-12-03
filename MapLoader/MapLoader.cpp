@@ -8,7 +8,6 @@
 #include <set>
 
 using namespace std;
-//TODO: Handle Clang-Tidy: Initialization of 'MAP_DIRECTORY' with static storage duration may throw an exception that cannot be caught
 // ================================ MapLoader  =========================================================================
 const string MapLoader::MAP_FILENAME_FORMAT_REGEX = "[^.]+\\.+map";
 const string MapLoader::MAP_DIRECTORY = "../maps/domination_maps/";

@@ -189,6 +189,8 @@ public:
 
     bool issueOrder() override;
 
+    bool setUpDeployOrder(DeployOrder *order) override;
+
     bool setUpAdvanceOrder(AdvanceOrder *order) override;
 
     /**
