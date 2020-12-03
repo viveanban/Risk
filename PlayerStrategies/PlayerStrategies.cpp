@@ -5,9 +5,26 @@
 // DEFAULT PLAYER STRATEGY
 const int PlayerStrategy::PERCENTAGE = 90;
 
-PlayerStrategy::PlayerStrategy() {}
+PlayerStrategy::PlayerStrategy(): player(nullptr) {}
 
 PlayerStrategy::PlayerStrategy(Player *player) : player(player) {}
+
+// Note: Shallow copy done on purpose. We want the strategy to only contain a pointer to an existing player.
+// A new player will never be created in the scope of this class.
+PlayerStrategy::PlayerStrategy(const PlayerStrategy &original) {
+    this->player = original.player; //Note: Shallow copy on purpose
+}
+
+PlayerStrategy &PlayerStrategy::operator=(const PlayerStrategy &other) {
+    if (this != &other) {
+        this->player = other.player; //Note: Shallow Copy on purpose
+    }
+    return *this;
+}
+
+std::ostream &operator<<(ostream &stream, PlayerStrategy &playerStrategy) {
+    return stream << playerStrategy.player->getPlayerName() << " uses the base player strategy." << endl;
+}
 
 PlayerStrategy::~PlayerStrategy() = default;
 
@@ -241,7 +258,7 @@ bool PlayerStrategy::issueNegotiateOrder(NegotiateOrder *order) {
     return true;
 }
 
-bool PlayerStrategy::getBooleanInput(string printStatement) {
+bool PlayerStrategy::getBooleanInput(const string& printStatement) {
     bool output = false;
     do {
         cout << printStatement << endl;
@@ -252,7 +269,7 @@ bool PlayerStrategy::getBooleanInput(string printStatement) {
     return output;
 }
 
-int PlayerStrategy::getIntegerInput(string printStatement, int leftBound, int rightBound) {
+int PlayerStrategy::getIntegerInput(const string& printStatement, int leftBound, int rightBound) {
     int output = 0;
     do {
         cout << printStatement << endl;
@@ -268,39 +285,20 @@ int PlayerStrategy::getUnitNumberToDeploy() {
     return (rand() % totalAvailableArmies) + 1;
 }
 
-// Shallow copy because we don't want to create new players
-PlayerStrategy::PlayerStrategy(const PlayerStrategy &original) {
-    this->player = original.player;
-}
+//=============================================== HUMAN PLAYER STRATEGY ================================================
 
-PlayerStrategy &PlayerStrategy::operator=(const PlayerStrategy &other) {
-    if (this != &other) {
-        this->player = other.player;
-    }
-    return *this;
-}
+HumanPlayerStrategy::HumanPlayerStrategy() = default;
 
-std::ostream &operator<<(ostream &stream, PlayerStrategy &playerStrategy) {
-    return stream << playerStrategy.player->getPlayerName() << " uses the base player strategy." << endl;
-}
-
-// HUMAN PLAYER STRATEGY
-HumanPlayerStrategy::HumanPlayerStrategy() {}
-
-HumanPlayerStrategy::HumanPlayerStrategy(Player *player) {
-    this->player = player;
-}
+HumanPlayerStrategy::HumanPlayerStrategy(Player *player): PlayerStrategy(player){}
 
 HumanPlayerStrategy::~HumanPlayerStrategy() = default;
 
-// Shallow copy because we don't want to create new players
-HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy &original) {
-    this->player = original.player;
-}
+// Note: Shallow copy done on purpose. We want the strategy to only contain a pointer to an existing player
+ HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy &original): PlayerStrategy(original.player){}
 
 HumanPlayerStrategy &HumanPlayerStrategy::operator=(const HumanPlayerStrategy &other) {
     if (this != &other) {
-        this->player = other.player;
+        this->player = other.player; // Note: shallow copy on purpose
     }
     return *this;
 }
@@ -617,23 +615,19 @@ bool HumanPlayerStrategy::issueNegotiateOrder(NegotiateOrder *order) {
     return true;
 }
 
-// AGGRESIVE PLAYER STRATEGY
-AggressivePlayerStrategy::AggressivePlayerStrategy() {}
+//================================================AGGRESSIVE PLAYER STRATEGY=============================================
+AggressivePlayerStrategy::AggressivePlayerStrategy() = default;
 
-AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player) {
-    this->player = player;
-}
+ AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player): PlayerStrategy(player) {}
 
-AggressivePlayerStrategy::~AggressivePlayerStrategy() = default;
+AggressivePlayerStrategy::~AggressivePlayerStrategy() = default; // Note: shallow copying on purpose
 
-// Shallow copy because we don't want to create new players
-AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &original) {
-    this->player = original.player;
-}
+// Note: Shallow copy because we don't want to create new players
+AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &original): PlayerStrategy(original.player) {}
 
 AggressivePlayerStrategy &AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy &other) {
     if (this != &other) {
-        this->player = other.player;
+        this->player = other.player; //Note: Shallow copy on purpose
     }
     return *this;
 }
@@ -807,23 +801,20 @@ int AggressivePlayerStrategy::getUnitNumberToDeploy() {
     return totalAvailableArmies;
 }
 
-// BENEVOLENT PLAYER STRATEGY
-BenevolentPlayerStrategy::BenevolentPlayerStrategy() {}
+//================================================BENEVOLENT PLAYER STRATEGY============================================
+BenevolentPlayerStrategy::BenevolentPlayerStrategy() = default;
 
-BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player) {
-    this->player = player;
-}
+// Note: Shallow Copy on purpose
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player): PlayerStrategy(player) {}
 
 BenevolentPlayerStrategy::~BenevolentPlayerStrategy() = default;
 
-// Shallow copy because we don't want to create new players
-BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy &original) {
-    this->player = original.player;
-}
+// Note: Shallow copy because we don't want to create new players
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy &original): PlayerStrategy(original.player) {}
 
 BenevolentPlayerStrategy &BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy &other) {
     if (this != &other) {
-        this->player = other.player;
+        this->player = other.player; //Note: Shallow Copy on purpose
     }
     return *this;
 }
@@ -927,24 +918,20 @@ int BenevolentPlayerStrategy::getUnitNumberToDeploy() {
     return (rand() % ((totalAvailableArmies / 2) == 0 ? totalAvailableArmies : (totalAvailableArmies / 2))) + 1;
 }
 
+//================================================NEUTRAL PLAYER STRATEGY===============================================
+NeutralPlayerStrategy::NeutralPlayerStrategy() = default;
 
-// NEUTRAL PLAYER STRATEGY
-NeutralPlayerStrategy::NeutralPlayerStrategy() {}
-
-NeutralPlayerStrategy::NeutralPlayerStrategy(Player *player) {
-    this->player = player;
-}
+//Note: Shallow copying of a pointer on purpose
+NeutralPlayerStrategy::NeutralPlayerStrategy(Player *player): PlayerStrategy(player){}
 
 NeutralPlayerStrategy::~NeutralPlayerStrategy() = default;
 
-// Shallow copy because we don't want to create new players
-NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy &original) {
-    this->player = original.player;
-}
+//Note: Shallow copy because we don't want to create new players
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy &original): PlayerStrategy(original.player){}
 
 NeutralPlayerStrategy &NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy &other) {
     if (this != &other) {
-        this->player = other.player;
+        this->player = other.player; //Note: Shallow copy on purpose
     }
     return *this;
 }
@@ -974,7 +961,6 @@ vector<Territory *> NeutralPlayerStrategy::toDefend(Territory *srcTerritory) {
 }
 
 //====================================== Implemented for testing purposes ==============================================
-// RANDOM STRATEGY
 
 RandomPlayerStrategy::RandomPlayerStrategy(Player *player) {
     this->player = player;
