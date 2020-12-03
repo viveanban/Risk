@@ -124,6 +124,8 @@ public:
     bool issueAirliftOrder(AirliftOrder* order) override;
 
     bool issueNegotiateOrder(NegotiateOrder* order) override;
+
+    bool isOnlyReinforcement();
 };
 
 /*
