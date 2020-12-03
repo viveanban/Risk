@@ -46,6 +46,7 @@ Order *Card::play() {
             order = new NegotiateOrder();
             break;
     }
+    
     return order;
 }
 
@@ -105,8 +106,8 @@ Deck::Deck(const Deck &original) {
 }
 
 Deck &Deck::operator=(const Deck &otherDeck) {
-    if(!cards.empty()) {
-        for(Card* card: cards) {
+    if (!cards.empty()) {
+        for (Card *card: cards) {
             delete card;
         }
         cards.clear();
@@ -153,9 +154,11 @@ const vector<Card *> &Deck::getCards() const {
 Card *Deck::draw() {
     if (cards.empty())
         return nullptr;
+
     int randomIndex = rand() % cards.size();
     Card *card = cards.at(randomIndex);
     cards.erase(cards.begin() + randomIndex);
+
     return card;
 }
 
@@ -175,8 +178,8 @@ Hand::Hand(const Hand &original) {
 }
 
 Hand &Hand::operator=(const Hand &otherHand) {
-    if(!cards.empty()) {
-        for(Card* card: cards) {
+    if (!cards.empty()) {
+        for (Card *card: cards) {
             delete card;
         }
         cards.clear();
@@ -197,9 +200,10 @@ std::ostream &operator<<(std::ostream &stream, const Hand &h) {
 // Hence, the cards left in the Hand are put back in the Deck.
 Hand::~Hand() {
     for (Card *card : cards) {
-        removeCard(card);
+        GameEngine::getInstance()->getDeck()->addCard(card);
         cout << "Put back card in Deck" << endl;
     }
+    cards.clear();
 }
 
 const vector<Card *> &Hand::getCards() const {
@@ -210,7 +214,7 @@ void Hand::addCard(Card *card) {
     cards.push_back(card);
 }
 
-void Hand::removeCard(Card* card) {
+void Hand::removeCard(Card *card) {
     auto position = find(cards.begin(), cards.end(), card);
     if (position != cards.end()) {
         GameEngine::getInstance()->getDeck()->addCard(card);
@@ -228,4 +232,12 @@ Card *Hand::getNextCard() {
     }
 
     return cardChosen;
+}
+
+Card *Hand::getBombCard() {
+    auto bombCardPosition = find_if(cards.begin(),
+                                    cards.end(),
+                                    [](Card *card) { return card->getType() == Card::bomb; });
+
+    return bombCardPosition != cards.end() ? *bombCardPosition : nullptr;
 }

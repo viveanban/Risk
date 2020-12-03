@@ -1,15 +1,11 @@
 #include "GameEngine.h"
 #include <ctime>
-#include <iostream>
-#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-const string MAP_DIRECTORY = "../maps/";
-
 int main() {
-    srand(time(0));
+    srand(time(nullptr));
 
     GameEngine* gameEngine = GameEngine::getInstance();
     gameEngine->startupPhase();

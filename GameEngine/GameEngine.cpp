@@ -2,7 +2,6 @@
 #include "GameEngine.h"
 #include <set>
 #include "../MapLoader/MapLoader.h"
-#include "./../GameObservers/GameObservers.h"
 #include <random>
 #include <string>
 #include <iostream>
@@ -19,21 +18,21 @@ using namespace std;
 void GameEngine::initializeGame() {
     selectMap();
     selectPlayerNumber();
-    setupObservers();
     setupPlayers();
+    setupObservers();
     this->deck = new Deck(50);
     cout << *deck;
     gameState->setTotalTerritories(map->getTerritoryList().size());
 }
 
 void GameEngine::selectMap() {
-    const string MAP_DIRECTORY = "../maps/";
+    MapType chosenType = selectMapType();
+    const string MAP_DIRECTORY = chosenType == MapType::conquest ? "../maps/conquest_maps/" : "../maps/domination_maps/";
     int chosenMap;
     ifstream inputFile;
     do {
         cout << "Please enter the number of the game Map you wish to play from the following list:" << endl;
-        auto path = "../maps/";
-        setAvailableMaps(path);
+        setAvailableMaps(MAP_DIRECTORY.c_str());
         for (int i = 1; i <= availableMaps.size(); i++) {
             cout << i << " - " << availableMaps.at(i - 1) << endl;
         }
@@ -44,9 +43,45 @@ void GameEngine::selectMap() {
             cout << "Please pick another map now: " << endl;
             chosenMap = openMapFile(MAP_DIRECTORY, chosenMap, inputFile);
         }
-        this->map = MapLoader::loadMap(availableMaps.at(chosenMap - 1));
+        MapLoader *mapLoader = chosenType == MapType::conquest ? new ConquestFileReaderAdapter() : new MapLoader();
+        this->map = mapLoader->loadMap(availableMaps.at(chosenMap - 1));
+        delete mapLoader;
+        mapLoader = nullptr;
     } while (map == NULL or !map->validate());
     inputFile.close();
+}
+
+GameEngine::MapType GameEngine::selectMapType(){
+
+    cout << "Please enter the number of the map type you wish to play from:" << endl;
+    cout << 0 << " - " << "Conquest Maps" << endl;
+    cout << 1 << " - " << "Domination Maps" << endl;
+
+    int chosenType;
+
+    while (true) {
+        cin >> chosenType;
+
+        // If the input is invalid
+        if (cin.fail() || chosenType > 1 || chosenType < 0) {
+            cout << "Hey you made a mistake. ";
+            cout << "Please pick another map type now: " << endl;
+
+            cin.clear();
+            chosenType = -1;
+            // discard 'bad' character(s)
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        switch (chosenType) {
+            case 0:
+                return MapType::conquest;
+            case 1:
+                return MapType::domination;
+            default:
+                break;
+        }
+    }
 }
 
 int GameEngine::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream &inputFile) const {
@@ -57,7 +92,7 @@ int GameEngine::openMapFile(const string &MAP_DIRECTORY, int chosenMap, ifstream
         // discard 'bad' character(s)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-    if (chosenMap > 0 and chosenMap < availableMaps.size()) {
+    if (chosenMap > 0 and chosenMap <= availableMaps.size()) {
         inputFile.open(MAP_DIRECTORY + availableMaps.at(chosenMap - 1));
     }
     return chosenMap;
@@ -94,7 +129,7 @@ void GameEngine::selectPlayerNumber() {
     numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     while (numPlayerTmp < 2 or numPlayerTmp > maxPlayerNumber) {
         cout << "This does not look like a number between 2 to " << maxPlayerNumber <<
-                ". The game supports up to 5 players with a minimum of 2." << endl <<
+             ". The game supports up to "<< maxPlayerNumber <<" players with a minimum of 2." << endl <<
              "Please input the desired number of players" << endl;
         numPlayerTmp = validateNumberPlayerInput(numPlayerTmp);
     }
@@ -144,8 +179,32 @@ void GameEngine::setupPlayers() {
     for (int i = 0; i < this->getNumPlayer(); i++) {
         this->players.push_back(new Player("Player " + to_string(i + 1)));
     }
+
+    // Determine strategy for each player
+    vector<string> strategies = {"Human", "Benevolent", "Aggressive", "Neutral"};
+    for(int i = 0; i < strategies.size(); i++)
+        cout << i << " - " << strategies.at(i) << endl;
+
+    int chosenStrategy;
+    for(Player* player: players) {
+        chosenStrategy = PlayerStrategy::getIntegerInput(
+                "Please enter the chosen strategy for " + player->getPlayerName(), 0, strategies.size());
+        player->setStrategy(getPlayerStrategyFromUserInput(chosenStrategy, player));
+    }
 }
 
+PlayerStrategy* GameEngine::getPlayerStrategyFromUserInput(int chosenStrategy, Player* player) {
+    switch (chosenStrategy) {
+        case 0:
+            return new HumanPlayerStrategy(player);
+        case 1:
+            return new BenevolentPlayerStrategy(player);
+        case 2:
+            return new AggressivePlayerStrategy(player);
+        default:
+            return new NeutralPlayerStrategy(player);
+    }
+}
 
 bool GameEngine::isPhaseObserverActive() const {
     return phaseObserverActive;
@@ -324,8 +383,9 @@ void GameEngine::issueOrdersPhase() {
     vector<Player *> playersWithNoMoreOrderstoIssue;
     while (playersWithNoMoreOrderstoIssue.size() != players.size()) {
         for (Player *player: players) {
-            if (find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
-                playersWithNoMoreOrderstoIssue.end()) {
+            bool playerIsFinishedIssuingOrders = find(playersWithNoMoreOrderstoIssue.begin(), playersWithNoMoreOrderstoIssue.end(), player) ==
+                                                 playersWithNoMoreOrderstoIssue.end();
+            if (playerIsFinishedIssuingOrders) {
                 if (!player->issueOrder()) {
                     playersWithNoMoreOrderstoIssue.push_back(player);
                     gameState->updateGameState(player, issuing_orders, nullptr, nullptr);

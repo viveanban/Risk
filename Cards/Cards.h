@@ -97,6 +97,8 @@ public:
     // Returns a card that is not a reinforcement card
     Card* getNextCard();
 
+    Card* getBombCard();
+
     // Add card to the cards vector in Hand
     void addCard(Card *card);
 

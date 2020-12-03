@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <cmath>
 #include "../GameEngine/GameEngine.h"
+#include <algorithm>
 
 // SUBJECT
 Subject::Subject() {
@@ -115,7 +116,12 @@ void PhaseObserver::printOrderInfo(Order *order, Card *card) {
         printReinforcementCardInfo();
         return;
     }else if(order == nullptr && card == nullptr && currentGameState->getCurrentPhase() == issuing_orders ){
-        cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
+        if (auto *neutralPlayer = dynamic_cast<NeutralPlayerStrategy *>(currentGameState->getCurrentPlayer()->getStrategy())) {
+            cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                 << " is a Neutral Player, and hence does not issue any orders." << endl;
+        } else {
+            cout << currentGameState->getCurrentPlayer()->getPlayerName() << " is done issuing orders!" << endl;
+        }
         return;
     } else if (order == nullptr){
         return;
@@ -206,6 +212,17 @@ void PhaseObserver::printAdvanceOrder(AdvanceOrder *pOrder) {
 void PhaseObserver::printDeployOrderInfo(DeployOrder *pOrder) {
     switch (currentGameState->getCurrentPhase()) {
         case issuing_orders:
+            sort(currentGameState->getCurrentPlayer()->getTerritories().begin(), currentGameState->getCurrentPlayer()->getTerritories().end(), [](Territory *lhs, Territory *rhs) {
+                return lhs->getUnitNbr() < rhs->getUnitNbr();
+            });
+
+            cout << currentGameState->getCurrentPlayer()->getPlayerName()
+                 << " can defend the following territories in order from weakest to strongest: ";
+            for (auto t: currentGameState->getCurrentPlayer()->getTerritories()) {
+                cout << t->getTerritoryName() << " ";
+            }
+            cout << endl;
+
             cout << currentGameState->getCurrentPlayer()->getPlayerName() << " issued a deploy order of "
                  << pOrder->getNumberOfArmiesToDeploy() << " armies on "
                  << pOrder->getTargetTerritory()->getTerritoryName() << endl;
@@ -405,6 +422,7 @@ void StatisticsObserver::update() {
 }
 
 void StatisticsObserver::displayStatsUpdate() {
+    cout << "===================================================================================================" << endl;
     cout << '|' << "Player" << setw(5) << '|' << "Territorial Control\t|" << endl;
     vector<float> playerDominationRatios{};
     for (Player *player: GameEngine::getInstance()->getPlayers()) {
@@ -424,6 +442,7 @@ void StatisticsObserver::displayStatsUpdate() {
                  << "! YOU WON THE GAME! VICTORY ~" << endl;
         }
     }
+    cout << "===================================================================================================" << endl;
 }
 
 float StatisticsObserver::calculateWorldDomination(int numberOfTerritories) {
