@@ -12,6 +12,7 @@ using namespace std;
 /**
  * This class takes care of creating a Map object (the map) in the Risk game based on user input.
  */
+ //DESIRED INTERFACE
 class MapLoader {
 private:
     enum Section {
@@ -39,7 +40,7 @@ private:
     MapLoader &operator=(const MapLoader &original);
 
     /**
-     * This method creates the Map object and returns a pointer to it.
+     * This method parses through a map file in order to help create a map
      *
      * @return void.
      * @param fstream: the file that will be parsed.
@@ -106,6 +107,7 @@ public:
     static void throwInvalidMapException();
 };
 
+//ADAPTEE
 class ConquestFileReader {
 private:
     enum Section {
@@ -132,6 +134,11 @@ private:
 
     static vector<Territory *> territoriesList;
 
+    /**
+     * This method parses through a file in order to help create a map
+     *
+     * @param mapFile
+     */
     static void parseFile(fstream &mapFile);
 
     /**
@@ -179,6 +186,7 @@ public:
     static Map *loadConquestMap(const string &conquestMapName);
 };
 
+// ADAPTER
 class ConquestFileReaderAdapter : public MapLoader {
 private:
     ConquestFileReader* conquestFileReader;

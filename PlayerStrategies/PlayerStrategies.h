@@ -7,6 +7,7 @@ class PlayerStrategy {
 public:
     Player *player;
 
+    // This percentage indicates the player's inclination to continue issuing orders
     static const int PERCENTAGE;
 
     virtual bool issueOrder() = 0;
@@ -72,9 +73,9 @@ public:
 
     PlayerStrategy(Player *player);
 
-    static bool getBooleanInput(string printStatement);
+    static bool getBooleanInput(const string& printStatement);
 
-    static int getIntegerInput(string printStatement, int leftBound, int rightBound);
+    static int getIntegerInput(const string& printStatement, int leftBound, int rightBound);
 
     PlayerStrategy(const PlayerStrategy &original);
 
